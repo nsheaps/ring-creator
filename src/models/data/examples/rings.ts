@@ -2671,7 +2671,9 @@ export const rings: ExampleDesign[] = [
       head: {
         id: 'toi-et-moi',
         metal: 'platinum',
-        params: {},
+        params: {
+          secondCut: 'oval',
+        },
       },
       shank: {
         id: 'plain-round',
@@ -8945,6 +8947,7 @@ export const rings: ExampleDesign[] = [
         metal: 'white-gold-18k',
         params: {
           secondRatio: 0.8,
+          secondCut: 'pear',
         },
       },
       shank: {
@@ -9006,6 +9009,7 @@ export const rings: ExampleDesign[] = [
         metal: 'rose-gold-14k',
         params: {
           secondRatio: 0.8,
+          secondCut: 'pear',
         },
       },
       shank: {
@@ -9061,6 +9065,7 @@ export const rings: ExampleDesign[] = [
         metal: 'yellow-gold-14k',
         params: {
           secondRatio: 0.8,
+          secondCut: 'pear',
         },
       },
       shank: {
@@ -9661,6 +9666,7 @@ export const rings: ExampleDesign[] = [
         metal: 'yellow-gold-14k',
         params: {
           secondRatio: 0.75,
+          secondCut: 'kite',
         },
       },
       shank: {

@@ -318,7 +318,8 @@
    "orientation": "north-south",
    "tune": {
     "head": {
-     "secondRatio": 0.8
+     "secondRatio": 0.8,
+     "secondCut": "pear"
     },
     "shank": {
      "widthMm": 1.7,
@@ -362,7 +363,8 @@
    "orientation": "north-south",
    "tune": {
     "head": {
-     "secondRatio": 0.8
+     "secondRatio": 0.8,
+     "secondCut": "pear"
     }
    }
   },
@@ -401,7 +403,8 @@
    "orientation": "north-south",
    "tune": {
     "head": {
-     "secondRatio": 0.8
+     "secondRatio": 0.8,
+     "secondCut": "pear"
     }
    }
   },
@@ -759,7 +762,8 @@
    "orientation": "north-south",
    "tune": {
     "head": {
-     "secondRatio": 0.75
+     "secondRatio": 0.75,
+     "secondCut": "kite"
     },
     "shank": {
      "widthMm": 2.2,

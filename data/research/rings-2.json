@@ -1,35 +1,1044 @@
 [
-{"id":"r2-001","name":"Crown Pavé Hidden Halo (platinum)","category":"hidden-halo","source":{"name":"Blue Nile (James Allen line)","url":"https://www.bluenile.com/engagement-rings/design-your-own-ring/crown-pave-hidden-halo-diamond-engagement-ring-in-platinum-by-james-allen-item-315147"},"priceUsd":2550,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"hidden-halo","shank":"pave","metals":["platinum"],"finish":null,"accents":["melee pave on band","hidden halo under center"],"orientation":"north-south"},"band":null,"notes":"Setting-only price; centre stone chosen separately (round shown, many cuts 0.50-6.00 ct accepted). Pave band 1.8 mm; the halo sits beneath the centre so the profile looks like a solitaire."},
-{"id":"r2-002","name":"Opera Three Stone (14K white gold)","category":"three-stone","source":{"name":"Brilliant Earth","url":"https://www.brilliantearth.com/Opera-Three-Stone-Diamond-Ring-14K-White-Gold-BE1D5320-76823401/"},"priceUsd":1790,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"oval","carat":null,"colorName":null,"clarity":null},"head":"three-stone","shank":null,"metals":["white-gold-14k"],"finish":null,"accents":["two pear side stones, min 0.37 ct tw"],"orientation":"north-south"},"band":null,"notes":"Setting-only price; page shows an oval centre but lists ten selectable cuts. Slim 1.8 mm band with two small pear side stones; shank profile not stated."},
-{"id":"r2-003","name":"Bamboo Hidden Halo Side Stone (14K rose gold)","category":"hidden-halo","source":{"name":"Blue Nile (James Allen line)","url":"https://www.bluenile.com/engagement-rings/design-your-own-ring/bamboo-hidden-halo-side-stone-diamond-engagement-ring-with-halo-in-14k-rose-gold-by-james-allen-item-316207"},"priceUsd":1730,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":1,"colorName":null,"clarity":null},"head":"hidden-halo","shank":"twig","metals":["rose-gold-14k"],"finish":"polished","accents":["34 diamonds total approx 1/3 ct tw (based on 1 ct centre)","diamond accents on band"],"orientation":"north-south"},"band":null,"notes":"Setting price only. Bamboo-textured polished band with diamond accents; 'twig' is the nearest shank id (no bamboo id)."},
-{"id":"r2-004","name":"Royal Crown Halo (platinum)","category":"halo","source":{"name":"Blue Nile","url":"https://www.bluenile.com/mx/build-your-own-ring/royal-crown-halo-diamond-engagement-ring-platinum_70985"},"priceUsd":4300,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"halo-round","shank":"plain-round","metals":["platinum"],"finish":"polished","accents":["12-diamond halo","6 diamond side stones along shoulders"],"orientation":"north-south"},"band":null,"notes":"Setting-only; halo outline not stated, halo-round assumed from name. Polished platinum band with six diamonds stepping down the shoulders."},
-{"id":"r2-005","name":"Blue Nile Studio Heiress Halo (platinum)","category":"halo","source":{"name":"Blue Nile","url":"https://www.bluenile.com/ca/build-your-own-ring/blue-nile-studio-heiress-halo-platinum-engagement-ring_50575"},"priceUsd":3585,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"halo-round","shank":null,"metals":["platinum"],"finish":null,"accents":["french pave halo, 3/8 ct tw setting diamonds"],"orientation":"north-south"},"band":null,"notes":"Setting price listed on Canadian page (currency code not shown). Accepts 13 centre shapes 0.20-8.00 ct; halo shape follows centre so halo-round is a default. Band 1.90 mm."},
-{"id":"r2-006","name":"Blue Nile Studio Double Halo Gala (platinum)","category":"double-halo","source":{"name":"Blue Nile","url":"https://www.bluenile.com/hu/engagement-rings/design-your-own-ring/blue-nile-studio-double-halo-gala-diamond-engagement-ring_56001"},"priceUsd":6765,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"double-halo","shank":null,"metals":["platinum"],"finish":null,"accents":["french pave double halo","about 120 diamonds, 7/8 ct tw (on 1 ct centre)"],"orientation":"north-south"},"band":null,"notes":"Setting price only. Two concentric pave rows around the centre; 3.25 mm band width (shank style not described)."},
-{"id":"r2-007","name":"Grandeur Cushion Halo by Bella Vaughan (platinum)","category":"halo","source":{"name":"Blue Nile","url":"https://www.bluenile.com/cn/build-your-own-ring/grandeur-cushion-halo-diamond-engagement-ring_61902"},"priceUsd":12560,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"halo-cushion","shank":"pave","metals":["platinum"],"finish":"milgrain","accents":["square pave halo crown","milgrain gallery","three diamond rows on band incl. asscher-cut channel","2 ct tw setting"],"orientation":"north-south"},"band":null,"notes":"Setting-only. Round centres 0.80-3.50 ct; the cushion refers to the square halo shape, not the centre."},
-{"id":"r2-008","name":"Twisted Band Halo (platinum)","category":"halo","source":{"name":"Blue Nile","url":"https://www.bluenile.com/mo/build-your-own-ring/twisted-oval-halo-diamond-engagement-ring-platinum_76900"},"priceUsd":2820,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"halo-round","shank":"twisted","metals":["platinum"],"finish":null,"accents":["twisted diamond band, 1/3 ct tw"],"orientation":"north-south"},"band":null,"notes":"Setting price only. Round centre listed although URL slug says oval; 2.50 mm twisted diamond-set band under a classic halo."},
-{"id":"r2-009","name":"Classic Halo (platinum)","category":"halo","source":{"name":"Blue Nile","url":"https://www.bluenile.com/cn/build-your-own-ring/oval-shaped-halo-diamond-engagement-ring_41116"},"priceUsd":2725,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"halo-round","shank":null,"metals":["platinum"],"finish":null,"accents":["single micro-pave halo of round brilliants"],"orientation":"north-south"},"band":null,"notes":"Page text mentions an oval centre while the shape field says round, so cut is ambiguous; halo-oval could also fit. Setting price only."},
-{"id":"r2-010","name":"Three-Stone Trapezoid Sidestone (1 ct tw, platinum)","category":"three-stone","source":{"name":"Blue Nile","url":"https://www.bluenile.com/mo/build-your-own-ring/three-stone-trapezoid-diamond-engagement-ring-platinum_81170"},"priceUsd":12600,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"three-stone","shank":null,"metals":["platinum"],"finish":null,"accents":["two trapezoid side stones, 1 ct tw"],"orientation":"north-south"},"band":null,"notes":"Setting price for the 1 ct tw sidestone version (a 1/2 ct tw version was seen at $6,890 in search results). Sized for 2-8 ct centres, 2.00 mm band."},
-{"id":"r2-011","name":"Three-Stone Tapered Baguette (5/8 ct tw, platinum)","category":"three-stone","source":{"name":"Blue Nile","url":"https://www.bluenile.com/mo/en/build-your-own-ring/three-stone-tapered-baguette-diamond-engagement-ring-platinum_81169"},"priceUsd":7630,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"three-stone","shank":null,"metals":["platinum"],"finish":null,"accents":["two step-cut tapered baguettes, 5/8 ct tw"],"orientation":"north-south"},"band":null,"notes":"Setting price only; designed for 2-8 ct centres, 2.00 mm band, architectural silhouette."},
-{"id":"r2-012","name":"Sapphire Tressa Split Shank (14K white gold)","category":"split-shank","source":{"name":"Brilliant Earth","url":"https://www.brilliantearth.com/Sapphire-Tressa-Split-Shank-Diamond-Ring-14K-White-Gold-BE1D2014-SBSL8X6OV2/"},"priceUsd":4440,"kind":"engagement","engagement":{"stone":{"material":"sapphire","cut":"oval","carat":null,"colorName":"blue","clarity":null},"head":"basket","shank":"split","metals":["white-gold-14k"],"finish":null,"accents":["34 pave round diamonds on shank, min 0.15 ct tw"],"orientation":"north-south"},"band":null,"notes":"8x6 mm oval sapphire in a claw basket with no halo; 1.4 mm split band lined with pave. Carat not stated on page."},
-{"id":"r2-013","name":"Melody Cluster Ring (14K rose gold)","category":"cluster","source":{"name":"Brilliant Earth","url":"https://www.brilliantearth.com/Melody-Diamond-Ring-Rose-Gold-BE1D6271-9613645/"},"priceUsd":1450,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"cluster","shank":"dainty","metals":["rose-gold-14k"],"finish":null,"accents":["6 round accent diamonds in shared prongs, min 0.11 ct tw"],"orientation":"north-south"},"band":null,"notes":"Setting-only price; centre accent diamonds radiate around the centre stone. 1.5 mm band (dainty chosen from width, profile not stated)."},
-{"id":"r2-014","name":"Classic Five Stone Ring (1/2 ct tw, 18K yellow gold)","category":"five-stone","source":{"name":"Brilliant Earth","url":"https://www.brilliantearth.com/Classic-Five-Stone-Diamond-Ring-%281/2-ct.-tw.%29-Gold-BE2SD5R50/"},"priceUsd":null,"kind":"band","engagement":null,"band":{"style":"shared-prong","metals":["yellow-gold-18k"],"stones":"melee","widthMm":2},"notes":"Five round brilliants (min 0.46 ct tw) in shared prongs, sold as anniversary or wedding band; page says no longer available so no price."},
-{"id":"r2-015","name":"VRAI Toi et Moi Round Brilliant + Oval (platinum)","category":"toi-et-moi","source":{"name":"VRAI","url":"https://vrai.com/engagement-rings/toi-moi-ring"},"priceUsd":1840,"kind":"engagement","engagement":{"stone":{"material":"lab-diamond","cut":"round-brilliant","carat":1.5,"colorName":null,"clarity":null},"head":"toi-et-moi","shank":"plain-round","metals":["platinum","yellow-gold-18k","white-gold-18k","rose-gold-14k"],"finish":null,"accents":["second stone is an oval, also 1.5 ct as shown","pave option 0.13 ctw"],"orientation":"east-west"},"band":null,"notes":"Starting price; two stones side by side, 1.7 mm plain band shown (pave also offered). Other pairings listed: emerald+pear, round+pear."},
-{"id":"r2-016","name":"The One Double Halo Micropavé (Harry Winston)","category":"double-halo","source":{"name":"Harry Winston","url":"https://www.harrywinston.com/en/products/the-one-by-harry-winston/the-one-double-halo-micropave-diamond-engagement-ring-rgdprd010dh"},"priceUsd":28000,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":1,"colorName":null,"clarity":null},"head":"double-halo","shank":"pave","metals":[],"finish":null,"accents":["double halo of diamonds","micropave band"],"orientation":"north-south"},"band":null,"notes":"Starting-from price; page states 1.00-1.24 ct centre but its selector shows 1.0 and 2.0 so range is uncertain. Metal not stated on this page."},
-{"id":"r2-017","name":"Split Shank Halo (14K white gold)","category":"split-shank","source":{"name":"Blue Nile","url":"https://www.bluenile.com/engagement-rings/design-your-own-ring/split-shank-halo-diamond-engagement-ring-in-14k-white-gold-item-203862"},"priceUsd":2780,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"halo-round","shank":"split","metals":["white-gold-14k"],"finish":null,"accents":["diamond-lined split shank"],"orientation":"north-south"},"band":null,"notes":"Setting price only; halo outline not stated. Page text mentions platinum in one line, conflicting with the 14K white gold metal field."},
-{"id":"r2-018","name":"X Split Shank Hidden Halo (1/2 ct tw, 14K yellow gold)","category":"split-shank","source":{"name":"Blue Nile","url":"https://www.bluenile.com/ca/build-your-own-ring/x-split-shank-hidden-halo-diamond-engagement-ring-14k-yellow-gold_81823"},"priceUsd":3040,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"hidden-halo","shank":"crossover","metals":["yellow-gold-14k"],"finish":null,"accents":["diamonds cross over band and meet at the centre","1/2 ct tw"],"orientation":"north-south"},"band":null,"notes":"Setting-only. Shank is a split that crosses in an X under the centre; crossover is the nearest id (split also fits)."},
-{"id":"r2-019","name":"The One Round Brilliant Micropavé (Harry Winston)","category":"pave","source":{"name":"Harry Winston","url":"https://harrywinston.com/en/one-round-brilliant-diamond-micropavé-engagement-ring-0"},"priceUsd":11200,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":1,"colorName":null,"clarity":null},"head":"halo-round","shank":"pave","metals":["platinum"],"finish":null,"accents":["micropave frame around centre","0.50 ct version is partial micropave"],"orientation":"north-south"},"band":null,"notes":"Starting-from price; centres 0.50-1.00 ct listed. Page does not call it a halo, only 'framed by micropave', so halo-round is the nearest head."},
-{"id":"r2-020","name":"Trapezoid Three Stone by Bella Vaughan (1/3 ct tw, platinum)","category":"three-stone","source":{"name":"Blue Nile","url":"https://www.bluenile.com/engagement-rings/design-your-own-ring/bella-vaughan-trapezoid-three-stone-engagement-ring-in-platinum-1-3-ct-tw-item-192098"},"priceUsd":6295,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"three-stone","shank":"plain-flat","metals":["platinum","white-gold-14k","yellow-gold-14k","rose-gold-14k","white-gold-18k","yellow-gold-18k"],"finish":null,"accents":["two trapezoid side stones 1/3 ct tw","16 small round diamonds 1/20 ct tw","two bezel round diamonds"],"orientation":"north-south"},"band":null,"notes":"Setting price for platinum; centres 0.80-5.00 ct. Euro-shank, 2.10 mm; plain-flat is the nearest shank id. Side-to-centre ratio is small (1/3 ct tw on a 0.8+ ct centre)."},
-{"id":"r2-021","name":"Bezel Straight Baguette Three Stone (platinum)","category":"three-stone","source":{"name":"Blue Nile (James Allen line)","url":"https://www.bluenile.com/engagement-rings/design-your-own-ring/bezel-straight-baguette-cut-diamond-three-stone-engagement-ring-in-platinum-by-james-allen-item-316317"},"priceUsd":3325,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":null,"colorName":null,"clarity":null},"head":"three-stone","shank":null,"metals":["platinum"],"finish":null,"accents":["two straight baguettes 1/3 ct tw","all three stones bezel-set"],"orientation":"north-south"},"band":null,"notes":"Setting price; centres 0.50-6.00 ct. Unusual in having a bezel around every stone, so it reads modern rather than classic prong trilogy."},
-{"id":"r2-022","name":"Floral Bypass 6-Prong Nouveau Head (14K white gold)","category":"bypass","source":{"name":"Blue Nile","url":"https://www.bluenile.com/engagement-rings/custom-engagement-rings/floral-bypass-engagement-ring-6-prong-nouveau-head-item-295340"},"priceUsd":2470,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"oval","carat":null,"colorName":null,"clarity":null},"head":"solitaire-6-prong","shank":"bypass","metals":["white-gold-14k"],"finish":null,"accents":["floral bypass shank"],"orientation":"north-south"},"band":null,"notes":"Setting price; round, oval, marquise or pear centres 0.50-8.00 ct (oval chosen as example, not a stated default). Head approximated as solitaire-6-prong."},
-{"id":"r2-023","name":"Bypass Pavé Kite-Set (platinum)","category":"bypass","source":{"name":"Blue Nile (James Allen line)","url":"https://www.bluenile.com/engagement-rings/design-your-own-ring/platinum-bypass-pave-kite-set-engagement-ring-item-67652?jaRedirect=true"},"priceUsd":null,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":1,"colorName":null,"clarity":null},"head":null,"shank":"bypass","metals":["platinum"],"finish":null,"accents":["pave diamonds on bypass shank","north and south prongs meet the pave"],"orientation":"north-south"},"band":null,"notes":"Page says the style is sold out and shows no price (a search snippet quoted $1,800 list / $1,350 sale, unverified on page). Kite-set prongs align with the pave on the airy bypass shank."},
-{"id":"r2-024","name":"VRAI Five Stone Heirloom Oval (platinum)","category":"five-stone","source":{"name":"VRAI","url":"https://www.vrai.com/engagement-rings/five-stone-ring/oval/platinum"},"priceUsd":1725,"kind":"engagement","engagement":{"stone":{"material":"lab-diamond","cut":"oval","carat":null,"colorName":null,"clarity":null},"head":"five-stone","shank":"plain-round","metals":["platinum","yellow-gold-18k","white-gold-18k","rose-gold-14k"],"finish":null,"accents":["four baguette side stones: two 0.25 ct and two 0.10 ct, 0.70 ctw"],"orientation":"north-south"},"band":null,"notes":"Starting price; 1.7 mm band. Baguettes graduate in size down each side. Lab-grown assumed because VRAI sells created diamonds (stated on its toi et moi page, not this one)."},
-{"id":"r2-025","name":"Princess Diana's sapphire cluster engagement ring","category":"cluster","source":{"name":"Wikipedia (Princess Diana's jewels article)","url":"https://en.wikipedia.org/wiki/Engagement_ring_of_Catherine,_Princess_of_Wales"},"priceUsd":null,"kind":"famous","engagement":{"stone":{"material":"sapphire","cut":"oval","carat":12,"colorName":"blue","clarity":null},"head":"cluster","shank":null,"metals":["white-gold-18k"],"finish":null,"accents":["14 diamonds around the sapphire"],"orientation":"north-south"},"band":null,"notes":"Garrard, 1981, said to echo Queen Victoria's 1840 brooch. Note: the URL I fetched (a redirect target for Kate's ring article) displayed Diana's jewellery table, so check the citation."},
-{"id":"r2-026","name":"Jackie Kennedy toi et moi (Van Cleef & Arpels, 1953)","category":"toi-et-moi","source":{"name":"Marie Claire Australia","url":"https://www.marieclaire.com.au/latest-news/jackie-kennedy-onassis-engagement-ring-true-story-van-cleef-arpels/"},"priceUsd":null,"kind":"famous","engagement":{"stone":{"material":"emerald","cut":"emerald-cut","carat":2.84,"colorName":"green","clarity":null},"head":"toi-et-moi","shank":null,"metals":["platinum"],"finish":null,"accents":["second stone diamond 2.88 ct","baguette diamonds flank the pair (per other outlets)"],"orientation":"east-west"},"band":null,"notes":"Emerald 2.84 ct beside diamond 2.88 ct. Cut, platinum and baguettes come from other search-result outlets, not the cited page; reset in 1962 per the Kennedy Library, which added round and marquise diamonds."},
-{"id":"r2-027","name":"Meghan Markle three-stone ring (Cleave & Company)","category":"three-stone","source":{"name":"Rapaport","url":"https://rapaport.com/news/what-we-know-about-meghan-markles-ring/"},"priceUsd":null,"kind":"famous","engagement":{"stone":{"material":"diamond","cut":"cushion","carat":2.5,"colorName":null,"clarity":null},"head":"three-stone","shank":"plain-round","metals":["yellow-gold-18k"],"finish":null,"accents":["two side diamonds from Diana's collection","pave diamond band added 2018-19 (per search results)"],"orientation":"north-south"},"band":null,"notes":"Botswana centre, about 2.5 ct is a media estimate. Cushion cut and 18k are not in the cited page (other outlets say cushion); the original band was yellow gold, karat unconfirmed."},
-{"id":"r2-028","name":"Tiffany Soleste round halo, resale (1.08 ct centre, platinum)","category":"halo","source":{"name":"Reach.dog / The Diamond Oak (resale)","url":"https://reach.dog/shop/the-diamond-oak/products/tiffany-co-platinum-oval-soleste-diamond-engagement-ring-1-48cts-tw-gvvs2"},"priceUsd":12500,"kind":"engagement","engagement":{"stone":{"material":"diamond","cut":"round-brilliant","carat":1.08,"colorName":"G","clarity":"VVS2"},"head":"halo-round","shank":"pave","metals":["platinum"],"finish":null,"accents":["1.48 ct total weight"],"orientation":"north-south"},"band":null,"notes":"Taken from a search-result summary; the page now returns HTTP 410, and the URL says oval while the summary says round. Halo outline and shank not verified; pave shank is an assumption."},
-{"id":"r2-029","name":"Lunette Curved Band (1/10 ct tw, platinum)","category":"band","source":{"name":"Brilliant Earth","url":"https://www.brilliantearth.com/Lunette-Diamond-Ring-Platinum-BE2D062"},"priceUsd":null,"kind":"band","engagement":null,"band":{"style":"shared-prong","metals":["platinum"],"stones":"melee","widthMm":1.5,"tune":{"fit":"contour","params":{"coverage":"half","stoneSize":1.4}}},"notes":"Curved band with six round diamonds and a centre pear in shared prongs; no price as the page says it is no longer available. Curved profile approximated by shared-prong band with contour fit."},
-{"id":"r2-030","name":"Yvette Curved Band (1/6 ct tw, platinum)","category":"band","source":{"name":"Brilliant Earth","url":"https://www.brilliantearth.com/en-gb/Yvette-Diamond-Ring-Platinum-BE2D7158"},"priceUsd":1590,"kind":"band","engagement":null,"band":{"style":"shared-prong","metals":["platinum"],"stones":"melee","widthMm":1.5,"tune":{"fit":"contour","params":{"coverage":"half","stoneSize":1.4}}},"notes":"Four marquise and three round diamonds, prong set, in a curved profile; the marquise points echo a marquise or pear engagement ring. Price from the UK-path page, shown in USD. Curved profile approximated by shared-prong band with contour fit."},
-{"id":"r2-031","name":"Chamise Contoured Band (18K yellow gold)","category":"band","source":{"name":"Brilliant Earth","url":"https://www.brilliantearth.com/Chamise-Contoured-Diamond-Ring-Gold-BE2AS10PD10/"},"priceUsd":null,"kind":"band","engagement":null,"band":{"style":"shared-prong","metals":["yellow-gold-18k"],"stones":"melee","widthMm":1.7,"tune":{"fit":"contour","params":{"coverage":"half","stoneSize":1.4}}},"notes":"Shared-prong round diamonds (min 0.11 ct tw) on a band cut to sit flush with the Chamise engagement ring; shared-prong is also a fit. Unavailable, so no price. Curved profile approximated by shared-prong band with contour fit."},
-{"id":"r2-032","name":"Micropavé Diamond Large Band (Harry Winston)","category":"band","source":{"name":"Harry Winston","url":"https://www.harrywinston.com/en/products/classic-diamond-bands-by-harry-winston/micropave-diamond-large-wedding-band-wbdprdlrgmic"},"priceUsd":8300,"kind":"band","engagement":null,"band":{"style":"pave-band","metals":["platinum"],"stones":"melee","widthMm":null},"notes":"37 round brilliants, about 0.61 ct total, in micropave; price is size-dependent."},
-{"id":"r2-033","name":"Marseille Half Coverage Band (1/3 ct tw, 18K white gold)","category":"band","source":{"name":"Brilliant Earth","url":"https://www.brilliantearth.com/Marseille-Half-Coverage-Diamond-Ring-(1/3-ct.-tw.)-White-Gold-BE2D2110/"},"priceUsd":1690,"kind":"band","engagement":null,"band":{"style":"half-eternity","metals":["white-gold-18k"],"stones":"melee","widthMm":2},"notes":"Eleven shared-prong round diamonds on the top half, marketed as a stacker; the half-eternity id is the nearest fit."}
+ {
+  "id": "r2-001",
+  "name": "Crown Pavé Hidden Halo (platinum)",
+  "category": "hidden-halo",
+  "source": {
+   "name": "Blue Nile (James Allen line)",
+   "url": "https://www.bluenile.com/engagement-rings/design-your-own-ring/crown-pave-hidden-halo-diamond-engagement-ring-in-platinum-by-james-allen-item-315147"
+  },
+  "priceUsd": 2550,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "hidden-halo",
+   "shank": "pave",
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "melee pave on band",
+    "hidden halo under center"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price; centre stone chosen separately (round shown, many cuts 0.50-6.00 ct accepted). Pave band 1.8 mm; the halo sits beneath the centre so the profile looks like a solitaire."
+ },
+ {
+  "id": "r2-002",
+  "name": "Opera Three Stone (14K white gold)",
+  "category": "three-stone",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Opera-Three-Stone-Diamond-Ring-14K-White-Gold-BE1D5320-76823401/"
+  },
+  "priceUsd": 1790,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "oval",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "three-stone",
+   "shank": null,
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "two pear side stones, min 0.37 ct tw"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price; page shows an oval centre but lists ten selectable cuts. Slim 1.8 mm band with two small pear side stones; shank profile not stated."
+ },
+ {
+  "id": "r2-003",
+  "name": "Bamboo Hidden Halo Side Stone (14K rose gold)",
+  "category": "hidden-halo",
+  "source": {
+   "name": "Blue Nile (James Allen line)",
+   "url": "https://www.bluenile.com/engagement-rings/design-your-own-ring/bamboo-hidden-halo-side-stone-diamond-engagement-ring-with-halo-in-14k-rose-gold-by-james-allen-item-316207"
+  },
+  "priceUsd": 1730,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 1,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "hidden-halo",
+   "shank": "twig",
+   "metals": [
+    "rose-gold-14k"
+   ],
+   "finish": "polished",
+   "accents": [
+    "34 diamonds total approx 1/3 ct tw (based on 1 ct centre)",
+    "diamond accents on band"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price only. Bamboo-textured polished band with diamond accents; 'twig' is the nearest shank id (no bamboo id)."
+ },
+ {
+  "id": "r2-004",
+  "name": "Royal Crown Halo (platinum)",
+  "category": "halo",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/mx/build-your-own-ring/royal-crown-halo-diamond-engagement-ring-platinum_70985"
+  },
+  "priceUsd": 4300,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": "plain-round",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [
+    "12-diamond halo",
+    "6 diamond side stones along shoulders"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only; halo outline not stated, halo-round assumed from name. Polished platinum band with six diamonds stepping down the shoulders."
+ },
+ {
+  "id": "r2-005",
+  "name": "Blue Nile Studio Heiress Halo (platinum)",
+  "category": "halo",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/ca/build-your-own-ring/blue-nile-studio-heiress-halo-platinum-engagement-ring_50575"
+  },
+  "priceUsd": 3585,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": null,
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "french pave halo, 3/8 ct tw setting diamonds"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price listed on Canadian page (currency code not shown). Accepts 13 centre shapes 0.20-8.00 ct; halo shape follows centre so halo-round is a default. Band 1.90 mm."
+ },
+ {
+  "id": "r2-006",
+  "name": "Blue Nile Studio Double Halo Gala (platinum)",
+  "category": "double-halo",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/hu/engagement-rings/design-your-own-ring/blue-nile-studio-double-halo-gala-diamond-engagement-ring_56001"
+  },
+  "priceUsd": 6765,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "double-halo",
+   "shank": null,
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "french pave double halo",
+    "about 120 diamonds, 7/8 ct tw (on 1 ct centre)"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price only. Two concentric pave rows around the centre; 3.25 mm band width (shank style not described)."
+ },
+ {
+  "id": "r2-007",
+  "name": "Grandeur Cushion Halo by Bella Vaughan (platinum)",
+  "category": "halo",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/cn/build-your-own-ring/grandeur-cushion-halo-diamond-engagement-ring_61902"
+  },
+  "priceUsd": 12560,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-cushion",
+   "shank": "pave",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "milgrain",
+   "accents": [
+    "square pave halo crown",
+    "milgrain gallery",
+    "three diamond rows on band incl. asscher-cut channel",
+    "2 ct tw setting"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only. Round centres 0.80-3.50 ct; the cushion refers to the square halo shape, not the centre."
+ },
+ {
+  "id": "r2-008",
+  "name": "Twisted Band Halo (platinum)",
+  "category": "halo",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/mo/build-your-own-ring/twisted-oval-halo-diamond-engagement-ring-platinum_76900"
+  },
+  "priceUsd": 2820,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": "twisted",
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "twisted diamond band, 1/3 ct tw"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price only. Round centre listed although URL slug says oval; 2.50 mm twisted diamond-set band under a classic halo."
+ },
+ {
+  "id": "r2-009",
+  "name": "Classic Halo (platinum)",
+  "category": "halo",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/cn/build-your-own-ring/oval-shaped-halo-diamond-engagement-ring_41116"
+  },
+  "priceUsd": 2725,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": null,
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "single micro-pave halo of round brilliants"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Page text mentions an oval centre while the shape field says round, so cut is ambiguous; halo-oval could also fit. Setting price only."
+ },
+ {
+  "id": "r2-010",
+  "name": "Three-Stone Trapezoid Sidestone (1 ct tw, platinum)",
+  "category": "three-stone",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/mo/build-your-own-ring/three-stone-trapezoid-diamond-engagement-ring-platinum_81170"
+  },
+  "priceUsd": 12600,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "three-stone",
+   "shank": null,
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "two trapezoid side stones, 1 ct tw"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price for the 1 ct tw sidestone version (a 1/2 ct tw version was seen at $6,890 in search results). Sized for 2-8 ct centres, 2.00 mm band."
+ },
+ {
+  "id": "r2-011",
+  "name": "Three-Stone Tapered Baguette (5/8 ct tw, platinum)",
+  "category": "three-stone",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/mo/en/build-your-own-ring/three-stone-tapered-baguette-diamond-engagement-ring-platinum_81169"
+  },
+  "priceUsd": 7630,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "three-stone",
+   "shank": null,
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "two step-cut tapered baguettes, 5/8 ct tw"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price only; designed for 2-8 ct centres, 2.00 mm band, architectural silhouette."
+ },
+ {
+  "id": "r2-012",
+  "name": "Sapphire Tressa Split Shank (14K white gold)",
+  "category": "split-shank",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Sapphire-Tressa-Split-Shank-Diamond-Ring-14K-White-Gold-BE1D2014-SBSL8X6OV2/"
+  },
+  "priceUsd": 4440,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "sapphire",
+    "cut": "oval",
+    "carat": null,
+    "colorName": "blue",
+    "clarity": null
+   },
+   "head": "basket",
+   "shank": "split",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "34 pave round diamonds on shank, min 0.15 ct tw"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "8x6 mm oval sapphire in a claw basket with no halo; 1.4 mm split band lined with pave. Carat not stated on page."
+ },
+ {
+  "id": "r2-013",
+  "name": "Melody Cluster Ring (14K rose gold)",
+  "category": "cluster",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Melody-Diamond-Ring-Rose-Gold-BE1D6271-9613645/"
+  },
+  "priceUsd": 1450,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "cluster",
+   "shank": "dainty",
+   "metals": [
+    "rose-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "6 round accent diamonds in shared prongs, min 0.11 ct tw"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price; centre accent diamonds radiate around the centre stone. 1.5 mm band (dainty chosen from width, profile not stated)."
+ },
+ {
+  "id": "r2-014",
+  "name": "Classic Five Stone Ring (1/2 ct tw, 18K yellow gold)",
+  "category": "five-stone",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Classic-Five-Stone-Diamond-Ring-%281/2-ct.-tw.%29-Gold-BE2SD5R50/"
+  },
+  "priceUsd": null,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "shared-prong",
+   "metals": [
+    "yellow-gold-18k"
+   ],
+   "stones": "melee",
+   "widthMm": 2
+  },
+  "notes": "Five round brilliants (min 0.46 ct tw) in shared prongs, sold as anniversary or wedding band; page says no longer available so no price."
+ },
+ {
+  "id": "r2-015",
+  "name": "VRAI Toi et Moi Round Brilliant + Oval (platinum)",
+  "category": "toi-et-moi",
+  "source": {
+   "name": "VRAI",
+   "url": "https://vrai.com/engagement-rings/toi-moi-ring"
+  },
+  "priceUsd": 1840,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "lab-diamond",
+    "cut": "round-brilliant",
+    "carat": 1.5,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "toi-et-moi",
+   "shank": "plain-round",
+   "metals": [
+    "platinum",
+    "yellow-gold-18k",
+    "white-gold-18k",
+    "rose-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "second stone is an oval, also 1.5 ct as shown",
+    "pave option 0.13 ctw"
+   ],
+   "orientation": "east-west",
+   "tune": {
+    "head": {
+     "secondCut": "oval"
+    }
+   }
+  },
+  "band": null,
+  "notes": "Starting price; two stones side by side, 1.7 mm plain band shown (pave also offered). Other pairings listed: emerald+pear, round+pear."
+ },
+ {
+  "id": "r2-016",
+  "name": "The One Double Halo Micropavé (Harry Winston)",
+  "category": "double-halo",
+  "source": {
+   "name": "Harry Winston",
+   "url": "https://www.harrywinston.com/en/products/the-one-by-harry-winston/the-one-double-halo-micropave-diamond-engagement-ring-rgdprd010dh"
+  },
+  "priceUsd": 28000,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 1,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "double-halo",
+   "shank": "pave",
+   "metals": [],
+   "finish": null,
+   "accents": [
+    "double halo of diamonds",
+    "micropave band"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Starting-from price; page states 1.00-1.24 ct centre but its selector shows 1.0 and 2.0 so range is uncertain. Metal not stated on this page."
+ },
+ {
+  "id": "r2-017",
+  "name": "Split Shank Halo (14K white gold)",
+  "category": "split-shank",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/engagement-rings/design-your-own-ring/split-shank-halo-diamond-engagement-ring-in-14k-white-gold-item-203862"
+  },
+  "priceUsd": 2780,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": "split",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "diamond-lined split shank"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price only; halo outline not stated. Page text mentions platinum in one line, conflicting with the 14K white gold metal field."
+ },
+ {
+  "id": "r2-018",
+  "name": "X Split Shank Hidden Halo (1/2 ct tw, 14K yellow gold)",
+  "category": "split-shank",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/ca/build-your-own-ring/x-split-shank-hidden-halo-diamond-engagement-ring-14k-yellow-gold_81823"
+  },
+  "priceUsd": 3040,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "hidden-halo",
+   "shank": "crossover",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "diamonds cross over band and meet at the centre",
+    "1/2 ct tw"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only. Shank is a split that crosses in an X under the centre; crossover is the nearest id (split also fits)."
+ },
+ {
+  "id": "r2-019",
+  "name": "The One Round Brilliant Micropavé (Harry Winston)",
+  "category": "pave",
+  "source": {
+   "name": "Harry Winston",
+   "url": "https://harrywinston.com/en/one-round-brilliant-diamond-micropavé-engagement-ring-0"
+  },
+  "priceUsd": 11200,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 1,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": "pave",
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "micropave frame around centre",
+    "0.50 ct version is partial micropave"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Starting-from price; centres 0.50-1.00 ct listed. Page does not call it a halo, only 'framed by micropave', so halo-round is the nearest head."
+ },
+ {
+  "id": "r2-020",
+  "name": "Trapezoid Three Stone by Bella Vaughan (1/3 ct tw, platinum)",
+  "category": "three-stone",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/engagement-rings/design-your-own-ring/bella-vaughan-trapezoid-three-stone-engagement-ring-in-platinum-1-3-ct-tw-item-192098"
+  },
+  "priceUsd": 6295,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "three-stone",
+   "shank": "plain-flat",
+   "metals": [
+    "platinum",
+    "white-gold-14k",
+    "yellow-gold-14k",
+    "rose-gold-14k",
+    "white-gold-18k",
+    "yellow-gold-18k"
+   ],
+   "finish": null,
+   "accents": [
+    "two trapezoid side stones 1/3 ct tw",
+    "16 small round diamonds 1/20 ct tw",
+    "two bezel round diamonds"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price for platinum; centres 0.80-5.00 ct. Euro-shank, 2.10 mm; plain-flat is the nearest shank id. Side-to-centre ratio is small (1/3 ct tw on a 0.8+ ct centre)."
+ },
+ {
+  "id": "r2-021",
+  "name": "Bezel Straight Baguette Three Stone (platinum)",
+  "category": "three-stone",
+  "source": {
+   "name": "Blue Nile (James Allen line)",
+   "url": "https://www.bluenile.com/engagement-rings/design-your-own-ring/bezel-straight-baguette-cut-diamond-three-stone-engagement-ring-in-platinum-by-james-allen-item-316317"
+  },
+  "priceUsd": 3325,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "three-stone",
+   "shank": null,
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "two straight baguettes 1/3 ct tw",
+    "all three stones bezel-set"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price; centres 0.50-6.00 ct. Unusual in having a bezel around every stone, so it reads modern rather than classic prong trilogy."
+ },
+ {
+  "id": "r2-022",
+  "name": "Floral Bypass 6-Prong Nouveau Head (14K white gold)",
+  "category": "bypass",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/engagement-rings/custom-engagement-rings/floral-bypass-engagement-ring-6-prong-nouveau-head-item-295340"
+  },
+  "priceUsd": 2470,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "oval",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "solitaire-6-prong",
+   "shank": "bypass",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "floral bypass shank"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting price; round, oval, marquise or pear centres 0.50-8.00 ct (oval chosen as example, not a stated default). Head approximated as solitaire-6-prong."
+ },
+ {
+  "id": "r2-023",
+  "name": "Bypass Pavé Kite-Set (platinum)",
+  "category": "bypass",
+  "source": {
+   "name": "Blue Nile (James Allen line)",
+   "url": "https://www.bluenile.com/engagement-rings/design-your-own-ring/platinum-bypass-pave-kite-set-engagement-ring-item-67652?jaRedirect=true"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 1,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": null,
+   "shank": "bypass",
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "pave diamonds on bypass shank",
+    "north and south prongs meet the pave"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Page says the style is sold out and shows no price (a search snippet quoted $1,800 list / $1,350 sale, unverified on page). Kite-set prongs align with the pave on the airy bypass shank."
+ },
+ {
+  "id": "r2-024",
+  "name": "VRAI Five Stone Heirloom Oval (platinum)",
+  "category": "five-stone",
+  "source": {
+   "name": "VRAI",
+   "url": "https://www.vrai.com/engagement-rings/five-stone-ring/oval/platinum"
+  },
+  "priceUsd": 1725,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "lab-diamond",
+    "cut": "oval",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "five-stone",
+   "shank": "plain-round",
+   "metals": [
+    "platinum",
+    "yellow-gold-18k",
+    "white-gold-18k",
+    "rose-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "four baguette side stones: two 0.25 ct and two 0.10 ct, 0.70 ctw"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Starting price; 1.7 mm band. Baguettes graduate in size down each side. Lab-grown assumed because VRAI sells created diamonds (stated on its toi et moi page, not this one)."
+ },
+ {
+  "id": "r2-025",
+  "name": "Princess Diana's sapphire cluster engagement ring",
+  "category": "cluster",
+  "source": {
+   "name": "Wikipedia (Princess Diana's jewels article)",
+   "url": "https://en.wikipedia.org/wiki/Engagement_ring_of_Catherine,_Princess_of_Wales"
+  },
+  "priceUsd": null,
+  "kind": "famous",
+  "engagement": {
+   "stone": {
+    "material": "sapphire",
+    "cut": "oval",
+    "carat": 12,
+    "colorName": "blue",
+    "clarity": null
+   },
+   "head": "cluster",
+   "shank": null,
+   "metals": [
+    "white-gold-18k"
+   ],
+   "finish": null,
+   "accents": [
+    "14 diamonds around the sapphire"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Garrard, 1981, said to echo Queen Victoria's 1840 brooch. Note: the URL I fetched (a redirect target for Kate's ring article) displayed Diana's jewellery table, so check the citation."
+ },
+ {
+  "id": "r2-026",
+  "name": "Jackie Kennedy toi et moi (Van Cleef & Arpels, 1953)",
+  "category": "toi-et-moi",
+  "source": {
+   "name": "Marie Claire Australia",
+   "url": "https://www.marieclaire.com.au/latest-news/jackie-kennedy-onassis-engagement-ring-true-story-van-cleef-arpels/"
+  },
+  "priceUsd": null,
+  "kind": "famous",
+  "engagement": {
+   "stone": {
+    "material": "emerald",
+    "cut": "emerald-cut",
+    "carat": 2.84,
+    "colorName": "green",
+    "clarity": null
+   },
+   "head": "toi-et-moi",
+   "shank": null,
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "second stone diamond 2.88 ct",
+    "baguette diamonds flank the pair (per other outlets)"
+   ],
+   "orientation": "east-west"
+  },
+  "band": null,
+  "notes": "Emerald 2.84 ct beside diamond 2.88 ct. Cut, platinum and baguettes come from other search-result outlets, not the cited page; reset in 1962 per the Kennedy Library, which added round and marquise diamonds."
+ },
+ {
+  "id": "r2-027",
+  "name": "Meghan Markle three-stone ring (Cleave & Company)",
+  "category": "three-stone",
+  "source": {
+   "name": "Rapaport",
+   "url": "https://rapaport.com/news/what-we-know-about-meghan-markles-ring/"
+  },
+  "priceUsd": null,
+  "kind": "famous",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "cushion",
+    "carat": 2.5,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "three-stone",
+   "shank": "plain-round",
+   "metals": [
+    "yellow-gold-18k"
+   ],
+   "finish": null,
+   "accents": [
+    "two side diamonds from Diana's collection",
+    "pave diamond band added 2018-19 (per search results)"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Botswana centre, about 2.5 ct is a media estimate. Cushion cut and 18k are not in the cited page (other outlets say cushion); the original band was yellow gold, karat unconfirmed."
+ },
+ {
+  "id": "r2-028",
+  "name": "Tiffany Soleste round halo, resale (1.08 ct centre, platinum)",
+  "category": "halo",
+  "source": {
+   "name": "Reach.dog / The Diamond Oak (resale)",
+   "url": "https://reach.dog/shop/the-diamond-oak/products/tiffany-co-platinum-oval-soleste-diamond-engagement-ring-1-48cts-tw-gvvs2"
+  },
+  "priceUsd": 12500,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 1.08,
+    "colorName": "G",
+    "clarity": "VVS2"
+   },
+   "head": "halo-round",
+   "shank": "pave",
+   "metals": [
+    "platinum"
+   ],
+   "finish": null,
+   "accents": [
+    "1.48 ct total weight"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Taken from a search-result summary; the page now returns HTTP 410, and the URL says oval while the summary says round. Halo outline and shank not verified; pave shank is an assumption."
+ },
+ {
+  "id": "r2-029",
+  "name": "Lunette Curved Band (1/10 ct tw, platinum)",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Lunette-Diamond-Ring-Platinum-BE2D062"
+  },
+  "priceUsd": null,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "shared-prong",
+   "metals": [
+    "platinum"
+   ],
+   "stones": "melee",
+   "widthMm": 1.5,
+   "tune": {
+    "fit": "contour",
+    "params": {
+     "coverage": "half",
+     "stoneSize": 1.4
+    }
+   }
+  },
+  "notes": "Curved band with six round diamonds and a centre pear in shared prongs; no price as the page says it is no longer available. Curved profile approximated by shared-prong band with contour fit."
+ },
+ {
+  "id": "r2-030",
+  "name": "Yvette Curved Band (1/6 ct tw, platinum)",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/en-gb/Yvette-Diamond-Ring-Platinum-BE2D7158"
+  },
+  "priceUsd": 1590,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "shared-prong",
+   "metals": [
+    "platinum"
+   ],
+   "stones": "melee",
+   "widthMm": 1.5,
+   "tune": {
+    "fit": "contour",
+    "params": {
+     "coverage": "half",
+     "stoneSize": 1.4
+    }
+   }
+  },
+  "notes": "Four marquise and three round diamonds, prong set, in a curved profile; the marquise points echo a marquise or pear engagement ring. Price from the UK-path page, shown in USD. Curved profile approximated by shared-prong band with contour fit."
+ },
+ {
+  "id": "r2-031",
+  "name": "Chamise Contoured Band (18K yellow gold)",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Chamise-Contoured-Diamond-Ring-Gold-BE2AS10PD10/"
+  },
+  "priceUsd": null,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "shared-prong",
+   "metals": [
+    "yellow-gold-18k"
+   ],
+   "stones": "melee",
+   "widthMm": 1.7,
+   "tune": {
+    "fit": "contour",
+    "params": {
+     "coverage": "half",
+     "stoneSize": 1.4
+    }
+   }
+  },
+  "notes": "Shared-prong round diamonds (min 0.11 ct tw) on a band cut to sit flush with the Chamise engagement ring; shared-prong is also a fit. Unavailable, so no price. Curved profile approximated by shared-prong band with contour fit."
+ },
+ {
+  "id": "r2-032",
+  "name": "Micropavé Diamond Large Band (Harry Winston)",
+  "category": "band",
+  "source": {
+   "name": "Harry Winston",
+   "url": "https://www.harrywinston.com/en/products/classic-diamond-bands-by-harry-winston/micropave-diamond-large-wedding-band-wbdprdlrgmic"
+  },
+  "priceUsd": 8300,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "pave-band",
+   "metals": [
+    "platinum"
+   ],
+   "stones": "melee",
+   "widthMm": null
+  },
+  "notes": "37 round brilliants, about 0.61 ct total, in micropave; price is size-dependent."
+ },
+ {
+  "id": "r2-033",
+  "name": "Marseille Half Coverage Band (1/3 ct tw, 18K white gold)",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Marseille-Half-Coverage-Diamond-Ring-(1/3-ct.-tw.)-White-Gold-BE2D2110/"
+  },
+  "priceUsd": 1690,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "half-eternity",
+   "metals": [
+    "white-gold-18k"
+   ],
+   "stones": "melee",
+   "widthMm": 2
+  },
+  "notes": "Eleven shared-prong round diamonds on the top half, marketed as a stacker; the half-eternity id is the nearest fit."
+ }
 ]
