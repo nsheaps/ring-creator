@@ -1,0 +1,6 @@
+node_modules
+dist
+bun.lock
+data/research
+docs/research
+public/screenshots

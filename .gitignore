@@ -1,0 +1,9 @@
+node_modules
+dist
+.claude/tmp
+.claude/settings.local.json
+test-results
+playwright-report
+.DS_Store
+public/screenshots
+*.log

@@ -1,0 +1,39 @@
+[tools]
+node = "22"
+bun = "1.4.4"
+
+[tasks.install]
+description = "Install dependencies from the lockfile"
+run = "bun install --frozen-lockfile"
+
+[tasks.dev]
+description = "Dev server"
+run = "bun run dev"
+
+[tasks.lint]
+description = "ESLint + Prettier check"
+run = ["bun run lint", "bun run format:check"]
+
+[tasks.typecheck]
+description = "tsc --noEmit"
+run = "bun run typecheck"
+
+[tasks.test]
+description = "Unit tests (model validation, geometry sanity)"
+run = "bun run test"
+
+[tasks.validate]
+description = "Validate every component model and example ring"
+run = "bun run validate"
+
+[tasks.build]
+description = "Typecheck + production build"
+run = "bun run build"
+
+[tasks.screenshots]
+description = "Capture docs screenshots (component pictures) with Playwright against a production build"
+run = "bun run screenshots"
+
+[tasks.check]
+description = "Full local gate (what CI runs)"
+depends = ["lint", "typecheck", "test", "validate", "build"]

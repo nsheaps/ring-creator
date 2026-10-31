@@ -1,0 +1,968 @@
+[
+ {
+  "id": "r1-001",
+  "name": "Classic Six-Prong Solitaire in Platinum (1.9mm)",
+  "category": "solitaire",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/engagement-rings/design-your-own-ring/classic-six-prong-solitaire-engagement-ring-in-platinum-item-194157"
+  },
+  "priceUsd": 1355,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "solitaire-6-prong",
+   "shank": "plain-round",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price (no centre stone). Slender 1.9mm band with a six-prong head; shank profile not stated on page, plain-round is the nearest id."
+ },
+ {
+  "id": "r1-002",
+  "name": "Petite Nouveau Six-Prong Solitaire in Platinum (1.8mm)",
+  "category": "solitaire",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/engagement-rings/design-your-own-ring/petite-nouveau-six-prong-solitaire-engagement-ring-in-platinum-item-194356"
+  },
+  "priceUsd": 1510,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "solitaire-6-prong",
+   "shank": "dainty",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price. Finer 1.8mm band than the classic six-prong; shank id 'dainty' is inferred from width."
+ },
+ {
+  "id": "r1-003",
+  "name": "Six-Prong Low Dome Comfort Fit Solitaire in Platinum (2mm)",
+  "category": "solitaire",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/nz/build-your-own-ring/low-dome-comfort-fit-solitaire-platinum-engagement-ring_60541"
+  },
+  "priceUsd": 1315,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "solitaire-6-prong",
+   "shank": "plain-round",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price. Six prongs on a 2mm low-dome comfort-fit band; shank id is the nearest match."
+ },
+ {
+  "id": "r1-004",
+  "name": "Bezel Solitaire in 18K Yellow Gold (2.5mm)",
+  "category": "bezel",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/engagement-rings/design-your-own-ring/bezel-solitaire-engagement-ring-in-18k-yellow-gold-item-296646"
+  },
+  "priceUsd": 1620,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "bezel-full",
+   "shank": "plain-round",
+   "metals": [
+    "yellow-gold-18k"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price. Page does not state full vs half bezel; bezel-full assumed from the name. Accepts round, princess and cushion among others."
+ },
+ {
+  "id": "r1-005",
+  "name": "Secret Halo 1.5mm Diamond Ring in Platinum",
+  "category": "hidden-halo",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Secret-Halo-1.5mm-Diamond-Ring-Platinum-BE1D13065-6495639/"
+  },
+  "priceUsd": 1390,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "hidden-halo",
+   "shank": "pave",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [
+    "hidden halo of melee under the head (page does not give count)"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price. Claw prongs, 1.5mm width; page does not state the shank, pave is an unverified guess from the 'Diamond Ring' name. Centre shapes include Old Mine."
+ },
+ {
+  "id": "r1-006",
+  "name": "Gala Diamond Ring in 14K White Gold",
+  "category": "hidden-halo",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Gala-Diamond-Ring-14K-White-Gold-BE1D6362P-76788400/"
+  },
+  "priceUsd": 1690,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "hidden-halo",
+   "shank": "pave",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": "polished",
+   "accents": [
+    "68 round accents (0.39 ct tw) under the gallery",
+    "scalloped pave shank"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price. Claw prongs with a raised gallery wire and a 1.4mm scalloped pave shank; also offered in 18K, rose, yellow and platinum."
+ },
+ {
+  "id": "r1-007",
+  "name": "Freesia Hidden Halo Diamond Ring in 14K Rose Gold",
+  "category": "hidden-halo",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Freesia-Hidden-Halo-Diamond-Ring-Rose-Gold-BE1D3939-19424931/?is_tab=1"
+  },
+  "priceUsd": 1190,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "hidden-halo",
+   "shank": "tapered",
+   "metals": [
+    "rose-gold-14k"
+   ],
+   "finish": "polished",
+   "accents": [
+    "14 shared-prong round accents in hidden halo"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Setting-only price. Band tapers from 2mm at centre to 1.3mm; deep band depth for stacking."
+ },
+ {
+  "id": "r1-008",
+  "name": "The Tiffany Setting Engagement Ring (platinum)",
+  "category": "solitaire",
+  "source": {
+   "name": "Tiffany & Co.",
+   "url": "https://www.tiffany.com/engagement/shop/engagement-rings/platinum/price-2000-5000"
+  },
+  "priceUsd": 1650,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "solitaire-6-prong",
+   "shank": "plain-round",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Price is 'from $1,650' on Tiffany's platinum listing page, carat not shown. The six-claw raised head dates to 1886 per Wikipedia. Shank id is the nearest match."
+ },
+ {
+  "id": "r1-009",
+  "name": "Tiffany Setting 1.01 ct H VS2 (estate listing)",
+  "category": "solitaire",
+  "source": {
+   "name": "1stDibs",
+   "url": "https://www.1stdibs.com/jewelry/rings/engagement-rings/tiffany-co-tiffany-setting-round-diamond-101-cts-h-vs2-engagement-ring-plat/id-j_23887302"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 1.01,
+    "colorName": "H",
+    "clarity": "VS2"
+   },
+   "head": "solitaire-6-prong",
+   "shank": "plain-round",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Pre-owned Tiffany Setting in PT950; listing shows only an estimated retail of $16,500 and no asking price. Head/shank ids taken from the Tiffany Setting design, not the listing."
+ },
+ {
+  "id": "r1-010",
+  "name": "Tiffany Novo 0.91 ct Round Brilliant",
+  "category": "solitaire",
+  "source": {
+   "name": "Mygemma",
+   "url": "https://mygemma.com/products/z156065-tiffany-and-co-0-91-ct-round-brilliant-diamond-novo-engagement-ring"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 0.91,
+    "colorName": "G",
+    "clarity": "VVS2"
+   },
+   "head": "solitaire-4-prong",
+   "shank": "pave",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [
+    "0.16 ct pave side stones lined along the band"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Four-prong head on a pave-lined band, 1.07 ctw total. Listing sold out; only estimated retail ($15,800) shown."
+ },
+ {
+  "id": "r1-011",
+  "name": "Cartier 1895 Solitaire 1.21 ct",
+  "category": "solitaire",
+  "source": {
+   "name": "1stDibs",
+   "url": "https://www.1stdibs.com/jewelry/rings/engagement-rings/cartier-121-carat-solitaire-1895-engagement-ring/id-j_14667732/"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 1.21,
+    "colorName": "F",
+    "clarity": "VVS1"
+   },
+   "head": "solitaire-4-prong",
+   "shank": "plain-round",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Pre-owned Cartier 1895 in platinum; listing gives no head detail, four-prong is from other 1895 listings seen in search results. No asking price on the page."
+ },
+ {
+  "id": "r1-012",
+  "name": "Harry Winston Solitaire Emerald-Cut Engagement Ring",
+  "category": "solitaire",
+  "source": {
+   "name": "Harry Winston",
+   "url": "https://www.harrywinston.com/en/solitaire-emerald-cut-engagement-ring"
+  },
+  "priceUsd": 15600,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "emerald-cut",
+    "carat": 1.0,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "solitaire-4-prong",
+   "shank": "tapered",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Price is 'from $15,600' and carat is the 1.00 ct minimum (includes the diamond). Page says simple solitaire on a tapered platinum band; four-prong head is an inference."
+ },
+ {
+  "id": "r1-013",
+  "name": "Art Deco 0.31 ct Old European Cut, Platinum",
+  "category": "art-deco",
+  "source": {
+   "name": "Filigree Jewelers",
+   "url": "https://filigreejewelers.com/products/antique-engagement-ring-art-deco-31-old-european-cut-diamond-platinum"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 0.31,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "vintage-filigree",
+   "shank": "vintage-filigree",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "milgrain",
+   "accents": [
+    "ten smaller diamonds, 0.22 ct total",
+    "geometric repeating shoulders"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown."
+ },
+ {
+  "id": "r1-014",
+  "name": "Art Deco 0.72 ct Old European Cut Low-Set Solitaire",
+  "category": "art-deco",
+  "source": {
+   "name": "Filigree Jewelers",
+   "url": "https://filigreejewelers.com/products/antique-engagement-ring-art-deco-70-old-european-cut-diamond-platinum"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 0.72,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "vintage-filigree",
+   "shank": "vintage-filigree",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "milgrain",
+   "accents": [
+    "filigree and milgrain shoulders"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Low-set solitaire with open filigree shoulders into a fine half-round shank. Title says .70, text says .72; I used .72. Sold; no price."
+ },
+ {
+  "id": "r1-015",
+  "name": "Art Deco c.1930 1.55 ct Old European Cut Filigree",
+  "category": "art-deco",
+  "source": {
+   "name": "1stDibs",
+   "url": "https://www.1stdibs.com/jewelry/rings/engagement-rings/art-deco-155-carat-old-european-cut-diamond-milgrain-filigree-platinum-ring/id-j_20433182"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 1.55,
+    "colorName": "L",
+    "clarity": "SI2"
+   },
+   "head": "vintage-filigree",
+   "shank": "plain-round",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "milgrain",
+   "accents": [
+    "98 round side diamonds",
+    "long vertical filigree frame"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Tall elongated filigree frame with milgrain; dome shank per listing. Price not on page."
+ },
+ {
+  "id": "r1-016",
+  "name": "Late Art Deco c.1935 1.75 ct Old European Cut",
+  "category": "art-deco",
+  "source": {
+   "name": "Wilson's Estate Jewelry",
+   "url": "https://au.wilsonsestatejewelry.com/products/late-art-deco-1-83-ctw-old-european-cut-diamond-platinum-milgrain-engagement-ring"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 1.75,
+    "colorName": "I",
+    "clarity": "SI2"
+   },
+   "head": "split-prong",
+   "shank": "cathedral",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "milgrain",
+   "accents": [
+    "single-cut side diamonds about 0.08 ct",
+    "grooved shank"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Split-prong wire basket with milgrain surround and cathedral shoulders. 1.83 ctw. Sold out; no price."
+ },
+ {
+  "id": "r1-017",
+  "name": "Art Deco 'Diamond Within a Diamond' c.1920",
+  "category": "art-deco",
+  "source": {
+   "name": "Erstwhile Jewelry",
+   "url": "https://erstwhilejewelry.com/collections/archive/products/diamond-within-a-diamond-art-deco-engagement-ring"
+  },
+  "priceUsd": 15700,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "vintage-filigree",
+   "shank": "vintage-filigree",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "milgrain",
+   "accents": [
+    "hand-carved filigree acanthus leaf shoulders"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Platinum c.1920 with a diamond-shaped surround and acanthus-leaf shoulders. Listing shows sold at $15,700; carat not given."
+ },
+ {
+  "id": "r1-018",
+  "name": "Art Deco c.1920 0.51 ct Old European Cut Hexagonal Head",
+  "category": "art-deco",
+  "source": {
+   "name": "Gem Set Love",
+   "url": "https://gemsetlove.com/products/dazzling-51ct-old-european-cut-diamond-deco-solitaire"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 0.51,
+    "colorName": "J",
+    "clarity": "VS"
+   },
+   "head": "basket",
+   "shank": "plain-round",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "finish": "polished",
+   "accents": [
+    "multi-layered hexagonal head, 8.1mm"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "14k yellow gold solitaire with a stepped hexagonal head and 1.3mm shank. Vocabulary has no hexagonal head, basket is nearest. Sold out; no price."
+ },
+ {
+  "id": "r1-019",
+  "name": "Victorian c.1880 1.70 ct Old Mine Cluster, Rose Gold and Silver",
+  "category": "victorian",
+  "source": {
+   "name": "1stDibs",
+   "url": "https://www.1stdibs.com/jewelry/rings/engagement-rings/victorian-gia-170-carats-old-mine-cut-diamond-18-karat-rose-gold-silver-ring/id-j_18483542"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 1.7,
+    "colorName": "O-P",
+    "clarity": "VS2"
+   },
+   "head": "cluster",
+   "shank": "plain-round",
+   "metals": [
+    "rose-gold-18k",
+    "sterling-silver"
+   ],
+   "finish": "polished",
+   "accents": [
+    "six old mine accent diamonds, about 0.80 ct total"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "GIA-graded old mine centre with six old mine accents in silver-topped 18k rose gold. Cut id is old-european because there is no old-mine id. Price not shown."
+ },
+ {
+  "id": "r1-020",
+  "name": "Victorian c.1880 2.28 ct Old Mine Bezel, Rose Gold and Silver",
+  "category": "victorian",
+  "source": {
+   "name": "1stDibs",
+   "url": "https://www.1stdibs.com/jewelry/rings/engagement-rings/victorian-228-carats-old-mine-cut-diamond-14k-rose-gold-silver-bezel-set-ring/id-j_18630772"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 2.28,
+    "colorName": "J",
+    "clarity": "VS1"
+   },
+   "head": "bezel-full",
+   "shank": "plain-round",
+   "metals": [
+    "rose-gold-14k",
+    "sterling-silver"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "GIA-graded J/VS1 old mine stone in a silver-topped 14k rose gold bezel. Cut id is nearest match. Price not shown."
+ },
+ {
+  "id": "r1-021",
+  "name": "Georgian c.1800s 1.70 ct Old Mine with Rose-Cut Halo, Silver-Topped Gold",
+  "category": "georgian",
+  "source": {
+   "name": "Wilson's Estate Jewelry",
+   "url": "https://www.wilsonsestatejewelry.com/en-de/products/georgian-2-00-ctw-diamond-silver-topped-14-karat-gold-engagement-ring-circa-1800s"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 1.7,
+    "colorName": "P",
+    "clarity": "VS"
+   },
+   "head": "halo-round",
+   "shank": "vintage-filigree",
+   "metals": [
+    "yellow-gold-14k",
+    "sterling-silver"
+   ],
+   "finish": "engraved",
+   "accents": [
+    "rose-cut diamond halo about 0.30 ct",
+    "scrolled engraving"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Tapered hexagonal mounting with a rose-cut halo, ridged shank and scroll engraving. Gold colour not stated (yellow assumed); head id approximates the hexagonal halo. Sold out."
+ },
+ {
+  "id": "r1-022",
+  "name": "Victorian c.1900 1.00 ct Old Mine Cushion Solitaire, 18k Rose Gold",
+  "category": "victorian",
+  "source": {
+   "name": "Erstwhile Jewelry",
+   "url": "https://erstwhilejewelry.com/products/victorian-1-00-carat-old-mine-cushion-diamond-antique-engagement-ring"
+  },
+  "priceUsd": 7000,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 1.0,
+    "colorName": "G",
+    "clarity": "SI2"
+   },
+   "head": "basket",
+   "shank": "plain-round",
+   "metals": [
+    "rose-gold-18k"
+   ],
+   "finish": "polished",
+   "accents": [],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "GIA-reported old mine cushion in a handmade 18k rose gold setting, 2.02mm band. Head id is a guess (page does not describe it). Listing shows sold at $7,000."
+ },
+ {
+  "id": "r1-023",
+  "name": "Mid-Century c.1950s 2.31 ctw Old European Cut Crown Solitaire",
+  "category": "mid-century",
+  "source": {
+   "name": "Wilson's Estate Jewelry",
+   "url": "https://wilsonsestatejewelry.com/en-de/products/mid-century-2-31-ctw-old-european-cut-diamond-platinum-vintage-crown-solitaire-engagement-ring-gia"
+  },
+  "priceUsd": null,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 2.31,
+    "colorName": "Q-R",
+    "clarity": "VS2"
+   },
+   "head": "split-prong",
+   "shank": "cathedral",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [
+    "pierced diamond motifs on shoulders"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Crown-like basket with tri-split talon prongs and pierced geometric cathedral shoulders. Sold out; no price."
+ },
+ {
+  "id": "r1-024",
+  "name": "Vintage 1950s 0.17 ct Old European Cut Two-Tone Solitaire",
+  "category": "mid-century",
+  "source": {
+   "name": "Antique Jewelry Mall",
+   "url": "https://www.antiquejewelrymall.com/products/r844"
+  },
+  "priceUsd": 1280,
+  "kind": "engagement",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "old-european",
+    "carat": 0.17,
+    "colorName": "F-G",
+    "clarity": "VS"
+   },
+   "head": "solitaire-4-prong",
+   "shank": "tapered",
+   "metals": [
+    "white-gold-14k",
+    "yellow-gold-14k"
+   ],
+   "finish": "polished",
+   "accents": [
+    "white gold illusion box head, yellow gold shank"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Small illusion-style white gold head, 5.7mm wide, on a yellow gold shank tapering 2.4mm to 1.5mm. Mixed-tone is the distinctive trait."
+ },
+ {
+  "id": "r1-025",
+  "name": "Elizabeth Taylor Diamond (Krupp), 33.19 ct Asscher",
+  "category": "famous",
+  "source": {
+   "name": "Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Krupp_Diamond"
+  },
+  "priceUsd": null,
+  "kind": "famous",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "asscher",
+    "carat": 33.19,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": null,
+   "shank": null,
+   "metals": [],
+   "finish": "polished",
+   "accents": [
+    "sold at Christie's 2011 for $8,818,500"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Taylor wore it as a ring; the page gives no metal, head or shank, so those are left empty. Sale price is the 2011 auction result, not a retail price."
+ },
+ {
+  "id": "r1-026",
+  "name": "Grace Kelly's Cartier Engagement Ring, c.1955",
+  "category": "famous",
+  "source": {
+   "name": "Vrai Journal",
+   "url": "https://www.vrai.com/journal/post/grace-kellys-engagement-rings"
+  },
+  "priceUsd": null,
+  "kind": "famous",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "emerald-cut",
+    "carat": 10.48,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "three-stone",
+   "shank": "plain-flat",
+   "metals": [
+    "platinum"
+   ],
+   "finish": "polished",
+   "accents": [
+    "bezel-set baguette side stones"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Emerald-cut centre between baguettes on a platinum band. The source gives both 10.48 and 10.38 ct; shank id is a guess."
+ },
+ {
+  "id": "r1-027",
+  "name": "Diana / Kate Middleton Sapphire Ring (Garrard)",
+  "category": "famous",
+  "source": {
+   "name": "Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Engagement_ring_of_Catherine,_Princess_of_Wales"
+  },
+  "priceUsd": null,
+  "kind": "famous",
+  "engagement": {
+   "stone": {
+    "material": "sapphire",
+    "cut": "oval",
+    "carat": 12.0,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-oval",
+   "shank": "plain-round",
+   "metals": [
+    "white-gold-18k"
+   ],
+   "finish": "polished",
+   "accents": [
+    "14 surrounding diamonds"
+   ],
+   "orientation": "north-south"
+  },
+  "band": null,
+  "notes": "Oval Ceylon sapphire framed by 14 diamonds in 18k white gold, designed by Garrard. Sources vary on weight (12 to 18 ct); shank id is a guess."
+ },
+ {
+  "id": "r1-028",
+  "name": "Jackie Kennedy's Van Cleef & Arpels Toi et Moi (1953)",
+  "category": "famous",
+  "source": {
+   "name": "AOL (People syndication)",
+   "url": "https://www.aol.com/lifestyle/jackie-kennedys-toi-et-moi-143000534.html"
+  },
+  "priceUsd": null,
+  "kind": "famous",
+  "engagement": {
+   "stone": {
+    "material": "emerald",
+    "cut": "emerald-cut",
+    "carat": 2.84,
+    "colorName": "emerald green",
+    "clarity": null
+   },
+   "head": "toi-et-moi",
+   "shank": "channel",
+   "metals": [],
+   "finish": "polished",
+   "accents": [
+    "2.88 ct emerald-cut diamond as second stone",
+    "baguette emeralds and diamonds on the band"
+   ],
+   "orientation": "east-west"
+  },
+  "band": null,
+  "notes": "Emerald and diamond side by side. Only seen in search results, not opened; figures from a search summary. Metal unknown."
+ },
+ {
+  "id": "r1-029",
+  "name": "4.0mm Milgrain Band, Platinum",
+  "category": "band",
+  "source": {
+   "name": "Vrai",
+   "url": "https://www.vrai.com/wedding-band/milgrain-band/platinum-42533981061213"
+  },
+  "priceUsd": 1495,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "milgrain-band",
+   "metals": [
+    "platinum"
+   ],
+   "stones": "none",
+   "widthMm": 4.0
+  },
+  "notes": "Plain band with beaded milgrain edges; also offered in 18k yellow, 18k white and 14k rose gold."
+ },
+ {
+  "id": "r1-030",
+  "name": "Milgrain Comfort Fit Wedding Ring, Platinum 2.5mm",
+  "category": "band",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/milgrain-comfort-fit-ring-platinum-2-5mm_6287"
+  },
+  "priceUsd": null,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "milgrain-band",
+   "metals": [
+    "platinum"
+   ],
+   "stones": "none",
+   "widthMm": 2.5
+  },
+  "notes": "Slightly domed centre with milgrain edges and rounded inside. Page says sold out so no price."
+ },
+ {
+  "id": "r1-031",
+  "name": "Tiffany Forever 3mm Band, Platinum",
+  "category": "band",
+  "source": {
+   "name": "Mygemma",
+   "url": "https://mygemma.com/products/121459-tiffany-and-co-tiffany-forever-3-mm-wedding-band-in-platinum"
+  },
+  "priceUsd": null,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "plain-comfort",
+   "metals": [
+    "platinum"
+   ],
+   "stones": "none",
+   "widthMm": 3.0
+  },
+  "notes": "Pre-owned PT950 plain band; listing gives an estimated retail of $1,390 but no sale price. Style id is nearest match."
+ },
+ {
+  "id": "r1-032",
+  "name": "Tiffany Together 4mm Double Milgrain Band, Platinum",
+  "category": "band",
+  "source": {
+   "name": "1stDibs",
+   "url": "https://www.1stdibs.com/jewelry/rings/wedding-rings/tiffany-co-together-platinum-4mm-double-milgrain-band-wedding-ring/id-j_24178302"
+  },
+  "priceUsd": 2100,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "milgrain-band",
+   "metals": [
+    "platinum"
+   ],
+   "stones": "none",
+   "widthMm": 4.0
+  },
+  "notes": "Two rows of milgrain beading along the edges. $2,100 is the retail price shown on a pre-owned listing."
+ }
+]
