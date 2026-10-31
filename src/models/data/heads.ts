@@ -1,4 +1,5 @@
 import type { Control, HeadModel, Params } from '../types';
+import { cuts } from './cuts';
 
 // ---------- shared controls ----------
 const prongCount = (min: number, max: number): Control => ({
@@ -86,7 +87,7 @@ const haloControls: Control[] = [
     max: 1.5,
     step: 0.05,
     unit: 'mm',
-    help: 'Space between the centre stone and the halo.',
+    help: 'Space between the centre girdle and the halo melee (0 = touching).',
   },
   {
     type: 'number',
@@ -107,17 +108,17 @@ const haloControls: Control[] = [
     max: 1.5,
     step: 0.05,
     unit: 'mm',
-    help: 'How far the halo sits below the centre girdle.',
+    help: 'How far the melee tables sit below the centre girdle.',
   },
   prongStyle,
   prongWidth,
 ];
 const haloDefaults = (shape: string): Params => ({
   haloShape: shape,
-  haloGap: 0.25,
+  haloGap: 0.08,
   meleeSize: 0,
-  meleeSpacing: 0.12,
-  haloDrop: 0.3,
+  meleeSpacing: 0.06,
+  haloDrop: 0.1,
   prongStyle: 'round',
   prongWidth: 0,
 });
@@ -159,6 +160,19 @@ const sideControls = (five: boolean): Control[] => [
   prongStyle,
   prongWidth,
 ];
+
+/** Cut of the second stone of a pair, read from the cut registry. */
+const secondCut: Control = {
+  type: 'select',
+  key: 'secondCut',
+  label: 'Second stone cut',
+  options: [
+    { value: 'match', label: 'Match the centre' },
+    { value: 'accent', label: 'Accent stone cut' },
+    ...cuts.map((c) => ({ value: c.id, label: c.name })),
+  ],
+  help: 'Shape of the second stone, e.g. a pear beside an emerald cut. It keeps about the same face area as the centre (times the size ratio).',
+};
 
 const ALL = 'all' as const;
 
@@ -483,10 +497,10 @@ export const heads: HeadModel[] = [
     bestFor: ['Solitaire lovers who want a secret detail', 'Any cut'],
     related: ['halo-round', 'solitaire-4-prong', 'double-halo'],
     params: {
-      hiddenDepth: 0.3,
+      hiddenDepth: 0.15,
       tilt: 40,
       meleeSize: 0,
-      meleeSpacing: 0.1,
+      meleeSpacing: 0.06,
       prongStyle: 'round',
       prongWidth: 0,
     },
@@ -495,10 +509,10 @@ export const heads: HeadModel[] = [
         type: 'number',
         key: 'hiddenDepth',
         label: 'Depth below girdle',
-        min: 0.1,
+        min: 0,
         max: 0.6,
         step: 0.02,
-        help: 'Fraction of the pavilion depth.',
+        help: 'Extra drop below the girdle, as a fraction of the pavilion depth (0 = tucked right under it).',
       },
       { type: 'number', key: 'tilt', label: 'Melee tilt', min: 0, max: 75, step: 1, unit: 'deg' },
       {
@@ -542,10 +556,10 @@ export const heads: HeadModel[] = [
     cons: ['Highest melee upkeep', 'Wide face', 'Costs more'],
     bestFor: ['Statement rings', 'Smaller centres that need presence'],
     related: ['halo-round', 'halo-cushion', 'cluster'],
-    params: { ...haloDefaults('follow'), ringGap: 0.45 },
+    params: { ...haloDefaults('follow'), ringGap: 0.25 },
     controls: [
       ...haloControls,
-      { type: 'number', key: 'ringGap', label: 'Ring gap', min: 0.2, max: 1.5, step: 0.05, unit: 'mm' },
+      { type: 'number', key: 'ringGap', label: 'Ring gap', min: 0.1, max: 1.5, step: 0.05, unit: 'mm' },
     ],
     fitsCuts: ALL,
     extraStones: 'two pave halos (~50-80)',
@@ -560,7 +574,7 @@ export const heads: HeadModel[] = [
     builder: 'three-stone',
     summary: 'A centre stone flanked by two smaller stones: past, present and future.',
     description:
-      'The three-stone ring sets a smaller stone on each side of the centre along the band. The trio is often said to stand for past, present and future.\n\nSide stones add width and sparkle and let you mix shapes, such as pears or tapered baguettes beside a round, or coloured gems beside a diamond.\n\nAdjust the side-stone size and the gap to change the balance. Suits anyone who wants more presence than a solitaire with a meaningful story.',
+      'The three-stone ring sets a smaller stone on each side of the centre, lower on the shoulders and tilted to follow the curve of the finger, each in its own prongs. The trio is often said to stand for past, present and future.\n\nSide stones add width and sparkle and let you mix shapes, such as pears or tapered baguettes beside a round, or coloured gems beside a diamond.\n\nAdjust the side-stone size and the gap to change the balance. Suits anyone who wants more presence than a solitaire with a meaningful story.',
     tags: ['three-stone', 'side-stones', 'symbolic', 'classic'],
     pros: ['Meaningful symbolism', 'More sparkle and width', 'Mix shapes and colours'],
     cons: ['Wider head', 'More prongs to maintain'],
@@ -568,7 +582,7 @@ export const heads: HeadModel[] = [
     related: ['five-stone', 'toi-et-moi', 'cluster'],
     params: {
       sideRatio: 0.62,
-      sideGap: 0.35,
+      sideGap: 0.3,
       sideCut: 'accent',
       sideProngs: 4,
       prongStyle: 'round',
@@ -588,15 +602,15 @@ export const heads: HeadModel[] = [
     builder: 'five-stone',
     summary: 'A graduated row of five stones that tapers out from the centre.',
     description:
-      'A five-stone head lines up two graduated stones on each side of the centre along the band, each pair smaller than the last.\n\nThe tapered row is generous on the finger and has an Edwardian, heirloom feel, especially with old European cuts or coloured stones.\n\nUse the outer ratio to steepen or soften the taper. The row is wide, so the wedding band should be checked for fit.',
+      'A five-stone head lines up two graduated stones on each side of the centre, each pair smaller and lower than the last so the row follows the curve of the finger.\n\nThe tapered row is generous on the finger and has an Edwardian, heirloom feel, especially with old European cuts or coloured stones.\n\nUse the outer ratio to steepen or soften the taper. The row is wide, so the wedding band should be checked for fit.',
     tags: ['five-stone', 'side-stones', 'vintage', 'statement'],
     pros: ['Wide, generous look', 'Heirloom character', 'Lots of sparkle'],
     cons: ['Many prongs to check', 'Wide head can feel stiff'],
     bestFor: ['Anniversary rings', 'Vintage styles'],
     related: ['three-stone', 'cluster', 'toi-et-moi'],
     params: {
-      sideRatio: 0.6,
-      outerRatio: 0.72,
+      sideRatio: 0.55,
+      outerRatio: 0.78,
       sideGap: 0.3,
       sideCut: 'accent',
       sideProngs: 4,
@@ -625,9 +639,9 @@ export const heads: HeadModel[] = [
     related: ['halo-round', 'double-halo', 'five-stone'],
     params: {
       petalRatio: 0.42,
-      petalGap: 0.2,
-      petalDrop: 0.25,
-      petalSpacing: 0.15,
+      petalGap: 0.12,
+      petalDrop: 0.2,
+      petalSpacing: 0.08,
       prongStyle: 'claw',
       prongWidth: 0,
     },
@@ -820,20 +834,28 @@ export const heads: HeadModel[] = [
     builder: 'toi-et-moi',
     summary: 'Two stones side by side, "you and me", one slightly smaller.',
     description:
-      'Toi et moi, French for "you and me", pairs two stones side by side along the band. Napoleon gave Josephine one in 1796 and the style is back in fashion.\n\nHere the second stone is the same cut as the centre and a little smaller; mirror it to make pears or hearts face each other.\n\nMix materials for a personal touch, such as a diamond with a birthstone. Use placement offset to centre the pair on the finger.',
+      'Toi et moi, French for "you and me", pairs two stones side by side across the top of the finger, each in its own prongs on one shared gallery. Napoleon gave Josephine one in 1796 and the style is back in fashion.\n\nThe second stone can match the centre or take its own cut, such as a pear beside an emerald cut; it keeps about the same face area, scaled by the size ratio. Mirror it to make pears or hearts face each other. The pair is centred on the finger automatically.\n\nMix materials for a personal touch, such as a diamond with a birthstone.',
     tags: ['two-stone', 'romantic', 'trend', 'asymmetric'],
     pros: ['Romantic symbolism', 'Very personal', 'Distinctive asymmetry'],
-    cons: ['Off-centre unless offset', 'Two settings to maintain'],
+    cons: ['Wide across the finger', 'Two settings to maintain'],
     bestFor: ['Pear, oval and heart pairs', 'Mixing two gemstones'],
     related: ['bypass-head', 'three-stone', 'five-stone'],
-    params: { secondRatio: 0.85, secondGap: 0.4, mirrorSecond: true, prongStyle: 'claw', prongWidth: 0 },
+    params: {
+      secondCut: 'match',
+      secondRatio: 0.95,
+      secondGap: 0.35,
+      mirrorSecond: true,
+      prongStyle: 'claw',
+      prongWidth: 0,
+    },
     controls: [
+      secondCut,
       {
         type: 'number',
         key: 'secondRatio',
         label: 'Second stone size',
         min: 0.4,
-        max: 1,
+        max: 1.2,
         step: 0.01,
         help: 'Relative to the centre stone.',
       },
@@ -860,23 +882,33 @@ export const heads: HeadModel[] = [
     builder: 'bypass-head',
     summary: 'Two stones offset diagonally with sweeping wires that pass each other.',
     description:
-      'A bypass head sets the centre and a second stone on a diagonal, with two swooping wires that curve past each other around the pair.\n\nThe flowing lines give movement and a sense of embrace, a style popular in the 1940s and again today.\n\nUse the shift control to set how far the second stone slides across the band, and the second-stone size for balance. Suits romantic, free-flowing taste.',
+      'A bypass head sets the centre and a second stone on a diagonal, each in its own prongs, with two slim swooping wires that rise from the shank and curve past each other around the pair.\n\nThe flowing lines give movement and a sense of embrace, a style popular in the 1940s and again today.\n\nUse the shift control to set how far the second stone slides across the band, the second-stone cut and size for balance. The pair is centred on the finger automatically. Suits romantic, free-flowing taste.',
     tags: ['bypass', 'asymmetric', 'flowing', 'two-stone'],
     pros: ['Graceful movement', 'Distinctive asymmetry', 'Pairs two stones'],
     cons: ['Wider head', 'Band fit needs care'],
     bestFor: ['Romantic, flowing styles', 'Two-gem designs'],
     related: ['toi-et-moi', 'three-stone', 'tension'],
     params: {
-      secondRatio: 0.7,
-      secondGap: 0.2,
+      secondCut: 'match',
+      secondRatio: 0.8,
+      secondGap: 0.1,
       bypassShift: 0.35,
-      secondCut: 'accent',
-      swoopWidth: 1.4,
+      mirrorSecond: true,
+      swoopWidth: 0.9,
       prongStyle: 'round',
       prongWidth: 0,
     },
     controls: [
-      { type: 'number', key: 'secondRatio', label: 'Second stone size', min: 0.3, max: 1, step: 0.01 },
+      secondCut,
+      {
+        type: 'number',
+        key: 'secondRatio',
+        label: 'Second stone size',
+        min: 0.3,
+        max: 1.2,
+        step: 0.01,
+        help: 'Relative to the centre stone.',
+      },
       { type: 'number', key: 'secondGap', label: 'Gap', min: -1, max: 2, step: 0.05, unit: 'mm' },
       {
         type: 'number',
@@ -888,15 +920,21 @@ export const heads: HeadModel[] = [
         help: 'How far the second stone slides across the band.',
       },
       {
-        type: 'select',
-        key: 'secondCut',
-        label: 'Second stone cut',
-        options: [
-          { value: 'accent', label: 'Accent stone cut' },
-          { value: 'match', label: 'Match the centre' },
-        ],
+        type: 'toggle',
+        key: 'mirrorSecond',
+        label: 'Mirror second stone',
+        help: 'Turn it 180 degrees so shaped stones face each other.',
       },
-      { type: 'number', key: 'swoopWidth', label: 'Swoop wire', min: 0.6, max: 2.5, step: 0.05, unit: 'mm' },
+      {
+        type: 'number',
+        key: 'swoopWidth',
+        label: 'Swoop wire',
+        min: 0.5,
+        max: 2,
+        step: 0.05,
+        unit: 'mm',
+        help: 'Diameter of the two wires that sweep past the stones.',
+      },
       prongStyle,
       prongWidth,
     ],

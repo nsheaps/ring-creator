@@ -123,8 +123,9 @@ describe('head builders', () => {
             const m = stats(metal).box;
             expect(m.min.y).toBeLessThanOrEqual(-baseDrop + 0.15);
             if (MULTI.has(id))
-              // side stones follow the curve of the shank: they may wrap down it, but never past the ring's equator
-              expect(box.min.y).toBeGreaterThan(-baseDrop - (ctx.innerRadius + 1.8) * 0.75);
+              // side stones follow the curve of the shank: they may wrap down it (a pair of 12.8 mm east-west marquises
+              // reaches well down the shoulder), but never past the ring's equator
+              expect(box.min.y).toBeGreaterThan(-baseDrop - (ctx.innerRadius + 1.8) * 0.9);
             else
               expect(box.min.y).toBeGreaterThan(
                 -Math.max(baseDrop, ctx.center.built.pavilionDepth * 1.2) - 4,

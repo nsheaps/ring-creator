@@ -261,3 +261,257 @@ describe('realistic proportions (1 ct round, six prongs, raise 1.2 mm)', () => {
     expect(box.max.x).toBeGreaterThan(R);
   });
 });
+
+// ---------------------------------------------------------------------------------------------
+// Multi-stone and halo heads: every extra stone is seated, held and placed like a jeweller would
+// ---------------------------------------------------------------------------------------------
+
+/** Split a merged stone part into its separate stones (facets of one stone share exact vertex positions). */
+function stonesOf(parts: Part[]): THREE.Vector3[][] {
+  const pts: THREE.Vector3[] = [];
+  for (const p of parts) {
+    const pos = p.geometry.getAttribute('position');
+    for (let i = 0; i < pos.count; i++) pts.push(new THREE.Vector3().fromBufferAttribute(pos, i));
+  }
+  const parent = pts.map((_, i) => i);
+  const find = (i: number): number => {
+    while (parent[i] !== i) i = parent[i] = parent[parent[i]];
+    return i;
+  };
+  const join = (a: number, b: number) => {
+    parent[find(a)] = find(b);
+  };
+  const seen = new Map<string, number>();
+  pts.forEach((v, i) => {
+    if (i % 3) join(i, i - (i % 3));
+    const k = `${v.x.toFixed(4)},${v.y.toFixed(4)},${v.z.toFixed(4)}`;
+    const j = seen.get(k);
+    if (j === undefined) seen.set(k, i);
+    else join(i, j);
+  });
+  const groups = new Map<number, THREE.Vector3[]>();
+  pts.forEach((v, i) => {
+    const r = find(i);
+    const g = groups.get(r) ?? [];
+    g.push(v);
+    groups.set(r, g);
+  });
+  return [...groups.values()];
+}
+
+const centroid = (vs: THREE.Vector3[]) =>
+  vs.reduce((a, v) => a.add(v), new THREE.Vector3()).multiplyScalar(1 / vs.length);
+
+/** Angular bins (around the stone's own axis) in which head metal touches the stone near its girdle. */
+function gripBins(
+  stone: THREE.Vector3[],
+  metal: Tri[],
+  axis: THREE.Vector3,
+  c: THREE.Vector3,
+  bins = 12,
+): number {
+  const rad = (v: THREE.Vector3) => v.clone().sub(c).projectOnPlane(axis);
+  const rMax = Math.max(...stone.map((v) => rad(v).length()));
+  const ref = rad(stone.find((v) => rad(v).length() > rMax * 0.9) ?? stone[0]).normalize();
+  const ref2 = axis.clone().cross(ref);
+  const hitBins = new Set<number>();
+  for (const v of stone) {
+    const d = rad(v);
+    if (d.length() < rMax * 0.85) continue;
+    if (distTo(metal, v, 0.3) > 0.3) continue;
+    const a = Math.atan2(d.dot(ref2), d.dot(ref));
+    hitBins.add(Math.floor(((a + Math.PI) / (2 * Math.PI)) * bins) % bins);
+  }
+  return hitBins.size;
+}
+
+function ringDesign(head: string, cut: string, extra: Partial<Design['engagement']> = {}): Design {
+  const d = design(head, cut);
+  d.engagement.accentStone = { ...d.engagement.accentStone, cut: 'round-brilliant', sizeMm: 1.6 };
+  Object.assign(d.engagement, extra);
+  return d;
+}
+
+describe('side stones sit low on the shoulders, follow the curve and are held (ring frame)', () => {
+  const cases: [string, string, number][] = [
+    ['three-stone', 'round-brilliant', 2],
+    ['three-stone', 'oval', 2],
+    ['three-stone', 'emerald-cut', 2],
+    ['five-stone', 'round-brilliant', 4],
+    ['five-stone', 'oval', 4],
+  ];
+  for (const [head, cut, count] of cases) {
+    it(`${head} / ${cut}`, () => {
+      const { parts, seatY, girdleY } = engagementParts(ringDesign(head, cut));
+      const metal = trianglesOf(
+        parts.filter((p) => p.slot === 'head-metal'),
+        () => true,
+      );
+      const sides = stonesOf(parts.filter((p) => p.slot === 'accent-stone'));
+      expect(sides.length).toBe(count);
+      // sorted along the band; sizes graduate outward, mirrored left/right
+      sides.sort((a, b) => centroid(a).x - centroid(b).x);
+      for (const s of sides) {
+        const c = centroid(s);
+        const top = Math.max(...s.map((v) => v.y));
+        expect(top, 'side stone lower than the centre girdle').toBeLessThan(girdleY - 0.3);
+        // culet: the stone's point closest to the finger, just above the shank top
+        const culet = s.reduce((a, v) => (Math.hypot(v.x, v.y) < Math.hypot(a.x, a.y) ? v : a));
+        const clear = Math.hypot(culet.x, culet.y) - seatY;
+        expect(clear, 'culet near the shank top').toBeGreaterThan(0.05);
+        expect(clear, 'culet near the shank top').toBeLessThan(0.9);
+        // the stone's axis (culet to centroid) points away from the finger: it follows the curve
+        const axis = c.clone().sub(culet).normalize();
+        const radial = new THREE.Vector3(c.x, c.y, 0).normalize();
+        expect(axis.angleTo(radial), 'tilted to follow the finger').toBeLessThan(0.2);
+        // held by its own prongs on several sides
+        expect(gripBins(s, metal, axis, c), 'prongs around the side stone').toBeGreaterThanOrEqual(3);
+        // and its basket stands on the shank
+        const ang = Math.atan2(c.y, c.x);
+        const foot = radialMin(
+          parts.filter((p) => p.slot === 'head-metal'),
+          (v) => Math.abs(Math.atan2(v.y, v.x) - ang) < 0.1 && Math.abs(v.z) < 1,
+        );
+        expect(foot - seatY, 'side basket reaches the shank').toBeLessThan(0.06);
+      }
+      // left and right mirror each other, the outer pair is lower than the inner pair
+      const cs = sides.map(centroid);
+      expect(cs[0].x).toBeCloseTo(-cs[cs.length - 1].x, 1);
+      if (count === 4) expect(cs[0].y).toBeLessThan(cs[1].y - 0.3);
+    });
+  }
+});
+
+describe('pairs: both stones seated on the shank, centred on the finger', () => {
+  for (const [head, cut, second] of [
+    ['toi-et-moi', 'emerald-cut', 'pear'],
+    ['toi-et-moi', 'round-brilliant', 'match'],
+    ['toi-et-moi', 'oval', 'accent'],
+    ['bypass-head', 'oval', 'match'],
+    ['bypass-head', 'round-brilliant', 'pear'],
+  ] as const) {
+    it(`${head} / ${cut} + ${second}`, () => {
+      const d = ringDesign(head, cut);
+      d.engagement.head.params = { secondCut: second };
+      const { parts, seatY } = engagementParts(d);
+      const all = new THREE.Box3();
+      for (const p of parts.filter((q) => q.slot !== 'shank-metal')) {
+        p.geometry.computeBoundingBox();
+        if (p.geometry.boundingBox) all.union(p.geometry.boundingBox);
+      }
+      expect(Math.abs((all.min.x + all.max.x) / 2), 'pair centred on the finger').toBeLessThan(0.45);
+      const metal = trianglesOf(
+        parts.filter((p) => p.slot === 'head-metal'),
+        () => true,
+      );
+      const [centre] = stonesOf(parts.filter((p) => p.slot === 'center-stone'));
+      const seconds = stonesOf(parts.filter((p) => p.slot === 'accent-stone'));
+      expect(seconds.length).toBe(1);
+      const clearOf = (s: THREE.Vector3[]) => Math.min(...s.map((v) => Math.hypot(v.x, v.y))) - seatY;
+      const cc = clearOf(centre);
+      const sc = clearOf(seconds[0]);
+      expect(sc, 'second stone above the shank').toBeGreaterThan(0.1);
+      expect(Math.abs(sc - cc), 'both stones equally high over the shank').toBeLessThan(0.5);
+      const c = centroid(seconds[0]);
+      const culet = seconds[0].reduce((a, v) => (Math.hypot(v.x, v.y) < Math.hypot(a.x, a.y) ? v : a));
+      expect(
+        gripBins(seconds[0], metal, c.clone().sub(culet).normalize(), c),
+        'second stone held',
+      ).toBeGreaterThanOrEqual(3);
+      if (second === 'pear') {
+        // the second stone really is a pear: longer than wide
+        const box = new THREE.Box3().setFromPoints(seconds[0]);
+        const size = box.getSize(new THREE.Vector3());
+        expect(Math.max(size.x, size.z) / Math.min(size.x, size.z)).toBeGreaterThan(1.25);
+      }
+    });
+  }
+});
+
+describe('halos ring the centre stone (stone frame)', () => {
+  for (const head of ['halo-round', 'halo-cushion', 'halo-oval', 'double-halo']) {
+    for (const cut of ['round-brilliant', 'oval', 'pear', 'emerald-cut']) {
+      it(`${head} / ${cut}`, () => {
+        const { ctx, parts } = stoneFrame(head, cut);
+        const stone = ctx.center.built;
+        const o = cleanOutline(stone.outline);
+        const melee = stonesOf(parts.filter((p) => p.slot === 'accent-stone'));
+        const metal = trianglesOf(
+          parts.filter((p) => p.slot === 'head-metal'),
+          () => true,
+        );
+        expect(melee.length).toBeGreaterThanOrEqual(12);
+        const insets = melee.map((m) => Math.max(...m.map((v) => insetOf(o, v.x, v.z))));
+        // no melee cuts into the centre stone's outline...
+        expect(Math.max(...insets), 'melee outside the centre girdle').toBeLessThan(0.02);
+        // ...and the inner row touches it: a follow-the-stone halo all round, a shaped halo at its nearest points
+        const near = insets.filter((d) => d > -0.35).length;
+        // (a double halo's outer row is about 65% of its melee)
+        const share = head === 'double-halo' ? 0.35 : 1;
+        if (head === 'halo-round' || head === 'double-halo')
+          expect(near / melee.length, 'inner row touches the girdle').toBeGreaterThan(
+            (cut === 'round-brilliant' ? 0.9 : 0.4) * share,
+          );
+        else expect(near, 'halo touches the girdle somewhere').toBeGreaterThanOrEqual(2);
+        for (const m of melee) {
+          // tables about level with the centre girdle
+          const top = Math.max(...m.map((v) => v.y));
+          expect(top).toBeLessThan(0.15);
+          expect(top).toBeGreaterThan(-0.9);
+          // each melee sits in the halo plate
+          const culet = m.reduce((a, v) => (v.y < a.y ? v : a));
+          expect(distTo(metal, culet, 0.4), 'melee seated in the plate').toBeLessThan(0.4);
+        }
+        // the halo is joined to the seat: metal runs from the plate down to the shank seat
+        const low = Math.min(...metal.map((t) => t.box.min.y));
+        expect(low).toBeLessThan(-ctx.baseDrop + 0.15);
+      });
+    }
+  }
+
+  it('hidden halo tucks under the girdle, hugging the pavilion', () => {
+    for (const cut of ['round-brilliant', 'oval', 'cushion']) {
+      const { ctx, parts } = stoneFrame('hidden-halo', cut);
+      const stone = ctx.center.built;
+      const o = cleanOutline(stone.outline);
+      const melee = stonesOf(parts.filter((p) => p.slot === 'accent-stone'));
+      expect(melee.length).toBeGreaterThanOrEqual(8);
+      for (const m of melee) {
+        expect(Math.max(...m.map((v) => v.y)), 'below the girdle').toBeLessThan(-stone.girdleThickness * 0.5);
+        expect(Math.max(...m.map((v) => v.y)), 'right under the girdle').toBeGreaterThan(-1.2);
+        const c = centroid(m);
+        expect(insetOf(o, c.x, c.z), 'hugs the outline').toBeGreaterThan(-1.2);
+        // clear of the pavilion
+        for (const v of m) {
+          const s = stoneSurfaceY(stone, v.x, v.z, 'bottom');
+          if (s !== null) expect(v.y, 'melee outside the pavilion').toBeLessThan(s + 0.02);
+        }
+      }
+    }
+  });
+
+  it('cluster petals are equal, evenly spaced and touch the centre and each other', () => {
+    for (const cut of ['round-brilliant', 'oval', 'old-european']) {
+      const { ctx, parts } = stoneFrame('cluster', cut);
+      const o = cleanOutline(ctx.center.built.outline);
+      const petals = stonesOf(parts.filter((p) => p.slot === 'accent-stone'));
+      expect(petals.length).toBeGreaterThanOrEqual(6);
+      const cs = petals.map(centroid).sort((a, b) => Math.atan2(a.z, a.x) - Math.atan2(b.z, b.x));
+      const sizes = petals.map((m) => {
+        const b = new THREE.Box3().setFromPoints(m);
+        return b.max.y - b.min.y;
+      });
+      expect(Math.max(...sizes) - Math.min(...sizes), 'petals all the same').toBeLessThan(0.01);
+      const ys = cs.map((c) => c.y);
+      expect(Math.max(...ys) - Math.min(...ys), 'petals level').toBeLessThan(0.01);
+      // neighbours touch (or nearly): gaps between petal outlines stay small and even
+      const dists = cs.map((c, i) => c.distanceTo(cs[(i + 1) % cs.length]));
+      expect(Math.max(...dists) / Math.min(...dists), 'evenly spaced').toBeLessThan(1.35);
+      for (const m of petals) {
+        const inset = Math.max(...m.map((v) => insetOf(o, v.x, v.z)));
+        expect(inset, 'petal outside the centre').toBeLessThan(0.02);
+        expect(inset, 'petal touches the centre').toBeGreaterThan(-0.6);
+      }
+    }
+  });
+});

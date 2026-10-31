@@ -1,11 +1,18 @@
-/** Multi-stone heads: three-stone, five-stone, toi-et-moi and bypass. Extra stones sit along ctx.bandAxis. */
+/**
+ * Multi-stone heads: three-stone, five-stone, toi-et-moi and bypass.
+ *
+ * Extra stones sit along ctx.bandAxis ON THE CURVE OF THE FINGER: each one is placed on a circle concentric with the
+ * shank, tilted so its table follows the shoulder, with its culet just above the shank top and its own prong basket
+ * standing on the shank. Everything is built in the centre stone's frame (girdle plane y = 0).
+ */
 import * as THREE from 'three';
 import { registerHeadBuilder } from '../builders';
 import type { BuiltStone, HeadCtx, Part } from '../types';
 import type { StoneDims } from '@/models/stoneMath';
+import type { CutModel } from '@/models/types';
+import { findModel, getModel } from '@/models/registry';
 import {
   PRONG_STYLES,
-  accentDims,
   autoWireMm,
   accentPart,
   bool,
@@ -15,168 +22,335 @@ import {
   placeMatrix,
   prongSet,
   ringDrop,
+  shankTopRadius,
   str,
   support,
   transformAll,
   v3,
   wire,
-  type CleanOutline,
+  type ProngStyle,
 } from './common';
 import { prongOpts } from './prongHeads';
 
-/** Support of a placed stone's outline along a world (x,z) direction. */
-function supportWorld(o: CleanOutline, m: THREE.Matrix4, dx: number, dz: number): number {
-  const inv = new THREE.Matrix4().extractRotation(m).transpose();
-  const d = v3(dx, 0, dz).applyMatrix4(inv);
-  return support(o, d.x, d.z);
+// ---------------------------------------------------------------------------------------------
+// Placement on the finger's curve
+// ---------------------------------------------------------------------------------------------
+
+/** y of the shank's top surface at distance u along the band (stone frame). */
+function shankY(ctx: HeadCtx, u: number): number {
+  return -(ctx.baseDrop + ringDrop(ctx, u));
 }
 
-interface Placed {
-  stone: THREE.BufferGeometry;
-  metal: THREE.BufferGeometry[];
-  /** distance along the band from the centre to this stone's centre */
-  along: number;
-  /** half extent of this stone along the band, away from the centre */
-  outerHalf: number;
-  /** arc position of this stone's outer edge (chain the next stone from here) */
-  outerArc: number;
-  baseY: number;
+interface SideStone {
+  built: BuiltStone;
+  /** stone-frame (x, z) direction of the side stone's own +X axis */
+  localX: [number, number];
+}
+
+interface Seated {
+  m: THREE.Matrix4;
+  /** along-band extent of the girdle (signed u, head frame) */
+  uMin: number;
+  uMax: number;
+  /** along-band position of the stone's centre */
+  u: number;
+  /** y of the shank top under the stone */
+  seat: number;
+  tilt: number;
 }
 
 /**
- * Place a stone beside the centre. along: + or - side of the band axis is given by sign.
- * The stone's inner edge sits `gap` mm from `innerEdge` (distance from the head centre along the band).
+ * Seat a stone at arc angle phi from the top of the ring (sign picks the side), `across` mm off the band's centre line.
+ * Its table is tilted by tiltK * phi (1 = fully follows the finger's curve), and the culet sits `clear` mm above the
+ * shank top.
  */
-function placeSide(
+function seatAt(
   ctx: HeadCtx,
-  built: BuiltStone,
+  s: SideStone,
   sign: 1 | -1,
-  innerEdge: number,
-  gap: number,
+  phi: number,
   across: number,
-  localX: [number, number],
-  yDrop: number,
-  tiltScale = 0.5,
-  follow = true,
-): Placed {
+  clear: number,
+  tiltK: number,
+): Seated {
   const [ax, az] = ctx.bandAxis;
   const px = -az;
   const pz = ax;
-  const o = cleanOutline(built.outline);
-  const rotOnly = placeMatrix(0, 0, 0, localX[0], localX[1]);
-  const innerHalf = supportWorld(o, rotOnly, -sign * ax, -sign * az);
-  const outerHalf = supportWorld(o, rotOnly, sign * ax, sign * az);
-  // Side stones sit on a circle concentric with the shank (same culet clearance as the centre stone, within reason),
-  // tilted to follow the ring's curve, with their baskets standing on the shank.
-  const cb = ctx.center.built;
-  const clear = Math.min(1, Math.max(0.35, ctx.baseDrop - cb.pavilionDepth - cb.girdleThickness * 0.5));
-  const Rs = ctx.innerRadius + 1.8; // shank top radius (estimate, as ringDrop)
-  const stand = clear + built.pavilionDepth + built.girdleThickness * 0.5; // girdle height above the shank
-  const Rg = Rs + stand;
-  const arc = innerEdge + gap + innerHalf;
-  // follow: on the circle (rows of stones); otherwise nearly level with the centre (pairs), on a taller basket
-  const phi = follow ? Math.min(1.2, arc / Rg) : 0;
-  const along = follow ? Rg * Math.sin(phi) : arc;
-  const yRing = follow ? -(ctx.baseDrop + Rs) + Rg * Math.cos(phi) : -yDrop - ringDrop(ctx, along) * 0.35;
-  const y = Math.min(-yDrop, yRing);
-  const tilt = follow ? phi * tiltScale : Math.atan2(along, Rg) * tiltScale;
-  const x = sign * ax * along + px * across;
-  const z = sign * az * along + pz * across;
-  const m = placeMatrix(x, y, z, localX[0], localX[1], tilt, sign * ax, sign * az);
-  const seatY = -(ctx.baseDrop + ringDrop(ctx, along));
-  // the seat is under the stone along its own (tilted) axis; sink it 0.1 mm into the shank
-  const baseYLocal = -Math.max(0.3, (follow ? stand - (yRing - y) : y - seatY) / Math.cos(tilt) + 0.1);
-  const p = ctx.params;
-  const metal = prongSet(built, {
-    count: Math.round(num(p, 'sideProngs', 4, 3, 6)),
-    style: str(p, 'prongStyle', PRONG_STYLES, 'round'),
-    wireMm: num(p, 'prongWidth', 0, 0, 1.6) * 0.85 || autoWireMm(built),
-    baseY: baseYLocal,
-    baseScale: 0.45,
-    rails: [0.45],
-  });
-  transformAll(metal, m);
-  const stone = built.geometry.clone().applyMatrix4(m);
-  return { stone, metal, along, outerHalf, outerArc: arc + outerHalf, baseY: seatY };
+  const b = s.built;
+  const Rs = shankTopRadius(ctx);
+  const Rg = Rs + clear + b.pavilionDepth + b.girdleThickness * 0.5;
+  const u = Rg * Math.sin(phi);
+  const tilt = phi * tiltK;
+  const build = (y: number) =>
+    placeMatrix(
+      sign * ax * u + px * across,
+      y,
+      sign * az * u + pz * across,
+      s.localX[0],
+      s.localX[1],
+      tilt,
+      sign * ax,
+      sign * az,
+    );
+  // first guess on the circle, then lift/lower so the culet clears the real shank by `clear`
+  let m = build(-(ctx.baseDrop + Rs) + Rg * Math.cos(phi));
+  const culet = v3(0, -b.pavilionDepth, 0).applyMatrix4(m);
+  const cu = (culet.x * ax + culet.z * az) * sign;
+  const dy = shankY(ctx, cu) + clear - culet.y;
+  m = build(-(ctx.baseDrop + Rs) + Rg * Math.cos(phi) + dy);
+  const o = cleanOutline(b.outline);
+  let uMin = Infinity;
+  let uMax = -Infinity;
+  for (const p of o.pts) {
+    const w = v3(p[0], 0, p[1]).applyMatrix4(m);
+    const along = w.x * ax + w.z * az;
+    uMin = Math.min(uMin, along);
+    uMax = Math.max(uMax, along);
+  }
+  return { m, uMin, uMax, u: sign * u, seat: shankY(ctx, u), tilt };
 }
 
-/** Bars along the band joining the seats of neighbouring stones. */
-function bridge(
+/** Find the arc angle at which the stone's near girdle edge sits at `edge` (signed by side) along the band. */
+function seatBeside(
+  ctx: HeadCtx,
+  s: SideStone,
+  sign: 1 | -1,
+  edge: number,
+  across: number,
+  clear: number,
+  tiltK: number,
+): Seated {
+  const near = (q: Seated) => (sign > 0 ? q.uMin : -q.uMax);
+  let lo = 0;
+  // never further round than ~57 degrees: beyond that a stone would hang off the side of the finger
+  let hi = 1.0;
+  for (let k = 0; k < 40; k++) {
+    const mid = (lo + hi) / 2;
+    if (near(seatAt(ctx, s, sign, mid, across, clear, tiltK)) < edge) lo = mid;
+    else hi = mid;
+  }
+  return seatAt(ctx, s, sign, hi, across, clear, tiltK);
+}
+
+/**
+ * A prong basket for a seated stone, standing on the shank: the seat ring lies on the shank surface under the stone
+ * (following its curve) and sinks 0.12 mm into it.
+ */
+function basket(
+  ctx: HeadCtx,
+  s: SideStone,
+  q: Seated,
+  o: { count: number; style: ProngStyle; wireMm: number; rails: number[]; baseScale: number },
+): THREE.BufferGeometry[] {
+  const b = s.built;
+  const down = v3(0, -1, 0).transformDirection(q.m);
+  const culet = v3(0, -b.pavilionDepth, 0).applyMatrix4(q.m);
+  const [ax, az] = ctx.bandAxis;
+  const sy = (p: THREE.Vector3) => shankY(ctx, p.x * ax + p.z * az);
+  // march down the stone's own axis to the shank
+  let d = 0;
+  const p = culet.clone();
+  while (d < 6 && p.y > sy(p)) {
+    d += 0.02;
+    p.copy(culet).addScaledVector(down, d);
+  }
+  const baseY = -(b.pavilionDepth + d + 0.12);
+  // the seat ring follows the shank: march each seat point down the stone's own axis until it sinks 0.12 mm into it
+  const seatDrop = (x: number, z: number) => {
+    const w0 = v3(x, baseY + 0.12, z).applyMatrix4(q.m);
+    const w = w0.clone();
+    let k = 0;
+    while (k < 4 && w.y > sy(w)) {
+      k += 0.02;
+      w.copy(w0).addScaledVector(down, k);
+    }
+    return Math.max(0, k - 0.12);
+  };
+  // long stones get a seat of about the same size as short ones (a narrow foot on the shank)
+  const so = cleanOutline(b.outline);
+  const half = Math.max(support(so, 1, 0), support(so, -1, 0), support(so, 0, 1), support(so, 0, -1));
+  const geos = prongSet(b, {
+    count: o.count,
+    style: o.style,
+    wireMm: o.wireMm,
+    baseY,
+    baseScale: Math.min(o.baseScale, 2.4 / Math.max(0.1, half)),
+    rails: o.rails,
+    seatDrop,
+  });
+  return transformAll(geos, q.m);
+}
+
+/** Two bars lying on the shank top that join the seats of neighbouring baskets (the shared under-gallery). */
+function seatBars(
   ctx: HeadCtx,
   a: number,
   b: number,
-  yA: number,
-  yB: number,
   r: number,
-  across = 0,
+  acrossA = 0,
+  acrossB = 0,
 ): THREE.BufferGeometry[] {
   const [ax, az] = ctx.bandAxis;
   const px = -az;
   const pz = ax;
   const out: THREE.BufferGeometry[] = [];
-  const half = Math.min(ctx.shankWidth * 0.3, 0.8);
+  if (Math.abs(b - a) < 0.2) return out;
+  const half = Math.min(ctx.shankWidth * 0.28, 0.75);
   for (const k of [-1, 1]) {
-    const off = across + k * half;
-    // the ends sit on the two seats; in between the bar lies on the curved shank
-    const pts = [v3(ax * a + px * off, yA + r, az * a + pz * off)];
-    for (const t of [0.25, 0.5, 0.75]) {
-      const at = a + (b - a) * t;
-      const y = Math.max(-(ctx.baseDrop + ringDrop(ctx, at)), yA + (yB - yA) * t) + r * 0.9;
-      pts.push(v3(ax * at + px * off, y, az * at + pz * off));
+    const pts: THREE.Vector3[] = [];
+    for (let i = 0; i <= 8; i++) {
+      const t = i / 8;
+      const u = a + (b - a) * t;
+      const off = acrossA + (acrossB - acrossA) * t + k * half;
+      pts.push(v3(ax * u + px * off, shankY(ctx, u) + r * 0.6, az * u + pz * off));
     }
-    pts.push(v3(ax * b + px * off, yB + r, az * b + pz * off));
-    out.push(...wire(pts, r, 16, 7));
+    out.push(...wire(pts, r, 24, 7));
   }
   return out;
 }
 
-function sideDims(ctx: HeadCtx, size: number, match: boolean): { cutId: string; dims: StoneDims } {
-  if (match) {
-    const c = ctx.center.dims;
-    const k = size / Math.max(c.width, 0.1);
-    return {
-      cutId: ctx.center.cut.id,
-      dims: { length: c.length * k, width: c.width * k, depth: c.depth * k },
-    };
-  }
-  const cut = ctx.accent.cut;
-  const d = accentDims(ctx, size * Math.max(1, cut.defaultAspect || 1), cut);
-  return { cutId: cut.id, dims: d };
+/** A gallery rail at height y joining two baskets (a bar from one rail to the next, following the curve). */
+function railBridge(ctx: HeadCtx, a: THREE.Vector3, b: THREE.Vector3, r: number): THREE.BufferGeometry[] {
+  const mid = a.clone().lerp(b, 0.5);
+  const [ax, az] = ctx.bandAxis;
+  const u = mid.x * ax + mid.z * az;
+  // sag the middle slightly so the bar follows the ring's curve, but never below the shank
+  mid.y = Math.max(shankY(ctx, u) + r, mid.y - Math.abs(a.y - b.y) * 0.15);
+  return wire([a, mid, b], r, 12, 7);
 }
+
+// ---------------------------------------------------------------------------------------------
+// Side stone shapes
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * A side stone whose extent ACROSS the band is about `size` mm.
+ * Round-ish cuts: as they are. Elongated step cuts (baguettes, emerald cuts): long axis across the band, like tapered
+ * baguettes beside an emerald cut. Other elongated cuts (pear, marquise, oval): long axis along the band, the pear's
+ * point facing away from the centre.
+ */
+function sideStone(
+  ctx: HeadCtx,
+  cut: CutModel,
+  size: number,
+  sign: 1 | -1,
+  detail: 'full' | 'low',
+): SideStone {
+  const [ax, az] = ctx.bandAxis;
+  const px = -az;
+  const pz = ax;
+  const aspect = Math.max(1, cut.defaultAspect || 1);
+  const depthPct = cut.defaultDepthPct || 0.6;
+  let dims: StoneDims;
+  let localX: [number, number];
+  if (aspect < 1.25) {
+    dims = { length: size * aspect, width: size, depth: size * depthPct };
+    localX = [sign * ax, sign * az];
+  } else if (cut.builder === 'step') {
+    const length = size * 1.1;
+    const width = length / Math.min(aspect, 2.2);
+    dims = { length, width, depth: width * depthPct };
+    localX = [px, pz];
+  } else {
+    const width = size * 0.85;
+    dims = { length: width * aspect, width, depth: width * depthPct };
+    localX = [sign * ax, sign * az];
+  }
+  return { built: ctx.stone(cut.id, dims, { detail }), localX };
+}
+
+/** A smaller copy of the centre stone (same cut and orientation) whose extent across the band is `size`. */
+function matchStone(ctx: HeadCtx, size: number, mirror: boolean, detail: 'full' | 'low'): SideStone {
+  const o = cleanOutline(ctx.center.built.outline);
+  const [ax, az] = ctx.bandAxis;
+  const across = support(o, -az, ax) + support(o, az, -ax);
+  const k = size / Math.max(0.1, across);
+  const c = ctx.center.dims;
+  return {
+    built: ctx.stone(
+      ctx.center.cut.id,
+      { length: c.length * k, width: c.width * k, depth: c.depth * k },
+      { detail },
+    ),
+    localX: mirror ? [-1, 0] : [1, 0],
+  };
+}
+
+function centreAcross(ctx: HeadCtx): number {
+  const o = cleanOutline(ctx.center.built.outline);
+  const [ax, az] = ctx.bandAxis;
+  return support(o, -az, ax) + support(o, az, -ax);
+}
+
+/** Centre-stone prongs and gallery; returns the geometry and the y of its first rail (for rail bridges). */
+function centreBasket(ctx: HeadCtx, style: ProngStyle): { geos: THREE.BufferGeometry[]; wireMm: number } {
+  const opts = prongOpts(ctx, { count: 4, style, rails: 1, useCorners: true });
+  return { geos: prongSet(ctx.center.built, opts), wireMm: opts.wireMm };
+}
+
+/** World position of the point where a basket's first rail crosses the band axis, on the side facing `dir`. */
+function railPoint(
+  ctx: HeadCtx,
+  built: BuiltStone,
+  m: THREE.Matrix4,
+  baseY: number,
+  dir: 1 | -1,
+  frac = 0.3,
+): THREE.Vector3 {
+  const o = cleanOutline(built.outline);
+  const [ax, az] = ctx.bandAxis;
+  const inv = new THREE.Matrix4().extractRotation(m).transpose();
+  const d = v3(dir * ax, 0, dir * az).applyMatrix4(inv);
+  const h = support(o, d.x, d.z);
+  const y = baseY * frac;
+  const k = 1 - frac * 0.5;
+  return v3(d.x * h * k, y, d.z * h * k).applyMatrix4(m);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Three-stone and five-stone
+// ---------------------------------------------------------------------------------------------
 
 function multiStone(ctx: HeadCtx, perSide: 1 | 2): Part[] {
   const o = cleanOutline(ctx.center.built.outline);
   const p = ctx.params;
   const [ax, az] = ctx.bandAxis;
-  const px = -az;
-  const pz = ax;
-  const centerAcross = 2 * Math.min(support(o, px, pz), support(o, -px, -pz));
-  const ratio = num(p, 'sideRatio', perSide === 1 ? 0.62 : 0.6, 0.25, 1);
-  const ratio2 = num(p, 'outerRatio', 0.72, 0.4, 1);
-  const gap = num(p, 'sideGap', 0.35, 0, 2);
+  const across = centreAcross(ctx);
+  const ratio = num(p, 'sideRatio', perSide === 1 ? 0.62 : 0.55, 0.25, 1);
+  const ratio2 = num(p, 'outerRatio', 0.78, 0.4, 1);
+  const gap = num(p, 'sideGap', 0.3, 0, 2);
   const match = str(p, 'sideCut', ['accent', 'match'] as const, 'accent') === 'match';
-  const opts = prongOpts(ctx, { count: 4, style: 'round', rails: 1 });
-  const metal: THREE.BufferGeometry[] = [...prongSet(ctx.center.built, opts)];
+  const style = str(p, 'prongStyle', PRONG_STYLES, 'round');
+  const centre = centreBasket(ctx, style);
+  const metal: THREE.BufferGeometry[] = [...centre.geos];
   const stones: THREE.BufferGeometry[] = [];
-  const r = opts.wireMm * 0.45;
+  const r = centre.wireMm * 0.4;
+  // side culets sit just above the shank (a little higher than flush so the basket has room)
+  const clear = Math.min(0.5, Math.max(0.3, ctx.baseDrop - ctx.center.built.pavilionDepth) * 0.5);
   for (const sign of [-1, 1] as const) {
-    let inner = support(o, sign * ax, sign * az);
-    let lastAlong = 0;
-    let lastY = -ctx.baseDrop;
-    let size = centerAcross * ratio;
+    let edge = support(o, sign * ax, sign * az) + gap;
+    let size = across * ratio;
+    let lastU = 0;
     for (let k = 0; k < perSide; k++) {
-      const { cutId, dims } = sideDims(ctx, size, match);
-      const built = ctx.stone(cutId, dims, { detail: perSide === 2 ? 'low' : 'full' });
-      // elongated side stones run across the band (classic three-stone look)
-      const localX: [number, number] = [sign * px, sign * pz];
-      const drop = (centerAcross - size) * 0.12 + 0.1;
-      const placed = placeSide(ctx, built, sign, inner, gap, 0, localX, drop, 0.9);
-      stones.push(placed.stone);
-      metal.push(...placed.metal);
-      metal.push(...bridge(ctx, sign * lastAlong, sign * placed.along, lastY, placed.baseY, r));
-      inner = placed.outerArc;
-      lastAlong = placed.along;
-      lastY = placed.baseY;
+      const detail = perSide === 2 && k === 1 ? 'low' : 'full';
+      const s = match
+        ? matchStone(ctx, size, false, detail)
+        : sideStone(ctx, ctx.accent.cut, size, sign, detail);
+      const q = seatBeside(ctx, s, sign, edge, 0, clear, 1);
+      stones.push(s.built.geometry.clone().applyMatrix4(q.m));
+      const wireMm = num(p, 'prongWidth', 0, 0, 1.6) * 0.8 || autoWireMm(s.built);
+      metal.push(
+        ...basket(ctx, s, q, {
+          count: Math.round(num(p, 'sideProngs', 4, 3, 6)),
+          style,
+          wireMm,
+          rails: [0.4],
+          baseScale: 0.45,
+        }),
+      );
+      metal.push(...seatBars(ctx, lastU, q.u, r));
+      edge = (sign > 0 ? q.uMax : -q.uMin) + gap;
+      lastU = q.u;
       size *= ratio2;
     }
   }
@@ -186,36 +360,88 @@ function multiStone(ctx: HeadCtx, perSide: 1 | 2): Part[] {
   ];
 }
 
+// ---------------------------------------------------------------------------------------------
+// Toi-et-moi and bypass: a second stone of its own cut
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * The second stone of a pair. secondCut: 'match' (the centre's cut and shape), 'accent' (the accent stone's cut) or a
+ * cut id. Its size is set so its face area is ratio^2 of the centre's: a 0.9 ratio pear beside an emerald cut looks
+ * like a near-equal partner.
+ */
+function secondStone(ctx: HeadCtx, ratio: number, mirror: boolean, defCut: string): SideStone {
+  const v = ctx.params.secondCut;
+  const key = typeof v === 'string' && v ? v : defCut;
+  if (key === 'match' || key === ctx.center.cut.id) {
+    const c = ctx.center.dims;
+    return {
+      built: ctx.stone(
+        ctx.center.cut.id,
+        { length: c.length * ratio, width: c.width * ratio, depth: c.depth * ratio },
+        { detail: 'full' },
+      ),
+      localX: mirror ? [-1, 0] : [1, 0],
+    };
+  }
+  const cut =
+    key === 'accent' ? ctx.accent.cut : (findModel('cut', key) ?? getModel('cut', ctx.center.cut.id));
+  const c = ctx.center.dims;
+  const area = c.length * c.width * ratio * ratio;
+  const aspect = Math.max(1, cut.defaultAspect || 1);
+  const width = Math.sqrt(area / aspect);
+  const length = width * aspect;
+  // same orientation as the centre: elongated stones point along the centre's length
+  return {
+    built: ctx.stone(
+      cut.id,
+      { length, width, depth: width * (cut.defaultDepthPct || 0.6) },
+      { detail: 'full' },
+    ),
+    localX: mirror ? [-1, 0] : [1, 0],
+  };
+}
+
 function toiEtMoi(ctx: HeadCtx): Part[] {
   const o = cleanOutline(ctx.center.built.outline);
   const p = ctx.params;
   const [ax, az] = ctx.bandAxis;
-  const ratio = num(p, 'secondRatio', 0.85, 0.4, 1);
-  const gap = num(p, 'secondGap', 0.4, 0, 2);
+  const ratio = num(p, 'secondRatio', 0.95, 0.4, 1.2);
+  const gap = num(p, 'secondGap', 0.35, 0, 2);
   const mirror = bool(p, 'mirrorSecond', true);
-  const c = ctx.center.dims;
-  const built = ctx.stone(
-    ctx.center.cut.id,
-    { length: c.length * ratio, width: c.width * ratio, depth: c.depth * ratio },
-    { detail: 'full' },
-  );
-  const opts = prongOpts(ctx, { count: 4, style: 'claw', rails: 1 });
+  const style = str(p, 'prongStyle', PRONG_STYLES, 'claw');
+  const s = secondStone(ctx, ratio, mirror, 'match');
+  const opts = prongOpts(ctx, { count: 4, style, rails: 1, useCorners: true });
   const metal: THREE.BufferGeometry[] = [...prongSet(ctx.center.built, opts)];
-  const localX: [number, number] = mirror ? [-1, 0] : [1, 0];
-  const placed = placeSide(
-    ctx,
-    built,
-    1,
-    support(o, ax, az),
-    gap,
-    0,
-    localX,
-    (c.width - c.width * ratio) * 0.1,
-    0.7,
+  // both stones sit at the same height over the shank
+  const clear = Math.max(
+    0.3,
+    ctx.baseDrop - ctx.center.built.pavilionDepth - ctx.center.built.girdleThickness * 0.5,
   );
-  metal.push(...placed.metal);
-  metal.push(...bridge(ctx, 0, placed.along, -ctx.baseDrop, placed.baseY, opts.wireMm * 0.45));
-  return [metalPart(metal, 'toi-et-moi head'), accentPart([placed.stone], 'second stone')];
+  // tilt with the curve: once the pair is rolled onto the top of the finger both lean out equally
+  const q = seatBeside(ctx, s, 1, support(o, ax, az) + gap, 0, clear, 1);
+  metal.push(
+    ...basket(ctx, s, q, {
+      count: Math.round(num(p, 'prongCount', 4, 3, 6)),
+      style,
+      wireMm: opts.wireMm * 0.95,
+      rails: [0.3],
+      baseScale: 0.45,
+    }),
+  );
+  // the shared basket: gallery bars from rail to rail and bars along the shank
+  const r = opts.wireMm * 0.42;
+  const cRail = railPoint(ctx, ctx.center.built, new THREE.Matrix4(), -ctx.baseDrop, 1);
+  const sRail = railPoint(ctx, s.built, q.m, -(s.built.pavilionDepth + clear), -1);
+  const [px, pz] = [-az, ax];
+  for (const k of [-1, 1]) {
+    const off = v3(px, 0, pz).multiplyScalar(k * Math.min(1.2, support(o, px, pz) * 0.45));
+    metal.push(...railBridge(ctx, cRail.clone().add(off), sRail.clone().add(off), r));
+  }
+  metal.push(...seatBars(ctx, 0, q.u, r));
+  return [
+    metalPart(metal, 'toi-et-moi head'),
+    accentPart([s.built.geometry.clone().applyMatrix4(q.m)], 'second stone'),
+  ];
 }
 
 function bypassHead(ctx: HeadCtx): Part[] {
@@ -224,64 +450,88 @@ function bypassHead(ctx: HeadCtx): Part[] {
   const [ax, az] = ctx.bandAxis;
   const px = -az;
   const pz = ax;
-  const ratio = num(p, 'secondRatio', 0.7, 0.3, 1);
-  const gap = num(p, 'secondGap', 0.2, -1, 2);
+  const ratio = num(p, 'secondRatio', 0.8, 0.3, 1.2);
+  const gap = num(p, 'secondGap', 0.1, -1, 2);
   const shift = num(p, 'bypassShift', 0.35, 0, 0.8);
-  const match = str(p, 'secondCut', ['accent', 'match'] as const, 'accent') === 'match';
-  const across = 2 * Math.min(support(o, px, pz), support(o, -px, -pz));
-  const { cutId, dims } = sideDims(ctx, across * ratio, match);
-  const built = ctx.stone(cutId, dims, { detail: 'full' });
-  const opts = prongOpts(ctx, { count: 4, style: 'round', rails: 1 });
+  const mirror = bool(p, 'mirrorSecond', true);
+  const style = str(p, 'prongStyle', PRONG_STYLES, 'round');
+  const s = secondStone(ctx, ratio, mirror, 'match');
+  const wc = Math.min(support(o, px, pz), support(o, -px, -pz));
+  const off = wc * 2 * shift;
+  const opts = prongOpts(ctx, { count: 4, style, rails: 1, useCorners: true });
   const metal: THREE.BufferGeometry[] = [...prongSet(ctx.center.built, opts)];
-  const off = across * shift;
-  const placed = placeSide(
-    ctx,
-    built,
-    1,
-    support(o, ax, az) * 0.75,
-    gap,
-    off,
-    [px, pz],
-    across * (1 - ratio) * 0.1,
+  const clear = Math.max(
     0.3,
-    false,
+    ctx.baseDrop - ctx.center.built.pavilionDepth - ctx.center.built.girdleThickness * 0.5,
   );
-  metal.push(...placed.metal);
-  metal.push(...bridge(ctx, 0, placed.along, -ctx.baseDrop, placed.baseY, opts.wireMm * 0.45, off * 0.5));
-  // two sweeping wires that pass either side of the pair, giving the "bypass" swoop
-  const wr = num(p, 'swoopWidth', 1.4, 0.6, 2.5) / 2;
+  // on the diagonal the stones can overlap along the band a little; never closer than the gap across
   const hc = support(o, ax, az);
-  const wc = support(o, px, pz);
-  const P = (along: number, acr: number, y: number) => v3(ax * along + px * acr, y, az * along + pz * acr);
-  const endA = -Math.min(hc + 2.2, (ctx.innerRadius + 1.8) * 0.75);
-  const endB = Math.min(placed.along + placed.outerHalf + 2.2, (ctx.innerRadius + 1.8) * 0.75);
+  const overlap = Math.min(0.6, shift) * hc * 0.6;
+  const q = seatBeside(ctx, s, 1, hc - overlap + gap, off, clear, 0.5);
+  metal.push(
+    ...basket(ctx, s, q, {
+      count: 4,
+      style,
+      wireMm: opts.wireMm * 0.95,
+      rails: [0.3],
+      baseScale: 0.45,
+    }),
+  );
+  const r = opts.wireMm * 0.42;
+  metal.push(...seatBars(ctx, 0, q.u, r, 0, off * 0.5));
+
+  // Two slim swoops: each rises from the shank on its own side, hugs the outside of one stone under its girdle and
+  // runs on past the other stone's seat, so the pair looks embraced.
+  const wr = num(p, 'swoopWidth', 0.9, 0.5, 2) / 2;
+  const so = cleanOutline(s.built.outline);
+  const sPos = v3(0, 0, 0).applyMatrix4(q.m);
+  const sU = sPos.x * ax + sPos.z * az;
+  const sW = Math.min(support(so, 0, 1), support(so, 0, -1), support(so, 1, 0), support(so, -1, 0));
+  const P = (u: number, v: number, y: number) => v3(ax * u + px * v, y, az * u + pz * v);
+  const Rs = shankTopRadius(ctx);
+  const reach = Math.min(Rs * 0.7, hc + 3);
+  const pdC = ctx.center.built.pavilionDepth;
+  const pdS = s.built.pavilionDepth;
+  // swoop A: leaves the shank on the -band side, hugs the centre stone's far side (v < 0) just under its girdle and
+  // runs into the second stone's basket
+  const uA0 = -reach;
+  const sHalf = support(so, 1, 0);
   metal.push(
     ...wire(
       [
-        P(endA, -off * 0.3, -(ctx.baseDrop + ringDrop(ctx, endA)) + wr),
-        P(-hc * 0.6, -(wc + wr + 0.25), -Math.min(ctx.baseDrop * 0.6, 0.9)),
-        P(placed.along * 0.5, -(wc * 0.5 + wr), -Math.min(ctx.baseDrop * 0.8, 1.4)),
-        P(endB, off * 0.6, -(ctx.baseDrop + ringDrop(ctx, endB)) + wr),
+        P(uA0, -off * 0.15, shankY(ctx, uA0) + wr * 0.6),
+        P(uA0 * 0.75, -off * 0.3, shankY(ctx, uA0 * 0.75) + wr * 1.6),
+        P(-hc * 0.55, -(wc * 0.92 + wr), -pdC * 0.5),
+        P(hc * 0.2, -(wc + wr + 0.05), -pdC * 0.32),
+        P(hc * 0.85, -(wc * 0.55 + wr), -pdC * 0.6),
+        P(sU, off - sW - wr * 0.6, sPos.y - pdS * 0.5),
       ],
       wr,
-      32,
+      64,
       10,
     ),
   );
+  // swoop B: the mirror image round the second stone's far side (v > off), into the centre's basket
+  const uB0 = Math.max(sU + sHalf + 1.5, Math.min(Rs * 0.75, sU + sHalf + 2.6));
   metal.push(
     ...wire(
       [
-        P(endA, -off * 0.6, -(ctx.baseDrop + ringDrop(ctx, endA)) + wr),
-        P(-hc * 0.2, wc * 0.5 + wr, -Math.min(ctx.baseDrop * 0.8, 1.4)),
-        P(placed.along * 0.6, off + wc * ratio + wr + 0.25, -Math.min(ctx.baseDrop * 0.6, 0.9)),
-        P(endB, off * 0.3, -(ctx.baseDrop + ringDrop(ctx, endB)) + wr),
+        P(uB0, off * 0.85, shankY(ctx, uB0) + wr * 0.6),
+        P(sU + (uB0 - sU) * 0.75, off * 0.75, shankY(ctx, sU + (uB0 - sU) * 0.75) + wr * 1.6),
+        P(sU + sHalf * 0.55, off + sW * 0.92 + wr, sPos.y - pdS * 0.5),
+        P(sU - sHalf * 0.2, off + sW + wr + 0.05, sPos.y - pdS * 0.32),
+        P(sU - sHalf * 0.85, off + sW * 0.55 + wr, sPos.y - pdS * 0.6),
+        P(0, wc + wr * 0.6, -pdC * 0.5),
       ],
       wr,
-      32,
+      64,
       10,
     ),
   );
-  return [metalPart(metal, 'bypass head'), accentPart([placed.stone], 'bypass stone')];
+  return [
+    metalPart(metal, 'bypass head'),
+    accentPart([s.built.geometry.clone().applyMatrix4(q.m)], 'bypass stone'),
+  ];
 }
 
 registerHeadBuilder('three-stone', (ctx) => multiStone(ctx, 1));

@@ -84,6 +84,8 @@ export interface HeadCtx {
   stone(cutId: Id, dims: StoneDims, opts?: StoneBuildOptions): BuiltStone;
   /** Ring inner radius, mm. */
   innerRadius: number;
+  /** Radius of the shank's top surface at the seat (the shank's seatY), mm. Optional: heads fall back to innerRadius + 1.8. */
+  seatRadius?: number;
 }
 
 export interface ShankCtx {

@@ -947,9 +947,14 @@ export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeo
 // Placement helpers
 // ---------------------------------------------------------------------------------------------
 
+/** Radius of the shank's top surface (the seat), from the assembler or a typical 1.8 mm shank. */
+export function shankTopRadius(ctx: HeadCtx): number {
+  return ctx.seatRadius && ctx.seatRadius > ctx.innerRadius ? ctx.seatRadius : ctx.innerRadius + 1.8;
+}
+
 /** Drop (mm) of the shank's top surface at distance x along the band from the top of the ring. */
 export function ringDrop(ctx: HeadCtx, x: number): number {
-  const R = ctx.innerRadius + 1.8; // typical shank thickness
+  const R = shankTopRadius(ctx);
   const ax = Math.min(Math.abs(x), R * 0.95);
   return R - Math.sqrt(R * R - ax * ax);
 }

@@ -89,6 +89,40 @@ function bboxOf(parts: Part[], filter?: (x: number, y: number, z: number) => boo
   return box;
 }
 
+/**
+ * Roll angle (about the finger axis) that centres the parts' extent along the band. Parts are in the stone frame;
+ * `rot` turns them into the ring's orientation and the girdle sits at ring y = girdleY. 0 when already centred.
+ */
+function centringRoll(parts: Part[], rot: THREE.Matrix4, girdleY: number): number {
+  const e = rot.elements; // ring x = e[0] * x + e[4] * y + e[8] * z
+  const xs: number[] = [];
+  const ys: number[] = [];
+  for (const p of parts) {
+    const pos = p.geometry.getAttribute('position');
+    for (let i = 0; i < pos.count; i++) {
+      xs.push(e[0] * pos.getX(i) + e[4] * pos.getY(i) + e[8] * pos.getZ(i));
+      ys.push(girdleY + pos.getY(i));
+    }
+  }
+  let a = 0;
+  for (let k = 0; k < 4; k++) {
+    const c = Math.cos(a);
+    const s = Math.sin(a);
+    let lo = 0;
+    let hi = 0;
+    for (let i = 0; i < xs.length; i++) {
+      const x = xs[i] * c - ys[i] * s;
+      if (x < xs[lo] * c - ys[lo] * s) lo = i;
+      if (x > xs[hi] * c - ys[hi] * s) hi = i;
+    }
+    const mid = (xs[lo] * c - ys[lo] * s + xs[hi] * c - ys[hi] * s) / 2;
+    if (k === 0 && Math.abs(mid) < 0.3) return 0;
+    const rho = (Math.hypot(xs[lo], ys[lo]) + Math.hypot(xs[hi], ys[hi])) / 2;
+    a += Math.asin(Math.max(-0.5, Math.min(0.5, mid / Math.max(1, rho))));
+  }
+  return a;
+}
+
 function transformParts(parts: Part[], m: THREE.Matrix4): Part[] {
   return parts.map((p) => {
     const g = p.geometry.clone();
@@ -152,6 +186,7 @@ function buildEngagement(design: Design, center: ResolvedStone): Engagement {
     bandAxis: eastWest ? [1, 0] : [0, 1],
     stone: stoneFactory(),
     innerRadius,
+    seatRadius: shank.seatY,
   };
   const headParts = headFn(headCtx);
 
@@ -163,7 +198,11 @@ function buildEngagement(design: Design, center: ResolvedStone): Engagement {
     .makeTranslation(0, shank.seatY, 0)
     .multiply(new THREE.Matrix4().makeRotationX(-e.placement.tilt * (Math.PI / 180)))
     .multiply(new THREE.Matrix4().makeTranslation(0, -shank.seatY, 0));
-  const M = tilt.multiply(place);
+  // Asymmetric heads (toi-et-moi, bypass) are centred on the finger: roll the head around the finger axis so the
+  // middle of its extent along the band sits on top. Rolling (not sliding) keeps every seat on the shank's curve.
+  const angle = centringRoll([centerPart, ...headParts], rot, girdleY);
+  const roll = angle !== 0 ? new THREE.Matrix4().makeRotationZ(angle) : new THREE.Matrix4();
+  const M = roll.multiply(tilt.multiply(place));
   const placed = transformParts([centerPart, ...headParts], M);
   const headBox = bboxOf(
     placed.filter((p) => p.slot === 'head-metal' || p.slot === 'accent-stone' || p.slot === 'center-stone'),
