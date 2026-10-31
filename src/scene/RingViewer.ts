@@ -88,8 +88,8 @@ export class RingViewer {
   }
 
   /** Zooms to the stone and its setting: the highest quarter of the content. */
-  focusHead(instant = false): void {
-    if (!this.content) return;
+  focusHead(instant = false): boolean {
+    if (!this.content) return false;
     const box = new THREE.Box3().setFromObject(this.content);
     const top = new THREE.Box3(
       new THREE.Vector3(box.min.x, box.max.y - (box.max.y - box.min.y) * 0.28, box.min.z),
@@ -100,6 +100,7 @@ export class RingViewer {
     const dir = this.camera.position.clone().sub(this.controls.target).normalize();
     const dist = (r / Math.sin((this.camera.fov * Math.PI) / 360)) * 1.05;
     this.flyTo(c.clone().addScaledVector(dir, dist), c, instant ? 0 : 450);
+    return true;
   }
 
   constructor(

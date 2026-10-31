@@ -33,14 +33,22 @@ export default function Shot() {
     document.body.style.margin = '0';
     const win = window as unknown as { __shotReady?: boolean };
     win.__shotReady = false;
-    const t = window.setTimeout(() => {
-      if (cam) ref.current?.preset(cam);
-      if (focus) ref.current?.focusHead(true);
+    const started = performance.now();
+    let t = 0;
+    const settle = () =>
       window.setTimeout(
         () => requestAnimationFrame(() => requestAnimationFrame(() => (win.__shotReady = true))),
-        cam || focus ? 700 : 0,
+        300,
       );
-    }, 900);
+    const tick = () => {
+      // Wait for the viewer to have built its content (heavy rings can take a while), then frame it.
+      const waited = performance.now() - started;
+      if (cam) ref.current?.preset(cam);
+      const framed = !focus || (ref.current?.focusHead(true) ?? false);
+      if (framed || waited > 15000) settle();
+      else t = window.setTimeout(tick, 150);
+    };
+    t = window.setTimeout(tick, 900);
     return () => window.clearTimeout(t);
   }, [kind, id, cam, focus]);
 
