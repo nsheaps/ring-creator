@@ -143,7 +143,12 @@
     "white-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": 2
+   "widthMm": 2,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.2
+    }
+   }
   },
   "notes": "Fully pave-set eternity: 38 diamonds at size 7, count varies by size. Cannot be resized."
  },
@@ -164,7 +169,12 @@
     "white-gold-14k"
    ],
    "stones": "melee (19 sapphires 1.4mm alternating with 19 diamonds)",
-   "widthMm": 2.1
+   "widthMm": 2.1,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.4
+    }
+   }
   },
   "notes": "Alternating blue sapphire and diamond French pave all around. The 1.4mm in the product name is the stone size, listed band width is 2.10mm."
  },
@@ -185,7 +195,12 @@
     "yellow-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": 2.1
+   "widthMm": 2.1,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.7
+    }
+   }
   },
   "notes": "Classic shared-prong full eternity of round lab diamonds."
  },
@@ -206,7 +221,13 @@
     "yellow-gold-14k"
    ],
    "stones": "emerald-cut (east-west bezels, lab diamonds)",
-   "widthMm": 3
+   "widthMm": 3,
+   "tune": {
+    "accent": {
+     "cut": "emerald-cut",
+     "sizeMm": 3.0
+    }
+   }
   },
   "notes": "Emerald-cut stones each in its own bezel and laid sideways around the finger."
  },
@@ -227,7 +248,13 @@
     "yellow-gold-14k"
    ],
    "stones": "baguette",
-   "widthMm": 3.7
+   "widthMm": 3.7,
+   "tune": {
+    "accent": {
+     "cut": "baguette",
+     "sizeMm": 2.2
+    }
+   }
   },
   "notes": "Baguette lab diamonds channel-set around the whole band."
  },
@@ -248,7 +275,12 @@
     "white-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": 2.3
+   "widthMm": 2.3,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.3
+    }
+   }
   },
   "notes": "French-pave stones cover about three quarters of the band; plain metal at the back for sizing."
  },
@@ -269,7 +301,15 @@
     "white-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": 4.15
+   "widthMm": 4.15,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    },
+    "params": {
+     "rows": 2
+    }
+   }
   },
   "notes": "Wide French-pave eternity; style id pave-band chosen over full-eternity because the page names the setting French pave."
  },
@@ -311,7 +351,12 @@
     "yellow-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": 1.5
+   "widthMm": 1.5,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.2
+    }
+   }
   },
   "notes": "V-shaped diamond band labelled Chevron by the retailer's curved collection."
  },
@@ -353,7 +398,12 @@
     "yellow-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": 2
+   "widthMm": 2,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.4
+    }
+   }
   },
   "notes": "Contoured band with diamonds, made to nest against the curve of an engagement ring."
  },
@@ -374,7 +424,12 @@
     "yellow-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": 1.7
+   "widthMm": 1.7,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.3
+    }
+   }
   },
   "notes": "Slim contour band with a deeper curve for a fitted look against a center stone."
  },
@@ -437,7 +492,13 @@
     "yellow-gold-18k"
    ],
    "stones": "melee (marquise)",
-   "widthMm": 3.3
+   "widthMm": 3.3,
+   "tune": {
+    "accent": {
+     "cut": "marquise",
+     "sizeMm": 2.2
+    }
+   }
   },
   "notes": "Marquise diamonds with milgrain edging in a vintage-leaning band."
  },
@@ -481,7 +542,10 @@
     "yellow-gold-18k"
    ],
    "stones": "none",
-   "widthMm": 6
+   "widthMm": 6,
+   "tune": {
+    "metal2": "titanium"
+   }
   },
   "notes": "Black titanium outer shell with a smooth 18K gold interior and beveled edges."
  },
@@ -691,12 +755,12 @@
    "stone": {
     "material": "moissanite",
     "cut": "pear",
-    "carat": null,
+    "carat": 2.0,
     "colorName": "white (lab grown, VVS)",
     "clarity": null
    },
-   "head": "basket",
-   "shank": null,
+   "head": "solitaire-6-prong",
+   "shank": "dainty",
    "metals": [
     "white-gold-18k"
    ],
@@ -705,7 +769,16 @@
     "six claw prongs",
     "setting 1.8mm wide"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "head": {
+     "galleryRails": 0
+    },
+    "shank": {
+     "widthMm": 1.8,
+     "topWidthMm": 1.8
+    }
+   }
   },
   "band": {
    "style": "plain-comfort",
@@ -715,7 +788,7 @@
    "stones": "none",
    "widthMm": 1.5
   },
-  "notes": "Open basket with six claws holding a 10x7mm pear; the set pairs it with a 1.5mm comfort-fit band. Head id basket is the nearest to an open six-claw basket; sold in 14K/18K white, yellow, rose and platinum."
+  "notes": "Six-claw open basket holding a 10x7mm pear moissanite; 1.8mm engagement ring with a 1.5mm comfort-fit matching band."
  },
  {
   "id": "r4-034",
@@ -730,8 +803,8 @@
   "engagement": {
    "stone": {
     "material": "diamond",
-    "cut": null,
-    "carat": null,
+    "cut": "round-brilliant",
+    "carat": 0.75,
     "colorName": null,
     "clarity": null
    },
@@ -745,7 +818,17 @@
     "42 French-pave round diamonds, at least 0.79 ctw",
     "split claw prongs"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    },
+    "shank": {
+     "widthMm": 2.3,
+     "topWidthMm": 2.3,
+     "coverage": 0.5
+    }
+   }
   },
   "band": {
    "style": "three-quarter-eternity",
@@ -753,9 +836,14 @@
     "white-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": 2.3
+   "widthMm": 2.3,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.2
+    }
+   }
   },
-  "notes": "Halo ring with diamond-set shank paired with a 2.3mm three-quarter-coverage pave band. Price is setting plus band only; center stone not included (3/4 ct round shown in images)."
+  "notes": "Round halo of 42 French-pave diamonds, split-claw prongs, 2.3mm pave shank; matching 2.3mm three-quarter pave band. Shown with a 3/4 ct round."
  },
  {
   "id": "r4-035",
@@ -770,13 +858,13 @@
   "engagement": {
    "stone": {
     "material": "diamond",
-    "cut": null,
-    "carat": null,
+    "cut": "cushion",
+    "carat": 1.25,
     "colorName": null,
     "clarity": null
    },
-   "head": "halo-round",
-   "shank": null,
+   "head": "halo-cushion",
+   "shank": "plain-round",
    "metals": [
     "white-gold-18k"
    ],
@@ -786,7 +874,19 @@
     "four-prong center",
     "2mm rhodium-plated shank"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "head": {
+     "prongCount": 4
+    },
+    "accent": {
+     "sizeMm": 1.2
+    },
+    "shank": {
+     "widthMm": 2.0,
+     "topWidthMm": 2.0
+    }
+   }
   },
   "band": {
    "style": "plain-comfort",
@@ -796,7 +896,7 @@
    "stones": "none",
    "widthMm": 2
   },
-  "notes": "Fancy-shape halo (center cut chosen by buyer) paired with the 2mm plain comfort-fit band BE201. The $1,780 comes from a search snippet; the opened page showed no price."
+  "notes": "Four-prong cushion halo of 16 shared-prong round diamonds on a 2mm shank; matching 2mm comfort-fit band. Shown with a 1 1/4 ct cushion."
  },
  {
   "id": "r4-036",
@@ -812,12 +912,12 @@
    "stone": {
     "material": "diamond",
     "cut": "round-brilliant",
-    "carat": null,
+    "carat": 0.75,
     "colorName": null,
     "clarity": null
    },
    "head": "basket",
-   "shank": null,
+   "shank": "twisted",
    "metals": [
     "white-gold-18k"
    ],
@@ -826,7 +926,16 @@
     "four-prong basket",
     "1/15 ct. tw. diamond accents on the ring"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "head": {
+     "prongCount": 4
+    },
+    "shank": {
+     "widthMm": 2.5,
+     "topWidthMm": 2.5
+    }
+   }
   },
   "band": {
    "style": "contour-curved",
@@ -836,7 +945,7 @@
    "stones": "melee",
    "widthMm": 1.7
   },
-  "notes": "Four-prong basket ring with a 1.7mm Chamise contoured band that curves around the head. Price not visible on the opened page; round is the displayed view and other shapes fit."
+  "notes": "Four-prong basket with 8 shared-prong accent diamonds and a 2.5mm ribbon-like shank; matching 1.7mm contoured band with 11 diamonds. Shown with 3/4 ct round."
  },
  {
   "id": "r4-037",
@@ -851,13 +960,13 @@
   "engagement": {
    "stone": {
     "material": "diamond",
-    "cut": null,
-    "carat": null,
+    "cut": "round-brilliant",
+    "carat": 0.75,
     "colorName": null,
     "clarity": null
    },
    "head": "halo-round",
-   "shank": null,
+   "shank": "plain-round",
    "metals": [
     "white-gold-14k"
    ],
@@ -865,17 +974,31 @@
    "accents": [
     "diamond-encrusted gallery"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    },
+    "shank": {
+     "widthMm": 1.4,
+     "topWidthMm": 1.5999999999999999
+    }
+   }
   },
   "band": {
-   "style": "pave-band",
+   "style": "three-quarter-eternity",
    "metals": [
     "white-gold-14k"
    ],
    "stones": "melee (micro-pave nearly all the way round, small sizing bar)",
-   "widthMm": null
+   "widthMm": 1.4,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    }
+   }
   },
-  "notes": "Halo ring plus a delicate micro-pave band set almost the full circle. Listing gives no widths; shape of halo not stated so halo-round is an assumption. Seen via the en-gb halo sets page."
+  "notes": "Scalloped-pave round halo (62 accents), claw prongs, 1.4mm shank; matching 1.4mm three-quarter pave band."
  },
  {
   "id": "r4-038",
@@ -890,13 +1013,13 @@
   "engagement": {
    "stone": {
     "material": "diamond",
-    "cut": null,
-    "carat": null,
+    "cut": "round-brilliant",
+    "carat": 0.75,
     "colorName": null,
     "clarity": null
    },
    "head": "halo-round",
-   "shank": null,
+   "shank": "split",
    "metals": [
     "white-gold-14k"
    ],
@@ -904,7 +1027,16 @@
    "accents": [
     "softened diamond halo"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    },
+    "shank": {
+     "widthMm": 1.8,
+     "topWidthMm": 2.0
+    }
+   }
   },
   "band": {
    "style": "pave-band",
@@ -912,9 +1044,14 @@
     "white-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": null
+   "widthMm": 1.7,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    }
+   }
   },
-  "notes": "Softened halo paired with the Bliss band, a petite diamond band with scalloped pave and a split shank. No widths listed."
+  "notes": "Softened round halo, four prongs, 1.8mm scalloped-pave split shank; matching 1.7mm pave band."
  },
  {
   "id": "r4-039",
@@ -929,13 +1066,13 @@
   "engagement": {
    "stone": {
     "material": "diamond",
-    "cut": null,
-    "carat": null,
+    "cut": "cushion",
+    "carat": 1.25,
     "colorName": null,
     "clarity": null
    },
-   "head": "halo-round",
-   "shank": null,
+   "head": "halo-cushion",
+   "shank": "pave",
    "metals": [
     "white-gold-14k"
    ],
@@ -943,17 +1080,34 @@
    "accents": [
     "pave halo"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    },
+    "shank": {
+     "widthMm": 1.6,
+     "topWidthMm": 1.8
+    },
+    "head": {
+     "prongCount": 4
+    }
+   }
   },
   "band": {
-   "style": "pave-band",
+   "style": "half-eternity",
    "metals": [
     "white-gold-14k"
    ],
    "stones": "melee (French pave)",
-   "widthMm": null
+   "widthMm": 1.6,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    }
+   }
   },
-  "notes": "Intricate pave halo with a French-pave Sonora band. No widths listed."
+  "notes": "Cushion French-pave halo (30 stones), four prongs, 1.6mm shank; matching 1.6mm quarter-coverage French-pave band."
  },
  {
   "id": "r4-040",
@@ -968,13 +1122,13 @@
   "engagement": {
    "stone": {
     "material": "diamond",
-    "cut": null,
-    "carat": null,
+    "cut": "round-brilliant",
+    "carat": 0.75,
     "colorName": null,
     "clarity": null
    },
    "head": "halo-round",
-   "shank": null,
+   "shank": "plain-round",
    "metals": [
     "rose-gold-14k"
    ],
@@ -982,17 +1136,31 @@
    "accents": [
     "diamond halo"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    },
+    "shank": {
+     "widthMm": 1.4,
+     "topWidthMm": 1.5999999999999999
+    }
+   }
   },
   "band": {
-   "style": "pave-band",
+   "style": "three-quarter-eternity",
    "metals": [
     "rose-gold-14k"
    ],
    "stones": "melee",
-   "widthMm": null
+   "widthMm": 1.4,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    }
+   }
   },
-  "notes": "Rose-gold halo with a Luxe Ballad diamond band; the listing gives no band description or width, so pave-band is the nearest id."
+  "notes": "Round halo of 34 prong-set diamonds, claw prongs, 1.4mm rose-gold shank; matching 1.4mm three-quarter pave band."
  },
  {
   "id": "r4-041",
@@ -1007,13 +1175,13 @@
   "engagement": {
    "stone": {
     "material": "diamond",
-    "cut": null,
-    "carat": null,
+    "cut": "oval",
+    "carat": 0.75,
     "colorName": null,
     "clarity": null
    },
-   "head": "halo-round",
-   "shank": null,
+   "head": "halo-oval",
+   "shank": "plain-round",
    "metals": [
     "white-gold-14k"
    ],
@@ -1021,7 +1189,16 @@
    "accents": [
     "scalloped pave rising up the gallery and around the center stone"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    },
+    "shank": {
+     "widthMm": 1.5,
+     "topWidthMm": 1.7
+    }
+   }
   },
   "band": {
    "style": "three-quarter-eternity",
@@ -1029,9 +1206,14 @@
     "white-gold-14k"
    ],
    "stones": "melee (scalloped pave about 3/4 round)",
-   "widthMm": null
+   "widthMm": 1.4,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    }
+   }
   },
-  "notes": "Scalloped-pave ring paired with a petite band set about three quarters of the way around. Head id halo-round is the nearest to the described encircling pave gallery."
+  "notes": "Oval scalloped-pave halo (30 stones), claw prongs, 1.5mm shank; matching 1.4mm three-quarter pave band."
  },
  {
   "id": "r4-042",
@@ -1046,12 +1228,12 @@
   "engagement": {
    "stone": {
     "material": "diamond",
-    "cut": null,
-    "carat": null,
+    "cut": "cushion",
+    "carat": 1.25,
     "colorName": null,
     "clarity": null
    },
-   "head": "halo-round",
+   "head": "halo-cushion",
    "shank": "leaf-vine",
    "metals": [
     "white-gold-14k"
@@ -1061,7 +1243,16 @@
     "diamond halo",
     "diamonds intertwined with a polished metal strand"
    ],
-   "orientation": null
+   "orientation": null,
+   "tune": {
+    "accent": {
+     "sizeMm": 1.1
+    },
+    "shank": {
+     "widthMm": 2.5,
+     "topWidthMm": 2.5
+    }
+   }
   },
   "band": {
    "style": "vine-band",
@@ -1071,6 +1262,6 @@
    "stones": "melee",
    "widthMm": 2.5
   },
-  "notes": "Halo ring on a twisted vine shank with a matching vine band that sits flush. Band width 2.5mm is inferred from the matching Petite Twisted Vine ring (code BE2M254P); a halo sets page showed $3,400 instead of $3,040."
+  "notes": "Cushion halo of 54 scalloped-pave diamonds on a 2.5mm twisted vine shank; matching vine band 2.2-2.5mm. Shown with a 1 1/4 ct cushion."
  }
 ]
