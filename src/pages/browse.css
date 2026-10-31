@@ -1,0 +1,358 @@
+/* Home, Gallery, Saved, Compare and DesignCard. Uses the global tokens from styles.css. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  margin: -1px;
+  padding: 0;
+}
+.linkbtn {
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--gold);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.chip[aria-pressed='true'] {
+  background: var(--gold);
+  color: var(--on-gold);
+  border-color: var(--gold);
+}
+button.chip {
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ---- Home ---- */
+.hm-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 32px;
+  align-items: center;
+  padding: 16px 0 8px;
+}
+.hm-eyebrow {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  margin: 0 0 8px;
+}
+.hm-lead {
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 52ch;
+}
+.hm-cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 12px;
+}
+.hm-cta .btn {
+  padding: 12px 20px;
+  font-size: 1.05rem;
+}
+.hm-hero-view .viewer {
+  aspect-ratio: 1 / 1;
+  min-height: 300px;
+}
+.hm-caption {
+  text-align: center;
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+.hm-section {
+  margin-top: 40px;
+}
+.hm-features {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.hm-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.hm-step-n {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--on-gold);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.hm-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---- Design card ---- */
+.dcard {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.dcard-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--viewer-bg);
+  display: grid;
+  place-items: center;
+}
+.dcard-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.dcard-ph {
+  font-size: 1.4rem;
+}
+.dcard-media .dcard-viewer {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  aspect-ratio: auto;
+  min-height: 0;
+}
+.dcard-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+.dcard-title {
+  font-size: 1.05rem;
+  margin: 0;
+}
+.dcard-title a {
+  color: var(--text);
+  text-decoration: none;
+}
+.dcard-title a:hover {
+  color: var(--gold);
+  text-decoration: underline;
+}
+.dcard-blurb {
+  margin: 0;
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.dcard-chips {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.dcard-foot {
+  margin: auto 0 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+.dcard-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---- Gallery ---- */
+.gal-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  align-items: end;
+  margin: 12px 0;
+}
+.gal-field {
+  display: grid;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.gal-field select,
+.gal-field input {
+  width: 100%;
+  min-width: 0;
+}
+.gal-search {
+  grid-column: span 2;
+}
+.gal-chips {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.gal-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.gal-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.gal-detail .viewer {
+  aspect-ratio: 1 / 1;
+}
+.gal-toggle {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.gal-toggle .btn[aria-pressed='true'] {
+  background: var(--gold);
+  color: var(--on-gold);
+  border-color: var(--gold);
+}
+.gal-spec th {
+  width: 40%;
+  color: var(--muted);
+  font-weight: 500;
+}
+.gal-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* ---- Saved ---- */
+.sv-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.sv-item {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+.sv-thumb {
+  aspect-ratio: 4 / 3;
+  background: var(--viewer-bg);
+  border-radius: var(--r1);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.sv-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.sv-name {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+}
+.sv-info p {
+  margin: 0 0 4px;
+}
+.sv-date {
+  font-size: 0.85rem;
+}
+.sv-actions,
+.sv-toolbar,
+.sv-rename {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.sv-actions {
+  margin-top: 8px;
+}
+
+/* ---- Compare ---- */
+.cmp-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.cmp-col {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.cmp-col .viewer {
+  aspect-ratio: 1 / 1;
+  min-height: 220px;
+}
+.cmp-name {
+  font-size: 1.05rem;
+  margin: 0;
+}
+.cmp-empty {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1;
+  min-height: 220px;
+  border: 1px dashed var(--line);
+  border-radius: var(--r1);
+}
+.cmp-table-wrap {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+.cmp-table th[scope='row'] {
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.cmp-table tr.diff td,
+.cmp-table tr.diff th {
+  background: color-mix(in srgb, var(--gold) 14%, transparent);
+}
+.cmp-table tr.diff th[scope='row'] {
+  color: var(--text);
+  box-shadow: inset 3px 0 0 var(--gold);
+}
+
+@media (max-width: 860px) {
+  .hm-hero,
+  .gal-detail {
+    grid-template-columns: 1fr;
+  }
+  .cmp-cols {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .gal-search {
+    grid-column: 1 / -1;
+  }
+  .sv-item {
+    grid-template-columns: 1fr;
+  }
+  .gal-grid {
+    grid-template-columns: 1fr;
+  }
+}

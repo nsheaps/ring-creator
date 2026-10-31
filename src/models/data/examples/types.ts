@@ -8,4 +8,6 @@ export interface ExampleDesign extends Design {
   priceUsd?: number | null;
   source?: { name: string; url: string };
   designFamily: string;
+  /** Which view best shows this example: bands-only items default to 'band'. */
+  view?: 'ring' | 'band' | 'set';
 }

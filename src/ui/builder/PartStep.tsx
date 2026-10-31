@@ -1,7 +1,7 @@
-import { listModels } from '@/models/registry';
+import type { ReactNode } from 'react';
 import type { BandStyleModel, HeadModel, ShankModel, Params } from '@/models/types';
 import { ParamControls } from '@/ui/Controls';
-import { Dots, ModelCard, type StepProps } from './common';
+import { Dots, ModelCard } from './common';
 
 type Part = HeadModel | ShankModel | BandStyleModel;
 
@@ -25,7 +25,7 @@ export function PartPicker<T extends Part>({
   params: Params;
   onParam: (key: string, v: number | string | boolean) => void;
   incompatible?: (m: T) => string | undefined;
-  extra?: (m: T) => React.ReactNode;
+  extra?: (m: T) => ReactNode;
 }) {
   const sel = models.find((m) => m.id === selectedId);
   return (
@@ -77,6 +77,3 @@ export function shankDots(m: ShankModel) {
     </span>
   );
 }
-
-export { listModels };
-export type { StepProps };
