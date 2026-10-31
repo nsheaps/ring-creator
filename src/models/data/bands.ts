@@ -99,6 +99,18 @@ const minThickness: Control = {
   help: '0 = use the band thickness exactly.',
 };
 
+const surface: Control = {
+  type: 'select',
+  key: 'surface',
+  label: 'Surface',
+  options: [
+    { value: 'smooth', label: 'Smooth' },
+    { value: 'brushed', label: 'Brushed grain' },
+    { value: 'engraved', label: 'Engraved scroll' },
+  ],
+  help: 'Brushed cuts fine grain lines round the band; engraved cuts a running scroll over the top half.',
+};
+
 interface Base {
   id: string;
   name: string;
@@ -129,8 +141,8 @@ export const bands: BandStyleModel[] = [
     cons: ['Heavier than a flat band of the same width', 'Shows scratches on a high polish'],
     bestFor: ['Everyday wear', 'First-time ring wearers', 'Traditional sets'],
     related: ['plain-flat', 'mens-classic', 'comfort-fit'],
-    params: { profile: 'comfort-dome', comfortFit: true },
-    controls: [profile(), comfortFit],
+    params: { profile: 'comfort-dome', comfortFit: true, surface: 'smooth' },
+    controls: [profile(), comfortFit, surface],
     hasStones: false,
     contourCapable: false,
     audience: 'any',
@@ -140,14 +152,14 @@ export const bands: BandStyleModel[] = [
     name: 'Plain flat',
     summary: 'A crisp, flat-topped band with squared edges for a modern look.',
     description:
-      'A flat band has a level top surface and neat, lightly eased edges. It reads as clean and architectural, and it sits flush against a straight engagement shank with no gap.\n\nThe flat face catches light as one bright plane, so finishes such as brushed or satin show up beautifully. A comfort-fit inside can be added without changing the look from above.',
+      'A flat band has a level top surface and neat, lightly eased edges. It reads as clean and architectural, and it sits flush against a straight engagement shank with no gap.\n\nThe flat face catches light as one bright plane, so brushed grain or an engraved scroll (both cut into the metal) show up beautifully. A comfort-fit inside can be added without changing the look from above.',
     tags: ['modern', 'plain', 'flat', 'minimal'],
     pros: ['Sits flush beside straight shanks', 'Shows brushed finishes well', 'Contemporary look'],
     cons: ['Edges can feel firmer than a dome', 'Flat face shows dents'],
     bestFor: ['Minimalist sets', 'Stacking', 'Brushed or satin finishes'],
     related: ['plain-comfort', 'notched', 'stacker-trio'],
-    params: { profile: 'flat', comfortFit: true },
-    controls: [profile(), comfortFit],
+    params: { profile: 'flat', comfortFit: true, surface: 'smooth' },
+    controls: [profile(), comfortFit, surface],
     hasStones: false,
     contourCapable: false,
     audience: 'any',
@@ -685,8 +697,14 @@ export const bands: BandStyleModel[] = [
     cons: ['Plain for some tastes', 'Wide bands need a slightly larger size'],
     bestFor: ['Grooms', 'Everyday wear'],
     related: ['plain-comfort', 'mens-hammered', 'mens-inlay'],
-    params: { profile: 'comfort-dome', comfortFit: true, minWidthMm: 6, minThicknessMm: 2 },
-    controls: [profile(['knife']), comfortFit, minWidth, minThickness],
+    params: {
+      profile: 'comfort-dome',
+      comfortFit: true,
+      minWidthMm: 6,
+      minThicknessMm: 2,
+      surface: 'smooth',
+    },
+    controls: [profile(['knife']), comfortFit, minWidth, minThickness, surface],
     hasStones: false,
     contourCapable: false,
     audience: 'men',

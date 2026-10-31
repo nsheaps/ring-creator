@@ -3,6 +3,15 @@
  * stacker-trio, mens-classic, mens-hammered.
  */
 import type * as THREE from 'three';
+import {
+  BRUSH_PITCH,
+  ENGRAVE_STEP,
+  SURFACE_TEXTURES,
+  brushedDepth,
+  engravedDepth,
+  type ProfilePoint,
+  type SurfaceTexture,
+} from '../helpers';
 import { registerBandBuilder } from '../builders';
 import type { BandCtx, Part } from '../types';
 import {
@@ -25,6 +34,7 @@ import {
   sweep,
   sweepSection,
   TAU,
+  TOP,
   type Section,
   type ZFn,
 } from './common';
@@ -60,6 +70,82 @@ export function profileSection(
   }
 }
 
+/**
+ * Closed profile of a whole section whose outer surface is sampled evenly (nTop steps) and cut by `cut(u)`:
+ * inner surface left -> right, then outer surface right -> left, like slicePoly.
+ */
+function cutPoly(s: Section, nTop: number, cut: (u: number) => number): ProfilePoint[] {
+  const h = s.W / 2;
+  const out: ProfilePoint[] = [];
+  const nIn = 12;
+  for (let i = 0; i < nIn; i++) {
+    const u = -h * Math.cos((Math.PI * i) / (nIn - 1));
+    out.push([u, s.bot(u)]);
+  }
+  for (let i = 0; i <= nTop; i++) {
+    const u = h - (2 * h * i) / nTop;
+    const d = i === 0 || i === nTop ? 0 : cut(u);
+    out.push([u, Math.max(s.top(u) - d, s.bot(u) + 0.05)]);
+  }
+  return out;
+}
+
+/** Sweeps a band section with a brushed or engraved outer surface (a plain sweep for 'smooth'). */
+export function texturedSweep(
+  s: Section,
+  surface: SurfaceTexture,
+  z: ZFn | undefined,
+  smoothSweep: () => THREE.BufferGeometry,
+): THREE.BufferGeometry[] {
+  if (surface === 'smooth') return [smoothSweep()];
+  const h = s.W / 2;
+  // keep the field away from rounded edges: only the part of the top that is nearly level is textured
+  const field = Math.max(0.3, h - Math.max(0.2, h * 0.12));
+  if (surface === 'brushed') {
+    const segments = segs(128, z);
+    // ~25k quads at most: wide bands get a slightly coarser grain
+    const nTop = clamp(Math.floor(25000 / segments) - 13, 24, 180);
+    const pitch = Math.max(BRUSH_PITCH, ((2 * h) / nTop) * 5);
+    return [
+      sweep({
+        segments,
+        zOffset: z,
+        smoothProfile: true,
+        profile: () => cutPoly(s, nTop, (u) => brushedDepth(u, field, 0.03, pitch)),
+      }),
+    ];
+  }
+  const rOut = s.top(0);
+  const nTop = clamp(Math.ceil((2 * h) / ENGRAVE_STEP), 24, 72);
+  // both sweeps together keep to ~52k triangles
+  const dense = Math.max(120, Math.floor(26000 / (nTop + 13)) - 100);
+  const zone = Math.min((dense * ENGRAVE_STEP) / (2 * rOut), Math.PI * 0.75);
+  const fade = (t: number) => 1 - smoothstep(zone - 0.12, zone - 0.02, Math.abs(fromTop(t)));
+  const profile = (t: number) => {
+    const m = fade(t);
+    const sArc = fromTop(t) * rOut;
+    return cutPoly(s, nTop, (u) => (m > 0 ? m * engravedDepth(sArc, u, field) : 0));
+  };
+  return [
+    sweep({
+      thetaStart: TOP - zone,
+      thetaEnd: TOP + zone,
+      segments: dense,
+      zOffset: z,
+      smoothProfile: true,
+      profile,
+    }),
+    sweep({
+      thetaStart: TOP + zone,
+      thetaEnd: TOP - zone + TAU,
+      segments: 100,
+      zOffset: z,
+      smoothProfile: true,
+      profile,
+    }),
+  ];
+}
+
 function plain(kind: ProfileKind) {
   return (ctx: BandCtx): Part[] => {
     const { W, T, R } = dims(ctx);
@@ -67,19 +153,15 @@ function plain(kind: ProfileKind) {
     const k = str(ctx.params, 'profile', PROFILE_KINDS, kind);
     const s = profileSection(k, W, T, R, comfort);
     const z = contourZ(ctx);
-    return parts(
-      part(
-        'band-metal',
-        [
-          sweepSection(s, {
-            z,
-            smooth: k !== 'knife' && k !== 'beveled' && k !== 'flat',
-            n: k === 'flat' ? 20 : 14,
-          }),
-        ],
-        `${k} band`,
-      ),
+    const surface = k === 'knife' ? 'smooth' : str(ctx.params, 'surface', SURFACE_TEXTURES, 'smooth');
+    const geos = texturedSweep(s, surface, z, () =>
+      sweepSection(s, {
+        z,
+        smooth: k !== 'knife' && k !== 'beveled' && k !== 'flat',
+        n: k === 'flat' ? 20 : 14,
+      }),
     );
+    return parts(part('band-metal', geos, `${k} band`));
   };
 }
 
@@ -154,7 +236,7 @@ registerBandBuilder('notched', (ctx) => {
   const curved = str(ctx.params, 'notchShape', ['square', 'curved'] as const, 'square') === 'curved';
   // the notch faces the engagement ring, which sits on the side opposite the contour direction (default -Z).
   const side = ctx.contour ? -ctx.contour.direction : -1;
-  const ramp = Math.min(0.08, half * 0.4);
+  const ramp = Math.min(0.14, half * 0.5);
   const notch = (t: number) => {
     const d = Math.abs(fromTop(t));
     if (curved) return d >= half ? 0 : Math.sqrt(1 - (d / half) ** 2);
@@ -164,8 +246,22 @@ registerBandBuilder('notched', (ctx) => {
     segments: 256,
     smoothProfile: true,
     profile: (t) => {
-      const cut = depth * notch(t);
-      return side < 0 ? slicePoly(s, -W / 2 + cut, W / 2, 14) : slicePoly(s, -W / 2, W / 2 - cut, 14);
+      const f = notch(t);
+      const cut = depth * f;
+      // the cut face gets the same eased edge as the band's own edges, so the notch reads as shaped, not sawn
+      const rad = Math.min(0.35, T * 0.25) * Math.min(1, f * 4);
+      const edge = side < 0 ? -W / 2 + cut : W / 2 - cut;
+      const eased: Section = {
+        W,
+        bot: s.bot,
+        top: (u) => {
+          const x = rad - Math.abs(u - edge);
+          return x > 0 && rad > 0
+            ? s.top(u) - rad * (1 - Math.sqrt(Math.max(0, 1 - (x / rad) ** 2)))
+            : s.top(u);
+        },
+      };
+      return side < 0 ? slicePoly(eased, edge, W / 2, 16) : slicePoly(eased, -W / 2, edge, 16);
     },
   });
   return parts(part('band-metal', [g], 'notched band'));
@@ -244,8 +340,8 @@ registerBandBuilder('mens-hammered', (ctx) => {
   // the cell count around must be whole so the pattern wraps without a seam
   const cellsAround = Math.max(8, Math.round(circ / cell));
   const cellA = circ / cellsAround;
-  const segments = Math.min(420, cellsAround * 7);
-  const n = 20;
+  const segments = Math.min(480, cellsAround * 9);
+  const n = 24;
   const g = sweep({
     segments,
     zOffset: z,
@@ -263,8 +359,6 @@ registerBandBuilder('mens-hammered', (ctx) => {
       return slicePoly(s, -W / 2, W / 2, n);
     },
   });
-  // hammered metal reads as facets: flat normals
-  g.deleteAttribute('normal');
-  g.computeVertexNormals();
+  // smooth normals: each dent is a soft round hollow, the ridges between dents catch the light
   return parts(part('band-metal', [g], 'hammered band'));
 });

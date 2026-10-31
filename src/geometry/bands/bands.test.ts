@@ -10,6 +10,7 @@ import './index';
 import { BAND_BUILDER_KEYS } from './index';
 import { fitStones } from '../helpers';
 import { signedVolume } from './common';
+import { detachedIslands } from '../shanks/connectivity';
 
 const TRI_BUDGET = 60000;
 const VOCAB = [
@@ -202,6 +203,12 @@ describe('band builders', () => {
           if (model?.hasStones && id !== 'vine-band')
             expect(s.slots.has('band-stone'), 'stones present').toBe(true);
           if (!model?.hasStones) expect(s.slots.has('band-stone')).toBe(false);
+          // every piece of metal is fused to the band (a stacker set is three separate rings by design)
+          if (id !== 'stacker-trio') {
+            const metal = parts.filter((p) => p.slot !== 'band-stone').map((p) => p.geometry);
+            const islands = detachedIslands(metal);
+            expect(islands, JSON.stringify(islands.slice(0, 3))).toEqual([]);
+          }
         });
       }
     });
@@ -217,6 +224,24 @@ describe('band invariants', () => {
   };
   const slot = (parts: Part[], s: string) => parts.filter((p) => p.slot === s);
   const box = (parts: Part[]) => stats(parts).box;
+
+  for (const id of ['plain-comfort', 'plain-flat', 'mens-classic'])
+    it(`${id}: brushed and engraved surfaces are cut in, seamless and within budget`, () => {
+      for (const contour of [undefined, CONTOUR]) {
+        const plain = stats(build(id, {}, { contour }));
+        for (const surface of ['brushed', 'engraved']) {
+          const ps = build(id, { surface }, { contour });
+          const st = stats(ps);
+          expect(st.tris, surface).toBeGreaterThan(plain.tris * 1.5);
+          expect(st.tris, surface).toBeLessThan(TRI_BUDGET);
+          expect(Math.abs(st.minR - R), surface).toBeLessThan(0.02);
+          // a cut never raises the surface (the plain sweep samples the dome a touch below its crest)
+          expect(st.maxR, surface).toBeLessThanOrEqual(plain.maxR + 0.01);
+          expect(detachedIslands(ps.map((p) => p.geometry)), surface).toEqual([]);
+          for (const p of ps) expect(signedVolume(p.geometry), surface).toBeGreaterThan(0);
+        }
+      }
+    });
 
   it('half eternity keeps its stones on the top half; full eternity goes all round', () => {
     const half = box(slot(build('half-eternity'), 'band-stone'));

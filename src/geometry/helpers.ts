@@ -388,3 +388,285 @@ export function fitStones(a0: number, a1: number, r: number, size: number, gap: 
   const start = (a0 + a1) / 2 - (step * (count - 1)) / 2;
   return { count, size, pitch, angles: Array.from({ length: count }, (_, i) => start + step * i) };
 }
+
+// ---------------------------------------------------------------------------------------------
+// Surface-lying ornament: leaves, vines and scrolls that sit ON the outer surface of a band
+// ---------------------------------------------------------------------------------------------
+
+/** The outer surface of a band section, parameterised by arc length from the top centre (positive towards +u). */
+export interface OuterCurve {
+  pts: ProfilePoint[];
+  nrm: [number, number][];
+  cum: number[];
+  /** arc length from the +u end to the top centre */
+  mid: number;
+  /** total arc length from the +u end over the top to the -u end */
+  total: number;
+}
+
+/** Arc-length table and outward normals for a polyline running from +u over the top to -u. */
+export function curveFrom(pts: ProfilePoint[]): OuterCurve {
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++)
+    cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const nrm: [number, number][] = pts.map((_, i) => {
+    const a = pts[Math.max(0, i - 1)];
+    const b = pts[Math.min(pts.length - 1, i + 1)];
+    const tu = b[0] - a[0];
+    const tr = b[1] - a[1];
+    const l = Math.hypot(tu, tr) || 1;
+    return [tr / l, -tu / l];
+  });
+  // the top centre: the highest point
+  let top = 0;
+  for (let i = 1; i < pts.length; i++) if (pts[i][1] > pts[top][1]) top = i;
+  return { pts, nrm, cum, mid: cum[top], total: cum[cum.length - 1] };
+}
+
+/** Point and outward normal on the curve at arc length lambda from the top centre (clamped to the curve). */
+export function onCurve(c: OuterCurve, lambda: number): { u: number; r: number; nu: number; nr: number } {
+  const target = Math.min(c.total, Math.max(0, c.mid - lambda));
+  let lo = 0;
+  let hi = c.cum.length - 1;
+  while (hi - lo > 1) {
+    const md = (lo + hi) >> 1;
+    if (c.cum[md] <= target) lo = md;
+    else hi = md;
+  }
+  const seg = c.cum[hi] - c.cum[lo] || 1;
+  const f = Math.min(1, Math.max(0, (target - c.cum[lo]) / seg));
+  const a = c.pts[lo];
+  const b = c.pts[hi];
+  const na = c.nrm[lo];
+  const nb = c.nrm[hi];
+  const nu = na[0] + (nb[0] - na[0]) * f;
+  const nr = na[1] + (nb[1] - na[1]) * f;
+  const l = Math.hypot(nu, nr) || 1;
+  return { u: a[0] + (b[0] - a[0]) * f, r: a[1] + (b[1] - a[1]) * f, nu: nu / l, nr: nr / l };
+}
+
+/**
+ * A band surface in (s, lambda, h) coordinates: s = arc length (mm) along the ring from the top (positive towards
+ * increasing theta), lambda = arc length across the outer surface from its centre line, h = height along the outward
+ * normal. Anything built in these coordinates with h >= -embed hugs the band.
+ */
+export interface SurfaceMap {
+  point(s: number, lambda: number, h: number): THREE.Vector3;
+  /** half the arc length across the outer surface at s (side midline to top centre) */
+  halfArc(s: number): number;
+}
+
+export function surfaceMapFrom(
+  curveAt: (theta: number) => OuterCurve,
+  rRef: number,
+  zOffset?: (theta: number) => number,
+  /** nothing is placed closer to the ring axis than this (keeps ornaments out of the finger hole) */
+  rMin = 0,
+): SurfaceMap {
+  const cache = new Map<number, OuterCurve>();
+  const at = (theta: number) => {
+    const key = Math.round(theta * 2000);
+    let c = cache.get(key);
+    if (!c) {
+      c = curveAt(key / 2000);
+      cache.set(key, c);
+    }
+    return c;
+  };
+  return {
+    point(s, lambda, h) {
+      const theta = Math.PI / 2 + s / rRef;
+      const q = onCurve(at(theta), lambda);
+      const r = Math.max(rMin, q.r + h * q.nr);
+      return new THREE.Vector3(
+        r * Math.cos(theta),
+        r * Math.sin(theta),
+        q.u + h * q.nu + (zOffset ? zOffset(theta) : 0),
+      );
+    },
+    halfArc(s) {
+      const c = at(Math.PI / 2 + s / rRef);
+      return Math.min(c.mid, c.total - c.mid);
+    },
+  };
+}
+
+/**
+ * Closed solid from rows of rings of points: rows[i] is a closed loop (same count every row). The two end rows are
+ * closed with fans to their centroids. Indexed; run through finish() for outward winding.
+ */
+export function loftRows(rows: THREE.Vector3[][]): THREE.BufferGeometry {
+  const m = rows[0].length;
+  const pos: number[] = [];
+  const idx: number[] = [];
+  for (const r of rows) for (const v of r) pos.push(v.x, v.y, v.z);
+  for (let i = 0; i + 1 < rows.length; i++)
+    for (let k = 0; k < m; k++) {
+      const k1 = (k + 1) % m;
+      const a = i * m + k;
+      const b = i * m + k1;
+      const c = (i + 1) * m + k;
+      const d = (i + 1) * m + k1;
+      idx.push(a, c, b, b, c, d);
+    }
+  const cap = (ri: number, flip: boolean) => {
+    const c = new THREE.Vector3();
+    for (const v of rows[ri]) c.add(v);
+    c.multiplyScalar(1 / m);
+    const ci = pos.length / 3;
+    pos.push(c.x, c.y, c.z);
+    for (let k = 0; k < m; k++) {
+      const a = ri * m + k;
+      const b = ri * m + ((k + 1) % m);
+      if (flip) idx.push(ci, b, a);
+      else idx.push(ci, a, b);
+    }
+  };
+  cap(0, false);
+  cap(rows.length - 1, true);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  return g;
+}
+
+export interface LeafSpec {
+  /** base of the leaf in surface coordinates */
+  s: number;
+  lambda: number;
+  /** direction in the (s, lambda) plane, radians from +s */
+  angle: number;
+  length: number;
+  width: number;
+  /** thickness of the leaf blade at its middle */
+  thick: number;
+  /** sideways curl of the tip, as a fraction of the length (signed) */
+  curl?: number;
+  /** how far the underside sinks into the band (keeps it fused) */
+  embed?: number;
+}
+
+/** A leaf lying flat on the band: pointed lens outline, domed blade with a midrib groove, underside sunk into the metal. */
+export function surfaceLeaf(map: SurfaceMap, L: LeafSpec, nAlong = 14, nAround = 14): THREE.BufferGeometry {
+  const embed = L.embed ?? 0.08;
+  const ca = Math.cos(L.angle);
+  const sa = Math.sin(L.angle);
+  const curl = L.curl ?? 0;
+  const rows: THREE.Vector3[][] = [];
+  for (let i = 0; i <= nAlong; i++) {
+    const xi = 0.02 + (0.96 * i) / nAlong;
+    // pointed lens with a short stalk: narrow base, widest a third of the way, sharp tip
+    const hw = Math.max(0.03, (L.width / 2) * ((xi ** 0.7 * (1 - xi) ** 1.1) / 0.36));
+    const body = Math.sin(Math.PI * Math.min(1, xi * 1.15)) ** 0.5;
+    const row: THREE.Vector3[] = [];
+    for (let k = 0; k < nAround; k++) {
+      const phi = (k / nAround) * Math.PI * 2;
+      const v = Math.cos(phi);
+      const sn = Math.sin(phi);
+      const top =
+        sn > 0
+          ? L.thick * (0.35 + 0.65 * body) * sn ** 0.6 * (1 - 0.45 * Math.exp(-((v / 0.22) ** 2)))
+          : -embed * -sn;
+      const along = xi * L.length;
+      const across = v * hw + curl * L.length * xi * xi;
+      row.push(map.point(L.s + along * ca - across * sa, L.lambda + along * sa + across * ca, top + 0.005));
+    }
+    rows.push(row);
+  }
+  return loftRows(rows);
+}
+
+/** A raised round wire lying along a path on the band surface (vine stems, scroll lines). */
+export function surfaceWire(
+  map: SurfaceMap,
+  path: (f: number) => [number, number],
+  n: number,
+  radius: (f: number) => number,
+  embed = 0.08,
+  sides = 8,
+  lift: (f: number) => number = () => 0,
+): THREE.BufferGeometry {
+  const rows: THREE.Vector3[][] = [];
+  for (let i = 0; i <= n; i++) {
+    const f = i / n;
+    const [s, l] = path(f);
+    const [s0, l0] = path(Math.max(0, f - 0.5 / n));
+    const [s1, l1] = path(Math.min(1, f + 0.5 / n));
+    let ts = s1 - s0;
+    let tl = l1 - l0;
+    const len = Math.hypot(ts, tl) || 1;
+    ts /= len;
+    tl /= len;
+    const rad = Math.max(0.02, radius(f));
+    const row: THREE.Vector3[] = [];
+    for (let k = 0; k < sides; k++) {
+      const phi = (k / sides) * Math.PI * 2;
+      const v = Math.cos(phi) * rad;
+      const sn = Math.sin(phi);
+      const h = sn > 0 ? rad * 0.85 * sn : -embed * -sn;
+      // offset across the path: perpendicular (-tl, ts) in the (s, lambda) plane
+      row.push(map.point(s - tl * v, l + ts * v, h + 0.005 + lift(f)));
+    }
+    rows.push(row);
+  }
+  return loftRows(rows);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Surface textures cut into the outer surface: brushed grain and engraved scrollwork
+// ---------------------------------------------------------------------------------------------
+
+export type SurfaceTexture = 'smooth' | 'brushed' | 'engraved';
+export const SURFACE_TEXTURES = ['smooth', 'brushed', 'engraved'] as const;
+
+/** Spacing (mm) of brushed grain lines, and the sample step needed to resolve them. */
+export const BRUSH_PITCH = 0.2;
+/** Sample step (mm) needed to resolve engraved lines. */
+export const ENGRAVE_STEP = 0.075;
+
+/** Brushed grain: fine parallel grooves running round the ring (depth in mm at axial u; hw = half width). */
+export function brushedDepth(u: number, hw: number, depth = 0.03, pitch = BRUSH_PITCH): number {
+  const edge = Math.min(1, Math.max(0, (hw - 0.08 - Math.abs(u)) / 0.15));
+  return depth * edge * Math.max(0, Math.cos((Math.PI * 2 * u) / pitch)) ** 3;
+}
+
+/**
+ * Engraved running scroll: a wave down the middle of the band with a spiral curl in each bay, cut as a rounded
+ * groove. s = arc length (mm) along the ring, u = axial position from the band centre, hw = half width of the
+ * engraved field. Returns the depth (mm) of the cut at that point.
+ */
+export function engravedDepth(s: number, u: number, hw: number, depth = 0.08, line = 0.2): number {
+  const amp = hw * 0.42;
+  const period = Math.max(2.2, hw * 4.2);
+  const k = (Math.PI * 2) / period;
+  const half = line / 2;
+  // the wave (distance measured across the local slope)
+  const slope = amp * k * Math.cos(k * s);
+  let d = Math.abs(u - amp * Math.sin(k * s)) / Math.sqrt(1 + slope * slope);
+  // curls: one per half period, in the bay opposite each crest, winding towards the wave
+  const j = Math.round((s - period / 4) / (period / 2));
+  for (const jj of [j - 1, j, j + 1]) {
+    const sc = period / 4 + (jj * period) / 2;
+    const side = jj % 2 === 0 ? -1 : 1; // crest at +amp for even jj, so the curl sits at -u
+    const cu = side * hw * 0.5;
+    const turns = 1.4;
+    const rMax = Math.min(hw * 0.46, period * 0.2);
+    const b = rMax / (turns * Math.PI * 2);
+    const ds = (s - sc) * side; // mirror so every curl winds the same way relative to its bay
+    const du = (u - cu) * side;
+    const rho = Math.hypot(ds, du);
+    if (rho > rMax + half) continue;
+    let phi = Math.atan2(du, ds);
+    if (phi < 0) phi += Math.PI * 2;
+    for (let n = 0; n <= Math.ceil(turns); n++) {
+      const ph = phi + n * Math.PI * 2;
+      if (ph > turns * Math.PI * 2 + 0.3) break;
+      d = Math.min(d, Math.abs(rho - b * ph));
+    }
+  }
+  // keep the field inside the band edges
+  if (Math.abs(u) > hw) return 0;
+  if (d >= half) return 0;
+  const x = d / half;
+  return depth * (1 - x * x);
+}

@@ -36,16 +36,16 @@ function cathedral(ctx: ShankCtx): ShankResult {
   const band = taperedBand(R, tp, { outerExp, innerExp: 3, split: 0.6 });
   const seatY = R + tp.tTop;
   const archHeight = num(p, 'archHeightMm', 2.0, 0.5, 5);
-  const archStart = deg(num(p, 'archStartDeg', 40, 20, 70));
+  const archStart = deg(num(p, 'archStartDeg', 45, 20, 70));
   const archW =
     num(p, 'archWidthMm', 0, 0, 5) || clamp(Math.min(tp.wTop, (ctx.headHalfAlongFinger || 3) * 0.7), 1.2, 4);
-  const archT = num(p, 'archThicknessMm', 1.1, 0.6, 2.5);
+  const archT = num(p, 'archThicknessMm', 1.5, 0.6, 2.5);
   const hx = clamp((ctx.headHalfAlongBand || 3) * 0.72, 1.5, 7);
   const arches: THREE.BufferGeometry[] = [];
   for (const side of [1, -1]) {
     const th0 = TOP - side * archStart;
     const t0 = thickAt(tp, th0);
-    const r0 = R + t0 * 0.55;
+    const r0 = R + t0 * 0.5;
     const P0 = new THREE.Vector3(r0 * Math.cos(th0), r0 * Math.sin(th0), 0);
     const T0 = new THREE.Vector3(-Math.sin(th0), Math.cos(th0), 0).multiplyScalar(side); // towards the top
     const P3 = new THREE.Vector3(side * hx, seatY + archHeight, 0);
@@ -56,7 +56,7 @@ function cathedral(ctx: ShankCtx): ShankResult {
       P0.clone().addScaledVector(T0, dist * 0.5),
       P3.clone().addScaledVector(T1, -dist * 0.45),
       P3,
-      28,
+      40,
     );
     const frames = planarFrames(path);
     const wStart = widthAt(tp, th0);
@@ -65,10 +65,20 @@ function cathedral(ctx: ShankCtx): ShankResult {
         tube(path, frames, (i) => {
           const f = i / (path.length - 1);
           const w = wStart + (archW - wStart) * smooth(f);
-          const t = t0 * 0.8 + (archT - t0 * 0.8) * smooth(f);
-          return bandSection({ w, t, R: -t / 2, outerExp: 2.6, innerExp: 2.6, split: 0.5, n: 16 }).map(
-            ([u, v]) => [u, v],
-          );
+          // the arch leaves the band at full section and keeps most of it all the way up to the head
+          const t = t0 * 0.95 + (archT - t0 * 0.95) * smooth(f);
+          // the top of the arch rounds off where it tucks against the head instead of ending in a flat cut
+          const x = clamp((f - 0.82) / 0.18, 0, 1);
+          const nose = Math.max(0.15, Math.sqrt(1 - x * x));
+          return bandSection({
+            w: w * (0.4 + 0.6 * nose),
+            t: t * nose,
+            R: -(t * nose) / 2,
+            outerExp: 2.6,
+            innerExp: 2.6,
+            split: 0.5,
+            n: 16,
+          }).map(([u, v]) => [u, v]);
         }),
       ),
     );
@@ -148,6 +158,7 @@ function bypass(ctx: ShankCtx): ShankResult {
   const t1 = TOP + TAU + overlap;
   const span = t1 - t0;
   const tipTaper = num(p, 'tipTaper', 0.35, 0, 0.7);
+  const noseMm = Math.min(1.2, tp.wTop * 0.6);
   const g = sweep({
     thetaStart: t0,
     thetaEnd: t1,
@@ -156,9 +167,12 @@ function bypass(ctx: ShankCtx): ShankResult {
     profile: (th) => {
       const endD = Math.min(th - t0, t1 - th);
       const tipF = 1 - tipTaper * (1 - smooth(endD / (overlap * 1.4)));
+      // rounded nose: the last ~1.2 mm closes like a quarter circle instead of ending in a flat cut
+      const x = clamp(1 - (endD * R) / noseMm, 0, 1);
+      const nose = Math.max(0.12, Math.sqrt(1 - x * x));
       return bandSection({
-        w: widthAt(tp, th) * tipF,
-        t: thickAt(tp, th) * (0.85 + 0.15 * tipF),
+        w: widthAt(tp, th) * tipF * nose,
+        t: thickAt(tp, th) * (0.85 + 0.15 * tipF) * (0.35 + 0.65 * nose),
         R,
         outerExp,
         innerExp: 3,

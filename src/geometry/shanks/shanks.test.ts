@@ -7,6 +7,7 @@ import { shankBuilders } from '../builders';
 import type { BuiltStone, Part, ShankCtx } from '../types';
 import './index';
 import { bandSection, signedVolume } from './common';
+import { detachedIslands } from './connectivity';
 
 const TRI_BUDGET = 60000;
 const VOCAB = [
@@ -195,6 +196,25 @@ describe('shank models', () => {
   }
 });
 
+describe('connectivity check', () => {
+  const res = () => {
+    const r = shankBuilders.get('plain-round')?.(stubCtx({}));
+    if (!r) throw new Error('plain-round');
+    return r;
+  };
+  const band = () => res().parts[0].geometry;
+  const top = res().seatY;
+  const ball = (y: number) => new THREE.SphereGeometry(0.3, 8, 6).translate(0, y, 0);
+  it('accepts a bead sunk into the band or just touching it', () => {
+    expect(detachedIslands([band(), ball(top)])).toEqual([]);
+    expect(detachedIslands([band(), ball(top + 0.3 + 0.03)])).toEqual([]);
+  });
+  it('flags a floating bead and a bead hanging off another floating one', () => {
+    expect(detachedIslands([band(), ball(top + 0.5)])).toHaveLength(1);
+    expect(detachedIslands([band(), ball(top + 3), ball(top + 3.4)])).toHaveLength(2);
+  });
+});
+
 describe('section helper', () => {
   it('puts the lowest point exactly on R', () => {
     const sec = bandSection({ w: 2, t: 1.8, R: 8.5, outerExp: 2, innerExp: 3, split: 0.6 });
@@ -241,6 +261,15 @@ describe('shank builders', () => {
           expect(topNear).toBeGreaterThan(res.seatY - 0.4);
         });
       }
+      it('has no floating or detached metal (every piece fused to the band)', () => {
+        const fn = shankBuilders.get(id);
+        if (!fn) throw new Error('missing');
+        for (const R of [7.5, 10]) {
+          const metal = fn(stubCtx(params, { R })).parts.filter((q) => q.slot === 'shank-metal');
+          const islands = detachedIslands(metal.map((q) => q.geometry));
+          expect(islands, `R=${R}: ${JSON.stringify(islands.slice(0, 3))}`).toEqual([]);
+        }
+      });
       it('is deterministic', () => {
         const fn = shankBuilders.get(id);
         if (!fn) throw new Error('missing');
@@ -272,6 +301,62 @@ describe('model-specific invariants', () => {
     if (!fn) throw new Error(id);
     return fn(stubCtx({ ...(byId.get(id)?.params ?? {}), ...params }, o));
   };
+  for (const id of ['plain-round', 'plain-flat', 'comfort-fit', 'wide', 'tapered', 'dainty']) {
+    it(`${id}: brushed and engraved surfaces are cut into the metal, within budget and seamless`, () => {
+      const plain = stats(build(id, {}).parts);
+      for (const surface of ['brushed', 'engraved']) {
+        const fn = shankBuilders.get(id);
+        if (!fn) throw new Error(id);
+        const res = fn(stubCtx({ ...(byId.get(id)?.params ?? {}), surface }));
+        const st = stats(res.parts);
+        expect(st.tris, surface).toBeGreaterThan(plain.tris * 1.5);
+        expect(st.tris, surface).toBeLessThan(TRI_BUDGET);
+        expect(Math.abs(st.minRadial - 8.5), surface).toBeLessThan(0.05);
+        // a cut never raises the surface
+        expect(st.maxRadial, surface).toBeLessThanOrEqual(plain.maxRadial + 1e-3);
+        expect(detachedIslands(res.parts.map((q) => q.geometry)), surface).toEqual([]);
+        for (const q of res.parts) expect(signedVolume(q.geometry), surface).toBeGreaterThan(0);
+      }
+    });
+  }
+  it('plain, comfort-fit and dainty are clearly different sections', () => {
+    const box = (id: string) => stats(build(id).parts).box;
+    const bottomThick = (id: string) => {
+      const a = build(id).parts[0].geometry.getAttribute('position').array as ArrayLike<number>;
+      let lo = Infinity;
+      for (let i = 0; i < a.length; i += 3)
+        if (Math.abs(a[i]) < 0.3 && a[i + 1] < 0) lo = Math.min(lo, a[i + 1]);
+      return -lo - 8.5;
+    };
+    // dainty is a fine wire: narrower and thinner than the plain shank
+    expect(box('dainty').max.z * 2).toBeLessThan(1.6);
+    expect(bottomThick('dainty')).toBeLessThan(bottomThick('plain-round') - 0.3);
+    // comfort fit is visibly heavier than the plain shank
+    expect(bottomThick('comfort-fit')).toBeGreaterThan(bottomThick('plain-round') + 0.3);
+    expect(box('comfort-fit').max.z).toBeGreaterThan(box('plain-round').max.z + 0.1);
+  });
+  it('plain round has a flat inside; comfort fit a domed one', () => {
+    const edgeLift = (id: string) => {
+      const a = build(id).parts[0].geometry.getAttribute('position').array as ArrayLike<number>;
+      const w = stats(build(id).parts).box.max.z;
+      let lo = Infinity;
+      for (let i = 0; i < a.length; i += 3)
+        if (Math.abs(a[i + 2]) > w * 0.7 && a[i + 1] < -8 && Math.abs(a[i]) < 0.5)
+          lo = Math.min(lo, Math.hypot(a[i], a[i + 1]));
+      return lo - 8.5;
+    };
+    expect(edgeLift('plain-round')).toBeLessThan(0.08);
+    expect(edgeLift('comfort-fit')).toBeGreaterThan(0.2);
+  });
+  it('leaf-vine leaves lie on the band: nothing stands far off the surface on the shoulders', () => {
+    const res = build('leaf-vine');
+    const a = res.parts[0].geometry.getAttribute('position').array as ArrayLike<number>;
+    // band: R 8.5, thickness <= 1.8 (+6 % noise); wander 0.3; width <= 2.0 (+12 %)
+    for (let i = 0; i < a.length; i += 3) {
+      expect(Math.hypot(a[i], a[i + 1])).toBeLessThan(8.5 + 1.8 * 1.06 + 0.45);
+      expect(Math.abs(a[i + 2])).toBeLessThan(1.0 * 1.12 + 0.3 + 0.45);
+    }
+  });
   it('tapered is wider at the top than at the bottom', () => {
     const res = build('tapered');
     const a = res.parts[0].geometry.getAttribute('position').array as ArrayLike<number>;

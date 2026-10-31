@@ -4,7 +4,15 @@
 import * as THREE from 'three';
 import { registerBandBuilder } from '../builders';
 import type { BandCtx, Part } from '../types';
-import { braidStrands, ropeStrands, type ProfilePoint } from '../helpers';
+import {
+  braidStrands,
+  curveFrom,
+  ropeStrands,
+  surfaceLeaf,
+  surfaceMapFrom,
+  surfaceWire,
+  type ProfilePoint,
+} from '../helpers';
 import { profileSection, PROFILE_KINDS } from './plainBands';
 import {
   accentStone,
@@ -23,40 +31,15 @@ import {
   parts,
   ringFrame,
   slicePoly,
-  sphere,
   str,
   sweep,
   sweepSection,
   TAU,
+  TOP,
   type Section,
   type ZFn,
 } from './common';
-
-/** Round wire whose centre wanders: u = uc(theta), r = rc(theta). */
-function strand(
-  uc: (t: number) => number,
-  rc: (t: number) => number,
-  rho: number,
-  segments: number,
-  z: ZFn | undefined,
-  sides = 10,
-): THREE.BufferGeometry {
-  return sweep({
-    segments,
-    zOffset: z,
-    smoothProfile: true,
-    profile: (t) => {
-      const cu = uc(t);
-      const cr = rc(t);
-      const pts: ProfilePoint[] = [];
-      for (let i = 0; i < sides; i++) {
-        const a = (i / sides) * TAU;
-        pts.push([cu + rho * Math.cos(a), cr + rho * Math.sin(a)]);
-      }
-      return pts;
-    },
-  });
-}
+import { finish } from '../shanks/common';
 
 // ---------------------------------------------------------------------------------------------
 // Twisted rope (two round wires wound around each other) and braid (three flat ribbons plaited)
@@ -94,49 +77,79 @@ registerBandBuilder('braided-band', (ctx) => {
 registerBandBuilder('vine-band', (ctx) => {
   const { W, T, R } = dims(ctx);
   const z = contourZ(ctx);
-  const rw = clamp(W * 0.17, 0.3, 0.55);
-  const baseT = Math.max(0.8, T - 1.6 * rw);
-  const base = profileSection('half-round', Math.min(W * 0.45, 1.6), baseT, R, true);
-  const A = W / 2 - rw * 1.1;
-  const rc = R + T - rw;
-  const waveLen = num(ctx.params, 'waveMm', 5, 2.5, 12);
-  const waves = Math.max(4, Math.round((TAU * rc) / waveLen));
+  // a softly domed band carries the vine: a raised stem weaving across the top with leaves lying flat on the metal
+  const base = profileSection('half-round', W, T * 0.85, R, true);
   const metal: THREE.BufferGeometry[] = [sweepSection(base, { z })];
+  const rRef = R + T * 0.85;
+  const pts: ProfilePoint[] = [];
+  for (let i = 0; i <= 48; i++) {
+    const u = W / 2 - (W * i) / 48;
+    pts.push([u, base.top(u)]);
+  }
+  const curve = curveFrom(pts);
+  const map = surfaceMapFrom(() => curve, rRef, z);
+  const rw = clamp(W * 0.07, 0.14, 0.24);
+  const A = Math.min(W * 0.22, curve.mid - rw * 3);
+  const waveLen = num(ctx.params, 'waveMm', 5, 2.5, 12);
+  const circ = TAU * rRef;
+  const waves = Math.max(4, Math.round(circ / waveLen));
+  const k = (TAU * waves) / circ;
+  const lam = (s: number) => A * Math.sin(k * s);
   metal.push(
-    strand(
-      (t) => A * Math.sin(waves * t),
-      () => rc,
-      rw,
-      Math.min(640, waves * 20),
-      z,
-      8,
+    finish(
+      surfaceWire(
+        map,
+        (f) => {
+          const s = -circ / 2 + circ * f;
+          return [s, lam(s)];
+        },
+        Math.min(900, waves * 40),
+        () => rw,
+        0.08,
+        8,
+      ),
     ),
   );
-  // leaves just past each crest, angled away from the stem
-  const Lh = Math.min(1.0, W * 0.22);
-  const leaf = sphere(1, 1).scale(Lh, Math.max(0.12, rw * 0.45), Lh * 0.42);
-  const leafMats: THREE.Matrix4[] = [];
+  // leaves just past each crest, lying along the surface and pointing out of the bend
+  const every = Math.round(num(ctx.params, 'leafEvery', 1, 1, 4));
+  const leafLen = clamp(W * 0.42, 1.0, 2.2);
   const budMats: THREE.Matrix4[] = [];
   const buds = bool(ctx.params, 'buds', true);
-  const every = Math.round(num(ctx.params, 'leafEvery', 1, 1, 4));
+  const budW = clamp(Math.min(ctx.accent.sizeMm, 1.3, W * 0.32), 0.8, 1.3);
   for (let j = 0; j < 2 * waves; j++) {
-    const crest = ((j + 0.5) * Math.PI) / waves;
-    const sign = Math.sin(waves * crest) > 0 ? 1 : -1;
+    const sc = -circ / 2 + ((j + 0.5) * circ) / (2 * waves);
+    const sign = Math.sign(Math.sin(k * sc)) || 1;
     if (j % every === 0) {
-      const t = crest + (0.35 * Math.PI) / waves;
-      leafMats.push(ringFrame(t, A * Math.sin(waves * t), rc + rw * 0.2, z, sign * 0.9));
+      const s0 = sc + (0.12 * circ) / (2 * waves);
+      const slope = A * k * Math.cos(k * s0);
+      const ang = Math.atan(slope) - sign * 0.75;
+      metal.push(
+        finish(
+          surfaceLeaf(map, {
+            s: s0,
+            lambda: lam(s0),
+            angle: ang,
+            length: leafLen,
+            width: leafLen * 0.45,
+            thick: clamp(leafLen * 0.14, 0.18, 0.3),
+            curl: -sign * 0.06,
+          }),
+        ),
+      );
     }
-    if (buds && Math.abs(fromTop(crest)) <= Math.PI / 2)
-      budMats.push(ringFrame(crest, sign * A * 0.8, rc + rw * 0.55, z));
+    const theta = TOP + sc / rRef;
+    // buds sit in the hollow of each bend on the top half of the band
+    if (buds && Math.abs(fromTop(theta)) <= Math.PI / 2) {
+      const u = sign * (A - budW * 0.7);
+      budMats.push(ringFrame(theta, u, base.top(u), z));
+    }
   }
-  metal.push(...instances(leaf, leafMats));
   const out: (Part | null)[] = [];
   if (budMats.length > 0) {
-    const w = clamp(Math.min(ctx.accent.sizeMm, 1.3, W * 0.4), 0.8, 1.3);
-    const st = accentStone(ctx, w, 'round-brilliant');
+    const st = accentStone(ctx, budW, 'round-brilliant');
     metal.push(
       ...instances(
-        cup(Math.max(0.1, w / 2 - 0.06), w / 2 + 0.12, -rw, st.built.crownHeight * 0.25, 16),
+        cup(Math.max(0.1, budW / 2 - 0.06), budW / 2 + 0.12, -0.25, st.built.crownHeight * 0.25, 16),
         budMats,
       ),
     );

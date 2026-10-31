@@ -13,7 +13,19 @@
 import * as THREE from 'three';
 import type { Params } from '@/models/types';
 import type { Part, ShankCtx } from '../types';
-import { instanceGeometry, mergeFlat, sweepRing, toFlat, type ProfilePoint } from '../helpers';
+import {
+  curveFrom,
+  instanceGeometry,
+  mergeFlat,
+  surfaceMapFrom,
+  sweepRing,
+  toFlat,
+  type OuterCurve,
+  type ProfilePoint,
+  type SurfaceMap,
+} from '../helpers';
+
+export { loftRows, surfaceLeaf, surfaceWire } from '../helpers';
 
 export const TOP = Math.PI / 2;
 export const TAU = Math.PI * 2;
@@ -447,4 +459,42 @@ export function beadRow(
   return spacedAngles(a0, a1, r, pitch).map((th) =>
     new THREE.Matrix4().makeTranslation(r * Math.cos(th), r * Math.sin(th), z),
   );
+}
+
+// ---------------------------------------------------------------------------------------------
+// Surface map of a superellipse band (for leaves, vines and scrolls lying on the outer surface)
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Outer half of a two-half superellipse section (see bandSection), densely sampled, continued a little way round
+ * the inside edges (`wrap` radians past each side midline) so ornaments near the edge wrap round instead of
+ * piling up at the end of the curve.
+ */
+export function outerCurve(s: SectionSpec, m = 48, wrap = 0.7): OuterCurve {
+  const hTop = s.t * s.split;
+  const hBot = s.t - hTop;
+  const rMid = s.R + hBot;
+  const u0 = s.u0 ?? 0;
+  const pts: ProfilePoint[] = [];
+  for (let i = 0; i <= m; i++) {
+    const a = -wrap + (i / m) * (Math.PI + 2 * wrap);
+    const c = Math.cos(a);
+    const sn = Math.sin(a);
+    const e = sn >= 0 ? s.outerExp : s.innerExp;
+    const h = sn >= 0 ? hTop : hBot;
+    pts.push([
+      u0 + (s.w / 2) * Math.sign(c) * Math.abs(c) ** (2 / e),
+      rMid + h * Math.sign(sn) * Math.abs(sn) ** (2 / e),
+    ]);
+  }
+  return curveFrom(pts);
+}
+
+export function surfaceMap(
+  section: (theta: number) => SectionSpec,
+  rRef: number,
+  zOffset?: (theta: number) => number,
+): SurfaceMap {
+  // ornaments wrap round the edges but never reach into the finger hole
+  return surfaceMapFrom((th) => outerCurve(section(th), 56), rRef, zOffset, section(TOP).R + 0.03);
 }
