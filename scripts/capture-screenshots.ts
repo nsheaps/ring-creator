@@ -2,7 +2,7 @@
  * Captures component pictures (one per model) and page screenshots from a production build.
  *   bun run build && bun run screenshots            -> writes dist/screenshots/...
  * CI runs this after `vite build`, so the deployed docs always show pictures rendered by the current code.
- * Env: SHOT_OUT (default dist/screenshots), SHOT_ONLY (comma separated kinds, e.g. "cut,head"), SHOT_PORT.
+ * Env: SHOT_OUT (default dist/screenshots), SHOT_ONLY (comma separated kinds, e.g. "cut,head"), SHOT_PORT, SHOT_DIST (build dir to serve, default dist), SHOT_CHROMIUM.
  */
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
@@ -35,7 +35,16 @@ async function waitForServer(): Promise<void> {
 async function main(): Promise<void> {
   const server = spawn(
     'npx',
-    ['vite', 'preview', '--port', String(PORT), '--strictPort', '--host', '127.0.0.1'],
+    [
+      'vite',
+      'preview',
+      ...(process.env.SHOT_DIST ? ['--outDir', process.env.SHOT_DIST] : []),
+      '--port',
+      String(PORT),
+      '--strictPort',
+      '--host',
+      '127.0.0.1',
+    ],
     {
       stdio: 'ignore',
       env: { ...process.env, RING_BASE: BASE },
