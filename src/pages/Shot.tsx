@@ -19,8 +19,13 @@ export default function Shot() {
   const { path, query } = useRoute();
   const [, kind, id] = path;
   const ref = useRef<DesignViewerHandle>(null);
-  const cam = query.get('cam') as CameraPreset | null;
-  const focus = query.get('focus') === '1';
+  // Example and design shots default to a close three-quarter view on the stone so rings are easy to tell apart.
+  const isDesign = kind === 'example' || kind === 'design';
+  const viewParam = query.get('view');
+  const exView = kind === 'example' ? exampleDesigns.find((d) => d.id === id)?.view : undefined;
+  const bandOnly = (viewParam ?? exView) === 'band';
+  const cam = (query.get('cam') as CameraPreset | null) ?? (isDesign ? '3/4' : null);
+  const focus = query.has('focus') ? query.get('focus') === '1' : isDesign && !bandOnly;
   const size = (query.get('size') ?? '720x540').split('x').map(Number);
   const [w, h] = [size[0] || 720, size[1] || 540];
 
