@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" role="img" aria-labelledby="t d" font-family="sans-serif">
+<title id="t">Gallery wireframe</title><desc id="d">Filter chips above a grid of example ring cards.</desc>
+<rect width="1280" height="800" fill="#f4f4f4"/>
+<rect x="0" y="0" width="1280" height="48" rx="0" fill="#e6e6e6" stroke="#cfcfcf"/>
+<text x="24" y="30" font-size="16" text-anchor="start" fill="#333" font-weight="700">Ring Creator</text>
+<text x="760" y="30" font-size="13" text-anchor="start" fill="#333">Build</text>
+<text x="848" y="30" font-size="13" text-anchor="start" fill="#c9a24b" font-weight="700">Gallery</text>
+<text x="936" y="30" font-size="13" text-anchor="start" fill="#333">Components</text>
+<text x="1024" y="30" font-size="13" text-anchor="start" fill="#333">Saved</text>
+<text x="1112" y="30" font-size="13" text-anchor="start" fill="#333">Docs</text>
+<rect x="1210" y="12" width="46" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1233.0" y="27.85" font-size="11" text-anchor="middle" fill="#333">theme</text>
+<text x="40" y="100" font-size="28" text-anchor="start" fill="#333" font-weight="700">Gallery</text>
+<text x="40" y="126" font-size="14" text-anchor="start" fill="#777">Classic and modern examples. Open one or start from it.</text>
+<rect x="40" y="146" width="42" height="28" rx="14" fill="#c9a24b" stroke="#c9a24b"/>
+<text x="61.0" y="164.2" font-size="12" text-anchor="middle" fill="#111" font-weight="700">All</text>
+<rect x="90" y="146" width="90" height="28" rx="14" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="135.0" y="164.2" font-size="12" text-anchor="middle" fill="#333">Solitaire</text>
+<rect x="188" y="146" width="50" height="28" rx="14" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="213.0" y="164.2" font-size="12" text-anchor="middle" fill="#333">Halo</text>
+<rect x="246" y="146" width="74" height="28" rx="14" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="283.0" y="164.2" font-size="12" text-anchor="middle" fill="#333">Vintage</text>
+<rect x="328" y="146" width="106" height="28" rx="14" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="381.0" y="164.2" font-size="12" text-anchor="middle" fill="#333">Three-stone</text>
+<rect x="442" y="146" width="66" height="28" rx="14" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="475.0" y="164.2" font-size="12" text-anchor="middle" fill="#333">Modern</text>
+<rect x="516" y="146" width="106" height="28" rx="14" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="569.0" y="164.2" font-size="12" text-anchor="middle" fill="#333">Yellow gold</text>
+<rect x="630" y="146" width="82" height="28" rx="14" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="671.0" y="164.2" font-size="12" text-anchor="middle" fill="#333">Platinum</text>
+<rect x="40" y="196" width="285" height="280" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="50" y="206" width="265" height="200" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="182.5" y="310.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="52" y="428" font-size="14" text-anchor="start" fill="#333" font-weight="700">Classic solitaire</text>
+<text x="52" y="448" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="52" y="454" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="74.0" y="464.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="345" y="196" width="285" height="280" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="355" y="206" width="265" height="200" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="487.5" y="310.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="357" y="428" font-size="14" text-anchor="start" fill="#333" font-weight="700">Oval halo</text>
+<text x="357" y="448" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="357" y="454" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="379.0" y="464.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="650" y="196" width="285" height="280" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="660" y="206" width="265" height="200" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="792.5" y="310.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="662" y="428" font-size="14" text-anchor="start" fill="#333" font-weight="700">Emerald three-stone</text>
+<text x="662" y="448" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="662" y="454" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="684.0" y="464.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="955" y="196" width="285" height="280" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="965" y="206" width="265" height="200" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="1097.5" y="310.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="967" y="428" font-size="14" text-anchor="start" fill="#333" font-weight="700">Vintage filigree</text>
+<text x="967" y="448" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="967" y="454" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="989.0" y="464.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="40" y="496" width="285" height="280" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="50" y="506" width="265" height="200" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="182.5" y="610.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="52" y="728" font-size="14" text-anchor="start" fill="#333" font-weight="700">Classic solitaire</text>
+<text x="52" y="748" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="52" y="754" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="74.0" y="764.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="345" y="496" width="285" height="280" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="355" y="506" width="265" height="200" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="487.5" y="610.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="357" y="728" font-size="14" text-anchor="start" fill="#333" font-weight="700">Oval halo</text>
+<text x="357" y="748" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="357" y="754" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="379.0" y="764.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="650" y="496" width="285" height="280" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="660" y="506" width="265" height="200" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="792.5" y="610.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="662" y="728" font-size="14" text-anchor="start" fill="#333" font-weight="700">Emerald three-stone</text>
+<text x="662" y="748" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="662" y="754" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="684.0" y="764.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="955" y="496" width="285" height="280" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="965" y="506" width="265" height="200" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="1097.5" y="610.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="967" y="728" font-size="14" text-anchor="start" fill="#333" font-weight="700">Vintage filigree</text>
+<text x="967" y="748" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="967" y="754" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="989.0" y="764.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+</svg>

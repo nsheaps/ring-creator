@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" role="img" aria-labelledby="t d" font-family="sans-serif">
+<title id="t">Compare wireframe</title><desc id="d">Three design slots with synced 3D views and a difference table below.</desc>
+<rect width="1280" height="800" fill="#f4f4f4"/>
+<rect x="0" y="0" width="1280" height="48" rx="0" fill="#e6e6e6" stroke="#cfcfcf"/>
+<text x="24" y="30" font-size="16" text-anchor="start" fill="#333" font-weight="700">Ring Creator</text>
+<text x="760" y="30" font-size="13" text-anchor="start" fill="#333">Build</text>
+<text x="848" y="30" font-size="13" text-anchor="start" fill="#333">Gallery</text>
+<text x="936" y="30" font-size="13" text-anchor="start" fill="#333">Components</text>
+<text x="1024" y="30" font-size="13" text-anchor="start" fill="#c9a24b" font-weight="700">Saved</text>
+<text x="1112" y="30" font-size="13" text-anchor="start" fill="#333">Docs</text>
+<rect x="1210" y="12" width="46" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1233.0" y="27.85" font-size="11" text-anchor="middle" fill="#333">theme</text>
+<text x="40" y="100" font-size="28" text-anchor="start" fill="#333" font-weight="700">Compare</text>
+<rect x="40" y="124" width="380" height="300" rx="16" fill="#fff" stroke="#9a9a9a"/>
+<ellipse cx="230" cy="298.0" rx="80" ry="72.0" fill="none" stroke="#777" stroke-width="12.8"/>
+<polygon points="230,202.0 252.4,226.0 230,250.0 207.6,226.0" fill="#fff" stroke="#c9a24b" stroke-width="3"/>
+<text x="56" y="150" font-size="15" text-anchor="start" fill="#333" font-weight="700">Oval sapphire halo</text>
+<rect x="340" y="134" width="70" height="26" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="375.0" y="150.85" font-size="11" text-anchor="middle" fill="#333">Remove</text>
+<rect x="440" y="124" width="380" height="300" rx="16" fill="#fff" stroke="#9a9a9a"/>
+<ellipse cx="630" cy="298.0" rx="80" ry="72.0" fill="none" stroke="#777" stroke-width="12.8"/>
+<polygon points="630,202.0 652.4,226.0 630,250.0 607.6,226.0" fill="#fff" stroke="#c9a24b" stroke-width="3"/>
+<text x="456" y="150" font-size="15" text-anchor="start" fill="#333" font-weight="700">Emerald solitaire</text>
+<rect x="740" y="134" width="70" height="26" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="775.0" y="150.85" font-size="11" text-anchor="middle" fill="#333">Remove</text>
+<rect x="840" y="124" width="380" height="300" rx="16" fill="#fff" stroke="#9a9a9a"/>
+<rect x="900" y="230" width="260" height="48" rx="6" fill="#ffffff" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="1030.0" y="258.9" font-size="14" text-anchor="middle" fill="#333">+ Choose a design</text>
+<text x="40" y="454" font-size="16" text-anchor="start" fill="#333" font-weight="700">Differences</text>
+<rect x="40" y="468" width="1200" height="36" rx="0" fill="#e6e6e6" stroke="#9a9a9a"/>
+<text x="56" y="492" font-size="12" text-anchor="start" fill="#333" font-weight="700"></text>
+<text x="356" y="492" font-size="12" text-anchor="start" fill="#333" font-weight="700">Design 1</text>
+<text x="656" y="492" font-size="12" text-anchor="start" fill="#333" font-weight="700">Design 2</text>
+<text x="956" y="492" font-size="12" text-anchor="start" fill="#333" font-weight="700">Design 3</text>
+<rect x="40" y="504" width="1200" height="40" rx="0" fill="#fff6dc" stroke="#ddd"/>
+<text x="56" y="529" font-size="13" text-anchor="start" fill="#333">Center stone</text>
+<text x="356" y="529" font-size="13" text-anchor="start" fill="#333">sapphire oval 1.5 ct</text>
+<text x="656" y="529" font-size="13" text-anchor="start" fill="#333">emerald emerald-cut 1.2 ct</text>
+<text x="956" y="529" font-size="13" text-anchor="start" fill="#333">-</text>
+<rect x="40" y="544" width="1200" height="40" rx="0" fill="#fff" stroke="#ddd"/>
+<text x="56" y="569" font-size="13" text-anchor="start" fill="#333">Head</text>
+<text x="356" y="569" font-size="13" text-anchor="start" fill="#333">halo-round</text>
+<text x="656" y="569" font-size="13" text-anchor="start" fill="#333">solitaire-4-prong</text>
+<text x="956" y="569" font-size="13" text-anchor="start" fill="#333">-</text>
+<rect x="40" y="584" width="1200" height="40" rx="0" fill="#fff6dc" stroke="#ddd"/>
+<text x="56" y="609" font-size="13" text-anchor="start" fill="#333">Shank metal</text>
+<text x="356" y="609" font-size="13" text-anchor="start" fill="#333">rose-gold-14k</text>
+<text x="656" y="609" font-size="13" text-anchor="start" fill="#333">platinum</text>
+<text x="956" y="609" font-size="13" text-anchor="start" fill="#333">-</text>
+<rect x="40" y="624" width="1200" height="40" rx="0" fill="#fff" stroke="#ddd"/>
+<text x="56" y="649" font-size="13" text-anchor="start" fill="#333">Rough price</text>
+<text x="356" y="649" font-size="13" text-anchor="start" fill="#333">$2.1k to $3.4k</text>
+<text x="656" y="649" font-size="13" text-anchor="start" fill="#333">$3.0k to $4.6k</text>
+<text x="956" y="649" font-size="13" text-anchor="start" fill="#333">-</text>
+<text x="40" y="700" font-size="12" text-anchor="start" fill="#777">Highlighted rows differ. Up to 3 designs.</text>
+</svg>

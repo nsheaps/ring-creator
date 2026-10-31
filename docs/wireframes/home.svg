@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" role="img" aria-labelledby="t d" font-family="sans-serif">
+<title id="t">Home wireframe</title><desc id="d">Hero with ring preview, calls to action, three tiles and featured examples.</desc>
+<rect width="1280" height="800" fill="#f4f4f4"/>
+<rect x="0" y="0" width="1280" height="48" rx="0" fill="#e6e6e6" stroke="#cfcfcf"/>
+<text x="24" y="30" font-size="16" text-anchor="start" fill="#333" font-weight="700">Ring Creator</text>
+<text x="760" y="30" font-size="13" text-anchor="start" fill="#333">Build</text>
+<text x="848" y="30" font-size="13" text-anchor="start" fill="#333">Gallery</text>
+<text x="936" y="30" font-size="13" text-anchor="start" fill="#333">Components</text>
+<text x="1024" y="30" font-size="13" text-anchor="start" fill="#333">Saved</text>
+<text x="1112" y="30" font-size="13" text-anchor="start" fill="#333">Docs</text>
+<rect x="1210" y="12" width="46" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1233.0" y="27.85" font-size="11" text-anchor="middle" fill="#333">theme</text>
+<text x="80" y="140" font-size="34" text-anchor="start" fill="#333" font-weight="700">Design the ring you will wear.</text>
+<text x="80" y="180" font-size="16" text-anchor="start" fill="#666">Pick a stone, setting and band. See it in 3D. Share a link.</text>
+<rect x="80" y="210" width="200" height="48" rx="6" fill="#c9a24b" stroke="#c9a24b"/>
+<text x="180.0" y="239.25" font-size="15" text-anchor="middle" fill="#111" font-weight="700">Start designing</text>
+<rect x="296" y="210" width="180" height="48" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="386.0" y="239.25" font-size="15" text-anchor="middle" fill="#333">See examples</text>
+<rect x="80" y="290" width="340" height="22" rx="6" fill="#fff6dc" stroke="#c9a24b"/>
+<text x="250.0" y="305.2" font-size="12" text-anchor="middle" fill="#333">Resume draft: Oval sapphire halo (banner)</text>
+<rect x="700" y="90" width="480" height="330" rx="6" fill="#fff" stroke="#9a9a9a"/>
+<ellipse cx="940" cy="281.5" rx="90" ry="81.0" fill="none" stroke="#777" stroke-width="14.4"/>
+<polygon points="940,173.5 965.2,200.5 940,227.5 914.8,200.5" fill="#fff" stroke="#c9a24b" stroke-width="3"/>
+<text x="940" y="410" font-size="12" text-anchor="middle" fill="#777">live 3D ring (static image if no WebGL / reduced motion)</text>
+<rect x="80" y="460" width="350" height="90" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="96" y="495" font-size="18" text-anchor="start" fill="#333" font-weight="700">Build</text>
+<text x="96" y="520" font-size="13" text-anchor="start" fill="#777">Step-by-step builder</text>
+<rect x="460" y="460" width="350" height="90" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="476" y="495" font-size="18" text-anchor="start" fill="#333" font-weight="700">Gallery</text>
+<text x="476" y="520" font-size="13" text-anchor="start" fill="#777">Classic and modern examples</text>
+<rect x="840" y="460" width="350" height="90" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="856" y="495" font-size="18" text-anchor="start" fill="#333" font-weight="700">Components</text>
+<text x="856" y="520" font-size="13" text-anchor="start" fill="#777">Every metal, gem, head, shank</text>
+<text x="80" y="590" font-size="16" text-anchor="start" fill="#333" font-weight="700">Featured examples</text>
+<rect x="80" y="605" width="270" height="150" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="88" y="613" width="254" height="90" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="215.0" y="662.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="92" y="735" font-size="14" text-anchor="start" fill="#333" font-weight="700">Solitaire</text>
+<rect x="370" y="605" width="270" height="150" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="378" y="613" width="254" height="90" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="505.0" y="662.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="382" y="735" font-size="14" text-anchor="start" fill="#333" font-weight="700">Halo</text>
+<rect x="660" y="605" width="270" height="150" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="668" y="613" width="254" height="90" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="795.0" y="662.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="672" y="735" font-size="14" text-anchor="start" fill="#333" font-weight="700">Three-stone</text>
+<rect x="950" y="605" width="270" height="150" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="958" y="613" width="254" height="90" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="1085.0" y="662.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="962" y="735" font-size="14" text-anchor="start" fill="#333" font-weight="700">Vintage</text>
+</svg>

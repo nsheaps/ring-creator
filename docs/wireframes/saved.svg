@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" role="img" aria-labelledby="t d" font-family="sans-serif">
+<title id="t">Saved designs wireframe</title><desc id="d">List of saved designs with actions, compare selection and import; empty state shown below.</desc>
+<rect width="1280" height="800" fill="#f4f4f4"/>
+<rect x="0" y="0" width="1280" height="48" rx="0" fill="#e6e6e6" stroke="#cfcfcf"/>
+<text x="24" y="30" font-size="16" text-anchor="start" fill="#333" font-weight="700">Ring Creator</text>
+<text x="760" y="30" font-size="13" text-anchor="start" fill="#333">Build</text>
+<text x="848" y="30" font-size="13" text-anchor="start" fill="#333">Gallery</text>
+<text x="936" y="30" font-size="13" text-anchor="start" fill="#333">Components</text>
+<text x="1024" y="30" font-size="13" text-anchor="start" fill="#c9a24b" font-weight="700">Saved</text>
+<text x="1112" y="30" font-size="13" text-anchor="start" fill="#333">Docs</text>
+<rect x="1210" y="12" width="46" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1233.0" y="27.85" font-size="11" text-anchor="middle" fill="#333">theme</text>
+<text x="40" y="100" font-size="28" text-anchor="start" fill="#333" font-weight="700">Saved designs</text>
+<rect x="1000" y="80" width="110" height="34" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1055.0" y="101.55" font-size="13" text-anchor="middle" fill="#333">Import</text>
+<rect x="1120" y="80" width="120" height="34" rx="6" fill="#c9a24b" stroke="#c9a24b"/>
+<text x="1180.0" y="101.55" font-size="13" text-anchor="middle" fill="#111" font-weight="700">New design</text>
+<rect x="40" y="140" width="1200" height="104" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="54" y="152" width="80" height="80" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="94.0" y="195.85" font-size="11" text-anchor="middle" fill="#333">thumb</text>
+<text x="150" y="182" font-size="18" text-anchor="start" fill="#333" font-weight="700">Oval sapphire halo</text>
+<text x="150" y="208" font-size="13" text-anchor="start" fill="#777">Updated 2 days ago, size 7</text>
+<rect x="1020" y="176" width="50" height="30" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1045.0" y="195.2" font-size="12" text-anchor="middle" fill="#333">Open</text>
+<rect x="1076" y="176" width="56" height="30" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1104.0" y="194.85" font-size="11" text-anchor="middle" fill="#333">Rename</text>
+<rect x="1138" y="176" width="50" height="30" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1163.0" y="194.85" font-size="11" text-anchor="middle" fill="#333">Copy</text>
+<rect x="1194" y="176" width="36" height="30" rx="6" fill="#ffffff" stroke="#b44"/>
+<text x="1212.0" y="194.85" font-size="11" text-anchor="middle" fill="#333">Del</text>
+<rect x="960" y="180" width="22" height="22" rx="3" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="940" y="218" font-size="10" text-anchor="start" fill="#777">compare</text>
+<rect x="40" y="260" width="1200" height="104" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="54" y="272" width="80" height="80" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="94.0" y="315.85" font-size="11" text-anchor="middle" fill="#333">thumb</text>
+<text x="150" y="302" font-size="18" text-anchor="start" fill="#333" font-weight="700">Emerald solitaire</text>
+<text x="150" y="328" font-size="13" text-anchor="start" fill="#777">Updated last week, size 6.5</text>
+<rect x="1020" y="296" width="50" height="30" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1045.0" y="315.2" font-size="12" text-anchor="middle" fill="#333">Open</text>
+<rect x="1076" y="296" width="56" height="30" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1104.0" y="314.85" font-size="11" text-anchor="middle" fill="#333">Rename</text>
+<rect x="1138" y="296" width="50" height="30" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1163.0" y="314.85" font-size="11" text-anchor="middle" fill="#333">Copy</text>
+<rect x="1194" y="296" width="36" height="30" rx="6" fill="#ffffff" stroke="#b44"/>
+<text x="1212.0" y="314.85" font-size="11" text-anchor="middle" fill="#333">Del</text>
+<rect x="960" y="300" width="22" height="22" rx="3" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="940" y="338" font-size="10" text-anchor="start" fill="#777">compare</text>
+<rect x="1040" y="380" width="200" height="36" rx="6" fill="#c9a24b" stroke="#c9a24b"/>
+<text x="1140.0" y="402.55" font-size="13" text-anchor="middle" fill="#111" font-weight="700">Compare selected (2)</text>
+<rect x="40" y="460" width="1200" height="230" rx="6" fill="#fafafa" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="640.0" y="580.25" font-size="15" text-anchor="middle" fill="#333">Empty state: No saved designs yet.   [Start building]  [Browse gallery]</text>
+</svg>

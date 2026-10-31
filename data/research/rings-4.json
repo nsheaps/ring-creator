@@ -1,0 +1,1076 @@
+[
+ {
+  "id": "r4-001",
+  "name": "Brilliant Earth 2mm Comfort Fit Wedding Ring",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/2mm-Comfort-Fit-Wedding-Ring-14K-Gold-BE201/"
+  },
+  "priceUsd": 390,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "plain-comfort",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "none",
+   "widthMm": 2
+  },
+  "notes": "Slim plain band with a rounded comfort-fit interior; also sold as the matching band in the Fancy Halo set."
+ },
+ {
+  "id": "r4-002",
+  "name": "Brilliant Earth 3mm Comfort Fit Wedding Ring",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/3mm-Comfort-Fit-Wedding-Ring-14K-Gold-BE207/"
+  },
+  "priceUsd": 590,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "plain-comfort",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "none",
+   "widthMm": 3
+  },
+  "notes": "Mid-width plain comfort-fit band, the usual default for a solitaire."
+ },
+ {
+  "id": "r4-003",
+  "name": "Comfort Fit Slightly Domed Wedding Band in Platinum 4.00mm (James Allen)",
+  "category": "band",
+  "source": {
+   "name": "Blue Nile / James Allen",
+   "url": "https://www.bluenile.com/wedding-rings/comfort-fit-slightly-domed-wedding-band-in-platinum-400mm-by-james-allen-item-311268"
+  },
+  "priceUsd": 1230,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "plain-comfort",
+   "metals": [
+    "platinum"
+   ],
+   "stones": "none",
+   "widthMm": 4
+  },
+  "notes": "Platinum 4mm band with a slightly domed outside and comfort-fit inside."
+ },
+ {
+  "id": "r4-004",
+  "name": "Mid-weight Comfort Fit Wedding Ring in Platinum 4mm (Blue Nile)",
+  "category": "band",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/wedding-rings/mid-weight-comfort-fit-wedding-ring-in-platinum-4mm-item-194891"
+  },
+  "priceUsd": null,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "plain-comfort",
+   "metals": [
+    "platinum"
+   ],
+   "stones": "none",
+   "widthMm": 4
+  },
+  "notes": "Higher-domed polished platinum comfort-fit band with curved inner edges. Page showed sold out, so no price; page also says it cannot be resized."
+ },
+ {
+  "id": "r4-005",
+  "name": "Knife Edge Wedding Ring in 14K Yellow Gold 2.50mm (James Allen)",
+  "category": "band",
+  "source": {
+   "name": "Blue Nile / James Allen",
+   "url": "https://www.bluenile.com/wedding-rings/knife-edge-wedding-ring-in-14k-yellow-gold-250mm-by-james-allen-item-310971"
+  },
+  "priceUsd": 487,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "knife-edge",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "none",
+   "widthMm": 2.5
+  },
+  "notes": "Ridged knife-edge profile that narrows to a crest. Price shown was a 25 percent sale price (was $650)."
+ },
+ {
+  "id": "r4-006",
+  "name": "Valerie Madison 3mm Milgrain Wedding Band",
+  "category": "band",
+  "source": {
+   "name": "Valerie Madison",
+   "url": "https://www.valeriemadison.com/products/3mm-milgrain-wedding-band"
+  },
+  "priceUsd": 1400,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "milgrain-band",
+   "metals": [
+    "yellow-gold-14k",
+    "white-gold-14k"
+   ],
+   "stones": "none",
+   "widthMm": 3
+  },
+  "notes": "Polished 3mm band with beaded milgrain along both edges."
+ },
+ {
+  "id": "r4-007",
+  "name": "Pave Eternity Ring 0.26 CTW 14K White Gold 2.00mm (James Allen)",
+  "category": "band",
+  "source": {
+   "name": "Blue Nile / James Allen",
+   "url": "https://www.bluenile.com/wedding-rings/pave-eternity-ring-with-026-ctw-diamonds-in-14k-white-gold-200mm-by-james-allen-item-311000"
+  },
+  "priceUsd": 1650,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "full-eternity",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 2
+  },
+  "notes": "Fully pave-set eternity: 38 diamonds at size 7, count varies by size. Cannot be resized."
+ },
+ {
+  "id": "r4-008",
+  "name": "French Pave Sapphire and Diamond Eternity Ring 14k White Gold (Blue Nile)",
+  "category": "band",
+  "source": {
+   "name": "Blue Nile",
+   "url": "https://www.bluenile.com/wedding-rings/french-pave-sapphire-and-diamond-eternity-ring-in-14k-white-gold-14mm-item-148750"
+  },
+  "priceUsd": 1540,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "full-eternity",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee (19 sapphires 1.4mm alternating with 19 diamonds)",
+   "widthMm": 2.1
+  },
+  "notes": "Alternating blue sapphire and diamond French pave all around. The 1.4mm in the product name is the stone size, listed band width is 2.10mm."
+ },
+ {
+  "id": "r4-009",
+  "name": "Riviera Eternity Lab Diamond Ring (1 ct. tw.) 14K Yellow Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Riviera-Eternity-Lab-Diamond-Ring-(1-ct.-tw.)-14K-Gold-BE2DR100ELC/"
+  },
+  "priceUsd": 1490,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "shared-prong",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 2.1
+  },
+  "notes": "Classic shared-prong full eternity of round lab diamonds."
+ },
+ {
+  "id": "r4-010",
+  "name": "East-West Bezel Emerald Cut Eternity Lab Diamond Ring (1 1/2 ct. tw.) 14K Yellow Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/East-West-Bezel-Emerald-Cut-Eternity-Lab-Diamond-Ring-(1-1/2-ct.-tw.)-14K-Gold-BE2D1646LC/"
+  },
+  "priceUsd": 2990,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "bezel-band",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "emerald-cut (east-west bezels, lab diamonds)",
+   "widthMm": 3
+  },
+  "notes": "Emerald-cut stones each in its own bezel and laid sideways around the finger."
+ },
+ {
+  "id": "r4-011",
+  "name": "Channel Set Baguette Eternity Lab Diamond Ring (1 1/2 ct. tw.) 14K Yellow Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Channel-Set-Baguette-Eternity-Lab-Diamond-Ring-(1-1/2-ct.-tw.)-14K-Gold-BE2D289LC/"
+  },
+  "priceUsd": 3150,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "channel-band",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "baguette",
+   "widthMm": 3.7
+  },
+  "notes": "Baguette lab diamonds channel-set around the whole band."
+ },
+ {
+  "id": "r4-012",
+  "name": "Sienna Three-Quarter Coverage Lab Diamond Ring (5/8 ct. tw.) 14K White Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Sienna-Three-Quarter-Coverage-Lab-Diamond-Ring-(5/8-ct.-tw.)-14K-White-Gold-BE2M3420LC/"
+  },
+  "priceUsd": 1490,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "three-quarter-eternity",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 2.3
+  },
+  "notes": "French-pave stones cover about three quarters of the band; plain metal at the back for sizing."
+ },
+ {
+  "id": "r4-013",
+  "name": "French Pave Eternity Diamond Ring (4 ct. tw.) 14K White Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/French-Pavé-Eternity-Diamond-Ring-(4-ct.-tw.)-14K-White-Gold-BE2D4989E/"
+  },
+  "priceUsd": 9290,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "pave-band",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 4.15
+  },
+  "notes": "Wide French-pave eternity; style id pave-band chosen over full-eternity because the page names the setting French pave."
+ },
+ {
+  "id": "r4-014",
+  "name": "Petite Twisted Vine Lab Diamond Ring (1/8 ct. tw.) 14K White Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Petite-Twisted-Vine-Lab-Diamond-Ring-(1/8-ct.-tw.)-14K-White-Gold-BE2M254PLC/"
+  },
+  "priceUsd": 890,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "vine-band",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 2.5
+  },
+  "notes": "Twisting vine band with small diamonds along the strand; the matching band of the Petite Twisted Vine halo set."
+ },
+ {
+  "id": "r4-015",
+  "name": "Yvette Diamond Ring (1/4 ct. tw.) 14K Yellow Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Yvette-Diamond-Ring-(1/4-ct.-tw.)-14K-Gold-BE2D781/"
+  },
+  "priceUsd": 1490,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "chevron",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 1.5
+  },
+  "notes": "V-shaped diamond band labelled Chevron by the retailer's curved collection."
+ },
+ {
+  "id": "r4-016",
+  "name": "Chevron Ring 14K Yellow Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Chevron-Ring-14K-Gold-BE2119/"
+  },
+  "priceUsd": 520,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "chevron",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "none",
+   "widthMm": 1.4
+  },
+  "notes": "Plain metal V-shaped band, no stones."
+ },
+ {
+  "id": "r4-017",
+  "name": "Olivetta Contoured Lab Diamond Ring (1/2 ct. tw.) 14K Yellow Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Olivetta-Contoured-Lab-Diamond-Ring-(1/2-ct.-tw.)-14K-Gold-BE2D2237LC/"
+  },
+  "priceUsd": 1990,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "contour-curved",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 2
+  },
+  "notes": "Contoured band with diamonds, made to nest against the curve of an engagement ring."
+ },
+ {
+  "id": "r4-018",
+  "name": "Corinne Contour Diamond Ring (1/3 ct. tw.) 14K Yellow Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Corinne-Contour-Diamond-Ring-(1/3-ct.-tw.)-14K-Gold-BE2D887/"
+  },
+  "priceUsd": 1990,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "contour-curved",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 1.7
+  },
+  "notes": "Slim contour band with a deeper curve for a fitted look against a center stone."
+ },
+ {
+  "id": "r4-019",
+  "name": "Lunette Nested Diamond Ring Stack 14K White Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Lunette-Nested-Diamond-Ring-Stack-14K-White-Gold-BE613/"
+  },
+  "priceUsd": null,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "stacker-trio",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee (12 round and 2 pear, shared prong)",
+   "widthMm": 3
+  },
+  "notes": "Two thin crescent bands joined as a stack, closest id is stacker-trio though it is two rings. Page said no longer available, so no price (a reseller listed $2,580 for the 18K version)."
+ },
+ {
+  "id": "r4-020",
+  "name": "The Melania Ring 14K Yellow Gold (Art Deco-era notched band)",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/The-Melania-Ring-14K-Gold-BJG91278/"
+  },
+  "priceUsd": null,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "notched",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "none",
+   "widthMm": null
+  },
+  "notes": "Vintage-style band with a notched edge detail; one-off page with no price or width listed."
+ },
+ {
+  "id": "r4-021",
+  "name": "Camellia Milgrain Marquise Diamond Ring (3/4 ct. tw.) 18K Yellow Gold",
+  "category": "band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Camellia-Milgrain-Marquise-Diamond-Ring-(3/4-ct.-tw.)-Gold-BE2D249/"
+  },
+  "priceUsd": 3190,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "milgrain-band",
+   "metals": [
+    "yellow-gold-18k"
+   ],
+   "stones": "melee (marquise)",
+   "widthMm": 3.3
+  },
+  "notes": "Marquise diamonds with milgrain edging in a vintage-leaning band."
+ },
+ {
+  "id": "r4-022",
+  "name": "Braided Love Knot Band (OroSpot)",
+  "category": "band",
+  "source": {
+   "name": "OroSpot",
+   "url": "https://orospot.com/product/braided-love-knot-band/"
+  },
+  "priceUsd": 649,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "braided-band",
+   "metals": [
+    "white-gold-14k",
+    "platinum"
+   ],
+   "stones": "none",
+   "widthMm": 3
+  },
+  "notes": "3mm by 1.6mm braided strand band. Price is the bottom of a $649 to $799 range; the karat comes from a search snippet and the page lists platinum, rose, white and yellow gold plus palladium."
+ },
+ {
+  "id": "r4-023",
+  "name": "Merle Black 6mm Wedding Ring in Titanium and 18K Yellow Gold",
+  "category": "mens-band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Merle-Black-6mm-Wedding-Ring-Gold-BE26202WB/"
+  },
+  "priceUsd": 2090,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "mixed-metal-band",
+   "metals": [
+    "titanium",
+    "yellow-gold-18k"
+   ],
+   "stones": "none",
+   "widthMm": 6
+  },
+  "notes": "Black titanium outer shell with a smooth 18K gold interior and beveled edges."
+ },
+ {
+  "id": "r4-024",
+  "name": "Mixed Metal Celtic Eternity Knot 6mm Wedding Ring (18K White and Yellow Gold)",
+  "category": "mens-band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Mixed-Metal-Celtic-Eternity-Knot-6mm-Wedding-Ring-Gold-BE2491/"
+  },
+  "priceUsd": null,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "mixed-metal-band",
+   "metals": [
+    "white-gold-18k",
+    "yellow-gold-18k"
+   ],
+   "stones": "none",
+   "widthMm": 6
+  },
+  "notes": "White-gold beveled edges around a yellow-gold Celtic knot. Page said no longer available, so no price."
+ },
+ {
+  "id": "r4-025",
+  "name": "Emery 5.5mm Wedding Ring (18K White and Yellow Gold)",
+  "category": "mens-band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/wedding-rings/mens/"
+  },
+  "priceUsd": 2190,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "mixed-metal-band",
+   "metals": [
+    "white-gold-18k",
+    "yellow-gold-18k"
+   ],
+   "stones": "none",
+   "widthMm": 5.5
+  },
+  "notes": "Matte white-gold center with polished yellow-gold edges. Source is the men's collection page; no product URL captured."
+ },
+ {
+  "id": "r4-026",
+  "name": "Comfort Fit 5mm Wedding Ring (men's collection) 14K Yellow Gold",
+  "category": "mens-band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/wedding-rings/mens/"
+  },
+  "priceUsd": 890,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "plain-comfort",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "none",
+   "widthMm": 5
+  },
+  "notes": "Plain high-polish 5mm comfort-fit; the same line also offers 4, 6 and 7mm at $790, $990 and $1,250."
+ },
+ {
+  "id": "r4-027",
+  "name": "Beveled Edge Maverick 6mm Wedding Ring 14K Yellow Gold",
+  "category": "mens-band",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/wedding-rings/mens/"
+  },
+  "priceUsd": 1490,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "mens-hammered",
+   "metals": [
+    "yellow-gold-14k"
+   ],
+   "stones": "none",
+   "widthMm": 6
+  },
+  "notes": "Textured matte surface with beveled edges; mens-hammered is the nearest id (listing says textured, not hammered). Source is the collection page."
+ },
+ {
+  "id": "r4-028",
+  "name": "Manly Bands The Bison (Koa Wood and Black Tungsten)",
+  "category": "mens-band",
+  "source": {
+   "name": "Manly Bands",
+   "url": "https://checkout.manlybands.com/products/the-bison"
+  },
+  "priceUsd": 175,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "mens-inlay",
+   "metals": [
+    "tungsten"
+   ],
+   "stones": "none",
+   "widthMm": 8
+  },
+  "notes": "Hammered black-plated tungsten with an offset Hawaiian koa wood inlay. $175 was a 30 percent off price (regular $250)."
+ },
+ {
+  "id": "r4-029",
+  "name": "Manly Bands The Savant Tungsten 8mm Satin Band",
+  "category": "mens-band",
+  "source": {
+   "name": "Overstock (Manly Bands)",
+   "url": "https://www.overstock.com/Jewelry-Watches/Manly-Bands-THE-SAVANT-Tungsten-8mm-Satin-Band/43690908/product.html"
+  },
+  "priceUsd": 260,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "mens-classic",
+   "metals": [
+    "tungsten"
+   ],
+   "stones": "none",
+   "widthMm": 8
+  },
+  "notes": "Plain satin tungsten band. Facts come from the search result (page returned 403 when opened); $260 is the list price, resale from $218.99."
+ },
+ {
+  "id": "r4-030",
+  "name": "Manly Bands The Fitzgerald Black Zirconium 6mm Satin Band",
+  "category": "mens-band",
+  "source": {
+   "name": "Overstock (Manly Bands)",
+   "url": "https://www.overstock.com/Jewelry-Watches/Manly-Bands-THE-FITZGERALD-Black-Zirconium-6mm-Satin-Band/43679892/product.html"
+  },
+  "priceUsd": 380,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "mens-classic",
+   "metals": [
+    "black-zirconium"
+   ],
+   "stones": "none",
+   "widthMm": 6
+  },
+  "notes": "Satin black zirconium band. Facts come from the search result (page returned 403 when opened); $380 list, from $278.99 on sale."
+ },
+ {
+  "id": "r4-031",
+  "name": "The Royal Men's Wedding Band in Black Titanium and Grey Tantalum 8mm",
+  "category": "mens-band",
+  "source": {
+   "name": "Robinson's Jewelers (Tantalum brand)",
+   "url": "https://robinsonsjewelers.com/products/the-royal-mens-wedding-band-in-black-titanium-and-grey-tantalum-8mm-width-by-tantalum-cf108391bktgta"
+  },
+  "priceUsd": 705,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "mens-classic",
+   "metals": [
+    "titanium",
+    "tantalum"
+   ],
+   "stones": "none",
+   "widthMm": 8
+  },
+  "notes": "Black titanium with grey tantalum, polished drop-bevel edges and an etched script pattern; no gemstones. Listed sold out."
+ },
+ {
+  "id": "r4-032",
+  "name": "Palladium Men's Classic Wedding Band 6mm (Market Street Diamonds)",
+  "category": "mens-band",
+  "source": {
+   "name": "Market Street Diamonds",
+   "url": "https://www.marketstreetdiamonds.com/wedding-rings/pre-set/classic/palladium-men-s-classic-wedding-band-6mm/"
+  },
+  "priceUsd": 3500,
+  "kind": "band",
+  "engagement": null,
+  "band": {
+   "style": "mens-classic",
+   "metals": [
+    "palladium"
+   ],
+   "stones": "none",
+   "widthMm": 6
+  },
+  "notes": "Square-edge 6mm palladium band; finish not stated."
+ },
+ {
+  "id": "r4-033",
+  "name": "Moissanite Esme Bridal Set 18K White Gold (10x7mm pear)",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Moissanite-Esme-Bridal-Set-White-Gold-BE1D1961-BE299-MO10X7PS1/"
+  },
+  "priceUsd": 3330,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "moissanite",
+    "cut": "pear",
+    "carat": null,
+    "colorName": "white (lab grown, VVS)",
+    "clarity": null
+   },
+   "head": "basket",
+   "shank": null,
+   "metals": [
+    "white-gold-18k"
+   ],
+   "finish": null,
+   "accents": [
+    "six claw prongs",
+    "setting 1.8mm wide"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "plain-comfort",
+   "metals": [
+    "white-gold-18k"
+   ],
+   "stones": "none",
+   "widthMm": 1.5
+  },
+  "notes": "Open basket with six claws holding a 10x7mm pear; the set pairs it with a 1.5mm comfort-fit band. Head id basket is the nearest to an open six-claw basket; sold in 14K/18K white, yellow, rose and platinum."
+ },
+ {
+  "id": "r4-034",
+  "name": "Luxe Sienna Halo Diamond Bridal Set (1 3/8 ct. tw.) 14K White Gold",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Luxe-Sienna-Halo-Diamond-Bridal-Set-(1-3/8-ct.-tw.)-14K-White-Gold-BE1D460-BE2M3420-76789706/"
+  },
+  "priceUsd": 4280,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": null,
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": "pave",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "42 French-pave round diamonds, at least 0.79 ctw",
+    "split claw prongs"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "three-quarter-eternity",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 2.3
+  },
+  "notes": "Halo ring with diamond-set shank paired with a 2.3mm three-quarter-coverage pave band. Price is setting plus band only; center stone not included (3/4 ct round shown in images)."
+ },
+ {
+  "id": "r4-035",
+  "name": "Fancy Halo Diamond Bridal Set (1/6 ct. tw.) 18K White Gold",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Fancy-Halo-Diamond-Bridal-Set-(1/6-ct.-tw.)-White-Gold-BE1BDB15F25-BE201-1426525/"
+  },
+  "priceUsd": 1780,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": null,
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": null,
+   "metals": [
+    "white-gold-18k"
+   ],
+   "finish": null,
+   "accents": [
+    "16 halo diamonds in shared prongs, at least 0.15 ctw",
+    "four-prong center",
+    "2mm rhodium-plated shank"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "plain-comfort",
+   "metals": [
+    "white-gold-18k"
+   ],
+   "stones": "none",
+   "widthMm": 2
+  },
+  "notes": "Fancy-shape halo (center cut chosen by buyer) paired with the 2mm plain comfort-fit band BE201. The $1,780 comes from a search snippet; the opened page showed no price."
+ },
+ {
+  "id": "r4-036",
+  "name": "Chamise Diamond Bridal Set 18K White Gold",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/Chamise-Diamond-Bridal-Set-White-Gold-BE1AS8PD08-BE2AS10PD10-1156398/"
+  },
+  "priceUsd": null,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "basket",
+   "shank": null,
+   "metals": [
+    "white-gold-18k"
+   ],
+   "finish": null,
+   "accents": [
+    "four-prong basket",
+    "1/15 ct. tw. diamond accents on the ring"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "contour-curved",
+   "metals": [
+    "white-gold-18k"
+   ],
+   "stones": "melee",
+   "widthMm": 1.7
+  },
+  "notes": "Four-prong basket ring with a 1.7mm Chamise contoured band that curves around the head. Price not visible on the opened page; round is the displayed view and other shapes fit."
+ },
+ {
+  "id": "r4-037",
+  "name": "Waverly Diamond Bridal Set (2/3 ct. tw.) 14K White Gold",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/en-gb/Waverly-Diamond-Bridal-Set-(2/3-ct.-tw.)-14K-White-Gold-BE1D64-BE264-76823658/"
+  },
+  "priceUsd": 2580,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": null,
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": null,
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "diamond-encrusted gallery"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "pave-band",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee (micro-pave nearly all the way round, small sizing bar)",
+   "widthMm": null
+  },
+  "notes": "Halo ring plus a delicate micro-pave band set almost the full circle. Listing gives no widths; shape of halo not stated so halo-round is an assumption. Seen via the en-gb halo sets page."
+ },
+ {
+  "id": "r4-038",
+  "name": "Joy Diamond Ring (1/3 ct. tw.) with Bliss Diamond Ring (1/5 ct. tw.) 14K White Gold",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/en-gb/Joy-Diamond-Ring-(1/3-ct.-tw.)-with-Bliss-Diamond-Ring-(1/5-ct.-tw.)-14K-White-Gold-BE1D4631-BE2FPD14-76789720/"
+  },
+  "priceUsd": 2480,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": null,
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": null,
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "softened diamond halo"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "pave-band",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": null
+  },
+  "notes": "Softened halo paired with the Bliss band, a petite diamond band with scalloped pave and a split shank. No widths listed."
+ },
+ {
+  "id": "r4-039",
+  "name": "Odessa Diamond Ring (1/5 ct. tw.) with Sonora Diamond Ring (1/8 ct. tw.) 14K White Gold",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/en-gb/Odessa-Diamond-Ring-(1/5-ct.-tw.)-with-Sonora-Diamond-Ring-(1/8-ct.-tw.)-14K-White-Gold-BE1D32H-BE210-76789676/"
+  },
+  "priceUsd": 2340,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": null,
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": null,
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "pave halo"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "pave-band",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee (French pave)",
+   "widthMm": null
+  },
+  "notes": "Intricate pave halo with a French-pave Sonora band. No widths listed."
+ },
+ {
+  "id": "r4-040",
+  "name": "Reina Diamond Ring with Luxe Ballad Diamond Ring (1/4 ct. tw.) 14K Rose Gold",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/en-gb/Reina-Diamond-Ring-with-Luxe-Ballad-Diamond-Ring-(1/4-ct.-tw.)-Rose-Gold-BE1D3242-BE264-5512285/"
+  },
+  "priceUsd": 2080,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": null,
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": null,
+   "metals": [
+    "rose-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "diamond halo"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "pave-band",
+   "metals": [
+    "rose-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": null
+  },
+  "notes": "Rose-gold halo with a Luxe Ballad diamond band; the listing gives no band description or width, so pave-band is the nearest id."
+ },
+ {
+  "id": "r4-041",
+  "name": "Vienna Diamond Bridal Set (1/2 ct. tw.) 14K White Gold",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/en-gb/Vienna-Diamond-Bridal-Set-(1/2-ct.-tw.)-14K-White-Gold-BE1D2111-BE264-76789602/"
+  },
+  "priceUsd": 1880,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": null,
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": null,
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "scalloped pave rising up the gallery and around the center stone"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "three-quarter-eternity",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee (scalloped pave about 3/4 round)",
+   "widthMm": null
+  },
+  "notes": "Scalloped-pave ring paired with a petite band set about three quarters of the way around. Head id halo-round is the nearest to the described encircling pave gallery."
+ },
+ {
+  "id": "r4-042",
+  "name": "Petite Twisted Vine Halo Diamond Bridal Set (1/3 ct. tw.) 14K White Gold",
+  "category": "set",
+  "source": {
+   "name": "Brilliant Earth",
+   "url": "https://www.brilliantearth.com/en-gb/Petite-Twisted-Vine-Halo-Diamond-Bridal-Set-(1/3-ct.-tw.)-14K-White-Gold-BE1M54DH-BE2M254P-76789782/"
+  },
+  "priceUsd": 3040,
+  "kind": "set",
+  "engagement": {
+   "stone": {
+    "material": "diamond",
+    "cut": null,
+    "carat": null,
+    "colorName": null,
+    "clarity": null
+   },
+   "head": "halo-round",
+   "shank": "leaf-vine",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "finish": null,
+   "accents": [
+    "diamond halo",
+    "diamonds intertwined with a polished metal strand"
+   ],
+   "orientation": null
+  },
+  "band": {
+   "style": "vine-band",
+   "metals": [
+    "white-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 2.5
+  },
+  "notes": "Halo ring on a twisted vine shank with a matching vine band that sits flush. Band width 2.5mm is inferred from the matching Petite Twisted Vine ring (code BE2M254P); a halo sets page showed $3,400 instead of $3,040."
+ }
+]

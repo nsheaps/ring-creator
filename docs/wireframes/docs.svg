@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" role="img" aria-labelledby="t d" font-family="sans-serif">
+<title id="t">Docs wireframe</title><desc id="d">Sidebar with doc list, rendered Markdown in the center, table of contents on the right.</desc>
+<rect width="1280" height="800" fill="#f4f4f4"/>
+<rect x="0" y="0" width="1280" height="48" rx="0" fill="#e6e6e6" stroke="#cfcfcf"/>
+<text x="24" y="30" font-size="16" text-anchor="start" fill="#333" font-weight="700">Ring Creator</text>
+<text x="760" y="30" font-size="13" text-anchor="start" fill="#333">Build</text>
+<text x="848" y="30" font-size="13" text-anchor="start" fill="#333">Gallery</text>
+<text x="936" y="30" font-size="13" text-anchor="start" fill="#333">Components</text>
+<text x="1024" y="30" font-size="13" text-anchor="start" fill="#333">Saved</text>
+<text x="1112" y="30" font-size="13" text-anchor="start" fill="#c9a24b" font-weight="700">Docs</text>
+<rect x="1210" y="12" width="46" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1233.0" y="27.85" font-size="11" text-anchor="middle" fill="#333">theme</text>
+<rect x="24" y="64" width="240" height="716" rx="6" fill="#fff" stroke="#9a9a9a"/>
+<text x="40" y="96" font-size="16" text-anchor="start" fill="#333" font-weight="700">Docs</text>
+<text x="44" y="132" font-size="13" text-anchor="start" fill="#333">Getting started</text>
+<text x="44" y="168" font-size="13" text-anchor="start" fill="#333">Choosing a stone</text>
+<rect x="34" y="184" width="220" height="30" rx="6" fill="#fff6dc" stroke="#c9a24b"/>
+<text x="44" y="205" font-size="13" text-anchor="start" fill="#333">Heads and settings</text>
+<text x="44" y="240" font-size="13" text-anchor="start" fill="#333">Metals</text>
+<text x="44" y="276" font-size="13" text-anchor="start" fill="#333">Adding components</text>
+<text x="44" y="312" font-size="13" text-anchor="start" fill="#333">Glossary</text>
+<text x="300" y="110" font-size="30" text-anchor="start" fill="#333" font-weight="700">Heads and settings</text>
+<rect x="300" y="140" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="164" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="188" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="212" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="236" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="260" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="284" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="308" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="332" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="380" width="640" height="160" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="620.0" y="464.55" font-size="13" text-anchor="middle" fill="#333">image / diagram</text>
+<rect x="300" y="560" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="584" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="608" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="632" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="656" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="680" width="640" height="12" rx="3" fill="#e0e0e0" stroke="#e0e0e0"/>
+<rect x="300" y="730" width="200" height="36" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="400.0" y="752.2" font-size="12" text-anchor="middle" fill="#333">&lt; Previous: Stones</text>
+<rect x="740" y="730" width="200" height="36" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="840.0" y="752.2" font-size="12" text-anchor="middle" fill="#333">Next: Metals &gt;</text>
+<rect x="980" y="100" width="260" height="200" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="990" y="121" font-size="13" text-anchor="start" fill="#333" font-weight="700">On this page</text>
+<text x="996" y="150" font-size="13" text-anchor="start" fill="#c9a24b">Solitaire</text>
+<text x="996" y="178" font-size="13" text-anchor="start" fill="#c9a24b">Halo</text>
+<text x="996" y="206" font-size="13" text-anchor="start" fill="#c9a24b">Three-stone</text>
+<text x="996" y="234" font-size="13" text-anchor="start" fill="#c9a24b">Bezel</text>
+</svg>

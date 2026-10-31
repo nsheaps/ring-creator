@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" role="img" aria-labelledby="t d" font-family="sans-serif">
+<title id="t">Component list wireframe</title><desc id="d">Kind tabs, search and tag chips above a grid of component cards.</desc>
+<rect width="1280" height="800" fill="#f4f4f4"/>
+<rect x="0" y="0" width="1280" height="48" rx="0" fill="#e6e6e6" stroke="#cfcfcf"/>
+<text x="24" y="30" font-size="16" text-anchor="start" fill="#333" font-weight="700">Ring Creator</text>
+<text x="760" y="30" font-size="13" text-anchor="start" fill="#333">Build</text>
+<text x="848" y="30" font-size="13" text-anchor="start" fill="#333">Gallery</text>
+<text x="936" y="30" font-size="13" text-anchor="start" fill="#c9a24b" font-weight="700">Components</text>
+<text x="1024" y="30" font-size="13" text-anchor="start" fill="#333">Saved</text>
+<text x="1112" y="30" font-size="13" text-anchor="start" fill="#333">Docs</text>
+<rect x="1210" y="12" width="46" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1233.0" y="27.85" font-size="11" text-anchor="middle" fill="#333">theme</text>
+<text x="40" y="100" font-size="28" text-anchor="start" fill="#333" font-weight="700">Heads</text>
+<text x="40" y="126" font-size="14" text-anchor="start" fill="#777">25 models. Choose how the stone is held.</text>
+<rect x="40" y="146" width="80" height="30" rx="15" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="80.0" y="165.2" font-size="12" text-anchor="middle" fill="#333">Metals</text>
+<rect x="128" y="146" width="80" height="30" rx="15" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="168.0" y="165.2" font-size="12" text-anchor="middle" fill="#333">Gems</text>
+<rect x="216" y="146" width="80" height="30" rx="15" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="256.0" y="165.2" font-size="12" text-anchor="middle" fill="#333">Cuts</text>
+<rect x="304" y="146" width="80" height="30" rx="15" fill="#c9a24b" stroke="#c9a24b"/>
+<text x="344.0" y="165.2" font-size="12" text-anchor="middle" fill="#111" font-weight="700">Heads</text>
+<rect x="392" y="146" width="80" height="30" rx="15" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="432.0" y="165.2" font-size="12" text-anchor="middle" fill="#333">Shanks</text>
+<rect x="480" y="146" width="80" height="30" rx="15" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="520.0" y="165.2" font-size="12" text-anchor="middle" fill="#333">Bands</text>
+<rect x="568" y="146" width="80" height="30" rx="15" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="608.0" y="165.2" font-size="12" text-anchor="middle" fill="#333">Finishes</text>
+<rect x="900" y="146" width="340" height="30" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="1070.0" y="165.2" font-size="12" text-anchor="middle" fill="#999">search by name or tag</text>
+<rect x="40" y="188" width="86" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="83.0" y="203.85" font-size="11" text-anchor="middle" fill="#333">halo</text>
+<rect x="134" y="188" width="86" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="177.0" y="203.85" font-size="11" text-anchor="middle" fill="#333">vintage</text>
+<rect x="228" y="188" width="86" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="271.0" y="203.85" font-size="11" text-anchor="middle" fill="#333">secure</text>
+<rect x="322" y="188" width="86" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="365.0" y="203.85" font-size="11" text-anchor="middle" fill="#333">low-profile</text>
+<rect x="416" y="188" width="86" height="24" rx="12" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="459.0" y="203.85" font-size="11" text-anchor="middle" fill="#333">modern</text>
+<rect x="40" y="230" width="285" height="260" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="50" y="240" width="265" height="180" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="182.5" y="334.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="52" y="442" font-size="14" text-anchor="start" fill="#333" font-weight="700">Solitaire 4-prong</text>
+<text x="52" y="462" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="52" y="468" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="74.0" y="478.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="345" y="230" width="285" height="260" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="355" y="240" width="265" height="180" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="487.5" y="334.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="357" y="442" font-size="14" text-anchor="start" fill="#333" font-weight="700">Halo round</text>
+<text x="357" y="462" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="357" y="468" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="379.0" y="478.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="650" y="230" width="285" height="260" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="660" y="240" width="265" height="180" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="792.5" y="334.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="662" y="442" font-size="14" text-anchor="start" fill="#333" font-weight="700">Cathedral</text>
+<text x="662" y="462" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="662" y="468" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="684.0" y="478.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="955" y="230" width="285" height="260" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="965" y="240" width="265" height="180" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="1097.5" y="334.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="967" y="442" font-size="14" text-anchor="start" fill="#333" font-weight="700">Bezel full</text>
+<text x="967" y="462" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="967" y="468" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="989.0" y="478.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="40" y="510" width="285" height="260" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="50" y="520" width="265" height="180" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="182.5" y="614.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="52" y="722" font-size="14" text-anchor="start" fill="#333" font-weight="700">Solitaire 4-prong</text>
+<text x="52" y="742" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="52" y="748" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="74.0" y="758.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="345" y="510" width="285" height="260" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="355" y="520" width="265" height="180" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="487.5" y="614.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="357" y="722" font-size="14" text-anchor="start" fill="#333" font-weight="700">Halo round</text>
+<text x="357" y="742" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="357" y="748" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="379.0" y="758.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="650" y="510" width="285" height="260" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="660" y="520" width="265" height="180" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="792.5" y="614.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="662" y="722" font-size="14" text-anchor="start" fill="#333" font-weight="700">Cathedral</text>
+<text x="662" y="742" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="662" y="748" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="684.0" y="758.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+<rect x="955" y="510" width="285" height="260" rx="6" fill="#ffffff" stroke="#9a9a9a"/>
+<rect x="965" y="520" width="265" height="180" rx="6" fill="#ececec" stroke="#9a9a9a" stroke-dasharray="5 4"/>
+<text x="1097.5" y="614.2" font-size="12" text-anchor="middle" fill="#333">picture</text>
+<text x="967" y="722" font-size="14" text-anchor="start" fill="#333" font-weight="700">Bezel full</text>
+<text x="967" y="742" font-size="12" text-anchor="start" fill="#777">summary text, two lines</text>
+<rect x="967" y="748" width="44" height="14" rx="7" fill="#ffffff" stroke="#9a9a9a"/>
+<text x="989.0" y="758.15" font-size="9" text-anchor="middle" fill="#333">tag</text>
+</svg>
