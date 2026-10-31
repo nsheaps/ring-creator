@@ -51,6 +51,10 @@ function render(design: Design, view: RingView): string {
     const v = ensure();
     const v2 = view === 'band' && !design.band ? 'ring' : view;
     v.setContent(assembleDesign(design, v2).group, true);
+    if (v2 !== 'band') {
+      v.setPreset('3/4');
+      v.focusHead(true);
+    }
     v.snapshot(); // renders the frame; preserveDrawingBuffer keeps it readable
     const canvas = document.createElement('canvas');
     canvas.width = OUT_W;

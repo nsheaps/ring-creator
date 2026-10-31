@@ -18,6 +18,8 @@ interface Props {
   className?: string;
   /** Reframe the camera when the design changes (default false: keeps the user's angle). */
   refit?: boolean;
+  /** Start on a close three-quarter view of the stone and setting (cards, previews). */
+  closeUp?: boolean;
   onInfo?: (info: {
     triangles: number;
     centerLengthMm: number;
@@ -28,7 +30,7 @@ interface Props {
 
 /** 3D viewer for a complete Design. Falls back to a message when WebGL or a builder is unavailable. */
 export const DesignViewer = forwardRef<DesignViewerHandle, Props>(function DesignViewer(
-  { design, view = 'set', autoRotate = false, className, refit = false, onInfo },
+  { design, view = 'set', autoRotate = false, className, refit = false, closeUp = false, onInfo },
   ref,
 ) {
   const host = useRef<HTMLDivElement>(null);
@@ -68,7 +70,12 @@ export const DesignViewer = forwardRef<DesignViewerHandle, Props>(function Desig
     if (!v) return;
     try {
       const { group, info } = assembleDesign(design, view);
-      v.setContent(group, first.current || refit);
+      const fit = first.current || refit;
+      v.setContent(group, fit);
+      if (fit && closeUp && view !== 'band') {
+        v.setPreset('3/4');
+        v.focusHead(true);
+      }
       first.current = false;
       setError(null);
       onInfo?.({
@@ -81,7 +88,7 @@ export const DesignViewer = forwardRef<DesignViewerHandle, Props>(function Desig
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     }
-  }, [design, view, refit]);
+  }, [design, view, refit, closeUp]);
 
   return (
     <div className={`viewer ${className ?? ''}`} data-testid="viewer">

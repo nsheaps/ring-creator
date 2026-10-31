@@ -356,3 +356,7 @@ button.chip {
     grid-template-columns: 1fr;
   }
 }
+
+.dcard-viewer .viewer-hint {
+  display: none;
+}

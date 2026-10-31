@@ -43,7 +43,13 @@ export function DesignCard({
         {img && <img src={img} alt={`Preview of ${design.name}`} width={300} height={225} loading="lazy" />}
         {!img && !slot && <span className="muted dcard-ph">{visible ? 'Rendering…' : '◆'}</span>}
         {slot && (
-          <DesignViewer design={design} view={design.band ? 'set' : 'ring'} className="dcard-viewer" refit />
+          <DesignViewer
+            design={design}
+            view={design.band ? 'set' : 'ring'}
+            className="dcard-viewer"
+            refit
+            closeUp
+          />
         )}
       </div>
       <div className="dcard-body">

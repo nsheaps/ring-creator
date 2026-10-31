@@ -67,6 +67,13 @@ export class RingViewer {
   }
 
   private flyTo(pos: THREE.Vector3, target: THREE.Vector3, dur = 450): void {
+    if (dur <= 0) {
+      this.anim = null;
+      this.camera.position.copy(pos);
+      this.controls.target.copy(target);
+      this.controls.update();
+      return;
+    }
     this.anim = {
       t0: performance.now(),
       dur,
