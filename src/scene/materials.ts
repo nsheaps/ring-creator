@@ -37,6 +37,7 @@ uniform float gemContrast;
 uniform float gemPath;
 uniform float gemCrownLo;
 uniform float gemGlow;
+uniform float gemMosaic;
 vec3 gemHash3(vec3 p) {
   p = fract(p * vec3(0.1031, 0.1030, 0.0973));
   p += dot(p, p.yxz + 33.33);
@@ -54,12 +55,21 @@ const PAVILION_MAIN = /* glsl */ `
   // BackSide (FLIP_SIDED): vNormal points into the stone; nOut is the facet's outward normal, view space.
   vec3 nOut = -normalize( vNormal );
   vec3 I = normalize( -vViewPosition );
-  vec3 r1 = reflect( I, nOut );
   vec3 nW = inverseTransformDirection( nOut, viewMatrix );
-  vec3 rW = inverseTransformDirection( r1, viewMatrix );
+  vec3 IW = inverseTransformDirection( I, viewMatrix );
+  vec3 r1 = reflect( IW, nW );
+  // second internal bounce off the opposite pavilion facet (this facet mirrored about the stone's vertical axis, taken
+  // as world up: settings hold the centre stone table-up): in a well cut stone light that hits one pavilion side
+  // crosses to the other and leaves back up through the crown, so pavilion facets mirror the overhead lights.
+  // Without it, big flat step-cut facets mirror the grey horizon as one dull slab.
+  vec3 r2 = reflect( r1, vec3( -nW.x, nW.y, -nW.z ) );
   float facetFlat = gemFlatness( vNormal );
   // per-facet scatter: stable while the camera moves (the facet keeps its identity), so turning the ring scintillates
   vec3 h = gemHash3( floor( nW * 97.0 + 0.5 ) + vec3( 17.0, 3.0, 41.0 ) ) - 0.5;
+  // most facets return light by the double bounce, a few by the single one (dark accents and contrast)
+  float twoBounce = step( 0.22, gemHash3( floor( nW * 61.0 + 0.5 ) + vec3( 7.0, 13.0, 2.0 ) ).z );
+  twoBounce *= step( 0.0, dot( r1, -vec3( -nW.x, nW.y, -nW.z ) ) ); // only when r1 actually heads for that facet
+  vec3 rW = normalize( mix( r1, r2, twoBounce * facetFlat ) );
   float sc = gemScatter * facetFlat;
   vec3 d = normalize( rW + sc * h + vec3( 0.0, 0.3 * sc, 0.0 ) );
   // light that leaves a well cut stone mostly came from above: fold most downward rays back up
@@ -78,10 +88,20 @@ const PAVILION_MAIN = /* glsl */ `
   // contrast: facets that see only the grey sweep go dark, facets that catch a light stay blazing
   float lum = dot( env, vec3( 0.2126, 0.7152, 0.0722 ) );
   env *= mix( 1.0, smoothstep( 0.32, 1.6, lum ), gemContrast ) * gemBrightness;
+  // hall of mirrors: a big flat facet mirrors one patch of the studio, which is mostly the even grey sweep. Push each
+  // facet towards a bright flash or a dark reflection (biased by what it actually sees), so step cuts show crisp
+  // alternating bands instead of a uniform grey slab.
+  // the cells of the reflected direction cut each facet into the mirrored images of the other steps (they move as the
+  // ring turns); the axis-aligned cells give straight bands parallel to the girdle on a table-up stone
+  float tone = gemHash3( floor( nW * 53.0 + 0.5 ) + floor( d * 9.0 ) * 3.0 + vec3( 23.0, 5.0, 9.0 ) ).y;
+  float flash = smoothstep( 0.45, 0.55, tone * 0.8 + min( lum, 1.0 ) * 0.2 );
+  vec3 darkTone = min( env * 0.1, vec3( 0.04 ) );
+  vec3 flashTone = max( env * 1.6, vec3( 0.8 * gemBrightness ) );
+  env = mix( env, mix( darkTone, flashTone, flash ), gemMosaic * facetFlat );
   vec3 body = pow( max( gemBody, vec3( 1e-3 ) ), vec3( gemPath ) );
   vec3 col = env * body;
   // a little body colour glow even in dark facets so coloured stones never go grey
-  col += body * 0.05;
+  col += body * 0.12;
   col = mix( col, vec3( dot( col, vec3( 0.333 ) ) ) * 0.75 + 0.1, gemHaze * 0.6 );
   // translucent stones (opal): a milky glowing body with soft spectral patches (play of colour)
   if ( gemGlow > 0.0 ) {
@@ -108,6 +128,11 @@ const CROWN_MAIN = /* glsl */ `
   float m = gemHash3( floor( nW * 97.0 + 0.5 ) + vec3( 5.0, 29.0, 11.0 ) ).x;
   // dark-leaning distribution: most facets pass the light, some go dim (the black accents of a well cut stone)
   float mask = mix( 1.0, mix( gemCrownLo, 1.0, smoothstep( 0.0, 0.7, m ) ), facetFlat );
+  // a facet seen nearly face-on (the table of a face-up stone) refracts straight through: it never goes dim
+  float faceOn = abs( dot( normalize( vNormal ), normalize( vViewPosition ) ) );
+  mask = mix( mask, 1.0, smoothstep( 0.8, 0.96, faceOn ) );
+  // the table (level, settings hold the centre stone table-up) is one big window: never dimmed as a whole
+  mask = mix( mask, 1.0, smoothstep( 0.985, 0.998, nW.y ) );
   // flat facets: suppress reflections of the grey sweep so the crown shows crisp light flashes, not a milky film;
   // curved (cabochon) surfaces: softer window reflections
   float lum = dot( outgoingLight, vec3( 0.2126, 0.7152, 0.0722 ) );
@@ -126,6 +151,7 @@ interface GemUniforms {
   gemPath: { value: number };
   gemCrownLo: { value: number };
   gemGlow: { value: number };
+  gemMosaic: { value: number };
 }
 
 function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
@@ -141,7 +167,7 @@ function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
       .replace('#include <opaque_fragment>', PAVILION_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-pavilion-v2';
+  mat.customProgramCacheKey = () => 'gem-pavilion-v3';
   return mat;
 }
 
@@ -171,7 +197,7 @@ function crownMaterial(gem: GemModel, haze: number, u: GemUniforms): THREE.MeshP
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
       .replace('#include <opaque_fragment>', CROWN_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-crown-v2';
+  mat.customProgramCacheKey = () => 'gem-crown-v3';
   return mat;
 }
 
@@ -240,6 +266,7 @@ export function gemMaterials(
       gemPath: { value: colourless ? 1.4 : pastel ? 1.1 : 1.6 },
       gemCrownLo: { value: colourless ? 0.3 : 0.5 },
       gemGlow: { value: translucent ? 0.75 : 0 },
+      gemMosaic: { value: translucent ? 0 : colourless ? 0.9 : 0.6 },
     };
     inner = pavilionMaterial(uniforms);
     outer = crownMaterial(gem, haze, uniforms);

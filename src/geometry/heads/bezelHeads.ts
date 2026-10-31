@@ -9,10 +9,12 @@ import {
   ensureOutward,
   loft,
   loop,
+  meanRadius,
   metalPart,
   num,
   resample,
   ringDrop,
+  stoneSurfaceY,
   support,
   v3,
   type CleanOutline,
@@ -48,38 +50,82 @@ function pavScale(d: CollarDims, y: number): number {
   return Math.max(d.bs, 1 - Math.min(1, Math.max(0, -y - d.gt * 0.5) / d.pd));
 }
 
+/** Average inward distance from the girdle edge at which the pavilion has dropped to height y (y below the girdle). */
+function pavilionInset(ctx: HeadCtx, o: CleanOutline, y: number): number {
+  const stone = ctx.center.built;
+  const half = Math.min(support(o, 1, 0), support(o, 0, 1));
+  const n = 12;
+  let sum = 0;
+  for (let i = 0; i < n; i++) {
+    const p = resampleCache(o)[Math.floor(((i + 0.5) / n) * 48)];
+    let lo = 0;
+    let hi = half * 0.98;
+    for (let k = 0; k < 16; k++) {
+      const mid = (lo + hi) / 2;
+      const s = stoneSurfaceY(stone, p.x - p.nx * mid, p.z - p.nz * mid, 'bottom');
+      if (s !== null && s > y) lo = mid;
+      else hi = mid;
+    }
+    sum += lo;
+  }
+  return sum / n;
+}
+
+const resampled = new WeakMap<CleanOutline, PathPt[]>();
+function resampleCache(o: CleanOutline): PathPt[] {
+  let r = resampled.get(o);
+  if (!r) {
+    r = resample(o, 48, 1);
+    resampled.set(o, r);
+  }
+  return r;
+}
+
+/** Outline scale that keeps metal at height y outside the real pavilion (never below the linear estimate or the seat). */
+function hugScale(ctx: HeadCtx, d: CollarDims, y: number): number {
+  const exact = 1 - pavilionInset(ctx, d.o, y) / Math.max(0.1, meanRadius(d.o));
+  return Math.min(1, Math.max(pavScale(d, y), exact, d.bs));
+}
+
 /**
- * Bezel cross-section [offset from the girdle outline, y, scale]: the inner face hugs the girdle and is burnished over the
- * crown edge up to the lip height; the outer wall drops straight past the girdle, then curves in to the seat on the shank.
+ * Bezel cross-section [offset from the girdle outline, y, scale]: a thin collar (bezelThickness, 0.6-0.9 mm) that rises
+ * only a little above the girdle, its outer face leaning inward to a rounded polished lip burnished onto the crown.
+ * Just under the girdle a small undercut ends the collar, and a thin skirt follows the pavilion down to the seat on the
+ * shank, so the setting reads as a slim frame on a tapered cone rather than a deep cup.
  */
 function bezelSection(ctx: HeadCtx, d: CollarDims): SectionPt[] {
-  const t = num(ctx.params, 'bezelThickness', 0.6, 0.4, 1.5);
+  const t = num(ctx.params, 'bezelThickness', 0.7, 0.4, 1.5);
   const crown = ctx.center.built.crownHeight;
-  const lip = num(ctx.params, 'bezelHeight', Math.min(0.45, crown * 0.45), 0.15, 1.5);
+  const lip = num(ctx.params, 'bezelHeight', Math.min(0.4, crown * 0.4), 0.15, 1.5);
   const g2 = d.gt * 0.5;
-  const yTop = g2 + Math.min(lip, Math.max(0.1, crown * 0.8));
+  const yTop = g2 + Math.min(lip, Math.max(0.12, crown * 0.55));
   const inset = crownInset(ctx.center.built, yTop);
-  const yWall = -Math.min(0.7, d.pd * 0.3, d.bd * 0.35);
-  const span = d.bd + yWall; // from the bottom of the wall down to the seat
+  // collar: from the lip down to just under the girdle
+  const yColl = -g2 - Math.min(0.55, d.pd * 0.22, Math.max(0.15, d.bd * 0.3));
+  const skin = Math.max(0.35, t * 0.55); // skirt wall thickness
+  const yUnder = yColl - Math.min(0.15, d.bd * 0.1);
+  const span = d.bd + yUnder; // from the undercut down to the seat
+  const skirt: SectionPt[] = [];
+  const k0 = hugScale(ctx, d, yUnder);
+  for (const f of [0, 0.15, 0.35, 0.55, 0.75, 0.9]) {
+    const y = yUnder - span * f;
+    // a slightly concave cone from the collar to the seat, never inside the pavilion
+    const k = Math.max(hugScale(ctx, d, y), d.bs + (k0 - d.bs) * (1 - f) ** 1.4);
+    skirt.push([skin * (1 - 0.25 * f), y, k]);
+  }
   const yCup = -Math.min(d.pd * 0.55, d.bd * 0.7);
-  const outerAt = (f: number): SectionPt => {
-    // convex taper from the wall (f = 0) to the seat (f = 1)
-    const k = 1 - (1 - d.bs) * f * f;
-    return [t * (1 - 0.15 * f), yWall - span * f, k];
-  };
   return [
     [-inset, yTop, 1],
-    [-inset * 0.45 + 0.04, yTop + 0.07, 1],
-    [t * 0.5, yTop + 0.06, 1],
-    [t * 0.88, yTop - 0.06, 1],
-    [t, yTop - 0.22, 1],
-    [t, yWall, 1],
-    outerAt(0.3),
-    outerAt(0.55),
-    outerAt(0.8),
-    outerAt(1),
+    [-inset * 0.5 + 0.03, yTop + 0.05, 1],
+    [t * 0.25, yTop + 0.06, 1],
+    [t * 0.62, yTop - 0.02, 1],
+    [t * 0.8, yTop - 0.14, 1],
+    [t, yColl + 0.08, 1],
+    [t * 0.96, yColl, 1],
+    ...skirt,
+    [skin * 0.7, -d.bd, d.bs],
     [-t * 0.25, -d.bd, d.bs],
-    [0.05, yCup, pavScale(d, yCup)],
+    [0.05, yCup, hugScale(ctx, d, yCup)],
     [-0.3, -g2 - 0.08, 1],
     [-0.03, -g2 - 0.02, 1],
     [-0.03, g2, 1],

@@ -240,6 +240,27 @@ describe('specific invariants', () => {
     expect(sideMetal(build('bezel-full'))).toBeGreaterThan(0);
   });
 
+  it('full bezel is a thin, low collar: lip just above the girdle, wall no thicker than ~0.9 mm', () => {
+    const ctx = stubCtx();
+    const stone = ctx.center.built;
+    const o = cleanOutline(stone.outline);
+    const halfW = Math.min(
+      ...[0, Math.PI / 2].map((a) => Math.max(...o.pts.map(([x, z]) => x * Math.cos(a) + z * Math.sin(a)))),
+    );
+    const box = stats(build('bezel-full')).box;
+    expect(box.max.y).toBeLessThan(stone.girdleThickness / 2 + stone.crownHeight * 0.6 + 0.15);
+    // across the band (z), the collar sticks out past the girdle by at most the wall thickness
+    expect(box.max.z - halfW).toBeLessThan(0.95);
+    // below the collar the metal tapers in with the pavilion instead of dropping straight down like a bucket
+    const yLow = -stone.girdleThickness / 2 - stone.pavilionDepth * 0.5;
+    let zLow = 0;
+    for (const p of build('bezel-full').filter((q) => q.slot === 'head-metal')) {
+      const a = p.geometry.getAttribute('position');
+      for (let i = 0; i < a.count; i++) if (a.getY(i) < yLow) zLow = Math.max(zLow, Math.abs(a.getZ(i)));
+    }
+    expect(zLow).toBeLessThan(halfW * 0.9);
+  });
+
   it('flush setting keeps the metal close to the girdle (no prong tips above the crown)', () => {
     const ctx = stubCtx();
     expect(stats(build('flush-gypsy')).box.max.y).toBeLessThan(ctx.center.built.crownHeight * 0.5);
