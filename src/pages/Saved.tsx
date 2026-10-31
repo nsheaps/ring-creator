@@ -10,14 +10,27 @@ import './browse.css';
 
 function isDesign(x: unknown): x is Design {
   const d = x as Partial<Design> | null;
-  return !!d && typeof d === 'object' && d.version === 1 && typeof d.engagement === 'object' && d.engagement !== null && typeof d.name === 'string';
+  return (
+    !!d &&
+    typeof d === 'object' &&
+    d.version === 1 &&
+    typeof d.engagement === 'object' &&
+    d.engagement !== null &&
+    typeof d.name === 'string'
+  );
 }
 
 function parseImport(text: string): Design[] {
   const v = JSON.parse(text) as unknown;
-  const list = Array.isArray(v) ? v : v && typeof v === 'object' && 'designs' in v ? (v as { designs: unknown }).designs : [v];
+  const list = Array.isArray(v)
+    ? v
+    : v && typeof v === 'object' && 'designs' in v
+      ? (v as { designs: unknown }).designs
+      : [v];
   if (!Array.isArray(list)) return [];
-  return list.map((x) => (x && typeof x === 'object' && 'design' in x ? (x as { design: unknown }).design : x)).filter(isDesign);
+  return list
+    .map((x) => (x && typeof x === 'object' && 'design' in x ? (x as { design: unknown }).design : x))
+    .filter(isDesign);
 }
 
 /**
@@ -73,7 +86,13 @@ function Item({ item, onNote }: { item: SavedDesign; onNote: (m: string) => void
 
   return (
     <li className="card sv-item" data-testid="saved-item">
-      <div className="sv-thumb">{img ? <img src={img} alt={`Preview of ${d.name}`} width={300} height={225} /> : <span className="muted">◆</span>}</div>
+      <div className="sv-thumb">
+        {img ? (
+          <img src={img} alt={`Preview of ${d.name}`} width={300} height={225} />
+        ) : (
+          <span className="muted">◆</span>
+        )}
+      </div>
       <div className="sv-info">
         {editing ? (
           <form
@@ -85,7 +104,13 @@ function Item({ item, onNote }: { item: SavedDesign; onNote: (m: string) => void
           >
             <label>
               <span className="sr-only">Design name</span>
-              <input type="text" value={name} autoFocus onChange={(e) => setName(e.target.value)} data-testid="saved-name-input" />
+              <input
+                type="text"
+                value={name}
+                autoFocus
+                onChange={(e) => setName(e.target.value)}
+                data-testid="saved-name-input"
+              />
             </label>
             <button className="btn primary" type="submit">
               Save
@@ -135,7 +160,12 @@ function Item({ item, onNote }: { item: SavedDesign; onNote: (m: string) => void
 }
 
 function slug(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'ring';
+  return (
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') || 'ring'
+  );
 }
 
 function download(filename: string, text: string): void {
@@ -182,7 +212,17 @@ export default function Saved() {
           <button className="btn" onClick={() => file.current?.click()} data-testid="saved-import">
             Import JSON
           </button>
-          <button className="btn" disabled={saved.length === 0} onClick={() => download('ring-creator-designs.json', JSON.stringify({ version: 1, designs: saved.map((s) => s.design) }, null, 2))} data-testid="saved-export">
+          <button
+            className="btn"
+            disabled={saved.length === 0}
+            onClick={() =>
+              download(
+                'ring-creator-designs.json',
+                JSON.stringify({ version: 1, designs: saved.map((s) => s.design) }, null, 2),
+              )
+            }
+            data-testid="saved-export"
+          >
             Export all
           </button>
           <input
@@ -206,7 +246,9 @@ export default function Saved() {
       {saved.length === 0 ? (
         <div className="card" data-testid="saved-empty">
           <h2>No saved designs yet</h2>
-          <p className="muted">Save a ring in the builder and it will show up here, stored only in this browser.</p>
+          <p className="muted">
+            Save a ring in the builder and it will show up here, stored only in this browser.
+          </p>
           <p>
             <a className="btn primary" href="#/build">
               Start building

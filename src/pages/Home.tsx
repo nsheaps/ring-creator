@@ -9,14 +9,29 @@ import './browse.css';
 const STEPS: [string, string][] = [
   ['Choose a stone', 'Pick the gem, cut, carat, color and clarity. The size updates as you change carat.'],
   ['Shape the setting', 'Combine a head (prongs, bezel, halo) with a shank and set the metal of each part.'],
-  ['Add a matching band', 'Choose a wedding band style that sits flush or contours around your engagement ring.'],
-  ['Save, compare, share', 'Keep designs in your browser, compare up to three side by side, export or share a link.'],
+  [
+    'Add a matching band',
+    'Choose a wedding band style that sits flush or contours around your engagement ring.',
+  ],
+  [
+    'Save, compare, share',
+    'Keep designs in your browser, compare up to three side by side, export or share a link.',
+  ],
 ];
 
 const FEATURES: [string, string][] = [
-  ['Build it in 3D', 'Every change redraws a real 3D model you can spin and zoom: stones, prongs, shanks and bands.'],
-  ['Mix anything', 'Mixed metals, side stones, halos, east-west stones and more. Components come from a growing catalogue.'],
-  ['Learn as you go', 'Guides and a reference for every cut, clarity, metal and style, so you know what you are choosing.'],
+  [
+    'Build it in 3D',
+    'Every change redraws a real 3D model you can spin and zoom: stones, prongs, shanks and bands.',
+  ],
+  [
+    'Mix anything',
+    'Mixed metals, side stones, halos, east-west stones and more. Components come from a growing catalogue.',
+  ],
+  [
+    'Learn as you go',
+    'Guides and a reference for every cut, clarity, metal and style, so you know what you are choosing.',
+  ],
 ];
 
 function pickFeatured<T extends { designFamily: string }>(all: T[], n: number): T[] {
@@ -39,7 +54,8 @@ function pickFeatured<T extends { designFamily: string }>(all: T[], n: number): 
 export default function Home() {
   const hero = useMemo(() => exampleDesigns[0] ?? defaultDesign('Classic solitaire'), []);
   const featured = useMemo(() => pickFeatured(exampleDesigns, 6), []);
-  const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const reduce =
+    typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const counts: [number, string][] = [
     [listModels('cut').length, 'cuts'],
     [listModels('head').length, 'heads'],
@@ -56,7 +72,8 @@ export default function Home() {
           <p className="hm-eyebrow">Engagement ring + wedding band designer</p>
           <h1 id="hm-title">Design the ring that is exactly yours</h1>
           <p className="hm-lead">
-            Build an engagement ring and a matching band from interchangeable parts, see it in 3D, and save or compare your favourites. Free, in your browser, no sign-up.
+            Build an engagement ring and a matching band from interchangeable parts, see it in 3D, and save or
+            compare your favourites. Free, in your browser, no sign-up.
           </p>
           <div className="hm-cta">
             <a className="btn primary" href="#/build" data-testid="cta-build">

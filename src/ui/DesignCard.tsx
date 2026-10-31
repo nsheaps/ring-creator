@@ -21,7 +21,15 @@ interface Props {
 }
 
 /** Card with a lazily rendered 3D preview. At most MAX_LIVE cards hold a WebGL context at once. */
-export function DesignCard({ design, href, live = false, thumb, actions, headingLevel = 3, testId = 'design-card' }: Props) {
+export function DesignCard({
+  design,
+  href,
+  live = false,
+  thumb,
+  actions,
+  headingLevel = 3,
+  testId = 'design-card',
+}: Props) {
   const media = useRef<HTMLDivElement>(null);
   const visible = useInView(media);
   const slot = useLiveSlot(live && visible);
@@ -34,7 +42,9 @@ export function DesignCard({ design, href, live = false, thumb, actions, heading
       <div className="dcard-media" ref={media}>
         {img && <img src={img} alt={`Preview of ${design.name}`} width={300} height={225} loading="lazy" />}
         {!img && !slot && <span className="muted dcard-ph">{visible ? 'Rendering…' : '◆'}</span>}
-        {slot && <DesignViewer design={design} view={design.band ? 'set' : 'ring'} className="dcard-viewer" refit />}
+        {slot && (
+          <DesignViewer design={design} view={design.band ? 'set' : 'ring'} className="dcard-viewer" refit />
+        )}
       </div>
       <div className="dcard-body">
         <H className="dcard-title">{href ? <a href={`#${href}`}>{design.name}</a> : design.name}</H>

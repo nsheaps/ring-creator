@@ -10,7 +10,12 @@ export function FitStep({ design, update }: StepProps) {
         <label className="bd-label" htmlFor="fit-size">
           Ring size (US)
         </label>
-        <select id="fit-size" data-testid="select-ring-size" value={design.ringSizeUS} onChange={(e) => update((d) => void (d.ringSizeUS = Number(e.target.value)))}>
+        <select
+          id="fit-size"
+          data-testid="select-ring-size"
+          value={design.ringSizeUS}
+          onChange={(e) => update((d) => void (d.ringSizeUS = Number(e.target.value)))}
+        >
           {SIZES.map((s) => (
             <option key={s} value={s}>
               {s} · {innerDiameterMm(s).toFixed(1)} mm
@@ -31,9 +36,13 @@ export function FitStep({ design, update }: StepProps) {
           onChange={(v) => update((d) => void (d.band && (d.band.fit = v)))}
         />
       ) : (
-        <p className="muted bd-small">Add a matching band to choose how it sits against the engagement ring.</p>
+        <p className="muted bd-small">
+          Add a matching band to choose how it sits against the engagement ring.
+        </p>
       )}
-      <p className="muted bd-small">Auto lets contour-capable bands curve around the head; flush keeps the band straight.</p>
+      <p className="muted bd-small">
+        Auto lets contour-capable bands curve around the head; flush keeps the band straight.
+      </p>
     </div>
   );
 }

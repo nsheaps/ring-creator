@@ -69,7 +69,8 @@ function StoneView({ model, autoRotate }: { model: Model; autoRotate: boolean })
     if (!v) return;
     try {
       const diamond = findModel('gem', 'diamond') ?? listModels('gem')[0];
-      const cut = model.kind === 'cut' ? model : (findModel('cut', 'round-brilliant') ?? listModels('cut')[0]);
+      const cut =
+        model.kind === 'cut' ? model : (findModel('cut', 'round-brilliant') ?? listModels('cut')[0]);
       if (!diamond || !cut) throw new Error('No stone models are registered.');
       const clarity = model.kind === 'clarity' ? model : findModel('clarity', 'vs1');
       const grade = model.kind === 'color-grade' ? model : findModel('color-grade', 'd-f');
@@ -84,6 +85,7 @@ function StoneView({ model, autoRotate }: { model: Model; autoRotate: boolean })
       a.renderOrder = 1;
       b.renderOrder = 2;
       g.add(a, b);
+      v.camera.position.set(14, 30, 26);
       v.setContent(g, true);
       setError(null);
       (window as unknown as { __ringReady?: number }).__ringReady = Date.now();

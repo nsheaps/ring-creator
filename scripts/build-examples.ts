@@ -11,11 +11,35 @@ import { findModel, getModel, listModels } from '../src/models/registry';
 import { defaultBand, defaultEngagement } from '../src/state/defaults';
 import type { BandSpec, Design, EngagementSpec } from '../src/models/types';
 
-interface RStone { material: string | null; cut: string | null; carat: number | null; colorName: string | null; clarity: string | null }
+interface RStone {
+  material: string | null;
+  cut: string | null;
+  carat: number | null;
+  colorName: string | null;
+  clarity: string | null;
+}
 interface RRing {
-  id: string; name: string; category: string; source: { name: string; url: string }; priceUsd: number | null; kind: string;
-  engagement: { stone: RStone; head: string | null; shank: string | null; metals: string[] | null; finish: string | null; accents: string[] | null; orientation: string | null } | null;
-  band: { style: string | null; metals: string[] | null; stones: string | null; widthMm: number | null } | null;
+  id: string;
+  name: string;
+  category: string;
+  source: { name: string; url: string };
+  priceUsd: number | null;
+  kind: string;
+  engagement: {
+    stone: RStone;
+    head: string | null;
+    shank: string | null;
+    metals: string[] | null;
+    finish: string | null;
+    accents: string[] | null;
+    orientation: string | null;
+  } | null;
+  band: {
+    style: string | null;
+    metals: string[] | null;
+    stones: string | null;
+    widthMm: number | null;
+  } | null;
   notes: string | null;
 }
 
@@ -35,12 +59,24 @@ function gemColor(material: string, name: string | null): string {
   const gem = getModel('gem', material);
   const n = (name ?? '').toLowerCase();
   if (!n) return gem.defaultColor;
-  const direct = gem.colors.find((c) => n.includes(c.id.replace(/-/g, ' ')) || n.includes(c.name.toLowerCase()));
+  const direct = gem.colors.find(
+    (c) => n.includes(c.id.replace(/-/g, ' ')) || n.includes(c.name.toLowerCase()),
+  );
   if (direct) return direct.id;
   const words: [RegExp, string][] = [
-    [/salt/, 'salt-and-pepper'], [/black/, 'black'], [/padparadscha/, 'padparadscha'], [/teal|blue-green/, 'teal'],
-    [/ceylon|royal/, 'royal-blue'], [/blue/, 'blue'], [/pink/, 'pink'], [/yellow/, 'yellow'], [/champagne|brown/, 'champagne'],
-    [/green/, 'green'], [/peach|salmon/, 'peach'], [/red/, 'red'], [/purple|violet/, 'purple'],
+    [/salt/, 'salt-and-pepper'],
+    [/black/, 'black'],
+    [/padparadscha/, 'padparadscha'],
+    [/teal|blue-green/, 'teal'],
+    [/ceylon|royal/, 'royal-blue'],
+    [/blue/, 'blue'],
+    [/pink/, 'pink'],
+    [/yellow/, 'yellow'],
+    [/champagne|brown/, 'champagne'],
+    [/green/, 'green'],
+    [/peach|salmon/, 'peach'],
+    [/red/, 'red'],
+    [/purple|violet/, 'purple'],
   ];
   for (const [re, id] of words) if (re.test(n) && gem.colors.some((c) => c.id === id)) return id;
   if (/^[d-f]\b|colorless/.test(n) && gem.colors.some((c) => c.id === 'colorless')) return 'colorless';
@@ -62,12 +98,20 @@ function engagementFrom(r: RRing): EngagementSpec {
   const base = defaultEngagement();
   const material = e.stone.material && findModel('gem', e.stone.material) ? e.stone.material : 'diamond';
   const cut = e.stone.cut && findModel('cut', e.stone.cut) ? e.stone.cut : 'round-brilliant';
-  const headId = e.head && findModel('head', HEAD_ALIAS[e.head] ?? e.head) ? (HEAD_ALIAS[e.head] ?? e.head) : 'solitaire-4-prong';
+  const headId =
+    e.head && findModel('head', HEAD_ALIAS[e.head] ?? e.head)
+      ? (HEAD_ALIAS[e.head] ?? e.head)
+      : 'solitaire-4-prong';
   const shankId = e.shank && findModel('shank', e.shank) ? e.shank : 'plain-round';
   const headMetal = metalId(e.metals?.[0], 'white-gold-14k');
   const shankMetal = metalId(e.metals?.[1] ?? e.metals?.[0], headMetal);
   const clarity = (e.stone.clarity ?? 'vs1').toLowerCase().replace(/\s/g, '');
-  const carat = e.stone.carat && e.stone.carat >= 0.2 && e.stone.carat <= 10 ? e.stone.carat : material === 'diamond' ? 1 : 1.5;
+  const carat =
+    e.stone.carat && e.stone.carat >= 0.2 && e.stone.carat <= 10
+      ? e.stone.carat
+      : material === 'diamond'
+        ? 1
+        : 1.5;
   const accentMaterial = ['diamond', 'lab-diamond', 'moissanite'].includes(material) ? material : 'diamond';
   const finish = e.finish && findModel('finish', e.finish) ? e.finish : 'polished';
   return {
@@ -78,12 +122,23 @@ function engagementFrom(r: RRing): EngagementSpec {
       cut,
       carat,
       clarity: findModel('clarity', clarity) ? clarity : 'vs1',
-      colorGrade: ['diamond', 'lab-diamond', 'moissanite'].includes(material) ? gradeFor(e.stone.colorName) : undefined,
+      colorGrade: ['diamond', 'lab-diamond', 'moissanite'].includes(material)
+        ? gradeFor(e.stone.colorName)
+        : undefined,
     },
-    accentStone: { material: accentMaterial, color: getModel('gem', accentMaterial).defaultColor, cut: 'round-brilliant', sizeMm: headId.includes('halo') || headId === 'cluster' ? 1.2 : 1.6 },
+    accentStone: {
+      material: accentMaterial,
+      color: getModel('gem', accentMaterial).defaultColor,
+      cut: 'round-brilliant',
+      sizeMm: headId.includes('halo') || headId === 'cluster' ? 1.2 : 1.6,
+    },
     head: { id: headId, metal: headMetal, params: {} },
     shank: { id: shankId, metal: shankMetal, params: {} },
-    placement: { ...base.placement, orientation: e.orientation === 'east-west' ? 'east-west' : 'north-south', raise: headId.startsWith('bezel') || headId === 'flush-gypsy' ? 0.2 : 1.2 },
+    placement: {
+      ...base.placement,
+      orientation: e.orientation === 'east-west' ? 'east-west' : 'north-south',
+      raise: headId.startsWith('bezel') || headId === 'flush-gypsy' ? 0.2 : 1.2,
+    },
     finish,
   };
 }
@@ -136,7 +191,9 @@ const out = records.map((r) => {
     source: r.source,
     tags: [r.category, r.kind],
     category: r.category,
-    blurb: (r.notes ?? '') + (gaps.length ? ` (Not stated by the source, so the model uses a default ${gaps.join(', ')}.)` : ''),
+    blurb:
+      (r.notes ?? '') +
+      (gaps.length ? ` (Not stated by the source, so the model uses a default ${gaps.join(', ')}.)` : ''),
     priceUsd: r.priceUsd,
     designFamily: family,
     view,
@@ -145,5 +202,10 @@ const out = records.map((r) => {
 });
 
 const header = `// GENERATED by scripts/build-examples.ts from data/research/rings-*.json. Do not edit by hand; re-run \`bun run catalog:build\`.\n// ${out.length} example rings, ${families.size} distinct design families.\nimport type { ExampleDesign } from './types';\n\n`;
-writeFileSync('src/models/data/examples/rings.ts', `${header}export const rings: ExampleDesign[] = ${JSON.stringify(out, null, 1)};\n`);
-console.log(`wrote ${out.length} examples, ${families.size} design families, ${listModels('head').length} heads known`);
+writeFileSync(
+  'src/models/data/examples/rings.ts',
+  `${header}export const rings: ExampleDesign[] = ${JSON.stringify(out, null, 1)};\n`,
+);
+console.log(
+  `wrote ${out.length} examples, ${families.size} design families, ${listModels('head').length} heads known`,
+);

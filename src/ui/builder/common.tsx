@@ -75,7 +75,15 @@ export function Slider({
         {label}
         <output>{display ?? `${Number(value.toFixed(2))}${unit ? ` ${unit}` : ''}`}</output>
       </span>
-      <input type="range" min={min} max={max} step={step} value={value} data-testid={testid} onChange={(e) => onChange(Number(e.target.value))} />
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        data-testid={testid}
+        onChange={(e) => onChange(Number(e.target.value))}
+      />
     </label>
   );
 }
@@ -129,7 +137,17 @@ export function ModelCard({
   );
 }
 
-export function MetalSelect({ id, label, value, onChange }: { id: string; label: string; value: string; onChange: (id: string) => void }) {
+export function MetalSelect({
+  id,
+  label,
+  value,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (id: string) => void;
+}) {
   const metals = listModels('metal');
   const cur = metals.find((m) => m.id === value);
   const families = [...new Set(metals.map((m) => m.family))];
@@ -158,7 +176,17 @@ export function MetalSelect({ id, label, value, onChange }: { id: string; label:
   );
 }
 
-export function FinishSelect({ id, label, value, onChange }: { id: string; label: string; value: string; onChange: (id: string) => void }) {
+export function FinishSelect({
+  id,
+  label,
+  value,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (id: string) => void;
+}) {
   return (
     <div className="bd-field">
       <label className="bd-label" htmlFor={id}>

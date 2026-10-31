@@ -30,12 +30,12 @@ The width you choose (see the options under each shank card) matters as much as 
 ![Knife edge]({{base}}screenshots/components/shank/knife-edge.png)
 ![Comfort fit]({{base}}screenshots/components/shank/comfort-fit.png)
 
-| Shank | Look | Comfort | Notes |
-| --- | --- | --- | --- |
-| Plain round | A smooth rounded band. The timeless default. | High | Strong, easy to resize, goes with anything. |
-| Plain flat | Flat top and sides. Contemporary and architectural. | Medium to high | Pairs well with bezels and emerald cuts. |
-| Knife edge | The outside narrows to a ridge. Crisp and elegant. | Medium | Makes a stone look larger by contrast. Thin at the ridge, so choose a sturdier metal. |
-| Comfort fit | Domed inside for easy sliding. | Highest | Slightly more metal, more durable. |
+| Shank       | Look                                                | Comfort        | Notes                                                                                 |
+| ----------- | --------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------- |
+| Plain round | A smooth rounded band. The timeless default.        | High           | Strong, easy to resize, goes with anything.                                           |
+| Plain flat  | Flat top and sides. Contemporary and architectural. | Medium to high | Pairs well with bezels and emerald cuts.                                              |
+| Knife edge  | The outside narrows to a ridge. Crisp and elegant.  | Medium         | Makes a stone look larger by contrast. Thin at the ridge, so choose a sturdier metal. |
+| Comfort fit | Domed inside for easy sliding.                      | Highest        | Slightly more metal, more durable.                                                    |
 
 ### Tapered and cathedral
 
@@ -91,15 +91,15 @@ A **split** shank divides into two strands near the head, widening the visual ba
 
 Many rings fall into recognisable families. These are not rules, only starting points. Each lists typical ingredients you can choose in the builder.
 
-| Family | Typical head | Typical shank | Typical metal | Typical stone |
-| --- | --- | --- | --- | --- |
-| Solitaire | Solitaire 4-prong, 6-prong, bezel | Plain round, knife edge, tapered, dainty | Platinum, white or yellow gold | Round, oval, emerald cut |
-| Halo | Halo round, halo cushion, halo oval | Pave, split, tapered | Platinum, white gold | Round, oval, cushion |
-| Three-stone | Three-stone | Plain round, tapered, channel | Platinum, white or yellow gold | Round or oval centre, baguette or pear sides |
-| Vintage | Vintage filigree, basket, trellis | Vintage filigree, milgrain, cathedral | Platinum, rose gold | Old European, old mine, cushion |
-| Modern | Bezel, flush, tension, hidden halo | Plain flat, wide, knife edge | Yellow gold, platinum | Emerald cut, oval, kite, hexagon |
-| Nature | 4-prong, leaf-style heads | Leaf and vine, twig, hammered | Rose gold, yellow gold | Morganite, moissanite, round |
-| Art Deco | Vintage filigree, split prong, cathedral | Milgrain, vintage filigree | Platinum | Asscher, emerald cut, old European |
+| Family      | Typical head                             | Typical shank                            | Typical metal                  | Typical stone                                |
+| ----------- | ---------------------------------------- | ---------------------------------------- | ------------------------------ | -------------------------------------------- |
+| Solitaire   | Solitaire 4-prong, 6-prong, bezel        | Plain round, knife edge, tapered, dainty | Platinum, white or yellow gold | Round, oval, emerald cut                     |
+| Halo        | Halo round, halo cushion, halo oval      | Pave, split, tapered                     | Platinum, white gold           | Round, oval, cushion                         |
+| Three-stone | Three-stone                              | Plain round, tapered, channel            | Platinum, white or yellow gold | Round or oval centre, baguette or pear sides |
+| Vintage     | Vintage filigree, basket, trellis        | Vintage filigree, milgrain, cathedral    | Platinum, rose gold            | Old European, old mine, cushion              |
+| Modern      | Bezel, flush, tension, hidden halo       | Plain flat, wide, knife edge             | Yellow gold, platinum          | Emerald cut, oval, kite, hexagon             |
+| Nature      | 4-prong, leaf-style heads                | Leaf and vine, twig, hammered            | Rose gold, yellow gold         | Morganite, moissanite, round                 |
+| Art Deco    | Vintage filigree, split prong, cathedral | Milgrain, vintage filigree               | Platinum                       | Asscher, emerald cut, old European           |
 
 ### Solitaire
 

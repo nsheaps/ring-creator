@@ -44,7 +44,10 @@ export class RingViewer {
     this.renderer.domElement.style.width = '100%';
     this.renderer.domElement.style.height = '100%';
     this.renderer.domElement.setAttribute('role', 'img');
-    this.renderer.domElement.setAttribute('aria-label', '3D preview of the ring. Drag to rotate, scroll to zoom.');
+    this.renderer.domElement.setAttribute(
+      'aria-label',
+      '3D preview of the ring. Drag to rotate, scroll to zoom.',
+    );
 
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
@@ -103,7 +106,7 @@ export class RingViewer {
     const c = box.getCenter(new THREE.Vector3());
     const r = box.getSize(new THREE.Vector3()).length() / 2;
     const dir = this.camera.position.clone().sub(this.controls.target).normalize();
-    const dist = (r / Math.sin((this.camera.fov * Math.PI) / 360)) * 0.95;
+    const dist = (r / Math.sin((this.camera.fov * Math.PI) / 360)) * 0.9;
     this.controls.target.copy(c);
     this.camera.position.copy(c).addScaledVector(dir, dist);
     this.controls.update();

@@ -37,7 +37,10 @@ export function buildStone(cut: CutModel, dims: StoneDims, opts: StoneBuildOptio
 export function resolveCenter(spec: StoneSpec): ResolvedStone {
   const gem = getModel('gem', spec.material);
   const cut = getModel('cut', spec.cut);
-  const color = gem.colors.find((c) => c.id === spec.color) ?? gem.colors.find((c) => c.id === gem.defaultColor) ?? gem.colors[0];
+  const color =
+    gem.colors.find((c) => c.id === spec.color) ??
+    gem.colors.find((c) => c.id === gem.defaultColor) ??
+    gem.colors[0];
   const dims = dimsFromCarat(cut, gem, spec);
   return { gem, colorHex: color.hex, cut, dims, carat: spec.carat, built: buildStone(cut, dims) };
 }
@@ -45,7 +48,10 @@ export function resolveCenter(spec: StoneSpec): ResolvedStone {
 export function resolveAccent(spec: AccentStoneSpec): ResolvedAccent {
   const gem = getModel('gem', spec.material);
   const cut = getModel('cut', spec.cut);
-  const color = gem.colors.find((c) => c.id === spec.color) ?? gem.colors.find((c) => c.id === gem.defaultColor) ?? gem.colors[0];
+  const color =
+    gem.colors.find((c) => c.id === spec.color) ??
+    gem.colors.find((c) => c.id === gem.defaultColor) ??
+    gem.colors[0];
   return { gem, colorHex: color.hex, cut, sizeMm: spec.sizeMm };
 }
 
@@ -131,7 +137,10 @@ function buildEngagement(design: Design, center: ResolvedStone): Engagement {
   const girdleY = shank.seatY + baseDrop;
   const shankHalfWidth = Math.max(
     0.5,
-    bboxOf(shank.parts.filter((p) => p.slot === 'shank-metal'), (_x, y) => y < 0).max.z,
+    bboxOf(
+      shank.parts.filter((p) => p.slot === 'shank-metal'),
+      (_x, y) => y < 0,
+    ).max.z,
   );
 
   const headCtx: HeadCtx = {
@@ -156,7 +165,9 @@ function buildEngagement(design: Design, center: ResolvedStone): Engagement {
     .multiply(new THREE.Matrix4().makeTranslation(0, -shank.seatY, 0));
   const M = tilt.multiply(place);
   const placed = transformParts([centerPart, ...headParts], M);
-  const headBox = bboxOf(placed.filter((p) => p.slot === 'head-metal' || p.slot === 'accent-stone' || p.slot === 'center-stone'));
+  const headBox = bboxOf(
+    placed.filter((p) => p.slot === 'head-metal' || p.slot === 'accent-stone' || p.slot === 'center-stone'),
+  );
   return {
     parts: [...shank.parts, ...placed],
     seatY: shank.seatY,
@@ -217,7 +228,8 @@ export function assembleDesign(design: Design, view: RingView = 'set'): Assemble
     const style = getModel('band', design.band.style);
     const needInfo = eng ?? buildEngagement(design, center);
     const shankHalf = needInfo.shankHalfWidth;
-    const wantContour = design.band.fit === 'contour' || (design.band.fit === 'auto' && style.contourCapable && view === 'set');
+    const wantContour =
+      design.band.fit === 'contour' || (design.band.fit === 'auto' && style.contourCapable && view === 'set');
     let contour: ContourSpec | undefined;
     if (wantContour && view === 'set') {
       const retreat = Math.min(6, Math.max(0, needInfo.headHalfZ - shankHalf - 0.1));
@@ -262,20 +274,39 @@ export function assembleDesign(design: Design, view: RingView = 'set'): Assemble
   };
 }
 
-function meshesFor(design: Design, slot: PartSlot, geo: THREE.BufferGeometry, center: ResolvedStone): THREE.Object3D[] {
+function meshesFor(
+  design: Design,
+  slot: PartSlot,
+  geo: THREE.BufferGeometry,
+  center: ResolvedStone,
+): THREE.Object3D[] {
   const out: THREE.Object3D[] = [];
   if (slot === 'center-stone' || slot === 'accent-stone' || slot === 'band-stone') {
     const spec =
-      slot === 'center-stone' ? null : slot === 'accent-stone' ? design.engagement.accentStone : (design.band?.accentStone ?? design.engagement.accentStone);
+      slot === 'center-stone'
+        ? null
+        : slot === 'accent-stone'
+          ? design.engagement.accentStone
+          : (design.band?.accentStone ?? design.engagement.accentStone);
     const gem = slot === 'center-stone' ? center.gem : getModel('gem', spec!.material);
     const colorHex =
       slot === 'center-stone'
         ? center.colorHex
         : (gem.colors.find((c) => c.id === spec!.color) ?? gem.colors[0]).hex;
-    const clarity = slot === 'center-stone' ? getModel('clarity', design.engagement.center.clarity) : undefined;
-    const grade = slot === 'center-stone' && design.engagement.center.colorGrade ? getModel('color-grade', design.engagement.center.colorGrade) : undefined;
+    const clarity =
+      slot === 'center-stone' ? getModel('clarity', design.engagement.center.clarity) : undefined;
+    const grade =
+      slot === 'center-stone' && design.engagement.center.colorGrade
+        ? getModel('color-grade', design.engagement.center.colorGrade)
+        : undefined;
     const isDiamondLike = ['diamond', 'lab-diamond', 'moissanite'].includes(gem.id);
-    const [outer, inner] = gemMaterials(gem, colorHex, clarity, isDiamondLike && /^(near-)?colorless$/.test(design.engagement.center.color) ? grade?.tint : undefined, grade?.tintStrength ?? 0);
+    const [outer, inner] = gemMaterials(
+      gem,
+      colorHex,
+      clarity,
+      isDiamondLike && /^(near-)?colorless$/.test(design.engagement.center.color) ? grade?.tint : undefined,
+      grade?.tintStrength ?? 0,
+    );
     const innerMesh = new THREE.Mesh(geo, inner);
     const outerMesh = new THREE.Mesh(geo, outer);
     outerMesh.renderOrder = 2;
@@ -285,7 +316,8 @@ function meshesFor(design: Design, slot: PartSlot, geo: THREE.BufferGeometry, ce
     const metalId = slotMetal(design, slot);
     if (!metalId) return out;
     const metal = getModel('metal', metalId);
-    const finishId = slot === 'band-metal' || slot === 'band-metal2' ? design.band?.finish : design.engagement.finish;
+    const finishId =
+      slot === 'band-metal' || slot === 'band-metal2' ? design.band?.finish : design.engagement.finish;
     const finish = finishId ? getModel('finish', finishId) : undefined;
     out.push(new THREE.Mesh(geo, metalMaterial(metal, finish)));
   }

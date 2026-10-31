@@ -13,7 +13,8 @@ export function HeadStep({ design, update }: StepProps) {
     }
   })();
   const p = e.placement;
-  const setP = <K extends keyof typeof p>(k: K, v: (typeof p)[K]) => update((d) => void (d.engagement.placement[k] = v));
+  const setP = <K extends keyof typeof p>(k: K, v: (typeof p)[K]) =>
+    update((d) => void (d.engagement.placement[k] = v));
   return (
     <div className="controls" data-testid="panel-head">
       <PartPicker
@@ -29,7 +30,11 @@ export function HeadStep({ design, update }: StepProps) {
           })
         }
         onParam={(k, v) => update((d) => void (d.engagement.head.params[k] = v))}
-        incompatible={(m) => (m.fitsCuts === 'all' || m.fitsCuts.includes(e.center.cut) ? undefined : `Not made for ${cutName} stones`)}
+        incompatible={(m) =>
+          m.fitsCuts === 'all' || m.fitsCuts.includes(e.center.cut)
+            ? undefined
+            : `Not made for ${cutName} stones`
+        }
         extra={(m) => (
           <>
             <span className="bd-card-extra">{m.extraStones === '0' ? 'No extra stones' : m.extraStones}</span>
@@ -50,10 +55,42 @@ export function HeadStep({ design, update }: StepProps) {
             ]}
             onChange={(v) => setP('orientation', v)}
           />
-          <Slider label="Raise (setting height)" value={p.raise} min={0} max={5} step={0.1} unit="mm" onChange={(v) => setP('raise', v)} />
-          <Slider label="Tilt" value={p.tilt} min={-25} max={25} step={1} unit="°" onChange={(v) => setP('tilt', v)} />
-          <Slider label="Rotate" value={p.rotate} min={-45} max={45} step={1} unit="°" onChange={(v) => setP('rotate', v)} />
-          <Slider label="Offset along band" value={p.offset} min={-4} max={4} step={0.1} unit="mm" onChange={(v) => setP('offset', v)} />
+          <Slider
+            label="Raise (setting height)"
+            value={p.raise}
+            min={0}
+            max={5}
+            step={0.1}
+            unit="mm"
+            onChange={(v) => setP('raise', v)}
+          />
+          <Slider
+            label="Tilt"
+            value={p.tilt}
+            min={-25}
+            max={25}
+            step={1}
+            unit="°"
+            onChange={(v) => setP('tilt', v)}
+          />
+          <Slider
+            label="Rotate"
+            value={p.rotate}
+            min={-45}
+            max={45}
+            step={1}
+            unit="°"
+            onChange={(v) => setP('rotate', v)}
+          />
+          <Slider
+            label="Offset along band"
+            value={p.offset}
+            min={-4}
+            max={4}
+            step={0.1}
+            unit="mm"
+            onChange={(v) => setP('offset', v)}
+          />
         </div>
       </fieldset>
     </div>

@@ -18,15 +18,15 @@ Each card shows a picture and the ring's name. Cards are grouped into a grid, an
 
 Use the filter bar to narrow the grid. You can combine as many as you like:
 
-| Filter | What it does |
-| --- | --- |
-| **Search** | Matches words in the name, description, category, style family, cut, head, shank, stone, metals and tags. Several words must all match. |
-| **Metal** | Yellow, white, rose and so on, based on the metals used. |
-| **Stone** | The centre stone's material, such as diamond or sapphire. |
-| **Cut** | The centre stone's shape. |
-| **Head** | The setting style. |
-| **Category chips** | Broad groups such as solitaire or band. Click one to show only that group, click it again or press All to go back. |
-| **Sort by** | Featured, Name, Price low to high, or Price high to low. Rings with no known price always sort last. |
+| Filter             | What it does                                                                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Search**         | Matches words in the name, description, category, style family, cut, head, shank, stone, metals and tags. Several words must all match. |
+| **Metal**          | Yellow, white, rose and so on, based on the metals used.                                                                                |
+| **Stone**          | The centre stone's material, such as diamond or sapphire.                                                                               |
+| **Cut**            | The centre stone's shape.                                                                                                               |
+| **Head**           | The setting style.                                                                                                                      |
+| **Category chips** | Broad groups such as solitaire or band. Click one to show only that group, click it again or press All to go back.                      |
+| **Sort by**        | Featured, Name, Price low to high, or Price high to low. Rings with no known price always sort last.                                    |
 
 If nothing matches you will see "No rings match. Try fewer filters." Use the **Clear filters** button next to the count to reset.
 

@@ -79,7 +79,11 @@ export function App() {
             </a>
           ))}
         </nav>
-        <button className="btn ghost" onClick={toggle} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
+        <button
+          className="btn ghost"
+          onClick={toggle}
+          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+        >
           {theme === 'dark' ? '☀' : '☾'}
         </button>
       </header>

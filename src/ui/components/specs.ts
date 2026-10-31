@@ -1,9 +1,34 @@
 import { listModels } from '@/models/registry';
 import type { Model, ModelKind } from '@/models/types';
 
-export const KINDS: ModelKind[] = ['cut', 'head', 'shank', 'band', 'gem', 'metal', 'finish', 'clarity', 'color-grade'];
+export const KINDS: ModelKind[] = [
+  'cut',
+  'head',
+  'shank',
+  'band',
+  'gem',
+  'metal',
+  'finish',
+  'clarity',
+  'color-grade',
+];
 
-const HIDDEN = new Set(['kind', 'id', 'name', 'summary', 'description', 'tags', 'pros', 'cons', 'bestFor', 'related', 'controls', 'params', 'colors', 'builder']);
+const HIDDEN = new Set([
+  'kind',
+  'id',
+  'name',
+  'summary',
+  'description',
+  'tags',
+  'pros',
+  'cons',
+  'bestFor',
+  'related',
+  'controls',
+  'params',
+  'colors',
+  'builder',
+]);
 
 const LABELS: Record<string, string> = {
   pricePerGramUsd: 'Price per gram',

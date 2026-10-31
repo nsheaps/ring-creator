@@ -97,7 +97,12 @@ function Article({ slug }: { slug: string }) {
         )}
       </aside>
       <article className="rf-article">
-        <div className="prose" onClick={onClick} dangerouslySetInnerHTML={{ __html: rendered.html }} data-testid="article" />
+        <div
+          className="prose"
+          onClick={onClick}
+          dangerouslySetInnerHTML={{ __html: rendered.html }}
+          data-testid="article"
+        />
         <nav className="rf-pn" aria-label="More guides">
           {prev ? <a href={`#/docs/${prev.slug}`}>← {prev.title}</a> : <span />}
           {next ? <a href={`#/docs/${next.slug}`}>{next.title} →</a> : <span />}

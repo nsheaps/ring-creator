@@ -8,7 +8,11 @@ export interface Guide {
   body: string;
 }
 
-const files = import.meta.glob('../../../docs/guides/*.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const files = import.meta.glob('../../../docs/guides/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
 
 function firstHeading(body: string): string | undefined {
   return /^#\s+(.+)$/m.exec(body)?.[1]?.trim();
@@ -16,7 +20,8 @@ function firstHeading(body: string): string | undefined {
 function firstParagraph(body: string): string {
   for (const block of body.split(/\n\s*\n/)) {
     const t = block.trim();
-    if (t && !t.startsWith('#') && !t.startsWith('![') && !t.startsWith('|') && !t.startsWith('```')) return t.replace(/\s+/g, ' ').replace(/[*_`]/g, '').slice(0, 200);
+    if (t && !t.startsWith('#') && !t.startsWith('![') && !t.startsWith('|') && !t.startsWith('```'))
+      return t.replace(/\s+/g, ' ').replace(/[*_`]/g, '').slice(0, 200);
   }
   return '';
 }

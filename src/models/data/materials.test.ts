@@ -9,25 +9,118 @@ import type { ModelBase } from '../types';
 const HEX = /^#[0-9a-f]{6}$/i;
 
 const vocabMetals = [
-  'yellow-gold-14k', 'yellow-gold-18k', 'white-gold-14k', 'white-gold-18k', 'rose-gold-14k', 'rose-gold-18k',
-  'platinum', 'palladium', 'sterling-silver', 'titanium', 'tungsten', 'black-zirconium', 'tantalum',
+  'yellow-gold-14k',
+  'yellow-gold-18k',
+  'white-gold-14k',
+  'white-gold-18k',
+  'rose-gold-14k',
+  'rose-gold-18k',
+  'platinum',
+  'palladium',
+  'sterling-silver',
+  'titanium',
+  'tungsten',
+  'black-zirconium',
+  'tantalum',
 ];
-const vocabFinishes = ['polished', 'satin', 'matte', 'hammered', 'sandblasted', 'brushed', 'engraved', 'milgrain'];
+const vocabFinishes = [
+  'polished',
+  'satin',
+  'matte',
+  'hammered',
+  'sandblasted',
+  'brushed',
+  'engraved',
+  'milgrain',
+];
 const vocabGems = [
-  'diamond', 'lab-diamond', 'moissanite', 'sapphire', 'ruby', 'emerald', 'aquamarine', 'morganite', 'alexandrite',
-  'tanzanite', 'spinel', 'tourmaline', 'garnet', 'opal', 'peridot', 'topaz', 'amethyst', 'citrine', 'zircon', 'pearl', 'onyx',
+  'diamond',
+  'lab-diamond',
+  'moissanite',
+  'sapphire',
+  'ruby',
+  'emerald',
+  'aquamarine',
+  'morganite',
+  'alexandrite',
+  'tanzanite',
+  'spinel',
+  'tourmaline',
+  'garnet',
+  'opal',
+  'peridot',
+  'topaz',
+  'amethyst',
+  'citrine',
+  'zircon',
+  'pearl',
+  'onyx',
 ];
 const vocabOther = [
   // cuts
-  'round-brilliant', 'princess', 'cushion', 'oval', 'emerald-cut', 'asscher', 'radiant', 'pear', 'marquise', 'heart',
-  'trillion', 'baguette', 'rose-cut', 'old-european', 'hexagon', 'kite', 'shield', 'cabochon',
+  'round-brilliant',
+  'princess',
+  'cushion',
+  'oval',
+  'emerald-cut',
+  'asscher',
+  'radiant',
+  'pear',
+  'marquise',
+  'heart',
+  'trillion',
+  'baguette',
+  'rose-cut',
+  'old-european',
+  'hexagon',
+  'kite',
+  'shield',
+  'cabochon',
   // heads
-  'solitaire-4-prong', 'solitaire-6-prong', '3-prong', 'double-claw', 'basket', 'cathedral-head', 'v-prong', 'bezel-full',
-  'bezel-half', 'halo-round', 'halo-cushion', 'halo-oval', 'hidden-halo', 'double-halo', 'three-stone', 'five-stone',
-  'cluster', 'trellis', 'tension', 'flush-gypsy', 'split-prong', 'compass', 'vintage-filigree', 'toi-et-moi', 'bypass-head',
+  'solitaire-4-prong',
+  'solitaire-6-prong',
+  '3-prong',
+  'double-claw',
+  'basket',
+  'cathedral-head',
+  'v-prong',
+  'bezel-full',
+  'bezel-half',
+  'halo-round',
+  'halo-cushion',
+  'halo-oval',
+  'hidden-halo',
+  'double-halo',
+  'three-stone',
+  'five-stone',
+  'cluster',
+  'trellis',
+  'tension',
+  'flush-gypsy',
+  'split-prong',
+  'compass',
+  'vintage-filigree',
+  'toi-et-moi',
+  'bypass-head',
   // shanks
-  'plain-round', 'plain-flat', 'knife-edge', 'tapered', 'cathedral', 'split', 'pave', 'channel', 'twisted', 'bypass',
-  'milgrain', 'crossover', 'wide', 'dainty', 'hammered', 'braided', 'leaf-vine', 'twig',
+  'plain-round',
+  'plain-flat',
+  'knife-edge',
+  'tapered',
+  'cathedral',
+  'split',
+  'pave',
+  'channel',
+  'twisted',
+  'bypass',
+  'milgrain',
+  'crossover',
+  'wide',
+  'dainty',
+  'hammered',
+  'braided',
+  'leaf-vine',
+  'twig',
 ];
 
 const all: ModelBase[] = [...metals, ...finishes, ...gems, ...clarities, ...colorGrades];
@@ -49,7 +142,8 @@ describe('materials data', () => {
     for (const id of vocabMetals) expect(ids(metals)).toContain(id);
     for (const id of vocabFinishes) expect(ids(finishes)).toContain(id);
     for (const id of vocabGems) expect(ids(gems)).toContain(id);
-    for (const id of ['yellow-gold-10k', 'white-gold-10k', 'rose-gold-10k', 'green-gold-18k']) expect(ids(metals)).toContain(id);
+    for (const id of ['yellow-gold-10k', 'white-gold-10k', 'rose-gold-10k', 'green-gold-18k'])
+      expect(ids(metals)).toContain(id);
     expect(ids(clarities)).toEqual(['fl', 'if', 'vvs1', 'vvs2', 'vs1', 'vs2', 'si1', 'si2', 'i1', 'i2']);
     expect(ids(colorGrades)).toEqual(['d-f', 'g-j', 'k-m', 'n-r', 's-z']);
   });
@@ -84,13 +178,38 @@ describe('materials data', () => {
       expect(g.priceHintPerCaratUsd[0]).toBeLessThan(g.priceHintPerCaratUsd[1]);
     }
     const colorIds = (id: string) => gems.find((g) => g.id === id)?.colors.map((c) => c.id) ?? [];
-    expect(colorIds('diamond')).toEqual(expect.arrayContaining([
-      'colorless', 'near-colorless', 'faint-yellow', 'champagne', 'yellow', 'pink', 'blue', 'black', 'salt-and-pepper', 'green', 'orange', 'brown',
-    ]));
+    expect(colorIds('diamond')).toEqual(
+      expect.arrayContaining([
+        'colorless',
+        'near-colorless',
+        'faint-yellow',
+        'champagne',
+        'yellow',
+        'pink',
+        'blue',
+        'black',
+        'salt-and-pepper',
+        'green',
+        'orange',
+        'brown',
+      ]),
+    );
     expect(colorIds('lab-diamond')).toEqual(colorIds('diamond'));
-    expect(colorIds('sapphire')).toEqual(expect.arrayContaining([
-      'blue', 'royal-blue', 'cornflower', 'pink', 'padparadscha', 'yellow', 'teal', 'white', 'purple', 'green', 'black',
-    ]));
+    expect(colorIds('sapphire')).toEqual(
+      expect.arrayContaining([
+        'blue',
+        'royal-blue',
+        'cornflower',
+        'pink',
+        'padparadscha',
+        'yellow',
+        'teal',
+        'white',
+        'purple',
+        'green',
+        'black',
+      ]),
+    );
     expect(colorIds('emerald')).toEqual(expect.arrayContaining(['green', 'deep-green', 'bluish-green']));
     expect(colorIds('ruby')).toEqual(expect.arrayContaining(['red', 'pigeon-blood', 'pink-red']));
     expect(gems.find((g) => g.id === 'lab-diamond')?.lab).toBe(true);
@@ -115,7 +234,9 @@ describe('materials data', () => {
     expect(byId('platinum')?.hypoallergenic).toBe(true);
     expect(byId('white-gold-14k')?.hypoallergenic).toBe(false);
     expect(byId('platinum')?.density).toBe(21.4);
-    expect(byId('yellow-gold-18k')!.pricePerGramUsd).toBeGreaterThan(byId('yellow-gold-14k')!.pricePerGramUsd);
+    expect(byId('yellow-gold-18k')!.pricePerGramUsd).toBeGreaterThan(
+      byId('yellow-gold-14k')!.pricePerGramUsd,
+    );
   });
 
   it('finishes, clarities and color grades: ranges', () => {
@@ -134,7 +255,8 @@ describe('materials data', () => {
     });
     for (const id of ['fl', 'if', 'vvs1', 'vvs2']) expect(clarities.find((c) => c.id === id)?.haze).toBe(0);
     expect(clarities.find((c) => c.id === 'i2')?.haze).toBeCloseTo(0.9);
-    for (const id of ['fl', 'if', 'vvs1', 'vvs2', 'vs1', 'vs2', 'si1']) expect(clarities.find((c) => c.id === id)?.eyeClean).toBe(true);
+    for (const id of ['fl', 'if', 'vvs1', 'vvs2', 'vs1', 'vs2', 'si1'])
+      expect(clarities.find((c) => c.id === id)?.eyeClean).toBe(true);
     for (const id of ['si2', 'i1', 'i2']) expect(clarities.find((c) => c.id === id)?.eyeClean).toBe(false);
     colorGrades.forEach((g, i) => {
       expect(g.tint).toMatch(HEX);

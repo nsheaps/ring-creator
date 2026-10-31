@@ -90,7 +90,15 @@ function placeSide(
 }
 
 /** Bars along the band joining the seats of neighbouring stones. */
-function bridge(ctx: HeadCtx, a: number, b: number, yA: number, yB: number, r: number, across = 0): THREE.BufferGeometry[] {
+function bridge(
+  ctx: HeadCtx,
+  a: number,
+  b: number,
+  yA: number,
+  yB: number,
+  r: number,
+  across = 0,
+): THREE.BufferGeometry[] {
   const [ax, az] = ctx.bandAxis;
   const px = -az;
   const pz = ax;
@@ -111,7 +119,10 @@ function sideDims(ctx: HeadCtx, size: number, match: boolean): { cutId: string; 
   if (match) {
     const c = ctx.center.dims;
     const k = size / Math.max(c.width, 0.1);
-    return { cutId: ctx.center.cut.id, dims: { length: c.length * k, width: c.width * k, depth: c.depth * k } };
+    return {
+      cutId: ctx.center.cut.id,
+      dims: { length: c.length * k, width: c.width * k, depth: c.depth * k },
+    };
   }
   const cut = ctx.accent.cut;
   const d = accentDims(ctx, size * Math.max(1, cut.defaultAspect || 1), cut);
@@ -154,7 +165,10 @@ function multiStone(ctx: HeadCtx, perSide: 1 | 2): Part[] {
       size *= ratio2;
     }
   }
-  return [metalPart(metal, perSide === 1 ? 'three-stone head' : 'five-stone head'), accentPart(stones, 'side stones')];
+  return [
+    metalPart(metal, perSide === 1 ? 'three-stone head' : 'five-stone head'),
+    accentPart(stones, 'side stones'),
+  ];
 }
 
 function toiEtMoi(ctx: HeadCtx): Part[] {
@@ -165,11 +179,25 @@ function toiEtMoi(ctx: HeadCtx): Part[] {
   const gap = num(p, 'secondGap', 0.4, 0, 2);
   const mirror = bool(p, 'mirrorSecond', true);
   const c = ctx.center.dims;
-  const built = ctx.stone(ctx.center.cut.id, { length: c.length * ratio, width: c.width * ratio, depth: c.depth * ratio }, { detail: 'full' });
+  const built = ctx.stone(
+    ctx.center.cut.id,
+    { length: c.length * ratio, width: c.width * ratio, depth: c.depth * ratio },
+    { detail: 'full' },
+  );
   const opts = prongOpts(ctx, { count: 4, style: 'claw', rails: 1 });
   const metal: THREE.BufferGeometry[] = [...prongSet(ctx.center.built, opts)];
   const localX: [number, number] = mirror ? [-1, 0] : [1, 0];
-  const placed = placeSide(ctx, built, 1, support(o, ax, az), gap, 0, localX, (c.width - c.width * ratio) * 0.1, 0.25);
+  const placed = placeSide(
+    ctx,
+    built,
+    1,
+    support(o, ax, az),
+    gap,
+    0,
+    localX,
+    (c.width - c.width * ratio) * 0.1,
+    0.25,
+  );
   metal.push(...placed.metal);
   metal.push(...bridge(ctx, 0, placed.along, -ctx.baseDrop, placed.baseY, opts.wireMm * 0.45));
   return [metalPart(metal, 'toi-et-moi head'), accentPart([placed.stone], 'second stone')];
@@ -191,7 +219,17 @@ function bypassHead(ctx: HeadCtx): Part[] {
   const opts = prongOpts(ctx, { count: 4, style: 'round', rails: 1 });
   const metal: THREE.BufferGeometry[] = [...prongSet(ctx.center.built, opts)];
   const off = across * shift;
-  const placed = placeSide(ctx, built, 1, support(o, ax, az) * 0.75, gap, off, [px, pz], across * (1 - ratio) * 0.1, 0.3);
+  const placed = placeSide(
+    ctx,
+    built,
+    1,
+    support(o, ax, az) * 0.75,
+    gap,
+    off,
+    [px, pz],
+    across * (1 - ratio) * 0.1,
+    0.3,
+  );
   metal.push(...placed.metal);
   metal.push(...bridge(ctx, 0, placed.along, -ctx.baseDrop, placed.baseY, opts.wireMm * 0.45, off * 0.5));
   // two sweeping wires that pass either side of the pair, giving the "bypass" swoop

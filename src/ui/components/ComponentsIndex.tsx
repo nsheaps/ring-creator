@@ -20,11 +20,20 @@ export function ComponentsIndex({ only }: { only?: ModelKind }) {
         {only && <span> / {KIND_LABELS[only]}</span>}
       </nav>
       <h1>{only ? KIND_LABELS[only] : 'Components'}</h1>
-      <p className="muted">Every part you can pick in the builder. Each one has a live 3D preview, full specs and a one-click “Use in builder”.</p>
+      <p className="muted">
+        Every part you can pick in the builder. Each one has a live 3D preview, full specs and a one-click
+        “Use in builder”.
+      </p>
       <div className="rf-toolbar">
         <label className="rf-search">
           <span className="sr-only">Search components</span>
-          <input type="search" placeholder="Search components" value={q} onChange={(e) => setQ(e.target.value)} data-testid="component-search" />
+          <input
+            type="search"
+            placeholder="Search components"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            data-testid="component-search"
+          />
         </label>
         <span className="muted" aria-live="polite">
           {total} found

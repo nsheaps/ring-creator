@@ -21,12 +21,12 @@ The app offers 23 styles. The Band cards also tell you who each style is for, wh
 ![Knife edge]({{base}}screenshots/components/band/knife-edge.png)
 ![Milgrain band]({{base}}screenshots/components/band/milgrain-band.png)
 
-| Style | Look | Notes |
-| --- | --- | --- |
+| Style         | Look                                                 | Notes                                                   |
+| ------------- | ---------------------------------------------------- | ------------------------------------------------------- |
 | Plain comfort | A domed outside and inside. Smooth and easy to wear. | The default in the builder (2.6 mm wide, 1.8 mm thick). |
-| Plain flat | Flat across the outside. Modern and architectural. | Often wide. |
-| Knife edge | A ridge on the outside. | Listings seen are about 2 to 2.5 mm wide. |
-| Milgrain band | Tiny beads along the edges. | Listings range 2.5 to 4 mm. Vintage feel. |
+| Plain flat    | Flat across the outside. Modern and architectural.   | Often wide.                                             |
+| Knife edge    | A ridge on the outside.                              | Listings seen are about 2 to 2.5 mm wide.               |
+| Milgrain band | Tiny beads along the edges.                          | Listings range 2.5 to 4 mm. Vintage feel.               |
 
 ### Stone-set bands
 
@@ -40,11 +40,11 @@ The app offers 23 styles. The Band cards also tell you who each style is for, wh
 
 **Eternity types.** Stones go around either part or all of the ring:
 
-| Type | Stones | Comfort and practicality |
-| --- | --- | --- |
-| Half eternity | Across the top half | Comfortable, easy to resize, the usual stacker |
-| Three-quarter eternity | About three quarters around | A compromise: more sparkle, some room to resize |
-| Full eternity | All the way around | Maximum sparkle. Stones press against neighbouring fingers and the palm, and sizing is generally not possible |
+| Type                   | Stones                      | Comfort and practicality                                                                                      |
+| ---------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Half eternity          | Across the top half         | Comfortable, easy to resize, the usual stacker                                                                |
+| Three-quarter eternity | About three quarters around | A compromise: more sparkle, some room to resize                                                               |
+| Full eternity          | All the way around          | Maximum sparkle. Stones press against neighbouring fingers and the palm, and sizing is generally not possible |
 
 **How the stones are held:**
 
@@ -62,12 +62,12 @@ Retailer data shows slim shared-prong or pave bands at about 2.0 to 2.6 mm, beze
 ![Notched]({{base}}screenshots/components/band/notched.png)
 ![Stacker trio]({{base}}screenshots/components/band/stacker-trio.png)
 
-| Style | What it does |
-| --- | --- |
+| Style          | What it does                                          |
+| -------------- | ----------------------------------------------------- |
 | Contour curved | A smooth arc that bends away from the engagement head |
-| Chevron | A V-shaped dip that makes room for a low solitaire |
-| Notched | A straight band with a cut-out where the head sits |
-| Stacker trio | Three slim bands designed to be worn together |
+| Chevron        | A V-shaped dip that makes room for a low solitaire    |
+| Notched        | A straight band with a cut-out where the head sits    |
+| Stacker trio   | Three slim bands designed to be worn together         |
 
 Chevron and contour bands in listings are often slim, about 1.4 to 2 mm.
 
@@ -93,11 +93,11 @@ Men's bands are usually wider. In the listings we collected, 6 to 8 mm is the co
 
 On the Fit tab you can choose how a band meets the engagement ring.
 
-| Fit | What it does |
-| --- | --- |
+| Fit            | What it does                                                       |
+| -------------- | ------------------------------------------------------------------ |
 | Auto (default) | Bands that can curve will curve around the head. Others sit flush. |
-| Flush | The band stays straight and touches the shank. Best for low heads. |
-| Contour | Forces a curve where the style allows it. |
+| Flush          | The band stays straight and touches the shank. Best for low heads. |
+| Contour        | Forces a curve where the style allows it.                          |
 
 ![Fit tab]({{base}}screenshots/pages/builder.png)
 
@@ -111,11 +111,11 @@ The band cards show a "contour" tag on styles that can curve around a head. If y
 
 **Width.** Common pairings:
 
-| Engagement shank | Typical band |
-| --- | --- |
-| Dainty, 1.4 to 2 mm | 1.5 to 2 mm band |
-| Medium, 2 to 2.5 mm | 2 to 3 mm band |
-| Wide, 3 mm and up | A band within 1 mm of it |
+| Engagement shank    | Typical band             |
+| ------------------- | ------------------------ |
+| Dainty, 1.4 to 2 mm | 1.5 to 2 mm band         |
+| Medium, 2 to 2.5 mm | 2 to 3 mm band           |
+| Wide, 3 mm and up   | A band within 1 mm of it |
 
 Retailer sets show matching bands at about 1.5 to 2 mm. The width slider runs from 1.2 to 8 mm and thickness from 1.0 to 3.2 mm. Thicker means heavier, tougher and more comfortable on the underside. The most common reasons to match width: the two rings look like one piece, and they wear evenly. A wider band beside a delicate ring can look heavy.
 
@@ -130,16 +130,16 @@ Set your size on the **Fit** tab. The app supports US sizes 3 to 13 in half step
 The default size is 6.5, which is 16.9 mm inside.
 
 | US size | Inner diameter | Inner circumference |
-| --- | --- | --- |
-| 4 | 14.9 mm | 46.7 mm |
-| 5 | 15.7 mm | 49.3 mm |
-| 6 | 16.5 mm | 51.9 mm |
-| 6.5 | 16.9 mm | 53.1 mm |
-| 7 | 17.3 mm | 54.4 mm |
-| 8 | 18.1 mm | 57.0 mm |
-| 9 | 19.0 mm | 59.5 mm |
-| 10 | 19.8 mm | 62.1 mm |
-| 11 | 20.6 mm | 64.6 mm |
+| ------- | -------------- | ------------------- |
+| 4       | 14.9 mm        | 46.7 mm             |
+| 5       | 15.7 mm        | 49.3 mm             |
+| 6       | 16.5 mm        | 51.9 mm             |
+| 6.5     | 16.9 mm        | 53.1 mm             |
+| 7       | 17.3 mm        | 54.4 mm             |
+| 8       | 18.1 mm        | 57.0 mm             |
+| 9       | 19.0 mm        | 59.5 mm             |
+| 10      | 19.8 mm        | 62.1 mm             |
+| 11      | 20.6 mm        | 64.6 mm             |
 
 The engagement ring and band always share one size in the builder.
 

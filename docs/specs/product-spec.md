@@ -10,11 +10,11 @@ Principles: data-driven models; honest information over upsell; everything runs 
 
 ## 2. Personas
 
-| Persona | Goal | Needs |
-| --- | --- | --- |
+| Persona                                              | Goal                                                   | Needs                                                                                                                      |
+| ---------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | **Engaged couple** (Sam and Alex, first-time buyers) | Settle on a ring they both like, within a budget range | Guided steps, plain-language explanations, both rings side by side, size and carat in real mm, a share link to send family |
-| **Jeweler / designer** | Show a client a concept before CAD or casting | Precise parameters (raise, tilt, offset, widths), mixed metals, JSON export, stable permalinks, a clean screenshot |
-| **Curious browser** | Explore styles, learn terms | Gallery of examples, component catalogue with descriptions, no sign-up, works on a phone |
+| **Jeweler / designer**                               | Show a client a concept before CAD or casting          | Precise parameters (raise, tilt, offset, widths), mixed metals, JSON export, stable permalinks, a clean screenshot         |
+| **Curious browser**                                  | Explore styles, learn terms                            | Gallery of examples, component catalogue with descriptions, no sign-up, works on a phone                                   |
 
 ## 3. Scope
 
@@ -94,17 +94,17 @@ Source of truth: `src/models/types.ts`.
 
 ## 9. Accessibility and performance budgets
 
-| Area | Budget |
-| --- | --- |
-| Time to interactive 3D scene | under 3 s on a mid laptop (4-core, integrated GPU, cable connection), first visit |
-| Rebuild after a control change | under 150 ms for the ring, with debounced slider updates |
-| Frame rate | 60 fps idle orbit, 30 fps minimum with Set view on integrated GPU |
-| JS payload | under 600 kB gzipped initial, 3D chunk loaded on `#/build` and viewer routes only |
-| No WebGL | static fallback images per example and component, a clear message, controls and spec table still work |
-| Keyboard | every control operable by keyboard; viewport has arrow-key orbit, +/- zoom, `R` reset, visible focus |
-| Contrast | WCAG 2.2 AA in both themes (4.5:1 text, 3:1 UI and focus ring) |
-| Motion | respects `prefers-reduced-motion` (no auto-rotate, no animated transitions) |
-| Screen readers | viewport has a text alternative generated from the spec; form controls labelled; toasts in a live region |
-| Touch | targets at least 44 px; builder usable at 390 px width |
+| Area                           | Budget                                                                                                   |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| Time to interactive 3D scene   | under 3 s on a mid laptop (4-core, integrated GPU, cable connection), first visit                        |
+| Rebuild after a control change | under 150 ms for the ring, with debounced slider updates                                                 |
+| Frame rate                     | 60 fps idle orbit, 30 fps minimum with Set view on integrated GPU                                        |
+| JS payload                     | under 600 kB gzipped initial, 3D chunk loaded on `#/build` and viewer routes only                        |
+| No WebGL                       | static fallback images per example and component, a clear message, controls and spec table still work    |
+| Keyboard                       | every control operable by keyboard; viewport has arrow-key orbit, +/- zoom, `R` reset, visible focus     |
+| Contrast                       | WCAG 2.2 AA in both themes (4.5:1 text, 3:1 UI and focus ring)                                           |
+| Motion                         | respects `prefers-reduced-motion` (no auto-rotate, no animated transitions)                              |
+| Screen readers                 | viewport has a text alternative generated from the spec; form controls labelled; toasts in a live region |
+| Touch                          | targets at least 44 px; builder usable at 390 px width                                                   |
 
 See [design-system.md](../design/design-system.md) and [test-plan.md](../test-plan.md).

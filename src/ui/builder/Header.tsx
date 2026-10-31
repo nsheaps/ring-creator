@@ -25,7 +25,13 @@ export function BuilderHeader({
     <header className="bd-header">
       <label className="bd-name">
         <span className="bd-label">Design name</span>
-        <input type="text" data-testid="input-name" value={design.name} maxLength={80} onChange={(e) => onName(e.target.value)} />
+        <input
+          type="text"
+          data-testid="input-name"
+          value={design.name}
+          maxLength={80}
+          onChange={(e) => onName(e.target.value)}
+        />
       </label>
       <div className="bd-actions">
         <button type="button" className="btn primary" data-testid="btn-save" onClick={onSave}>

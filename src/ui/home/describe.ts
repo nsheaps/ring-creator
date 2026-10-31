@@ -45,9 +45,12 @@ export function stoneLabel(d: Design): string {
   return color && !/colou?rless/i.test(color.name) ? `${color.name} ${gemName}` : gemName;
 }
 
-export const cutName = (d: Design): string => findModel('cut', d.engagement.center.cut)?.name ?? d.engagement.center.cut;
-export const headName = (d: Design): string => findModel('head', d.engagement.head.id)?.name ?? d.engagement.head.id;
-export const shankName = (d: Design): string => findModel('shank', d.engagement.shank.id)?.name ?? d.engagement.shank.id;
+export const cutName = (d: Design): string =>
+  findModel('cut', d.engagement.center.cut)?.name ?? d.engagement.center.cut;
+export const headName = (d: Design): string =>
+  findModel('head', d.engagement.head.id)?.name ?? d.engagement.head.id;
+export const shankName = (d: Design): string =>
+  findModel('shank', d.engagement.shank.id)?.name ?? d.engagement.shank.id;
 
 export function formatPrice(p: number | null | undefined): string {
   return typeof p === 'number' ? `$${Math.round(p).toLocaleString('en-US')}` : '—';
@@ -57,7 +60,9 @@ export function summarize(d: Design & { priceUsd?: number | null }): Summary {
   const c = d.engagement.center;
   const clarity = findModel('clarity', c.clarity)?.code ?? c.clarity;
   const grade = c.colorGrade ? findModel('color-grade', c.colorGrade)?.letters : undefined;
-  const band = d.band ? `${findModel('band', d.band.style)?.name ?? d.band.style}, ${d.band.widthMm} mm` : 'None (ring only)';
+  const band = d.band
+    ? `${findModel('band', d.band.style)?.name ?? d.band.style}, ${d.band.widthMm} mm`
+    : 'None (ring only)';
   return {
     stone: stoneLabel(d),
     carat: `${c.carat.toFixed(2)} ct`,

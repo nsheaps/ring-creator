@@ -7,7 +7,7 @@ export const finishes: FinishModel[] = [
     name: 'Polished',
     summary: 'A mirror-bright, reflective surface that is the standard for rings.',
     description:
-      "A polished finish buffs the metal to a smooth, mirror-like shine. It reflects light strongly and makes stones look their brightest by contrast.\n\nIt is also the finish that shows fine scratches fastest, since every mark breaks the reflection. A jeweler can re-polish it in minutes.\n\nIt suits almost any style and is the default on most engagement rings.",
+      'A polished finish buffs the metal to a smooth, mirror-like shine. It reflects light strongly and makes stones look their brightest by contrast.\n\nIt is also the finish that shows fine scratches fastest, since every mark breaks the reflection. A jeweler can re-polish it in minutes.\n\nIt suits almost any style and is the default on most engagement rings.',
     tags: ['shiny', 'classic', 'reflective'],
     pros: ['Maximum shine', 'Easy to restore', 'Works with every style'],
     cons: ['Shows scratches quickly'],
@@ -22,7 +22,7 @@ export const finishes: FinishModel[] = [
     name: 'Satin',
     summary: 'A soft, low-sheen finish with a gentle glow rather than a mirror shine.',
     description:
-      "A satin finish uses fine abrasion to create a smooth, diffuse surface that glows rather than glares. It sits between polished and matte.\n\nIt hides small scratches better than a mirror polish, giving it a calm, modern look that works well on wide bands.\n\nIt can be refreshed with a light re-finish by a jeweler.",
+      'A satin finish uses fine abrasion to create a smooth, diffuse surface that glows rather than glares. It sits between polished and matte.\n\nIt hides small scratches better than a mirror polish, giving it a calm, modern look that works well on wide bands.\n\nIt can be refreshed with a light re-finish by a jeweler.',
     tags: ['soft', 'modern', 'low-sheen'],
     pros: ['Hides minor scratches', 'Modern, understated look'],
     cons: ['Less sparkle next to stones', 'Wears shinier with use'],
@@ -37,11 +37,11 @@ export const finishes: FinishModel[] = [
     name: 'Matte',
     summary: 'A flat, non-reflective surface with a quiet, contemporary look.',
     description:
-      "A matte finish scatters light for a uniform, flat appearance with almost no reflection. It is made with fine abrasives or bead blasting.\n\nIt hides fingerprints and light scratches well and contrasts nicely with polished edges or bright stones.\n\nIt gradually polishes up with wear and needs periodic refinishing to stay even.",
+      'A matte finish scatters light for a uniform, flat appearance with almost no reflection. It is made with fine abrasives or bead blasting.\n\nIt hides fingerprints and light scratches well and contrasts nicely with polished edges or bright stones.\n\nIt gradually polishes up with wear and needs periodic refinishing to stay even.',
     tags: ['flat', 'modern', 'subtle'],
     pros: ['Hides scratches and fingerprints', 'Contemporary look'],
     cons: ['Wears glossy in high-contact areas'],
-    bestFor: ['Minimalist rings', 'Men\'s bands'],
+    bestFor: ['Minimalist rings', "Men's bands"],
     related: ['sandblasted', 'satin', 'polished'],
     roughnessAdd: 0.38,
     bump: 0.05,
@@ -52,7 +52,7 @@ export const finishes: FinishModel[] = [
     name: 'Hammered',
     summary: 'A surface dotted with small dimples that catch the light.',
     description:
-      "A hammered finish is made by striking the metal with a small hammer or tool, leaving faceted dimples. Each dimple reflects light differently, giving a handcrafted sparkle.\n\nIt hides scratches very well and gives each ring a slightly unique texture. It reads as organic and rustic rather than formal.\n\nThe texture is part of the metal, so it holds up well to everyday wear.",
+      'A hammered finish is made by striking the metal with a small hammer or tool, leaving faceted dimples. Each dimple reflects light differently, giving a handcrafted sparkle.\n\nIt hides scratches very well and gives each ring a slightly unique texture. It reads as organic and rustic rather than formal.\n\nThe texture is part of the metal, so it holds up well to everyday wear.',
     tags: ['textured', 'rustic', 'handcrafted'],
     pros: ['Hides scratches', 'Handcrafted character', 'Catches light'],
     cons: ['Collects dirt in dimples', 'Casual look'],
@@ -67,7 +67,7 @@ export const finishes: FinishModel[] = [
     name: 'Sandblasted',
     summary: 'A fine grainy, frosted surface created by blasting with abrasive particles.',
     description:
-      "Sandblasting, or bead blasting, fires fine particles at the metal to create a uniform frosted texture. It is more textured than satin and more grainy than a standard matte.\n\nIt gives a soft, sparkling frost and excellent scratch camouflage. It is popular on bands and as a contrast against polished bevels.\n\nThe texture can smooth with years of wear and can be redone.",
+      'Sandblasting, or bead blasting, fires fine particles at the metal to create a uniform frosted texture. It is more textured than satin and more grainy than a standard matte.\n\nIt gives a soft, sparkling frost and excellent scratch camouflage. It is popular on bands and as a contrast against polished bevels.\n\nThe texture can smooth with years of wear and can be redone.',
     tags: ['frosted', 'textured', 'matte'],
     pros: ['Excellent scratch camouflage', 'Rich frosted texture'],
     cons: ['Can smooth out over years'],
@@ -86,7 +86,7 @@ export const finishes: FinishModel[] = [
     tags: ['linear', 'modern', 'masculine'],
     pros: ['Hides scratches well', 'Distinctive grain', 'Easy to refresh'],
     cons: ['Grain fades with wear'],
-    bestFor: ['Men\'s bands', 'Titanium and tungsten'],
+    bestFor: ["Men's bands", 'Titanium and tungsten'],
     related: ['satin', 'matte', 'polished'],
     roughnessAdd: 0.22,
     bump: 0.2,
@@ -97,7 +97,7 @@ export const finishes: FinishModel[] = [
     name: 'Engraved',
     summary: 'Cut patterns or lettering carved into the metal for detail and personalization.',
     description:
-      "Engraving cuts lines, patterns or text into the metal surface by hand or machine. It can be a pattern on the shank, an inscription inside the band, or ornate scrollwork.\n\nThe recessed detail catches light differently from the surrounding surface and adds depth and personal meaning.\n\nHand engraving is a skilled craft; laser engraving is faster and more consistent but shallower.",
+      'Engraving cuts lines, patterns or text into the metal surface by hand or machine. It can be a pattern on the shank, an inscription inside the band, or ornate scrollwork.\n\nThe recessed detail catches light differently from the surrounding surface and adds depth and personal meaning.\n\nHand engraving is a skilled craft; laser engraving is faster and more consistent but shallower.',
     tags: ['detail', 'personalized', 'ornate'],
     pros: ['Personal and unique', 'Adds depth and detail'],
     cons: ['Can fill with dirt', 'Shallow engraving may wear'],
@@ -112,7 +112,7 @@ export const finishes: FinishModel[] = [
     name: 'Milgrain',
     summary: 'A row of tiny beads along the edge, a hallmark of vintage and Art Deco jewelry.',
     description:
-      "Milgrain edging adds a line of tiny raised beads, usually along the edges of a band or setting, made with a small beading tool. The word comes from the French for \"a thousand grains\".\n\nIt gives a delicate, antique look and became popular in the Edwardian and Art Deco periods.\n\nThe beads can wear down over time, and a jeweler can refresh them.",
+      'Milgrain edging adds a line of tiny raised beads, usually along the edges of a band or setting, made with a small beading tool. The word comes from the French for "a thousand grains".\n\nIt gives a delicate, antique look and became popular in the Edwardian and Art Deco periods.\n\nThe beads can wear down over time, and a jeweler can refresh them.',
     tags: ['vintage', 'beaded', 'art-deco'],
     pros: ['Elegant vintage detail', 'Frames stones and edges'],
     cons: ['Beads soften with wear', 'Collects dirt'],

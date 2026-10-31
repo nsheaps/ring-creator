@@ -32,7 +32,7 @@ export const gems: GemModel[] = [
     name: 'Diamond',
     summary: 'The hardest natural gem, prized for unmatched brilliance and fire.',
     description:
-      "Diamond is pure carbon crystallized under immense pressure. It scores 10 on the Mohs scale and has strong brilliance and fire, which is why it has been the traditional engagement stone since the late 19th century.\n\nValue follows the four Cs: cut, color, clarity and carat. Cut has the largest effect on sparkle. Colorless stones are most expensive; fancy colors such as pink and blue are far rarer.\n\nIt is extremely hard but not unbreakable: a hard knock on an edge can chip it. Clean it with soap and a soft brush.",
+      'Diamond is pure carbon crystallized under immense pressure. It scores 10 on the Mohs scale and has strong brilliance and fire, which is why it has been the traditional engagement stone since the late 19th century.\n\nValue follows the four Cs: cut, color, clarity and carat. Cut has the largest effect on sparkle. Colorless stones are most expensive; fancy colors such as pink and blue are far rarer.\n\nIt is extremely hard but not unbreakable: a hard knock on an edge can chip it. Clean it with soap and a soft brush.',
     tags: ['natural', 'hard', 'traditional', 'brilliant'],
     pros: ['Hardest gem', 'Exceptional sparkle', 'Holds resale value'],
     cons: ['Expensive', 'Can chip on a sharp blow', 'Sourcing concerns for some buyers'],
@@ -56,7 +56,7 @@ export const gems: GemModel[] = [
     name: 'Lab-grown Diamond',
     summary: 'A real diamond grown in a lab, chemically identical but far cheaper.',
     description:
-      "Lab-grown diamonds are made by high-pressure high-temperature (HPHT) or chemical vapor deposition (CVD) processes. They have the same crystal structure, hardness and optical properties as mined diamonds.\n\nThey cost far less for a given size and quality, and prices have fallen sharply in recent years. Reputable labs grade them like natural diamonds and state they are lab-grown.\n\nResale value is typically much lower than for natural stones, so buy for beauty rather than investment.",
+      'Lab-grown diamonds are made by high-pressure high-temperature (HPHT) or chemical vapor deposition (CVD) processes. They have the same crystal structure, hardness and optical properties as mined diamonds.\n\nThey cost far less for a given size and quality, and prices have fallen sharply in recent years. Reputable labs grade them like natural diamonds and state they are lab-grown.\n\nResale value is typically much lower than for natural stones, so buy for beauty rather than investment.',
     tags: ['lab-grown', 'hard', 'value', 'brilliant'],
     pros: ['Same look and hardness as diamond', 'Much lower cost', 'Known origin'],
     cons: ['Low resale value', 'Prices still falling'],
@@ -80,7 +80,7 @@ export const gems: GemModel[] = [
     name: 'Moissanite',
     summary: 'A lab-grown silicon carbide gem with more fire than diamond.',
     description:
-      "Moissanite is silicon carbide, first found by Henri Moissan in a meteor crater in 1893 and now made in labs. It has a higher refractive index and far more dispersion than diamond, so it flashes rainbow fire, sometimes more than people expect.\n\nIt is very hard at 9.25 and tough enough for daily wear, at a fraction of the price of diamond. Modern stones are near-colorless; older ones can show a slight yellow-green tint.\n\nIt is lighter than diamond, so a 1 carat equivalent is larger.",
+      'Moissanite is silicon carbide, first found by Henri Moissan in a meteor crater in 1893 and now made in labs. It has a higher refractive index and far more dispersion than diamond, so it flashes rainbow fire, sometimes more than people expect.\n\nIt is very hard at 9.25 and tough enough for daily wear, at a fraction of the price of diamond. Modern stones are near-colorless; older ones can show a slight yellow-green tint.\n\nIt is lighter than diamond, so a 1 carat equivalent is larger.',
     tags: ['lab-grown', 'fiery', 'budget', 'hard'],
     pros: ['Very hard and durable', 'Strong fire', 'Affordable'],
     cons: ['Rainbow flashes look different from diamond', 'Often sold by mm, not carat'],
@@ -148,7 +148,7 @@ export const gems: GemModel[] = [
     name: 'Ruby',
     summary: 'The red variety of corundum, a hard gem long linked with passion and royalty.',
     description:
-      "Ruby is red corundum, colored by chromium. With a Mohs hardness of 9 it is tough enough for everyday rings. The finest color is a vivid red with a hint of blue, traded as \"pigeon's blood\".\n\nFine rubies over a carat are among the costliest colored stones, often more than diamonds. Most rubies are heat-treated, and lead-glass filling is a poor-quality treatment to avoid.\n\nRuby is July's birthstone. Its red shows well against yellow and rose gold.",
+      'Ruby is red corundum, colored by chromium. With a Mohs hardness of 9 it is tough enough for everyday rings. The finest color is a vivid red with a hint of blue, traded as "pigeon\'s blood".\n\nFine rubies over a carat are among the costliest colored stones, often more than diamonds. Most rubies are heat-treated, and lead-glass filling is a poor-quality treatment to avoid.\n\nRuby is July\'s birthstone. Its red shows well against yellow and rose gold.',
     tags: ['corundum', 'red', 'durable', 'july'],
     pros: ['Very hard', 'Vivid color', 'Rich history'],
     cons: ['Fine stones are very expensive', 'Treatments are common'],
@@ -236,7 +236,7 @@ export const gems: GemModel[] = [
     name: 'Morganite',
     summary: 'A peachy-pink beryl that suits rose gold and romantic designs.',
     description:
-      "Morganite is pink to peach beryl, colored by manganese. It was named in 1911 for financier J. P. Morgan. With a Mohs hardness of 7.5 to 8 it is reasonably durable, and it is typically eye-clean.\n\nMost stones are heat-treated to remove yellow and enhance pink. Color is usually soft, and larger sizes are needed for saturation.\n\nIt is a trendy engagement stone, especially in rose gold, and costs far less than a diamond.",
+      'Morganite is pink to peach beryl, colored by manganese. It was named in 1911 for financier J. P. Morgan. With a Mohs hardness of 7.5 to 8 it is reasonably durable, and it is typically eye-clean.\n\nMost stones are heat-treated to remove yellow and enhance pink. Color is usually soft, and larger sizes are needed for saturation.\n\nIt is a trendy engagement stone, especially in rose gold, and costs far less than a diamond.',
     tags: ['beryl', 'pink', 'romantic', 'trending'],
     pros: ['Soft pink-peach color', 'Affordable for size', 'Usually clean'],
     cons: ['Pale color can wash out', 'Softer than sapphire'],
@@ -570,7 +570,7 @@ export const gems: GemModel[] = [
     name: 'Zircon',
     summary: 'A natural gem with diamond-like fire, not to be confused with cubic zirconia.',
     description:
-      "Zircon is a natural zirconium silicate, one of the oldest minerals on Earth. Its high refractive index and good fire give brilliance close to diamond. Blue zircon, made by heating brown stones, is the best known.\n\nIt is brittle with a Mohs hardness of about 7 and facet edges can chip or abrade, so it needs a careful setting. Zircon is not cubic zirconia, which is a synthetic.\n\nIt is a December birthstone.",
+      'Zircon is a natural zirconium silicate, one of the oldest minerals on Earth. Its high refractive index and good fire give brilliance close to diamond. Blue zircon, made by heating brown stones, is the best known.\n\nIt is brittle with a Mohs hardness of about 7 and facet edges can chip or abrade, so it needs a careful setting. Zircon is not cubic zirconia, which is a synthetic.\n\nIt is a December birthstone.',
     tags: ['natural', 'fiery', 'december', 'brittle'],
     pros: ['Very high fire and brilliance', 'Natural', 'Affordable'],
     cons: ['Brittle, facet edges wear', 'Often confused with cubic zirconia'],
@@ -633,7 +633,7 @@ export const gems: GemModel[] = [
     name: 'Onyx',
     summary: 'A banded chalcedony, usually dyed solid black, used for bold, graphic looks.',
     description:
-      "Onyx is a banded variety of chalcedony, a microcrystalline quartz. Most black onyx is natural gray chalcedony dyed deep black, and it takes a high polish.\n\nIt is opaque, with a hardness of 6.5 to 7, and is cut as a cabochon or flat tablet. It is a classic Art Deco contrast against diamonds and white metals.\n\nSardonyx, with red-brown bands, is traditionally linked to August.",
+      'Onyx is a banded variety of chalcedony, a microcrystalline quartz. Most black onyx is natural gray chalcedony dyed deep black, and it takes a high polish.\n\nIt is opaque, with a hardness of 6.5 to 7, and is cut as a cabochon or flat tablet. It is a classic Art Deco contrast against diamonds and white metals.\n\nSardonyx, with red-brown bands, is traditionally linked to August.',
     tags: ['chalcedony', 'black', 'opaque', 'art-deco'],
     pros: ['Bold black', 'Very affordable', 'Takes a high polish'],
     cons: ['Opaque, no sparkle', 'Usually dyed'],

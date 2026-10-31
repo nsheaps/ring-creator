@@ -36,7 +36,13 @@ function haloPath(o: CleanOutline, shape: HaloShape, offset: number): CleanOutli
 }
 
 /** Struts from a halo frame down to the seat ring so the halo is carried by the head. */
-function struts(ctx: HeadCtx, path: CleanOutline, yTop: number, bs: number, wireMm: number): THREE.BufferGeometry[] {
+function struts(
+  ctx: HeadCtx,
+  path: CleanOutline,
+  yTop: number,
+  bs: number,
+  wireMm: number,
+): THREE.BufferGeometry[] {
   const o = cleanOutline(ctx.center.built.outline);
   const out: THREE.BufferGeometry[] = [];
   const r = wireMm * 0.45;
@@ -126,7 +132,14 @@ function hiddenHalo(ctx: HeadCtx): Part[] {
   const path = offsetOutline(scaleOutline(o, sc), w / 2 + 0.25);
   const opts = prongOpts(ctx, { count: 4, style: 'round', rails: 0 });
   const metal: THREE.BufferGeometry[] = [...prongSet(ctx.center.built, { ...opts, rails: [] })];
-  const r = accentRing(ctx, { path, size: s, y, spacing: num(ctx.params, 'meleeSpacing', 0.1, 0, 0.8), tilt, minCount: 8 });
+  const r = accentRing(ctx, {
+    path,
+    size: s,
+    y,
+    spacing: num(ctx.params, 'meleeSpacing', 0.1, 0, 0.8),
+    tilt,
+    minCount: 8,
+  });
   metal.push(...r.metal);
   metal.push(...struts(ctx, path, y - 0.5, opts.baseScale, opts.wireMm));
   return [metalPart(metal, 'hidden halo head'), accentPart([r.stones], 'hidden halo melee')];
@@ -143,7 +156,13 @@ function cluster(ctx: HeadCtx): Part[] {
   const opts = prongOpts(ctx, { count: 4, style: 'claw', rails: 0 });
   const metal: THREE.BufferGeometry[] = [...prongSet(ctx.center.built, { ...opts, rails: [] })];
   const y = -num(ctx.params, 'petalDrop', 0.25, 0, 1.5);
-  const r = accentRing(ctx, { path, size, y, spacing: num(ctx.params, 'petalSpacing', 0.15, 0, 1), minCount: 6 });
+  const r = accentRing(ctx, {
+    path,
+    size,
+    y,
+    spacing: num(ctx.params, 'petalSpacing', 0.15, 0, 1),
+    minCount: 6,
+  });
   metal.push(...r.metal);
   // a scalloped gallery plate under the petals
   const plate: THREE.Vector3[] = [];

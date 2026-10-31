@@ -1,10 +1,22 @@
 import type { AccentStoneSpec, BandSpec, Design, EngagementSpec } from '@/models/types';
 
-export const defaultAccent: AccentStoneSpec = { material: 'diamond', color: 'colorless', cut: 'round-brilliant', sizeMm: 1.4 };
+export const defaultAccent: AccentStoneSpec = {
+  material: 'diamond',
+  color: 'colorless',
+  cut: 'round-brilliant',
+  sizeMm: 1.4,
+};
 
 export function defaultEngagement(): EngagementSpec {
   return {
-    center: { material: 'diamond', color: 'colorless', cut: 'round-brilliant', carat: 1, clarity: 'vs1', colorGrade: 'd-f' },
+    center: {
+      material: 'diamond',
+      color: 'colorless',
+      cut: 'round-brilliant',
+      carat: 1,
+      clarity: 'vs1',
+      colorGrade: 'd-f',
+    },
     accentStone: { ...defaultAccent },
     head: { id: 'solitaire-4-prong', metal: 'white-gold-14k', params: {} },
     shank: { id: 'plain-round', metal: 'white-gold-14k', params: {} },

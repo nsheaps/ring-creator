@@ -40,7 +40,9 @@ describe('renderMarkdown', () => {
     expect(html).toContain('src="/ring-creator/screenshots/a.png"');
   });
   it('leaves internal hash links intact', () => {
-    expect(renderMarkdown('[halo](#/components/head/halo-round)').html).toContain('href="#/components/head/halo-round"');
+    expect(renderMarkdown('[halo](#/components/head/halo-round)').html).toContain(
+      'href="#/components/head/halo-round"',
+    );
   });
 });
 

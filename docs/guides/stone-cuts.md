@@ -11,26 +11,26 @@ The cut (shape) is the first thing people notice. Pick it on the **Stone** tab. 
 Two terms before we start:
 
 - **Aspect ratio** is length divided by width. A round stone is 1.00. An oval at 1.40 is 40% longer than it is wide. The aspect slider on the Stone tab appears for shapes that can vary, and its limits come from each cut.
-- **Facet style** describes how the surface is cut. *Brilliant* cuts have many small kite and triangle facets built to flash. *Step* cuts have long parallel facets like a staircase, giving mirror-like flashes and a clear view into the stone. *Rose* cuts are a flat base and a faceted dome with no pavilion. *Cabochon* is smooth and polished with no facets.
+- **Facet style** describes how the surface is cut. _Brilliant_ cuts have many small kite and triangle facets built to flash. _Step_ cuts have long parallel facets like a staircase, giving mirror-like flashes and a clear view into the stone. _Rose_ cuts are a flat base and a faceted dome with no pavilion. _Cabochon_ is smooth and polished with no facets.
 
 The aspect ranges below are typical trade figures, not a promise of what every stone looks like.
 
 ## Quick comparison
 
-| Cut | Facet style | Typical aspect | Vulnerable corners | Looks bigger than its weight? |
-| --- | --- | --- | --- | --- |
-| Round brilliant | Brilliant | 1.00 | None | No, but the sparkle benchmark |
-| Princess | Brilliant | 1.00 to 1.05 | 4 sharp | Medium |
-| Cushion | Brilliant (mixed) | 1.00 to 1.20 | 4, rounded | Medium |
-| Oval | Brilliant | 1.30 to 1.50 | None | Yes |
-| Emerald cut | Step | 1.30 to 1.50 | 4, clipped | Yes, large table |
-| Asscher | Step | 1.00 | 4, clipped | Medium |
-| Radiant | Brilliant | 1.00 to 1.40 | 4, clipped | Medium |
-| Pear | Brilliant | 1.50 to 1.75 | 1 point | Yes |
-| Marquise | Brilliant | 1.75 to 2.15 | 2 points | Yes, the most |
-| Heart | Brilliant | about 1.00 | 1 point and 1 cleft | Medium |
-| Trillion | Brilliant or step | about 1.00 | 3 | Medium |
-| Baguette | Step | 2.0 and up | 4 | Used mostly as accents |
+| Cut             | Facet style       | Typical aspect | Vulnerable corners  | Looks bigger than its weight? |
+| --------------- | ----------------- | -------------- | ------------------- | ----------------------------- |
+| Round brilliant | Brilliant         | 1.00           | None                | No, but the sparkle benchmark |
+| Princess        | Brilliant         | 1.00 to 1.05   | 4 sharp             | Medium                        |
+| Cushion         | Brilliant (mixed) | 1.00 to 1.20   | 4, rounded          | Medium                        |
+| Oval            | Brilliant         | 1.30 to 1.50   | None                | Yes                           |
+| Emerald cut     | Step              | 1.30 to 1.50   | 4, clipped          | Yes, large table              |
+| Asscher         | Step              | 1.00           | 4, clipped          | Medium                        |
+| Radiant         | Brilliant         | 1.00 to 1.40   | 4, clipped          | Medium                        |
+| Pear            | Brilliant         | 1.50 to 1.75   | 1 point             | Yes                           |
+| Marquise        | Brilliant         | 1.75 to 2.15   | 2 points            | Yes, the most                 |
+| Heart           | Brilliant         | about 1.00     | 1 point and 1 cleft | Medium                        |
+| Trillion        | Brilliant or step | about 1.00     | 3                   | Medium                        |
+| Baguette        | Step              | 2.0 and up     | 4                   | Used mostly as accents        |
 
 ## Round brilliant
 
@@ -132,10 +132,10 @@ North-south means the stone's long axis runs along the finger, toward the finger
 
 ![Placement controls]({{base}}screenshots/pages/builder.png)
 
-| Orientation | Effect | Good with |
-| --- | --- | --- |
-| North-south | Makes fingers look longer and slimmer. The traditional placement. | Oval, pear, marquise, emerald cut |
-| East-west | Looks modern and wide, and sits lower on the hand. A long stone can feel bigger across the finger. | Emerald cut, oval, marquise, radiant, cushion (elongated) |
+| Orientation | Effect                                                                                             | Good with                                                 |
+| ----------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| North-south | Makes fingers look longer and slimmer. The traditional placement.                                  | Oval, pear, marquise, emerald cut                         |
+| East-west   | Looks modern and wide, and sits lower on the hand. A long stone can feel bigger across the finger. | Emerald cut, oval, marquise, radiant, cushion (elongated) |
 
 Some practical points on east-west placement: a very long stone on a small finger can overhang the sides. Check it against your ring size in the Ring view with the Top camera preset. Wide stones also snag more easily on clothing than a compact north-south one.
 

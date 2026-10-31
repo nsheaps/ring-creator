@@ -33,7 +33,14 @@ function ensure(): RingViewer {
   if (viewer) return viewer;
   host = document.createElement('div');
   host.setAttribute('aria-hidden', 'true');
-  Object.assign(host.style, { position: 'fixed', left: '-10000px', top: '0', width: '480px', height: '360px', pointerEvents: 'none' });
+  Object.assign(host.style, {
+    position: 'fixed',
+    left: '-10000px',
+    top: '0',
+    width: '480px',
+    height: '360px',
+    pointerEvents: 'none',
+  });
   document.body.appendChild(host);
   viewer = new RingViewer(host, {});
   return viewer;

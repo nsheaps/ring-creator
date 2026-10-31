@@ -19,25 +19,25 @@ Metal is about colour, strength, skin comfort and cost. Choose metals on the **M
 
 ## All the metals
 
-| Metal (id) | Purity | Mohs | Hypoallergenic | Price tier (indicative USD/g) |
-| --- | --- | --- | --- | --- |
-| 10k yellow gold (`yellow-gold-10k`) | 41.7% gold | 3.5 | No | Budget (56) |
-| 10k white gold (`white-gold-10k`) | 41.7% gold | 3.5 | No | Budget (56) |
-| 10k rose gold (`rose-gold-10k`) | 41.7% gold | 3.5 | No | Budget (56) |
-| 14k yellow gold (`yellow-gold-14k`) | 58.3% gold | 3.5 | Yes | Mid (80) |
-| 14k white gold (`white-gold-14k`) | 58.3% gold | 3.5 | No | Mid (80) |
-| 14k rose gold (`rose-gold-14k`) | 58.3% gold | 3.5 | No | Mid (80) |
-| 18k yellow gold (`yellow-gold-18k`) | 75% gold | 3 | Yes | High (100) |
-| 18k white gold (`white-gold-18k`) | 75% gold | 3 | No | High (100) |
-| 18k rose gold (`rose-gold-18k`) | 75% gold | 3 | Yes | High (100) |
-| 18k green gold (`green-gold-18k`) | 75% gold | 3 | Yes | High (100) |
-| Platinum (`platinum`) | 95% platinum | 4.5 | Yes | Premium for weight (58) |
-| Palladium (`palladium`) | 95% palladium | 4.75 | Yes | Mid (48) |
-| Sterling silver (`sterling-silver`) | 92.5% silver | 2.75 | No | Very low (1.8) |
-| Titanium (`titanium`) | Grade 2 or 5 | 6 | Yes | Very low (0.6) |
-| Tungsten carbide (`tungsten`) | Carbide with binder | 9 | Yes | Very low (0.3) |
-| Black zirconium (`black-zirconium`) | Zirconium with oxide surface | 7 | Yes | Very low (0.8) |
-| Tantalum (`tantalum`) | Commercially pure | 6.5 | Yes | Low (1.5) |
+| Metal (id)                          | Purity                       | Mohs | Hypoallergenic | Price tier (indicative USD/g) |
+| ----------------------------------- | ---------------------------- | ---- | -------------- | ----------------------------- |
+| 10k yellow gold (`yellow-gold-10k`) | 41.7% gold                   | 3.5  | No             | Budget (56)                   |
+| 10k white gold (`white-gold-10k`)   | 41.7% gold                   | 3.5  | No             | Budget (56)                   |
+| 10k rose gold (`rose-gold-10k`)     | 41.7% gold                   | 3.5  | No             | Budget (56)                   |
+| 14k yellow gold (`yellow-gold-14k`) | 58.3% gold                   | 3.5  | Yes            | Mid (80)                      |
+| 14k white gold (`white-gold-14k`)   | 58.3% gold                   | 3.5  | No             | Mid (80)                      |
+| 14k rose gold (`rose-gold-14k`)     | 58.3% gold                   | 3.5  | No             | Mid (80)                      |
+| 18k yellow gold (`yellow-gold-18k`) | 75% gold                     | 3    | Yes            | High (100)                    |
+| 18k white gold (`white-gold-18k`)   | 75% gold                     | 3    | No             | High (100)                    |
+| 18k rose gold (`rose-gold-18k`)     | 75% gold                     | 3    | Yes            | High (100)                    |
+| 18k green gold (`green-gold-18k`)   | 75% gold                     | 3    | Yes            | High (100)                    |
+| Platinum (`platinum`)               | 95% platinum                 | 4.5  | Yes            | Premium for weight (58)       |
+| Palladium (`palladium`)             | 95% palladium                | 4.75 | Yes            | Mid (48)                      |
+| Sterling silver (`sterling-silver`) | 92.5% silver                 | 2.75 | No             | Very low (1.8)                |
+| Titanium (`titanium`)               | Grade 2 or 5                 | 6    | Yes            | Very low (0.6)                |
+| Tungsten carbide (`tungsten`)       | Carbide with binder          | 9    | Yes            | Very low (0.3)                |
+| Black zirconium (`black-zirconium`) | Zirconium with oxide surface | 7    | Yes            | Very low (0.8)                |
+| Tantalum (`tantalum`)               | Commercially pure            | 6.5  | Yes            | Low (1.5)                     |
 
 The white-gold rows are flagged not hypoallergenic because many white-gold alloys contain nickel. Palladium-based white gold is gentler, so ask your jeweller. All figures come from the app's component data and are rough.
 
@@ -108,26 +108,26 @@ Wedding bands usually match the engagement ring's shank. A different metal can w
 
 ### Three worked pairings
 
-| Look | Head | Shank | Band |
-| --- | --- | --- | --- |
-| Classic two-tone | Platinum | 14k rose gold | 14k rose gold |
-| Warm vintage | 18k yellow gold | Platinum | Platinum with milgrain |
-| Soft modern | 14k white gold | 14k white gold | Mixed-metal band, white and rose |
+| Look             | Head            | Shank          | Band                             |
+| ---------------- | --------------- | -------------- | -------------------------------- |
+| Classic two-tone | Platinum        | 14k rose gold  | 14k rose gold                    |
+| Warm vintage     | 18k yellow gold | Platinum       | Platinum with milgrain           |
+| Soft modern      | 14k white gold  | 14k white gold | Mixed-metal band, white and rose |
 
 ## Finishes
 
 A **finish** is the surface texture applied over any metal. Choose one for the engagement ring and one for the band on the Metals tab.
 
-| Finish | Look | Care |
-| --- | --- | --- |
-| Polished | Mirror-bright. The default. | Shows fine scratches, easy to re-polish |
-| Satin | Soft low sheen | Hides small scratches |
-| Matte | Flat, non-reflective | Hides wear, can be refreshed |
-| Hammered | Small dimples | Hides scratches well |
-| Sandblasted | Frosted, fine grain | Wears smoother over time |
-| Brushed | Fine parallel lines | Easy to refresh |
-| Engraved | Cut lettering or pattern | Can fill with dirt |
-| Milgrain | Tiny beads along edges | Beads soften with wear |
+| Finish      | Look                        | Care                                    |
+| ----------- | --------------------------- | --------------------------------------- |
+| Polished    | Mirror-bright. The default. | Shows fine scratches, easy to re-polish |
+| Satin       | Soft low sheen              | Hides small scratches                   |
+| Matte       | Flat, non-reflective        | Hides wear, can be refreshed            |
+| Hammered    | Small dimples               | Hides scratches well                    |
+| Sandblasted | Frosted, fine grain         | Wears smoother over time                |
+| Brushed     | Fine parallel lines         | Easy to refresh                         |
+| Engraved    | Cut lettering or pattern    | Can fill with dirt                      |
+| Milgrain    | Tiny beads along edges      | Beads soften with wear                  |
 
 ![Polished]({{base}}screenshots/components/finish/polished.png)
 ![Satin]({{base}}screenshots/components/finish/satin.png)

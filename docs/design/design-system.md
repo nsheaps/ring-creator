@@ -4,20 +4,20 @@ Dark is the default (jewellery reads best on dark); light is the alternative. Th
 
 ## Color tokens
 
-| Token | Dark | Light | Use |
-| --- | --- | --- | --- |
-| `--bg` | `#0e1014` | `#faf8f4` | page |
-| `--surface` | `#161a21` | `#ffffff` | cards, panels |
-| `--surface-2` | `#1d222b` | `#f1ede4` | inputs, hover, raised |
-| `--line` | `#2a303b` | `#d6d0c3` | borders, dividers |
-| `--text` | `#ece8df` | `#1c1b19` | body |
-| `--muted` | `#9aa0ab` | `#5a5d64` | secondary text |
-| `--gold` | `#c9a24b` | `#8a6a1c` | accent, primary button, focus ring |
-| `--gold-hover` | `#e0bd68` | `#6e5313` | accent hover/active |
-| `--gem-blue` | `#7cc4ff` | `#0b63a3` | links, info, gem highlights |
-| `--danger` | `#ff7a7a` | `#b3261e` | errors, destructive |
-| `--ok` | `#7be0a4` | `#1b7a46` | success |
-| `--on-gold` | `#0e1014` | `#ffffff` | text on gold fills |
+| Token          | Dark      | Light     | Use                                |
+| -------------- | --------- | --------- | ---------------------------------- |
+| `--bg`         | `#0e1014` | `#faf8f4` | page                               |
+| `--surface`    | `#161a21` | `#ffffff` | cards, panels                      |
+| `--surface-2`  | `#1d222b` | `#f1ede4` | inputs, hover, raised              |
+| `--line`       | `#2a303b` | `#d6d0c3` | borders, dividers                  |
+| `--text`       | `#ece8df` | `#1c1b19` | body                               |
+| `--muted`      | `#9aa0ab` | `#5a5d64` | secondary text                     |
+| `--gold`       | `#c9a24b` | `#8a6a1c` | accent, primary button, focus ring |
+| `--gold-hover` | `#e0bd68` | `#6e5313` | accent hover/active                |
+| `--gem-blue`   | `#7cc4ff` | `#0b63a3` | links, info, gem highlights        |
+| `--danger`     | `#ff7a7a` | `#b3261e` | errors, destructive                |
+| `--ok`         | `#7be0a4` | `#1b7a46` | success                            |
+| `--on-gold`    | `#0e1014` | `#ffffff` | text on gold fills                 |
 
 Contrast targets (WCAG 2.2 AA): text on `--bg` and `--surface` at least 4.5:1 (body `--text`, `--muted`, `--gold`, `--gem-blue`, `--danger`, `--ok` in both themes); UI boundaries (focus ring, input border, slider track) at least 3:1 against their neighbour. `--line` is decorative and never the only cue for an input boundary; inputs use `--muted` at 60% or the focus ring. Tokens are checked by a unit test that computes ratios.
 
@@ -33,14 +33,14 @@ Contrast targets (WCAG 2.2 AA): text on `--bg` and `--surface` at least 4.5:1 (b
 - Sans: `system-ui,-apple-system,'Segoe UI',sans-serif` for UI and body. No webfonts.
 - Mono (spec values): `ui-monospace,SFMono-Regular,Menlo,monospace`.
 
-| Step | Size / line | Use |
-| --- | --- | --- |
-| display | 40/48, serif | home hero |
-| h1 | 30/38, serif | page title |
-| h2 | 22/30, serif | section |
-| h3 | 18/26, sans 600 | card title, step title |
-| body | 16/24 | text |
-| small | 14/20 | secondary, labels |
+| Step    | Size / line                     | Use                    |
+| ------- | ------------------------------- | ---------------------- |
+| display | 40/48, serif                    | home hero              |
+| h1      | 30/38, serif                    | page title             |
+| h2      | 22/30, serif                    | section                |
+| h3      | 18/26, sans 600                 | card title, step title |
+| body    | 16/24                           | text                   |
+| small   | 14/20                           | secondary, labels      |
 | caption | 12/16, uppercase tracking .06em | overlines, table heads |
 
 Fluid: display and h1 shrink one step below 600 px. Body never below 16 px on mobile inputs (prevents iOS zoom).
@@ -55,24 +55,24 @@ Fluid: display and h1 shrink one step below 600 px. Body never below 16 px on mo
 
 ## Component inventory
 
-| Component | Notes |
-| --- | --- |
-| Button | primary (gold fill, `--on-gold`), secondary (surface-2 + line), ghost, danger; icon-only needs `aria-label`; min 44 px height on touch |
-| Chip | toggle filter or tag; `aria-pressed` when toggleable |
-| Swatch | color or metal sample (circle, 32 px, ring on selected); label always present as text or `aria-label` |
-| Slider | native `input[type=range]` styled, with number input twin, unit, min/max, reset; arrow/PageUp/PageDown keys |
-| Select | native `select` styled; used for ring size, material |
-| Segmented | 2 to 5 exclusive options (`radiogroup`), e.g. orientation, fit |
-| Card | surface, line, radius 16; optional header/footer |
-| Tabs | step tabs (`tablist`), arrow keys move, Home/End jump; mobile scrolls |
-| Modal | focus trap, Escape closes, returns focus, backdrop `rgb(0 0 0 / .6)` |
-| Toast | bottom-center, live region `role="status"`, 5 s auto dismiss (not while hovered/focused), optional action (Undo) |
-| Viewer toolbar | view buttons Ring / Band / Set / Top / Side (Segmented), Reset, Fullscreen; overlay on viewport, top-left |
-| SpecTable | two-column key/value, caption row, mono values, units in muted |
-| ComponentCard | picture (1:1), name, summary (2 lines), tag chips, RatingDots, "Use in builder" |
-| RatingDots | 5 dots, filled count = rating, `role="img"` with `aria-label="Durability 4 of 5"` |
-| Banner | inline info/warn/error with icon and text, dismissible |
-| EmptyState | icon, one sentence, one or two actions |
+| Component      | Notes                                                                                                                                  |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Button         | primary (gold fill, `--on-gold`), secondary (surface-2 + line), ghost, danger; icon-only needs `aria-label`; min 44 px height on touch |
+| Chip           | toggle filter or tag; `aria-pressed` when toggleable                                                                                   |
+| Swatch         | color or metal sample (circle, 32 px, ring on selected); label always present as text or `aria-label`                                  |
+| Slider         | native `input[type=range]` styled, with number input twin, unit, min/max, reset; arrow/PageUp/PageDown keys                            |
+| Select         | native `select` styled; used for ring size, material                                                                                   |
+| Segmented      | 2 to 5 exclusive options (`radiogroup`), e.g. orientation, fit                                                                         |
+| Card           | surface, line, radius 16; optional header/footer                                                                                       |
+| Tabs           | step tabs (`tablist`), arrow keys move, Home/End jump; mobile scrolls                                                                  |
+| Modal          | focus trap, Escape closes, returns focus, backdrop `rgb(0 0 0 / .6)`                                                                   |
+| Toast          | bottom-center, live region `role="status"`, 5 s auto dismiss (not while hovered/focused), optional action (Undo)                       |
+| Viewer toolbar | view buttons Ring / Band / Set / Top / Side (Segmented), Reset, Fullscreen; overlay on viewport, top-left                              |
+| SpecTable      | two-column key/value, caption row, mono values, units in muted                                                                         |
+| ComponentCard  | picture (1:1), name, summary (2 lines), tag chips, RatingDots, "Use in builder"                                                        |
+| RatingDots     | 5 dots, filled count = rating, `role="img"` with `aria-label="Durability 4 of 5"`                                                      |
+| Banner         | inline info/warn/error with icon and text, dismissible                                                                                 |
+| EmptyState     | icon, one sentence, one or two actions                                                                                                 |
 
 ## States
 

@@ -15,7 +15,12 @@ interface Props {
   className?: string;
   /** Reframe the camera when the design changes (default false: keeps the user's angle). */
   refit?: boolean;
-  onInfo?: (info: { triangles: number; centerLengthMm: number; centerWidthMm: number; centerDepthMm: number }) => void;
+  onInfo?: (info: {
+    triangles: number;
+    centerLengthMm: number;
+    centerWidthMm: number;
+    centerDepthMm: number;
+  }) => void;
 }
 
 /** 3D viewer for a complete Design. Falls back to a message when WebGL or a builder is unavailable. */

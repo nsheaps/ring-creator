@@ -7,10 +7,26 @@ import type { StoneDims } from '@/models/stoneMath';
 import type { CutModel, GemModel } from '@/models/types';
 import type { BuiltStone, HeadCtx, Outline } from '../types';
 
-export const STUB_CUTS = ['round-brilliant', 'oval', 'princess', 'pear', 'marquise', 'heart', 'emerald-cut'] as const;
+export const STUB_CUTS = [
+  'round-brilliant',
+  'oval',
+  'princess',
+  'pear',
+  'marquise',
+  'heart',
+  'emerald-cut',
+] as const;
 export type StubCut = (typeof STUB_CUTS)[number];
 
-const ASPECT: Record<string, number> = { 'round-brilliant': 1, oval: 1.4, princess: 1, pear: 1.55, marquise: 2, heart: 1, 'emerald-cut': 1.45 };
+const ASPECT: Record<string, number> = {
+  'round-brilliant': 1,
+  oval: 1.4,
+  princess: 1,
+  pear: 1.55,
+  marquise: 2,
+  heart: 1,
+  'emerald-cut': 1.45,
+};
 
 export function stubCut(id: string): CutModel {
   return {
@@ -68,12 +84,27 @@ function outlineFor(cut: string, L: number, W: number, n = 48): Outline {
       const c = cut === 'emerald-cut' ? Math.min(a, b) * 0.3 : 0;
       const verts: [number, number][] =
         c > 0
-          ? [[a, -b + c], [a, b - c], [a - c, b], [-a + c, b], [-a, b - c], [-a, -b + c], [-a + c, -b], [a - c, -b]]
-          : [[a, -b], [a, b], [-a, b], [-a, -b]];
+          ? [
+              [a, -b + c],
+              [a, b - c],
+              [a - c, b],
+              [-a + c, b],
+              [-a, b - c],
+              [-a, -b + c],
+              [-a + c, -b],
+              [a - c, -b],
+            ]
+          : [
+              [a, -b],
+              [a, b],
+              [-a, b],
+              [-a, -b],
+            ];
       verts.forEach((v, i) => {
         const w = verts[(i + 1) % verts.length];
         corners.push(pts.length);
-        for (let k = 0; k < 6; k++) pts.push([v[0] + ((w[0] - v[0]) * k) / 6, v[1] + ((w[1] - v[1]) * k) / 6]);
+        for (let k = 0; k < 6; k++)
+          pts.push([v[0] + ((w[0] - v[0]) * k) / 6, v[1] + ((w[1] - v[1]) * k) / 6]);
       });
       if (c > 0) corners.splice(0, corners.length, ...corners.filter((_, i) => i % 2 === 0));
       break;
@@ -144,7 +175,13 @@ export function stubStone(cut: string, dims: StoneDims): BuiltStone {
   const o = outlineFor(cut, dims.length, dims.width);
   const ch = dims.width * 0.15;
   const pd = Math.max(0.1, dims.depth - ch - dims.width * 0.02);
-  return { geometry: stubGeometry(o, ch, pd), outline: o, crownHeight: ch, pavilionDepth: pd, girdleThickness: dims.width * 0.02 };
+  return {
+    geometry: stubGeometry(o, ch, pd),
+    outline: o,
+    crownHeight: ch,
+    pavilionDepth: pd,
+    girdleThickness: dims.width * 0.02,
+  };
 }
 
 export interface StubCtxOpts {

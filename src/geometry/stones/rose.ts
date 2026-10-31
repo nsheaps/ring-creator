@@ -1,6 +1,17 @@
 import { registerStoneBuilder } from '../builders';
 import type { BuiltStone, StoneBuilder } from '../types';
-import { FacetMesh, clamp, joinRings, nearestIndex, pNum, pStr, safeDims, uniqueParams, type RingPt, type V3 } from './mesh';
+import {
+  FacetMesh,
+  clamp,
+  joinRings,
+  nearestIndex,
+  pNum,
+  pStr,
+  safeDims,
+  uniqueParams,
+  type RingPt,
+  type V3,
+} from './mesh';
 import { makeShape, outlineCentroid } from './shapes';
 
 /**
@@ -60,7 +71,10 @@ export const buildRose: StoneBuilder = (dims, params, opts): BuiltStone => {
   ); // flat base
   return {
     geometry: mesh.toGeometry(),
-    outline: { points: Gu.map((q) => [q.p[0], q.p[2]]), corners: shape.corners.map((t) => nearestIndex(gts, t)) },
+    outline: {
+      points: Gu.map((q) => [q.p[0], q.p[2]]),
+      corners: shape.corners.map((t) => nearestIndex(gts, t)),
+    },
     crownHeight: crown,
     pavilionDepth: pav,
     girdleThickness: g,

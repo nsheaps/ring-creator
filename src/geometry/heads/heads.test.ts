@@ -17,11 +17,13 @@ function stats(parts: Part[]) {
     expect(pos, `${p.label} has positions`).toBeTruthy();
     expect(p.geometry.getIndex(), `${p.label} non-indexed`).toBeNull();
     const arr = pos.array as ArrayLike<number>;
-    for (let i = 0; i < arr.length; i++) if (!Number.isFinite(arr[i])) throw new Error(`${p.label}: non-finite position`);
+    for (let i = 0; i < arr.length; i++)
+      if (!Number.isFinite(arr[i])) throw new Error(`${p.label}: non-finite position`);
     const n = p.geometry.getAttribute('normal');
     expect(n, `${p.label} has normals`).toBeTruthy();
     const na = n.array as ArrayLike<number>;
-    for (let i = 0; i < na.length; i++) if (!Number.isFinite(na[i])) throw new Error(`${p.label}: NaN normal`);
+    for (let i = 0; i < na.length; i++)
+      if (!Number.isFinite(na[i])) throw new Error(`${p.label}: NaN normal`);
     tris += pos.count / 3;
     p.geometry.computeBoundingBox();
     if (p.geometry.boundingBox) box.union(p.geometry.boundingBox);
@@ -31,9 +33,31 @@ function stats(parts: Part[]) {
 
 const byId = new Map(heads.map((h) => [h.id, h]));
 const VOCAB = [
-  'solitaire-4-prong', 'solitaire-6-prong', '3-prong', 'double-claw', 'basket', 'cathedral-head', 'v-prong', 'bezel-full',
-  'bezel-half', 'halo-round', 'halo-cushion', 'halo-oval', 'hidden-halo', 'double-halo', 'three-stone', 'five-stone', 'cluster',
-  'trellis', 'tension', 'flush-gypsy', 'split-prong', 'compass', 'vintage-filigree', 'toi-et-moi', 'bypass-head',
+  'solitaire-4-prong',
+  'solitaire-6-prong',
+  '3-prong',
+  'double-claw',
+  'basket',
+  'cathedral-head',
+  'v-prong',
+  'bezel-full',
+  'bezel-half',
+  'halo-round',
+  'halo-cushion',
+  'halo-oval',
+  'hidden-halo',
+  'double-halo',
+  'three-stone',
+  'five-stone',
+  'cluster',
+  'trellis',
+  'tension',
+  'flush-gypsy',
+  'split-prong',
+  'compass',
+  'vintage-filigree',
+  'toi-et-moi',
+  'bypass-head',
 ];
 
 describe('head models', () => {
@@ -51,7 +75,11 @@ describe('head models', () => {
       expect(h.pros?.length).toBeGreaterThan(0);
       expect(h.cons?.length).toBeGreaterThan(0);
       expect(h.bestFor?.length).toBeGreaterThan(0);
-      for (const key of Object.keys(h.params)) expect(h.controls.some((c) => c.key === key), `${h.id} control for ${key}`).toBe(true);
+      for (const key of Object.keys(h.params))
+        expect(
+          h.controls.some((c) => c.key === key),
+          `${h.id} control for ${key}`,
+        ).toBe(true);
       for (const c of h.controls) {
         expect(key(h.params, c.key), `${h.id} default for ${c.key}`).toBe(true);
         if (c.type === 'number') {
@@ -97,7 +125,8 @@ describe('head builders', () => {
             expect(box.max.y).toBeLessThan(ctx.center.built.crownHeight + 2);
             expect(box.max.y).toBeGreaterThan(0);
             const lim = L * 2.6 + 6;
-            for (const v of [box.min.x, box.max.x, box.min.z, box.max.z]) expect(Math.abs(v)).toBeLessThan(lim);
+            for (const v of [box.min.x, box.max.x, box.min.z, box.max.z])
+              expect(Math.abs(v)).toBeLessThan(lim);
             // the metal wraps around the stone: it extends on both sides of the girdle centre
             expect(m.min.x).toBeLessThan(0);
             expect(m.max.x).toBeGreaterThan(0);
@@ -118,13 +147,24 @@ describe('specific invariants', () => {
     return fn(stubCtx({ params: model?.params ?? {}, ...o }));
   };
   const accentTris = (parts: Part[]) =>
-    parts.filter((p) => p.slot === 'accent-stone').reduce((s, p) => s + p.geometry.getAttribute('position').count / 3, 0);
+    parts
+      .filter((p) => p.slot === 'accent-stone')
+      .reduce((s, p) => s + p.geometry.getAttribute('position').count / 3, 0);
   const accentBox = (parts: Part[]) => stats(parts.filter((p) => p.slot === 'accent-stone')).box;
 
   it('prong heads add no stones; halos, clusters and multi-stone heads do', () => {
     for (const id of ['solitaire-4-prong', 'basket', 'bezel-full', 'tension', 'compass'])
       expect(build(id).some((p) => p.slot === 'accent-stone')).toBe(false);
-    for (const id of ['halo-round', 'hidden-halo', 'double-halo', 'cluster', 'three-stone', 'five-stone', 'toi-et-moi', 'bypass-head'])
+    for (const id of [
+      'halo-round',
+      'hidden-halo',
+      'double-halo',
+      'cluster',
+      'three-stone',
+      'five-stone',
+      'toi-et-moi',
+      'bypass-head',
+    ])
       expect(accentTris(build(id))).toBeGreaterThan(0);
   });
 
@@ -158,8 +198,12 @@ describe('specific invariants', () => {
 
   it('five-stone reaches further along the band than three-stone, and side-stone ratio grows the stones', () => {
     expect(accentBox(build('five-stone')).max.x).toBeGreaterThan(accentBox(build('three-stone')).max.x + 1);
-    const small = accentBox(build('three-stone', { params: { ...byId.get('three-stone')?.params, sideRatio: 0.4 } }));
-    const big = accentBox(build('three-stone', { params: { ...byId.get('three-stone')?.params, sideRatio: 0.9 } }));
+    const small = accentBox(
+      build('three-stone', { params: { ...byId.get('three-stone')?.params, sideRatio: 0.4 } }),
+    );
+    const big = accentBox(
+      build('three-stone', { params: { ...byId.get('three-stone')?.params, sideRatio: 0.9 } }),
+    );
     expect(big.max.z - big.min.z).toBeGreaterThan(small.max.z - small.min.z);
   });
 
@@ -194,19 +238,26 @@ describe('specific invariants', () => {
   });
 
   it('cathedral arches reach further along the band than the plain solitaire', () => {
-    expect(stats(build('cathedral-head')).box.max.x).toBeGreaterThan(stats(build('solitaire-4-prong')).box.max.x + 0.5);
+    expect(stats(build('cathedral-head')).box.max.x).toBeGreaterThan(
+      stats(build('solitaire-4-prong')).box.max.x + 0.5,
+    );
   });
 
   it('prong styles all build', () => {
     for (const style of ['round', 'claw', 'tab', 'v']) {
-      const parts = build('solitaire-4-prong', { params: { ...byId.get('solitaire-4-prong')?.params, prongStyle: style } });
+      const parts = build('solitaire-4-prong', {
+        params: { ...byId.get('solitaire-4-prong')?.params, prongStyle: style },
+      });
       expect(stats(parts).tris).toBeGreaterThan(100);
     }
   });
 
   it('halo shapes all build for a princess', () => {
     for (const shape of ['follow', 'round', 'cushion', 'oval']) {
-      const parts = build('halo-round', { cut: 'princess', params: { ...byId.get('halo-round')?.params, haloShape: shape } });
+      const parts = build('halo-round', {
+        cut: 'princess',
+        params: { ...byId.get('halo-round')?.params, haloShape: shape },
+      });
       expect(accentTris(parts)).toBeGreaterThan(0);
     }
   });

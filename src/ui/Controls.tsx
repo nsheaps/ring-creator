@@ -29,7 +29,15 @@ export function ParamControls({
                   {c.unit ? ` ${c.unit}` : ''}
                 </output>
               </span>
-              <input id={id} type="range" min={c.min} max={c.max} step={c.step} value={n} onChange={(e) => onChange(c.key, Number(e.target.value))} />
+              <input
+                id={id}
+                type="range"
+                min={c.min}
+                max={c.max}
+                step={c.step}
+                value={n}
+                onChange={(e) => onChange(c.key, Number(e.target.value))}
+              />
             </label>
           );
         }
@@ -37,7 +45,11 @@ export function ParamControls({
           return (
             <label key={c.key} className="ctl" htmlFor={id} title={c.help}>
               <span className="ctl-label">{c.label}</span>
-              <select id={id} value={String(v ?? c.options[0]?.value)} onChange={(e) => onChange(c.key, e.target.value)}>
+              <select
+                id={id}
+                value={String(v ?? c.options[0]?.value)}
+                onChange={(e) => onChange(c.key, e.target.value)}
+              >
                 {c.options.map((o) => (
                   <option key={o.value} value={o.value}>
                     {o.label}
@@ -49,7 +61,12 @@ export function ParamControls({
         }
         return (
           <label key={c.key} className="ctl ctl-toggle" htmlFor={id} title={c.help}>
-            <input id={id} type="checkbox" checked={Boolean(v)} onChange={(e) => onChange(c.key, e.target.checked)} />
+            <input
+              id={id}
+              type="checkbox"
+              checked={Boolean(v)}
+              onChange={(e) => onChange(c.key, e.target.checked)}
+            />
             <span>{c.label}</span>
           </label>
         );

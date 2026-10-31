@@ -73,7 +73,13 @@ export default function Compare() {
       <p className="muted">Pick up to three designs from your current ring, saved designs and the gallery.</p>
       <div className="gal-toggle" role="group" aria-label="What to show">
         {views.map(([v, l]) => (
-          <button key={v} className="btn" aria-pressed={view === v} disabled={v !== 'ring' && !anyBand} onClick={() => setView(v)}>
+          <button
+            key={v}
+            className="btn"
+            aria-pressed={view === v}
+            disabled={v !== 'ring' && !anyBand}
+            onClick={() => setView(v)}
+          >
             {l}
           </button>
         ))}
@@ -85,7 +91,11 @@ export default function Compare() {
             <section key={k} className="cmp-col card" aria-label={`Slot ${i + 1}`} data-testid="compare-slot">
               <label className="gal-field">
                 <span>Design {i + 1}</span>
-                <select value={ids[i]} onChange={(e) => setSlot(i, e.target.value)} data-testid={`compare-pick-${k}`}>
+                <select
+                  value={ids[i]}
+                  onChange={(e) => setSlot(i, e.target.value)}
+                  data-testid={`compare-pick-${k}`}
+                >
                   <option value="">Choose a design…</option>
                   <option value="current">Current ring in builder</option>
                   {saved.length > 0 && (
@@ -127,7 +137,9 @@ export default function Compare() {
       ) : (
         <div className="cmp-table-wrap">
           <table className="cmp-table" data-testid="compare-table">
-            <caption className="sr-only">Differences between the chosen designs; differing rows are highlighted.</caption>
+            <caption className="sr-only">
+              Differences between the chosen designs; differing rows are highlighted.
+            </caption>
             <thead>
               <tr>
                 <th scope="col">Spec</th>
@@ -140,7 +152,11 @@ export default function Compare() {
             </thead>
             <tbody>
               {ROWS.map(([k, label]) => (
-                <tr key={k} className={differs(k) ? 'diff' : undefined} data-diff={differs(k) ? 'true' : 'false'}>
+                <tr
+                  key={k}
+                  className={differs(k) ? 'diff' : undefined}
+                  data-diff={differs(k) ? 'true' : 'false'}
+                >
                   <th scope="row">
                     {label}
                     {differs(k) && <span className="sr-only"> (differs)</span>}

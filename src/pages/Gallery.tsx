@@ -7,7 +7,15 @@ import { DesignCard } from '@/ui/DesignCard';
 import { DesignViewer } from '@/ui/DesignViewer';
 import type { RingView } from '@/geometry/assemble';
 import { addToCompare } from '@/ui/home/compareLinks';
-import { cutName, headName, metalFamilies, metalNames, shankName, stoneLabel, summarize } from '@/ui/home/describe';
+import {
+  cutName,
+  headName,
+  metalFamilies,
+  metalNames,
+  shankName,
+  stoneLabel,
+  summarize,
+} from '@/ui/home/describe';
 import './browse.css';
 
 type Sort = 'featured' | 'name' | 'price-asc' | 'price-desc';
@@ -47,7 +55,13 @@ function Detail({ ex }: { ex: ExampleDesign }) {
           <DesignViewer design={ex} view={view} refit />
           <div className="gal-toggle" role="group" aria-label="What to show">
             {views.map(([v, l]) => (
-              <button key={v} className="btn" aria-pressed={view === v} disabled={!ex.band && v !== 'ring'} onClick={() => setView(v)}>
+              <button
+                key={v}
+                className="btn"
+                aria-pressed={view === v}
+                disabled={!ex.band && v !== 'ring'}
+                onClick={() => setView(v)}
+              >
                 {l}
               </button>
             ))}
@@ -128,7 +142,18 @@ export default function Gallery() {
       if (cut && cutName(d) !== cut) return false;
       if (head && headName(d) !== head) return false;
       if (!needle) return true;
-      const hay = [d.name, d.blurb, d.category, d.designFamily, cutName(d), headName(d), shankName(d), stoneLabel(d), ...metalNames(d), ...(d.tags ?? [])]
+      const hay = [
+        d.name,
+        d.blurb,
+        d.category,
+        d.designFamily,
+        cutName(d),
+        headName(d),
+        shankName(d),
+        stoneLabel(d),
+        ...metalNames(d),
+        ...(d.tags ?? []),
+      ]
         .join(' ')
         .toLowerCase();
       return needle.split(/\s+/).every((w) => hay.includes(w));
@@ -172,7 +197,13 @@ export default function Gallery() {
     setCut('');
     setHead('');
   };
-  const select = (label: string, value: string, set: (v: string) => void, options: string[], testId: string) => (
+  const select = (
+    label: string,
+    value: string,
+    set: (v: string) => void,
+    options: string[],
+    testId: string,
+  ) => (
     <label className="gal-field">
       <span>{label}</span>
       <select value={value} onChange={(e) => set(e.target.value)} data-testid={testId}>
@@ -196,10 +227,21 @@ export default function Gallery() {
         </p>
       ) : (
         <>
-          <form className="gal-filters card" role="search" aria-label="Filter examples" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="gal-filters card"
+            role="search"
+            aria-label="Filter examples"
+            onSubmit={(e) => e.preventDefault()}
+          >
             <label className="gal-field gal-search">
               <span>Search</span>
-              <input type="text" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, style, metal, stone…" data-testid="gallery-search" />
+              <input
+                type="text"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Name, style, metal, stone…"
+                data-testid="gallery-search"
+              />
             </label>
             {select('Metal', family, setFamily, facets.families, 'filter-metal')}
             {select('Stone', stone, setStone, facets.stones, 'filter-stone')}
@@ -207,7 +249,11 @@ export default function Gallery() {
             {select('Head', head, setHead, facets.heads, 'filter-head')}
             <label className="gal-field">
               <span>Sort by</span>
-              <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} data-testid="gallery-sort">
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as Sort)}
+                data-testid="gallery-sort"
+              >
                 <option value="featured">Featured</option>
                 <option value="name">Name</option>
                 <option value="price-asc">Price, low to high</option>
@@ -215,11 +261,22 @@ export default function Gallery() {
               </select>
             </label>
             <div className="gal-chips" role="group" aria-label="Category">
-              <button type="button" className="chip" aria-pressed={category === ''} onClick={() => setCategory('')}>
+              <button
+                type="button"
+                className="chip"
+                aria-pressed={category === ''}
+                onClick={() => setCategory('')}
+              >
                 All
               </button>
               {facets.categories.map((c) => (
-                <button type="button" key={c} className="chip" aria-pressed={category === c} onClick={() => setCategory(category === c ? '' : c)}>
+                <button
+                  type="button"
+                  key={c}
+                  className="chip"
+                  aria-pressed={category === c}
+                  onClick={() => setCategory(category === c ? '' : c)}
+                >
                   {c}
                 </button>
               ))}
@@ -251,4 +308,3 @@ export default function Gallery() {
 function stoneMaterial(d: ExampleDesign): string {
   return findModel('gem', d.engagement.center.material)?.name ?? d.engagement.center.material;
 }
-

@@ -19,7 +19,11 @@ export function ShotImage({ model, className }: { model: Model; className?: stri
 
 export function ComponentCard({ model }: { model: Model }) {
   return (
-    <a className="card rf-card" href={`#/components/${model.kind}/${model.id}`} data-testid={`component-card-${model.id}`}>
+    <a
+      className="card rf-card"
+      href={`#/components/${model.kind}/${model.id}`}
+      data-testid={`component-card-${model.id}`}
+    >
       <div className="rf-card-shot">
         <ShotImage model={model} />
       </div>

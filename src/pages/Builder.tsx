@@ -58,7 +58,8 @@ export default function Builder() {
     } else if (routeId) {
       const s = store.get().saved.find((x) => x.design.id === routeId);
       if (s) store.load(s.design, true);
-      else if (store.get().current.id !== routeId) say('Saved design not found; showing your current design.');
+      else if (store.get().current.id !== routeId)
+        say('Saved design not found; showing your current design.');
     }
   }, [shared, routeId, say]);
 
@@ -102,7 +103,11 @@ export default function Builder() {
         onCompare={() => navigate(`/compare?d=${encodeDesign(design)}`)}
       />
       <div className="bd-layout">
-        <Viewport design={design} viewerRef={viewer} onSnapshotDownload={(url) => download(`${slug(design.name)}.png`, url)} />
+        <Viewport
+          design={design}
+          viewerRef={viewer}
+          onSnapshotDownload={(url) => download(`${slug(design.name)}.png`, url)}
+        />
         <StepTabs tabs={TABS} active={step} onChange={setStep}>
           {step === 'stone' && <StoneStep design={design} update={update} />}
           {step === 'head' && <HeadStep design={design} update={update} />}

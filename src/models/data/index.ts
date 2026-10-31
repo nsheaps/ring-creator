@@ -15,6 +15,16 @@ let done = false;
 export function loadModels(): void {
   if (done) return;
   done = true;
-  registerModels([...metals, ...finishes, ...gems, ...clarities, ...colorGrades, ...cuts, ...heads, ...shanks, ...bands]);
+  registerModels([
+    ...metals,
+    ...finishes,
+    ...gems,
+    ...clarities,
+    ...colorGrades,
+    ...cuts,
+    ...heads,
+    ...shanks,
+    ...bands,
+  ]);
 }
 loadModels();

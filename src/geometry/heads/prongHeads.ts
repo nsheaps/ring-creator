@@ -15,6 +15,7 @@ import {
   prongSet,
   prongSites,
   resample,
+  ringDrop,
   str,
   support,
   v3,
@@ -77,9 +78,23 @@ function cathedralArches(ctx: HeadCtx, opts: ProngSetOpts, wireMm: number): THRE
   const acrossHalf = Math.max(support(o, px, pz) * 0.55, ctx.shankWidth * 0.5);
   for (const side of [-1, 1]) {
     for (const lat of [-1, 1]) {
-      const foot = v3(side * ax * (reach * 0.95 + 1.2) + lat * px * ctx.shankWidth * 0.32, -ctx.baseDrop - 0.25, side * az * (reach * 0.95 + 1.2) + lat * pz * ctx.shankWidth * 0.32);
-      const mid = v3(side * ax * reach * 0.8 + lat * px * acrossHalf * 0.8, (yTop - ctx.baseDrop) * 0.45, side * az * reach * 0.8 + lat * pz * acrossHalf * 0.8);
-      const top = v3(lat * px * acrossHalf * s + side * ax * reach * s * 0.4, yTop, lat * pz * acrossHalf * s + side * az * reach * s * 0.4);
+      const along = reach * 0.95 + 1.2;
+      const footY = -ctx.baseDrop - ringDrop(ctx, along) + r * 0.5;
+      const foot = v3(
+        side * ax * along + lat * px * ctx.shankWidth * 0.32,
+        footY,
+        side * az * along + lat * pz * ctx.shankWidth * 0.32,
+      );
+      const mid = v3(
+        side * ax * reach * 0.8 + lat * px * acrossHalf * 0.8,
+        yTop + (footY - yTop) * 0.55,
+        side * az * reach * 0.8 + lat * pz * acrossHalf * 0.8,
+      );
+      const top = v3(
+        lat * px * acrossHalf * s + side * ax * reach * s * 0.4,
+        yTop,
+        lat * pz * acrossHalf * s + side * az * reach * s * 0.4,
+      );
       out.push(...wire([foot, mid, top], r, 18, 8));
     }
   }
@@ -134,16 +149,32 @@ const builders: Record<string, (ctx: HeadCtx) => Part[]> = {
   basket: (ctx) => prongHead(ctx, { count: 4, style: 'round', rails: 2 }),
   'cathedral-head': (ctx) => {
     const opts = prongOpts(ctx, { count: 4, style: 'round', rails: 1 });
-    return [metalPart([...prongSet(ctx.center.built, opts), ...cathedralArches(ctx, opts, num(ctx.params, 'archWidth', 1.1, 0.6, 2))], 'cathedral head')];
+    return [
+      metalPart(
+        [
+          ...prongSet(ctx.center.built, opts),
+          ...cathedralArches(ctx, opts, num(ctx.params, 'archWidth', 1.1, 0.6, 2)),
+        ],
+        'cathedral head',
+      ),
+    ];
   },
   'v-prong': (ctx) => prongHead(ctx, { count: 4, style: 'v', rails: 1 }),
   trellis: (ctx) => prongHead(ctx, { count: 4, style: 'round', rails: 0, trellis: true }),
   'split-prong': (ctx) => prongHead(ctx, { count: 4, style: 'round', rails: 1, split: true }),
   compass: (ctx) =>
-    prongHead(ctx, { count: 4, style: 'claw', rails: 1, phase: 0, useCorners: bool(ctx.params, 'useCorners', false) }),
+    prongHead(ctx, {
+      count: 4,
+      style: 'claw',
+      rails: 1,
+      phase: 0,
+      useCorners: bool(ctx.params, 'useCorners', false),
+    }),
   'vintage-filigree': (ctx) => {
     const opts = prongOpts(ctx, { count: 6, style: 'round', rails: 1 });
-    return [metalPart([...prongSet(ctx.center.built, opts), ...filigree(ctx, opts, opts.wireMm)], 'filigree head')];
+    return [
+      metalPart([...prongSet(ctx.center.built, opts), ...filigree(ctx, opts, opts.wireMm)], 'filigree head'),
+    ];
   },
 };
 

@@ -32,7 +32,10 @@ function write(key: string, value: unknown): void {
   }
 }
 
-let state: State = { current: read<Design>(KEY_CURRENT) ?? defaultDesign(), saved: read<SavedDesign[]>(KEY_SAVED) ?? [] };
+let state: State = {
+  current: read<Design>(KEY_CURRENT) ?? defaultDesign(),
+  saved: read<SavedDesign[]>(KEY_SAVED) ?? [],
+};
 const listeners = new Set<() => void>();
 function emit(): void {
   listeners.forEach((l) => l());

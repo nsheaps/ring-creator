@@ -14,17 +14,17 @@ Ring Creator is **model-driven**. Everything a person can pick (a metal, a gem, 
 
 ## The moving parts
 
-| Part | Where | Role |
-| --- | --- | --- |
-| Vocabulary | `docs/specs/vocabulary.md` | The list of allowed ids. Add the id here first. Ids are never renamed silently. |
-| Model schema | `src/models/types.ts` | TypeScript types for every model kind and for saved designs. |
-| Data | `src/models/data/*.ts` | One file per kind: `metals`, `finishes`, `gems`, `clarities`, `colorGrades`, `cuts`, `heads`, `shanks`, `bands`. |
-| Registry | `src/models/registry.ts` | `registerModels`, `listModels`, `findModel`, `getModel`. The data index loads every file. |
-| Geometry types | `src/geometry/types.ts` | Coordinate frames, `Part`, the builder contexts. Read its header comment first. |
-| Geometry helpers | `src/geometry/helpers.ts` | `sweepRing`, `cylinderBetween`, `instanceGeometry`, `mergeFlat`. |
-| Builder registry | `src/geometry/builders.ts` | `registerStoneBuilder`, `registerHeadBuilder`, `registerShankBuilder`, `registerBandBuilder`. |
-| Assembly | `src/geometry/assemble.ts` | Turns a `Design` into three.js meshes and assigns a material per part slot. |
-| Validation | `scripts/validate-models.ts` | The data-contract gate (see below). |
+| Part             | Where                        | Role                                                                                                             |
+| ---------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Vocabulary       | `docs/specs/vocabulary.md`   | The list of allowed ids. Add the id here first. Ids are never renamed silently.                                  |
+| Model schema     | `src/models/types.ts`        | TypeScript types for every model kind and for saved designs.                                                     |
+| Data             | `src/models/data/*.ts`       | One file per kind: `metals`, `finishes`, `gems`, `clarities`, `colorGrades`, `cuts`, `heads`, `shanks`, `bands`. |
+| Registry         | `src/models/registry.ts`     | `registerModels`, `listModels`, `findModel`, `getModel`. The data index loads every file.                        |
+| Geometry types   | `src/geometry/types.ts`      | Coordinate frames, `Part`, the builder contexts. Read its header comment first.                                  |
+| Geometry helpers | `src/geometry/helpers.ts`    | `sweepRing`, `cylinderBetween`, `instanceGeometry`, `mergeFlat`.                                                 |
+| Builder registry | `src/geometry/builders.ts`   | `registerStoneBuilder`, `registerHeadBuilder`, `registerShankBuilder`, `registerBandBuilder`.                    |
+| Assembly         | `src/geometry/assemble.ts`   | Turns a `Design` into three.js meshes and assigns a material per part slot.                                      |
+| Validation       | `scripts/validate-models.ts` | The data-contract gate (see below).                                                                              |
 
 Rules for contributors: TypeScript strict with no `any` and no `@ts-ignore`, geometry deterministic (no unseeded randomness), docs in the same change.
 
@@ -32,15 +32,15 @@ Rules for contributors: TypeScript strict with no `any` and no `@ts-ignore`, geo
 
 Every model extends `ModelBase`:
 
-| Field | Meaning |
-| --- | --- |
-| `id` | Kebab-case, unique within its kind. Must match the vocabulary. |
-| `name` | Display name. |
-| `summary` | One plain sentence (at least 10 characters). |
-| `description` | Markdown, two to four short paragraphs, user-facing (at least 80 characters). |
-| `tags` | Search and filter tags. |
-| `pros`, `cons`, `bestFor` | Short lists shown on the Components page. |
-| `related` | Ids of other models for "see also". They must resolve. |
+| Field                     | Meaning                                                                       |
+| ------------------------- | ----------------------------------------------------------------------------- |
+| `id`                      | Kebab-case, unique within its kind. Must match the vocabulary.                |
+| `name`                    | Display name.                                                                 |
+| `summary`                 | One plain sentence (at least 10 characters).                                  |
+| `description`             | Markdown, two to four short paragraphs, user-facing (at least 80 characters). |
+| `tags`                    | Search and filter tags.                                                       |
+| `pros`, `cons`, `bestFor` | Short lists shown on the Components page.                                     |
+| `related`                 | Ids of other models for "see also". They must resolve.                        |
 
 On top of that:
 
@@ -55,12 +55,12 @@ On top of that:
 
 A model's `builder` string is a key into a builder registry. A builder is a function that receives a context and returns geometry. Many models can share one builder and differ only in `params`. That is how a family of halo heads, or a family of cut variants, can come from one function.
 
-| Kind | Builder signature | Frame |
-| --- | --- | --- |
-| Cut | `(dims, params, opts) -> BuiltStone` | Stone frame |
-| Head | `(ctx: HeadCtx) -> Part[]` | Stone frame, girdle at y = 0 |
-| Shank | `(ctx: ShankCtx) -> { parts, seatY, topWidth }` | Ring frame |
-| Band | `(ctx: BandCtx) -> Part[]` | Ring frame, centred on z = 0 |
+| Kind  | Builder signature                               | Frame                        |
+| ----- | ----------------------------------------------- | ---------------------------- |
+| Cut   | `(dims, params, opts) -> BuiltStone`            | Stone frame                  |
+| Head  | `(ctx: HeadCtx) -> Part[]`                      | Stone frame, girdle at y = 0 |
+| Shank | `(ctx: ShankCtx) -> { parts, seatY, topWidth }` | Ring frame                   |
+| Band  | `(ctx: BandCtx) -> Part[]`                      | Ring frame, centred on z = 0 |
 
 ### Coordinate frames
 
@@ -137,8 +137,14 @@ const build: StoneBuilder = (dims, params) => {
   const c = clip * Math.min(hl, hw);
   // Counter-clockwise seen from +Y, in the (x, z) plane.
   const pts: [number, number][] = [
-    [hl - c, -hw], [-hl + c, -hw], [-hl, -hw + c], [-hl, hw - c],
-    [-hl + c, hw], [hl - c, hw], [hl, hw - c], [hl, -hw + c],
+    [hl - c, -hw],
+    [-hl + c, -hw],
+    [-hl, -hw + c],
+    [-hl, hw - c],
+    [-hl + c, hw],
+    [hl - c, hw],
+    [hl, hw - c],
+    [hl, -hw + c],
   ];
   const crown = dims.depth * 0.3;
   const pavilion = dims.depth * 0.7;
@@ -151,12 +157,14 @@ const build: StoneBuilder = (dims, params) => {
   for (let i = 0; i < n; i++) {
     const [x0, z0] = pts[i];
     const [x1, z1] = pts[(i + 1) % n];
-    const g0 = [x0, 0, z0], g1 = [x1, 0, z1];
-    const t0 = [x0 * table, crown, z0 * table], t1 = [x1 * table, crown, z1 * table];
-    tri(top, t0, t1);        // table, faces up
-    tri(g0, g1, t0);         // crown, faces out and up
+    const g0 = [x0, 0, z0],
+      g1 = [x1, 0, z1];
+    const t0 = [x0 * table, crown, z0 * table],
+      t1 = [x1 * table, crown, z1 * table];
+    tri(top, t0, t1); // table, faces up
+    tri(g0, g1, t0); // crown, faces out and up
     tri(g1, t1, t0);
-    tri(g1, g0, culet);      // pavilion, faces out and down
+    tri(g1, g0, culet); // pavilion, faces out and down
   }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(v, 3));

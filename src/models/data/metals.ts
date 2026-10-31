@@ -11,7 +11,7 @@ export const metals: MetalModel[] = [
     name: '10k Yellow Gold',
     summary: 'The hardest and most affordable yellow gold, at 41.7% pure gold.',
     description:
-      "10k gold is 10 parts gold to 14 parts other metals, usually silver and copper. That makes it noticeably harder and cheaper than 14k, with a slightly paler, more brassy yellow.\n\nIt resists everyday scratching and bending well, which suits active hands. The higher copper and silver content can tarnish slightly and may irritate sensitive skin.\n\n10k is mainly a US standard; elsewhere 9k, 14k and 18k hallmarks are more common.",
+      '10k gold is 10 parts gold to 14 parts other metals, usually silver and copper. That makes it noticeably harder and cheaper than 14k, with a slightly paler, more brassy yellow.\n\nIt resists everyday scratching and bending well, which suits active hands. The higher copper and silver content can tarnish slightly and may irritate sensitive skin.\n\n10k is mainly a US standard; elsewhere 9k, 14k and 18k hallmarks are more common.',
     tags: ['gold', 'yellow', 'budget', 'durable'],
     pros: ['Lowest-cost gold', 'Hard and scratch-resistant for gold', 'Resists bending'],
     cons: ['Paler, less rich color', 'More likely to irritate sensitive skin', 'Less common outside the US'],
@@ -27,7 +27,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: false,
     pricePerGramUsd: 56,
     durability: 3,
-    maintenance: 'Wipe with mild soapy water and a soft cloth; polish lightly to remove tarnish. Prices are indicative only.',
+    maintenance:
+      'Wipe with mild soapy water and a soft cloth; polish lightly to remove tarnish. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -35,7 +36,7 @@ export const metals: MetalModel[] = [
     name: '10k White Gold',
     summary: 'A hard, budget-friendly white gold that is rhodium plated for brightness.',
     description:
-      "10k white gold alloys 41.7% gold with white metals such as nickel, palladium or silver. The raw alloy is a pale warm gray, so most pieces are plated with rhodium for a bright, cool-white look.\n\nIt is hard and holds a setting well, but the rhodium plating wears over a few years and the warmer alloy shows through. A jeweler can re-plate it quickly.\n\nNickel-based white golds can trigger allergies; ask for a palladium-based alloy if you are sensitive.",
+      '10k white gold alloys 41.7% gold with white metals such as nickel, palladium or silver. The raw alloy is a pale warm gray, so most pieces are plated with rhodium for a bright, cool-white look.\n\nIt is hard and holds a setting well, but the rhodium plating wears over a few years and the warmer alloy shows through. A jeweler can re-plate it quickly.\n\nNickel-based white golds can trigger allergies; ask for a palladium-based alloy if you are sensitive.',
     tags: ['gold', 'white', 'budget', 'plated'],
     pros: ['Affordable', 'Hard-wearing', 'Bright white when freshly plated'],
     cons: ['Plating wears off', 'May contain nickel', 'Alloy is slightly dull and warm'],
@@ -59,7 +60,7 @@ export const metals: MetalModel[] = [
     name: '10k Rose Gold',
     summary: 'A deeper, coppery pink gold that is very hard and very affordable.',
     description:
-      "10k rose gold gets its color from a high copper content. At 41.7% gold it is stronger and more strongly colored than 14k or 18k rose.\n\nThe copper makes it durable, and the warm pink flatters many skin tones and colored stones. It can look slightly orange compared with higher karats.\n\nCopper is a common cause of skin reactions, so those with metal sensitivities may prefer 18k or a different metal.",
+      '10k rose gold gets its color from a high copper content. At 41.7% gold it is stronger and more strongly colored than 14k or 18k rose.\n\nThe copper makes it durable, and the warm pink flatters many skin tones and colored stones. It can look slightly orange compared with higher karats.\n\nCopper is a common cause of skin reactions, so those with metal sensitivities may prefer 18k or a different metal.',
     tags: ['gold', 'rose', 'budget', 'warm'],
     pros: ['Strong and durable', 'Distinctive warm color', 'Low cost'],
     cons: ['Copper can irritate skin', 'Color can read orange'],
@@ -75,7 +76,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: false,
     pricePerGramUsd: 56,
     durability: 3,
-    maintenance: 'Clean with mild soap and water; the color is solid through the metal and does not plate off. Prices are indicative only.',
+    maintenance:
+      'Clean with mild soap and water; the color is solid through the metal and does not plate off. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -83,7 +85,7 @@ export const metals: MetalModel[] = [
     name: '14k Yellow Gold',
     summary: 'The most popular gold for rings, balancing richness, hardness and price.',
     description:
-      "14k gold is 58.3% pure gold, alloyed with silver and copper for strength. It has a classic warm yellow that sits between the pale 10k and the saturated 18k.\n\nIt is hard enough for everyday wear and gives prongs good holding strength, which is why it dominates the US market. Scratches build into a soft patina that can be buffed out.\n\nIt rarely causes allergic reactions and is easy to resize and repair.",
+      '14k gold is 58.3% pure gold, alloyed with silver and copper for strength. It has a classic warm yellow that sits between the pale 10k and the saturated 18k.\n\nIt is hard enough for everyday wear and gives prongs good holding strength, which is why it dominates the US market. Scratches build into a soft patina that can be buffed out.\n\nIt rarely causes allergic reactions and is easy to resize and repair.',
     tags: ['gold', 'yellow', 'classic', 'popular'],
     pros: ['Good balance of color and strength', 'Easy to resize and repair', 'Widely available'],
     cons: ['Scratches over time', 'Heavier than 10k per volume'],
@@ -99,7 +101,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: true,
     pricePerGramUsd: 80,
     durability: 3,
-    maintenance: 'Soak in warm soapy water and brush gently; professional polish removes scratches. Prices are indicative only.',
+    maintenance:
+      'Soak in warm soapy water and brush gently; professional polish removes scratches. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -107,7 +110,7 @@ export const metals: MetalModel[] = [
     name: '18k Yellow Gold',
     summary: 'A rich, buttery gold at 75% purity, softer but more luxurious than 14k.',
     description:
-      "18k gold is 75% pure gold, giving the deepest, most saturated yellow of the common karats. It is the standard in much of Europe and Asia.\n\nThe higher gold content makes it softer, so it scratches and dents more easily than 14k, and prongs may need earlier attention. It is also denser and heavier.\n\nIts higher purity makes it less likely to bother sensitive skin and it will not tarnish.",
+      '18k gold is 75% pure gold, giving the deepest, most saturated yellow of the common karats. It is the standard in much of Europe and Asia.\n\nThe higher gold content makes it softer, so it scratches and dents more easily than 14k, and prongs may need earlier attention. It is also denser and heavier.\n\nIts higher purity makes it less likely to bother sensitive skin and it will not tarnish.',
     tags: ['gold', 'yellow', 'luxury', 'rich'],
     pros: ['Deep, rich color', 'Low allergy risk', 'Does not tarnish'],
     cons: ['Softer and scratches faster', 'Higher cost'],
@@ -123,7 +126,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: true,
     pricePerGramUsd: 100,
     durability: 2,
-    maintenance: 'Clean gently with soapy water; expect a soft patina of fine scratches. Check prongs yearly. Prices are indicative only.',
+    maintenance:
+      'Clean gently with soapy water; expect a soft patina of fine scratches. Check prongs yearly. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -131,7 +135,7 @@ export const metals: MetalModel[] = [
     name: '14k White Gold',
     summary: 'A durable white metal that looks like platinum at a lower price.',
     description:
-      "14k white gold blends 58.3% gold with white metals such as palladium, silver or nickel, then is usually rhodium plated for a bright finish. Unplated, it has a faint warm-gray tint.\n\nIt is strong and holds diamonds well. The plating wears first on contact points, so expect to re-plate it every couple of years to keep it crisp.\n\nNickel alloys can irritate sensitive skin; palladium-based white gold is a gentler choice.",
+      '14k white gold blends 58.3% gold with white metals such as palladium, silver or nickel, then is usually rhodium plated for a bright finish. Unplated, it has a faint warm-gray tint.\n\nIt is strong and holds diamonds well. The plating wears first on contact points, so expect to re-plate it every couple of years to keep it crisp.\n\nNickel alloys can irritate sensitive skin; palladium-based white gold is a gentler choice.',
     tags: ['gold', 'white', 'popular', 'plated'],
     pros: ['Bright white look', 'Hard-wearing', 'Lower cost than platinum'],
     cons: ['Needs periodic re-plating', 'May contain nickel'],
@@ -147,7 +151,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: false,
     pricePerGramUsd: 80,
     durability: 3,
-    maintenance: 'Re-plate with rhodium every 1 to 3 years; clean with mild soap. Prices are indicative only.',
+    maintenance:
+      'Re-plate with rhodium every 1 to 3 years; clean with mild soap. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -155,7 +160,7 @@ export const metals: MetalModel[] = [
     name: '18k White Gold',
     summary: 'A richer-feeling white gold, usually rhodium plated, with a slightly warmer cast.',
     description:
-      "18k white gold is 75% gold alloyed with palladium, silver or nickel. Because more of it is gold, the base alloy has a warmer tone than 14k and is typically rhodium plated.\n\nIt is softer than 14k white gold, so prongs and edges mark more easily, but it feels substantial and is less prone to skin reactions.\n\nOver time the plating thins; a re-plate restores the bright white.",
+      '18k white gold is 75% gold alloyed with palladium, silver or nickel. Because more of it is gold, the base alloy has a warmer tone than 14k and is typically rhodium plated.\n\nIt is softer than 14k white gold, so prongs and edges mark more easily, but it feels substantial and is less prone to skin reactions.\n\nOver time the plating thins; a re-plate restores the bright white.',
     tags: ['gold', 'white', 'luxury', 'plated'],
     pros: ['Premium feel', 'Lower allergy risk than 14k', 'Bright white when plated'],
     cons: ['Softer than 14k', 'Needs re-plating', 'More expensive'],
@@ -171,7 +176,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: false,
     pricePerGramUsd: 100,
     durability: 2,
-    maintenance: 'Re-plate with rhodium every 1 to 3 years; avoid chlorine and harsh cleaners. Prices are indicative only.',
+    maintenance:
+      'Re-plate with rhodium every 1 to 3 years; avoid chlorine and harsh cleaners. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -179,7 +185,7 @@ export const metals: MetalModel[] = [
     name: '14k Rose Gold',
     summary: 'A warm pink gold colored by copper, strong and romantic.',
     description:
-      "Rose gold combines gold with a large share of copper, giving a soft pink-copper glow. The 14k version (58.3% gold) is a balanced shade, pinker than 10k and stronger than 18k.\n\nThe color is the alloy itself, so it never plates off. Copper adds hardness, and the tone complements morganite, champagne diamonds and warm skin tones.\n\nSome wearers react to copper, so test with a small piece first if you are sensitive.",
+      'Rose gold combines gold with a large share of copper, giving a soft pink-copper glow. The 14k version (58.3% gold) is a balanced shade, pinker than 10k and stronger than 18k.\n\nThe color is the alloy itself, so it never plates off. Copper adds hardness, and the tone complements morganite, champagne diamonds and warm skin tones.\n\nSome wearers react to copper, so test with a small piece first if you are sensitive.',
     tags: ['gold', 'rose', 'trending', 'warm'],
     pros: ['Flattering warm tone', 'Color is permanent', 'Strong'],
     cons: ['Copper can irritate skin', 'Style may feel dated to some'],
@@ -195,7 +201,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: false,
     pricePerGramUsd: 80,
     durability: 3,
-    maintenance: 'Clean with mild soap; the color is solid throughout, so polishing never changes it. Prices are indicative only.',
+    maintenance:
+      'Clean with mild soap; the color is solid throughout, so polishing never changes it. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -203,7 +210,7 @@ export const metals: MetalModel[] = [
     name: '18k Rose Gold',
     summary: 'A softer, more delicate rose with a higher gold content.',
     description:
-      "18k rose gold is 75% gold with copper and a little silver. Less copper means a gentler, more champagne-pink color than 14k.\n\nIt is softer and shows scratches sooner, but offers a refined look and a lower chance of skin reactions than lower-karat rose gold. The color is the alloy and will not wear away.\n\nIt pairs well with white and fancy-colored diamonds and with blush stones.",
+      '18k rose gold is 75% gold with copper and a little silver. Less copper means a gentler, more champagne-pink color than 14k.\n\nIt is softer and shows scratches sooner, but offers a refined look and a lower chance of skin reactions than lower-karat rose gold. The color is the alloy and will not wear away.\n\nIt pairs well with white and fancy-colored diamonds and with blush stones.',
     tags: ['gold', 'rose', 'luxury', 'warm'],
     pros: ['Elegant soft pink', 'Higher purity', 'Never plates off'],
     cons: ['Softer than 14k', 'Higher cost'],
@@ -219,7 +226,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: true,
     pricePerGramUsd: 100,
     durability: 2,
-    maintenance: 'Clean gently and check prongs yearly; light scratches can be polished out. Prices are indicative only.',
+    maintenance:
+      'Clean gently and check prongs yearly; light scratches can be polished out. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -227,7 +235,7 @@ export const metals: MetalModel[] = [
     name: '18k Green Gold',
     summary: 'A subtle, pale green-tinged gold made by alloying gold with silver.',
     description:
-      "Green gold is gold alloyed mainly with silver, much like the natural gold-silver alloy electrum. The result is a soft lemon-green hue rather than a bright green.\n\nIt has a muted, antique feel and is rare in mainstream jewelry, so it stands out. Its softness is similar to other 18k alloys.\n\nBecause it has little copper, it is mild on most skin.",
+      'Green gold is gold alloyed mainly with silver, much like the natural gold-silver alloy electrum. The result is a soft lemon-green hue rather than a bright green.\n\nIt has a muted, antique feel and is rare in mainstream jewelry, so it stands out. Its softness is similar to other 18k alloys.\n\nBecause it has little copper, it is mild on most skin.',
     tags: ['gold', 'green', 'unusual', 'antique'],
     pros: ['Distinctive and rare', 'Low copper content', 'Subtle color'],
     cons: ['Few jewelers stock it', 'Soft', 'Color is often mistaken for pale yellow'],
@@ -243,7 +251,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: true,
     pricePerGramUsd: 100,
     durability: 2,
-    maintenance: 'Clean with mild soapy water; handle carefully, as it dents easily. Prices are indicative only.',
+    maintenance:
+      'Clean with mild soapy water; handle carefully, as it dents easily. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -251,7 +260,7 @@ export const metals: MetalModel[] = [
     name: 'Platinum',
     summary: 'A dense, naturally white, hypoallergenic metal that holds stones securely.',
     description:
-      "Platinum rings are typically 95% pure platinum, alloyed with ruthenium or iridium. The metal is naturally white and never needs plating, so it keeps its color for life.\n\nIt is very dense and heavy, so it feels substantial. Scratches displace metal rather than removing it, creating a soft patina that can be polished back.\n\nIt is rarer and costlier than gold, and its strength makes prongs especially secure for valuable diamonds.",
+      'Platinum rings are typically 95% pure platinum, alloyed with ruthenium or iridium. The metal is naturally white and never needs plating, so it keeps its color for life.\n\nIt is very dense and heavy, so it feels substantial. Scratches displace metal rather than removing it, creating a soft patina that can be polished back.\n\nIt is rarer and costlier than gold, and its strength makes prongs especially secure for valuable diamonds.',
     tags: ['platinum', 'white', 'premium', 'hypoallergenic'],
     pros: ['Naturally white, no plating', 'Hypoallergenic', 'Secure stone holding'],
     cons: ['Highest cost', 'Heavy', 'Develops patina'],
@@ -267,7 +276,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: true,
     pricePerGramUsd: 58,
     durability: 4,
-    maintenance: 'Clean with soap and water; a jeweler can re-polish scratches without losing metal. Prices are indicative only.',
+    maintenance:
+      'Clean with soap and water; a jeweler can re-polish scratches without losing metal. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -275,7 +285,7 @@ export const metals: MetalModel[] = [
     name: 'Palladium',
     summary: 'A light, naturally white platinum-group metal at a lower price than platinum.',
     description:
-      "Palladium belongs to the platinum family and is naturally white and hypoallergenic. Jewelry uses about 95% palladium (950).\n\nIt is far lighter than platinum, with a density near that of 14k gold, so large rings feel comfortable. It does not need rhodium plating and develops a gentle gray patina.\n\nIt is less common in jewelry, so fewer jewelers can resize or repair it, and its market price swings widely.",
+      'Palladium belongs to the platinum family and is naturally white and hypoallergenic. Jewelry uses about 95% palladium (950).\n\nIt is far lighter than platinum, with a density near that of 14k gold, so large rings feel comfortable. It does not need rhodium plating and develops a gentle gray patina.\n\nIt is less common in jewelry, so fewer jewelers can resize or repair it, and its market price swings widely.',
     tags: ['palladium', 'white', 'hypoallergenic', 'lightweight'],
     pros: ['Naturally white', 'Lightweight', 'Hypoallergenic'],
     cons: ['Fewer jewelers work with it', 'Price is volatile', 'Slightly grayer than platinum'],
@@ -299,7 +309,7 @@ export const metals: MetalModel[] = [
     name: 'Sterling Silver',
     summary: 'An affordable bright white metal that is soft and tarnishes with time.',
     description:
-      "Sterling silver is 92.5% silver and 7.5% copper. It has a bright, cool shine and is the most affordable precious metal for jewelry.\n\nIt is soft, so it scratches, bends and wears faster than gold, which makes it a poor choice for a valuable stone. It tarnishes as it reacts with sulfur in air and skin, and the copper may irritate some wearers.\n\nIt works well for fashion rings, temporary settings and styles you plan to replace.",
+      'Sterling silver is 92.5% silver and 7.5% copper. It has a bright, cool shine and is the most affordable precious metal for jewelry.\n\nIt is soft, so it scratches, bends and wears faster than gold, which makes it a poor choice for a valuable stone. It tarnishes as it reacts with sulfur in air and skin, and the copper may irritate some wearers.\n\nIt works well for fashion rings, temporary settings and styles you plan to replace.',
     tags: ['silver', 'white', 'budget', 'fashion'],
     pros: ['Very affordable', 'Bright white shine', 'Easy to polish'],
     cons: ['Soft and bends', 'Tarnishes', 'Not ideal for valuable stones'],
@@ -315,19 +325,20 @@ export const metals: MetalModel[] = [
     hypoallergenic: false,
     pricePerGramUsd: 1.8,
     durability: 1,
-    maintenance: 'Polish regularly with a silver cloth and store sealed to slow tarnish; remove before swimming. Prices are indicative only.',
+    maintenance:
+      'Polish regularly with a silver cloth and store sealed to slow tarnish; remove before swimming. Prices are indicative only.',
   },
   {
     kind: 'metal',
     id: 'titanium',
     name: 'Titanium',
-    summary: 'A very light, strong, hypoallergenic gray metal popular for men\'s bands.',
+    summary: "A very light, strong, hypoallergenic gray metal popular for men's bands.",
     description:
-      "Titanium is a gray metal that is roughly as strong as steel at about half the weight, with a cool, slightly darker tone than platinum. Jewelry-grade titanium is commonly Grade 2 or 5.\n\nIt resists corrosion and is hypoallergenic, so it suits sensitive skin. It is also very light, which many wearers prefer.\n\nIts hardness means it cannot be resized by normal methods, and it is generally unsuited to prong-set stones.",
+      'Titanium is a gray metal that is roughly as strong as steel at about half the weight, with a cool, slightly darker tone than platinum. Jewelry-grade titanium is commonly Grade 2 or 5.\n\nIt resists corrosion and is hypoallergenic, so it suits sensitive skin. It is also very light, which many wearers prefer.\n\nIts hardness means it cannot be resized by normal methods, and it is generally unsuited to prong-set stones.',
     tags: ['titanium', 'gray', 'lightweight', 'hypoallergenic'],
     pros: ['Extremely light', 'Hypoallergenic', 'Very affordable'],
     cons: ['Cannot be resized', 'Hard to set stones', 'Gray rather than bright white'],
-    bestFor: ['Men\'s wedding bands', 'Active lifestyles'],
+    bestFor: ["Men's wedding bands", 'Active lifestyles'],
     related: ['tungsten', 'tantalum', 'black-zirconium', 'palladium'],
     family: 'industrial',
     purity: 'Grade 2 or 5 titanium',
@@ -339,7 +350,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: true,
     pricePerGramUsd: 0.6,
     durability: 4,
-    maintenance: 'Wash with soap and water; wear marks can be refreshed with a scotch-brite pad. Prices are indicative only.',
+    maintenance:
+      'Wash with soap and water; wear marks can be refreshed with a scotch-brite pad. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -347,11 +359,11 @@ export const metals: MetalModel[] = [
     name: 'Tungsten Carbide',
     summary: 'An exceptionally scratch-resistant, heavy gray metal for bands.',
     description:
-      "Tungsten carbide rings are made of tungsten carbide bonded with a small amount of nickel or cobalt. It is among the hardest materials used in jewelry and keeps a mirror polish for years.\n\nIt is heavy and cool-toned with a gunmetal-gray color. The trade-off is brittleness: a hard impact can crack it, and it cannot be resized.\n\nChoose a cobalt-free binder if you have metal sensitivities.",
+      'Tungsten carbide rings are made of tungsten carbide bonded with a small amount of nickel or cobalt. It is among the hardest materials used in jewelry and keeps a mirror polish for years.\n\nIt is heavy and cool-toned with a gunmetal-gray color. The trade-off is brittleness: a hard impact can crack it, and it cannot be resized.\n\nChoose a cobalt-free binder if you have metal sensitivities.',
     tags: ['tungsten', 'gray', 'scratch-resistant', 'mens'],
     pros: ['Hardest, keeps its polish', 'Affordable', 'Heavy, substantial feel'],
     cons: ['Can shatter on hard impact', 'Cannot be resized', 'Not for prong settings'],
-    bestFor: ['Men\'s wedding bands', 'Workwear that scratches rings'],
+    bestFor: ["Men's wedding bands", 'Workwear that scratches rings'],
     related: ['titanium', 'black-zirconium', 'tantalum', 'palladium'],
     family: 'industrial',
     purity: 'Tungsten carbide with binder',
@@ -371,11 +383,11 @@ export const metals: MetalModel[] = [
     name: 'Black Zirconium',
     summary: 'A lightweight, hypoallergenic metal with a permanent black surface layer.',
     description:
-      "Black zirconium is zirconium metal whose surface is converted by heat into a hard black zirconium oxide ceramic. The color is integral rather than a coating, so it does not peel.\n\nIt is lightweight and hypoallergenic. Deep scratches can show the lighter metal beneath, though the layer is quite tough.\n\nLike titanium and tungsten, it generally cannot be resized, and it suits bands more than stone settings.",
+      'Black zirconium is zirconium metal whose surface is converted by heat into a hard black zirconium oxide ceramic. The color is integral rather than a coating, so it does not peel.\n\nIt is lightweight and hypoallergenic. Deep scratches can show the lighter metal beneath, though the layer is quite tough.\n\nLike titanium and tungsten, it generally cannot be resized, and it suits bands more than stone settings.',
     tags: ['zirconium', 'black', 'modern', 'hypoallergenic'],
     pros: ['Striking black', 'Lightweight', 'Hypoallergenic'],
     cons: ['Deep scratches show', 'Cannot be resized', 'Few jewelers offer it'],
-    bestFor: ['Modern men\'s bands', 'Two-tone inlays'],
+    bestFor: ["Modern men's bands", 'Two-tone inlays'],
     related: ['titanium', 'tungsten', 'tantalum', 'platinum'],
     family: 'dark',
     purity: 'Zirconium with oxide surface',
@@ -387,7 +399,8 @@ export const metals: MetalModel[] = [
     hypoallergenic: true,
     pricePerGramUsd: 0.8,
     durability: 4,
-    maintenance: 'Wash with soap and water; avoid abrasives that cut through the black layer. Prices are indicative only.',
+    maintenance:
+      'Wash with soap and water; avoid abrasives that cut through the black layer. Prices are indicative only.',
   },
   {
     kind: 'metal',
@@ -395,7 +408,7 @@ export const metals: MetalModel[] = [
     name: 'Tantalum',
     summary: 'A dense, corrosion-proof, hypoallergenic metal with a blue-gray tone.',
     description:
-      "Tantalum is a rare, dense metal prized in medical implants for its biocompatibility. In jewelry it has a deep, blue-gray color between titanium and platinum.\n\nIt resists corrosion and is hypoallergenic. It feels weighty, almost as heavy as gold, and can be anodized to blue or gray tones.\n\nIt is difficult to work and resize, so few jewelers offer it and prices are higher than other industrial metals.",
+      'Tantalum is a rare, dense metal prized in medical implants for its biocompatibility. In jewelry it has a deep, blue-gray color between titanium and platinum.\n\nIt resists corrosion and is hypoallergenic. It feels weighty, almost as heavy as gold, and can be anodized to blue or gray tones.\n\nIt is difficult to work and resize, so few jewelers offer it and prices are higher than other industrial metals.',
     tags: ['tantalum', 'gray', 'rare', 'hypoallergenic'],
     pros: ['Hypoallergenic', 'Very corrosion resistant', 'Distinctive blue-gray tone'],
     cons: ['Hard to resize', 'Limited availability'],

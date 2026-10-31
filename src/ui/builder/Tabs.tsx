@@ -5,7 +5,17 @@ export interface TabDef {
   label: string;
 }
 
-export function StepTabs({ tabs, active, onChange, children }: { tabs: TabDef[]; active: string; onChange: (id: string) => void; children: ReactNode }) {
+export function StepTabs({
+  tabs,
+  active,
+  onChange,
+  children,
+}: {
+  tabs: TabDef[];
+  active: string;
+  onChange: (id: string) => void;
+  children: ReactNode;
+}) {
   const refs = useRef<Record<string, HTMLButtonElement | null>>({});
   const move = (i: number) => {
     const t = tabs[(i + tabs.length) % tabs.length];

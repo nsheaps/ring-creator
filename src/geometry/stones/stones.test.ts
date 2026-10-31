@@ -5,17 +5,53 @@ import { dimsFromCarat, type StoneDims } from '@/models/stoneMath';
 import type { CutModel, GemModel } from '@/models/types';
 import { stoneBuilders } from '../builders';
 import type { BuiltStone } from '../types';
-import { STONE_BUILDER_KEYS, buildStoneByCut, buildStoneUncached, clearStoneCache, shoelaceXZ } from './index';
+import {
+  STONE_BUILDER_KEYS,
+  buildStoneByCut,
+  buildStoneUncached,
+  clearStoneCache,
+  shoelaceXZ,
+} from './index';
 
 const VOCAB_CUTS = [
-  'round-brilliant', 'princess', 'cushion', 'oval', 'emerald-cut', 'asscher', 'radiant', 'pear', 'marquise', 'heart',
-  'trillion', 'baguette', 'rose-cut', 'old-european', 'old-mine', 'hexagon', 'kite', 'shield', 'cabochon',
+  'round-brilliant',
+  'princess',
+  'cushion',
+  'oval',
+  'emerald-cut',
+  'asscher',
+  'radiant',
+  'pear',
+  'marquise',
+  'heart',
+  'trillion',
+  'baguette',
+  'rose-cut',
+  'old-european',
+  'old-mine',
+  'hexagon',
+  'kite',
+  'shield',
+  'cabochon',
 ];
 
 const diamondLike: GemModel = {
-  kind: 'gem', id: 'stub', name: 'Stub', summary: '', description: '', tags: [], lab: false, ior: 2.42, mohs: 10,
-  density: 3.52, dispersion: 0.044, colors: [{ id: 'white', name: 'White', hex: '#ffffff' }], defaultColor: 'white',
-  transparency: 'transparent', durability: 5, priceHintPerCaratUsd: [1, 2],
+  kind: 'gem',
+  id: 'stub',
+  name: 'Stub',
+  summary: '',
+  description: '',
+  tags: [],
+  lab: false,
+  ior: 2.42,
+  mohs: 10,
+  density: 3.52,
+  dispersion: 0.044,
+  colors: [{ id: 'white', name: 'White', hex: '#ffffff' }],
+  defaultColor: 'white',
+  transparency: 'transparent',
+  durability: 5,
+  priceHintPerCaratUsd: [1, 2],
 };
 
 const cut = (id: string): CutModel => {
@@ -45,7 +81,8 @@ function stats(g: THREE.BufferGeometry, smooth: boolean): Stats {
   let badNormals = 0;
   let windingMismatch = 0;
   const edges = new Map<string, number>();
-  const key = (i: number) => `${Math.round(p.getX(i) * 1e4) + 0},${Math.round(p.getY(i) * 1e4) + 0},${Math.round(p.getZ(i) * 1e4) + 0}`;
+  const key = (i: number) =>
+    `${Math.round(p.getX(i) * 1e4) + 0},${Math.round(p.getY(i) * 1e4) + 0},${Math.round(p.getZ(i) * 1e4) + 0}`;
   for (let i = 0; i < p.count; i++) {
     const v = [p.getX(i), p.getY(i), p.getZ(i)];
     v.forEach((c, k) => {
@@ -60,7 +97,11 @@ function stats(g: THREE.BufferGeometry, smooth: boolean): Stats {
     const a = [p.getX(t), p.getY(t), p.getZ(t)];
     const b = [p.getX(t + 1), p.getY(t + 1), p.getZ(t + 1)];
     const c = [p.getX(t + 2), p.getY(t + 2), p.getZ(t + 2)];
-    volume += (a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0]) + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6;
+    volume +=
+      (a[0] * (b[1] * c[2] - b[2] * c[1]) -
+        a[1] * (b[0] * c[2] - b[2] * c[0]) +
+        a[2] * (b[0] * c[1] - b[1] * c[0])) /
+      6;
     const u = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
     const w = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
     const cr = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]];
@@ -187,8 +228,20 @@ describe.each(cuts.map((c) => [c.id, c] as const))('stone %s', (_id, c) => {
 
   it('has the expected number of outline corners', () => {
     const expected: Record<string, number> = {
-      princess: 4, cushion: 4, 'emerald-cut': 4, asscher: 4, radiant: 4, pear: 1, marquise: 2, heart: 2, trillion: 3,
-      baguette: 4, 'old-mine': 4, hexagon: 6, kite: 4, shield: 5,
+      princess: 4,
+      cushion: 4,
+      'emerald-cut': 4,
+      asscher: 4,
+      radiant: 4,
+      pear: 1,
+      marquise: 2,
+      heart: 2,
+      trillion: 3,
+      baguette: 4,
+      'old-mine': 4,
+      hexagon: 6,
+      kite: 4,
+      shield: 5,
     };
     expect(full.outline.corners.length).toBe(expected[c.id] ?? 0);
     expect(low.outline.corners.length).toBe(expected[c.id] ?? 0);
@@ -255,7 +308,9 @@ describe('cut-specific invariants', () => {
   it('rose cut: flat base and a single apex', () => {
     const { s } = build('rose-cut');
     const v = ys(s);
-    expect(v.filter((q) => Math.abs(q[1] - s.crownHeight) < 1e-6).every((q) => Math.hypot(q[0], q[2]) < 1e-6)).toBe(true);
+    expect(
+      v.filter((q) => Math.abs(q[1] - s.crownHeight) < 1e-6).every((q) => Math.hypot(q[0], q[2]) < 1e-6),
+    ).toBe(true);
     expect(s.pavilionDepth).toBeCloseTo(s.girdleThickness / 2, 6);
   });
 
@@ -263,7 +318,8 @@ describe('cut-specific invariants', () => {
     const { s } = build('cabochon');
     const n = s.geometry.getAttribute('normal');
     const set = new Set<string>();
-    for (let i = 0; i < n.count; i++) set.add(`${n.getX(i).toFixed(3)},${n.getY(i).toFixed(3)},${n.getZ(i).toFixed(3)}`);
+    for (let i = 0; i < n.count; i++)
+      set.add(`${n.getX(i).toFixed(3)},${n.getY(i).toFixed(3)},${n.getZ(i).toFixed(3)}`);
     expect(set.size).toBeGreaterThan(300);
   });
 
@@ -286,6 +342,8 @@ describe('buildStoneByCut cache', () => {
     expect(l).not.toBe(a);
   });
   it('throws for an unknown builder', () => {
-    expect(() => buildStoneUncached({ ...cut('oval'), builder: 'nope' }, { length: 1, width: 1, depth: 1 })).toThrow();
+    expect(() =>
+      buildStoneUncached({ ...cut('oval'), builder: 'nope' }, { length: 1, width: 1, depth: 1 }),
+    ).toThrow();
   });
 });

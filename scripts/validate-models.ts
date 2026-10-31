@@ -9,17 +9,23 @@ import type { ModelKind } from '../src/models/types';
 const errors: string[] = [];
 const err = (m: string) => errors.push(m);
 
-for (const m of listModels('cut')) if (!stoneBuilders.has(m.builder)) err(`cut ${m.id}: missing stone builder "${m.builder}"`);
-for (const m of listModels('head')) if (!headBuilders.has(m.builder)) err(`head ${m.id}: missing builder "${m.builder}"`);
-for (const m of listModels('shank')) if (!shankBuilders.has(m.builder)) err(`shank ${m.id}: missing builder "${m.builder}"`);
-for (const m of listModels('band')) if (!bandBuilders.has(m.builder)) err(`band ${m.id}: missing builder "${m.builder}"`);
+for (const m of listModels('cut'))
+  if (!stoneBuilders.has(m.builder)) err(`cut ${m.id}: missing stone builder "${m.builder}"`);
+for (const m of listModels('head'))
+  if (!headBuilders.has(m.builder)) err(`head ${m.id}: missing builder "${m.builder}"`);
+for (const m of listModels('shank'))
+  if (!shankBuilders.has(m.builder)) err(`shank ${m.id}: missing builder "${m.builder}"`);
+for (const m of listModels('band'))
+  if (!bandBuilders.has(m.builder)) err(`band ${m.id}: missing builder "${m.builder}"`);
 
 for (const kind of Object.keys(KIND_LABELS) as ModelKind[]) {
   for (const m of listModels(kind)) {
     if (!m.summary || m.summary.length < 10) err(`${kind} ${m.id}: summary too short`);
     if (!m.description || m.description.length < 80) err(`${kind} ${m.id}: description too short`);
     if (!/^[a-z0-9][a-z0-9-]*$/.test(m.id)) err(`${kind} ${m.id}: id must be kebab-case`);
-    if ('controls' in m) for (const c of m.controls) if (!(c.key in m.params)) err(`${kind} ${m.id}: control "${c.key}" has no default in params`);
+    if ('controls' in m)
+      for (const c of m.controls)
+        if (!(c.key in m.params)) err(`${kind} ${m.id}: control "${c.key}" has no default in params`);
   }
 }
 
@@ -31,9 +37,16 @@ const section = (title: string): string[] => {
   return body.split(/[\s,]+/).filter((s) => /^[a-z0-9][a-z0-9-]+$/.test(s) && s !== 'melee');
 };
 const checks: [string, ModelKind][] = [
-  ['Stone materials', 'gem'], ['Cuts', 'cut'], ['Heads', 'head'], ['Shanks', 'shank'], ['Metals', 'metal'], ['Finishes', 'finish'], ['Wedding band styles', 'band'],
+  ['Stone materials', 'gem'],
+  ['Cuts', 'cut'],
+  ['Heads', 'head'],
+  ['Shanks', 'shank'],
+  ['Metals', 'metal'],
+  ['Finishes', 'finish'],
+  ['Wedding band styles', 'band'],
 ];
-for (const [title, kind] of checks) for (const id of section(title)) if (!findModel(kind, id)) err(`vocabulary ${kind} "${id}" has no model`);
+for (const [title, kind] of checks)
+  for (const id of section(title)) if (!findModel(kind, id)) err(`vocabulary ${kind} "${id}" has no model`);
 
 // examples
 const families = new Set<string>();
@@ -41,7 +54,8 @@ for (const d of exampleDesigns) {
   const e = d.engagement;
   if (!findModel('gem', e.center.material)) err(`${d.id}: gem ${e.center.material}`);
   const gem = findModel('gem', e.center.material);
-  if (gem && !gem.colors.some((c) => c.id === e.center.color)) err(`${d.id}: color ${e.center.color} not in ${gem.id}`);
+  if (gem && !gem.colors.some((c) => c.id === e.center.color))
+    err(`${d.id}: color ${e.center.color} not in ${gem.id}`);
   if (!findModel('cut', e.center.cut)) err(`${d.id}: cut ${e.center.cut}`);
   if (!findModel('head', e.head.id)) err(`${d.id}: head ${e.head.id}`);
   if (!findModel('shank', e.shank.id)) err(`${d.id}: shank ${e.shank.id}`);
@@ -58,5 +72,7 @@ if (errors.length) {
   console.error(`\n${errors.length} problem(s)`);
   process.exit(1);
 }
-const counts = (Object.keys(KIND_LABELS) as ModelKind[]).map((k) => `${listModels(k).length} ${k}`).join(', ');
+const counts = (Object.keys(KIND_LABELS) as ModelKind[])
+  .map((k) => `${listModels(k).length} ${k}`)
+  .join(', ');
 console.log(`ok: ${counts}; ${exampleDesigns.length} examples in ${families.size} design families`);

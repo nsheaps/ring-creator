@@ -85,23 +85,69 @@ function normalise(raw: Shape): Shape {
 }
 
 /** Vertex lists for the polygonal cuts, already counter-clockwise from +Y. `aspect` = length / width. */
-export function polygonVertices(name: string, params: Params, aspect: number): { verts: XZ[]; corners: number[] } | null {
+export function polygonVertices(
+  name: string,
+  params: Params,
+  aspect: number,
+): { verts: XZ[]; corners: number[] } | null {
   switch (name) {
     case 'square':
-      return { verts: [[1, 1], [1, -1], [-1, -1], [-1, 1]], corners: [0, 1, 2, 3] };
+      return {
+        verts: [
+          [1, 1],
+          [1, -1],
+          [-1, -1],
+          [-1, 1],
+        ],
+        corners: [0, 1, 2, 3],
+      };
     case 'triangle':
       // flat side along X at +z, apex at -z
-      return { verts: [[-1, 1], [1, 1], [0, -1]], corners: [0, 1, 2] };
+      return {
+        verts: [
+          [-1, 1],
+          [1, 1],
+          [0, -1],
+        ],
+        corners: [0, 1, 2],
+      };
     case 'hexagon':
-      return { verts: [[1, 0], [0.5, -1], [-0.5, -1], [-1, 0], [-0.5, 1], [0.5, 1]], corners: [0, 1, 2, 3, 4, 5] };
+      return {
+        verts: [
+          [1, 0],
+          [0.5, -1],
+          [-0.5, -1],
+          [-1, 0],
+          [-0.5, 1],
+          [0.5, 1],
+        ],
+        corners: [0, 1, 2, 3, 4, 5],
+      };
     case 'kite': {
       const s = pNum(params, 'kiteShoulder', -0.35);
-      return { verts: [[1, 0], [s, -1], [-1, 0], [s, 1]], corners: [0, 1, 2, 3] };
+      return {
+        verts: [
+          [1, 0],
+          [s, -1],
+          [-1, 0],
+          [s, 1],
+        ],
+        corners: [0, 1, 2, 3],
+      };
     }
     case 'shield': {
       const s = pNum(params, 'shieldShoulder', 0.05);
       const top = pNum(params, 'shieldTop', 0.8);
-      return { verts: [[1, 0], [s, -1], [-1, -top], [-1, top], [s, 1]], corners: [0, 1, 2, 3, 4] };
+      return {
+        verts: [
+          [1, 0],
+          [s, -1],
+          [-1, -top],
+          [-1, top],
+          [s, 1],
+        ],
+        corners: [0, 1, 2, 3, 4],
+      };
     }
     case 'octagon': {
       // cut-cornered rectangle; chamfer is a fraction of the width, kept at 45 degrees after aspect scaling
@@ -134,7 +180,13 @@ export function makeShape(name: string, params: Params, aspect: number): Shape {
   if (poly) {
     const n = poly.verts.length;
     const bulge = pNum(params, 'bulge', 0);
-    return normalise(polygonShape(poly.verts, bulge, poly.corners.map((c) => c / n)));
+    return normalise(
+      polygonShape(
+        poly.verts,
+        bulge,
+        poly.corners.map((c) => c / n),
+      ),
+    );
   }
   switch (name) {
     case 'cushion': {
@@ -213,7 +265,10 @@ function heartShape(lobe: number): Shape {
     return (d1 >= 0 && d2 >= 0 && d3 >= 0) || (d1 <= 0 && d2 <= 0 && d3 <= 0);
   };
   const inside = (p: XZ) =>
-    Math.hypot(p[0] - cx, p[1] - cz) <= r || Math.hypot(p[0] - cx, p[1] + cz) <= r || inTri(p) || (p[0] >= cx && Math.abs(p[1]) <= cz && p[0] <= t1[0]);
+    Math.hypot(p[0] - cx, p[1] - cz) <= r ||
+    Math.hypot(p[0] - cx, p[1] + cz) <= r ||
+    inTri(p) ||
+    (p[0] >= cx && Math.abs(p[1]) <= cz && p[0] <= t1[0]);
   const M = 2048;
   const radius: number[] = [];
   for (let i = 0; i < M; i++) {

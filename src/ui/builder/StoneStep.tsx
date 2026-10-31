@@ -19,7 +19,8 @@ export function StoneStep({ design, update }: StepProps) {
   const cuts = listModels('cut');
   const clarities = [...listModels('clarity')].sort((a, b) => a.rank - b.rank);
   const grades = listModels('color-grade');
-  const diamondLike = grades.length > 0 && (c.colorGrade !== undefined || !!gem?.colors.some((x) => x.id === 'colorless'));
+  const diamondLike =
+    grades.length > 0 && (c.colorGrade !== undefined || !!gem?.colors.some((x) => x.id === 'colorless'));
   let dims = '';
   if (gem && cut) {
     const d = dimsFromCarat(cut, gem, c);
@@ -41,7 +42,8 @@ export function StoneStep({ design, update }: StepProps) {
               const s = d.engagement.center;
               s.material = g.id;
               if (!g.colors.some((x) => x.id === s.color)) s.color = g.defaultColor;
-              if (g.colors.some((x) => x.id === 'colorless') && grades[0]) s.colorGrade = s.colorGrade ?? grades[0].id;
+              if (g.colors.some((x) => x.id === 'colorless') && grades[0])
+                s.colorGrade = s.colorGrade ?? grades[0].id;
               else delete s.colorGrade;
             })
           }
@@ -94,7 +96,8 @@ export function StoneStep({ design, update }: StepProps) {
                 update((d) => {
                   const s = d.engagement.center;
                   s.cut = k.id;
-                  if (s.aspect !== undefined) s.aspect = Math.min(k.aspectRange[1], Math.max(k.aspectRange[0], s.aspect));
+                  if (s.aspect !== undefined)
+                    s.aspect = Math.min(k.aspectRange[1], Math.max(k.aspectRange[0], s.aspect));
                 })
               }
             />
@@ -129,7 +132,11 @@ export function StoneStep({ design, update }: StepProps) {
         <label className="bd-label" htmlFor="st-clarity">
           Clarity
         </label>
-        <select id="st-clarity" value={c.clarity} onChange={(e) => update((d) => void (d.engagement.center.clarity = e.target.value))}>
+        <select
+          id="st-clarity"
+          value={c.clarity}
+          onChange={(e) => update((d) => void (d.engagement.center.clarity = e.target.value))}
+        >
           {clarities.map((k) => (
             <option key={k.id} value={k.id}>
               {k.code} · {k.name}
@@ -143,7 +150,11 @@ export function StoneStep({ design, update }: StepProps) {
           <label className="bd-label" htmlFor="st-grade">
             Color grade
           </label>
-          <select id="st-grade" value={c.colorGrade ?? grades[0]?.id} onChange={(e) => update((d) => void (d.engagement.center.colorGrade = e.target.value))}>
+          <select
+            id="st-grade"
+            value={c.colorGrade ?? grades[0]?.id}
+            onChange={(e) => update((d) => void (d.engagement.center.colorGrade = e.target.value))}
+          >
             {grades.map((g) => (
               <option key={g.id} value={g.id}>
                 {g.letters} · {g.name}

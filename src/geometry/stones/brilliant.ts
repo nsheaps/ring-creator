@@ -50,7 +50,10 @@ export const buildBrilliant: StoneBuilder = (dims, params, opts): BuiltStone => 
     mesh.fan(culetCenter, Gl);
     return {
       geometry: mesh.toGeometry(),
-      outline: { points: Gu.map((p) => [p[0], p[2]]), corners: shape.corners.map((t) => nearestIndex(ts, t)) },
+      outline: {
+        points: Gu.map((p) => [p[0], p[2]]),
+        corners: shape.corners.map((t) => nearestIndex(ts, t)),
+      },
       crownHeight: crown,
       pavilionDepth: pav,
       girdleThickness: g,
@@ -111,7 +114,11 @@ export const buildBrilliant: StoneBuilder = (dims, params, opts): BuiltStone => 
   for (let i = 0; i < k; i++) {
     const G = gl((2 * i + 1) * m);
     const f = 1 - lg;
-    Lp.push([culetCenter[0] + f * (G[0] - culetCenter[0]), culetCenter[1] + f * (G[1] - culetCenter[1]), culetCenter[2] + f * (G[2] - culetCenter[2])]);
+    Lp.push([
+      culetCenter[0] + f * (G[0] - culetCenter[0]),
+      culetCenter[1] + f * (G[1] - culetCenter[1]),
+      culetCenter[2] + f * (G[2] - culetCenter[2]),
+    ]);
   }
   const lAt = (i: number) => Lp[((i % k) + k) % k];
   const Cp: V3[] = cp > 0 ? Array.from({ length: k }, (_, i) => at(i / k, cp, yC)) : [];
@@ -136,7 +143,6 @@ export const buildBrilliant: StoneBuilder = (dims, params, opts): BuiltStone => 
     girdleThickness: g,
   };
 };
-
 
 /** Which side of the line a->b (projected on XZ) point p lies on. */
 function sideXZ(a: V3, b: V3, p: V3): number {

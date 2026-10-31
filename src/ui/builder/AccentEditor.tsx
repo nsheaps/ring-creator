@@ -70,7 +70,15 @@ export function AccentEditor({
           ))}
         </select>
       </div>
-      <Slider label="Stone size" value={value.sizeMm} min={0.8} max={4} step={0.1} unit="mm" onChange={(v) => onChange({ sizeMm: v })} />
+      <Slider
+        label="Stone size"
+        value={value.sizeMm}
+        min={0.8}
+        max={4}
+        step={0.1}
+        unit="mm"
+        onChange={(v) => onChange({ sizeMm: v })}
+      />
     </div>
   );
 }

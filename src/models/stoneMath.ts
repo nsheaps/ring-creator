@@ -10,7 +10,11 @@ export interface StoneDims {
 }
 
 /** Solve L from carat: ct = vf * L * W * D * SG/3.52, with W = L/aspect and D = depthPct * W. */
-export function dimsFromCarat(cut: CutModel, gem: GemModel, spec: Pick<StoneSpec, 'carat' | 'aspect' | 'depthPct'>): StoneDims {
+export function dimsFromCarat(
+  cut: CutModel,
+  gem: GemModel,
+  spec: Pick<StoneSpec, 'carat' | 'aspect' | 'depthPct'>,
+): StoneDims {
   const a = spec.aspect ?? cut.defaultAspect;
   const d = spec.depthPct ?? cut.defaultDepthPct;
   const sg = gem.density;

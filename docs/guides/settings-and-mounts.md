@@ -14,11 +14,11 @@ In the builder each head is a card. A card is greyed out, with a reason, when th
 
 ## The three trade-offs
 
-| You want | You give up |
-| --- | --- |
+| You want                           | You give up                                              |
+| ---------------------------------- | -------------------------------------------------------- |
 | Maximum sparkle (open, airy heads) | Some protection, since fewer metal parts guard the edges |
-| Maximum protection (bezels, flush) | Some light entering the sides, and a different look |
-| Easy cleaning (simple heads) | Extra stones and detail that make a ring special |
+| Maximum protection (bezels, flush) | Some light entering the sides, and a different look      |
+| Easy cleaning (simple heads)       | Extra stones and detail that make a ring special         |
 
 No head wins on all three. The summary tables below help you choose.
 
@@ -26,14 +26,14 @@ No head wins on all three. The summary tables below help you choose.
 
 Prongs are small metal claws that hold the stone. More prongs means more security. Fewer prongs shows more of the stone.
 
-| Head | Security | Brilliance | Upkeep | Notes |
-| --- | --- | --- | --- | --- |
-| Solitaire 4-prong | Good | High | Easy | Classic. Shows the stone and lets light in. |
-| Solitaire 6-prong | Very good | High | Easy | Extra security. A round stone looks rounder. |
-| 3-prong | Fair | Very high | Easy | Minimal metal. Modern. Best for round or trillion. |
-| Double-claw | Very good | High | Medium | Pairs of prongs at each position, with a bolder look. |
-| Split prong | Good | High | Medium | Each prong splits into two tines at the top. |
-| V-prong | Good for points | High | Easy | A V-shaped prong that wraps a sharp corner. |
+| Head              | Security        | Brilliance | Upkeep | Notes                                                 |
+| ----------------- | --------------- | ---------- | ------ | ----------------------------------------------------- |
+| Solitaire 4-prong | Good            | High       | Easy   | Classic. Shows the stone and lets light in.           |
+| Solitaire 6-prong | Very good       | High       | Easy   | Extra security. A round stone looks rounder.          |
+| 3-prong           | Fair            | Very high  | Easy   | Minimal metal. Modern. Best for round or trillion.    |
+| Double-claw       | Very good       | High       | Medium | Pairs of prongs at each position, with a bolder look. |
+| Split prong       | Good            | High       | Medium | Each prong splits into two tines at the top.          |
+| V-prong           | Good for points | High       | Easy   | A V-shaped prong that wraps a sharp corner.           |
 
 ### Solitaire 4-prong and 6-prong
 
@@ -58,11 +58,11 @@ V-prongs are the answer for any shape with a point: pear, marquise, heart, trill
 
 ## Basket, cathedral and trellis
 
-| Head | Security | Brilliance | Upkeep |
-| --- | --- | --- | --- |
-| Basket | Good | High | Medium (dirt gathers in the lattice) |
-| Cathedral head | Good | High | Medium |
-| Trellis | Good | High | Medium |
+| Head           | Security | Brilliance | Upkeep                               |
+| -------------- | -------- | ---------- | ------------------------------------ |
+| Basket         | Good     | High       | Medium (dirt gathers in the lattice) |
+| Cathedral head | Good     | High       | Medium                               |
+| Trellis        | Good     | High       | Medium                               |
 
 ![Basket]({{base}}screenshots/components/head/basket.png)
 ![Cathedral head]({{base}}screenshots/components/head/cathedral-head.png)
@@ -74,11 +74,11 @@ A **basket** holds the stone in a woven gallery of metal under the girdle. It is
 
 A bezel wraps the stone's edge (girdle) in a thin metal rim.
 
-| Head | Security | Brilliance | Upkeep |
-| --- | --- | --- | --- |
-| Full bezel | Highest | Medium | Very easy |
-| Half bezel | Very high | Medium to high | Easy |
-| Flush (gypsy) | Highest | Medium | Very easy |
+| Head          | Security  | Brilliance     | Upkeep    |
+| ------------- | --------- | -------------- | --------- |
+| Full bezel    | Highest   | Medium         | Very easy |
+| Half bezel    | Very high | Medium to high | Easy      |
+| Flush (gypsy) | Highest   | Medium         | Very easy |
 
 ![Full bezel]({{base}}screenshots/components/head/bezel-full.png)
 ![Half bezel]({{base}}screenshots/components/head/bezel-half.png)
@@ -92,11 +92,11 @@ Bezels are one of the trends cited in 2026 industry coverage. See [Gallery and e
 
 A halo surrounds the centre stone with small accent stones. It makes the centre look bigger, adds sparkle and offers a ring of protection.
 
-| Head | Security | Brilliance | Upkeep |
-| --- | --- | --- | --- |
-| Halo (round, cushion, oval) | Good | Very high | Harder (more small stones to clean) |
-| Hidden halo | Good | High | Medium |
-| Double halo | Good | Very high | Hardest |
+| Head                        | Security | Brilliance | Upkeep                              |
+| --------------------------- | -------- | ---------- | ----------------------------------- |
+| Halo (round, cushion, oval) | Good     | Very high  | Harder (more small stones to clean) |
+| Hidden halo                 | Good     | High       | Medium                              |
+| Double halo                 | Good     | Very high  | Hardest                             |
 
 ![Halo round]({{base}}screenshots/components/head/halo-round.png)
 ![Halo cushion]({{base}}screenshots/components/head/halo-cushion.png)
@@ -108,13 +108,13 @@ Choose the halo outline that echoes your centre stone: round halo for round, cus
 
 ## Multi-stone heads
 
-| Head | Extra stones | Notes |
-| --- | --- | --- |
-| Three-stone | 2 side stones | Past, present and future. A stable, balanced look. |
-| Five-stone | 4 side stones | A graduated row. Often used for a larger statement. |
-| Cluster | Many small stones | Several stones arranged to read as one bigger stone. |
-| Toi et moi | A second main stone | "You and me": two stones side by side. |
-| Bypass head | Optional | Two arms pass each other, holding the stone between them. |
+| Head        | Extra stones        | Notes                                                     |
+| ----------- | ------------------- | --------------------------------------------------------- |
+| Three-stone | 2 side stones       | Past, present and future. A stable, balanced look.        |
+| Five-stone  | 4 side stones       | A graduated row. Often used for a larger statement.       |
+| Cluster     | Many small stones   | Several stones arranged to read as one bigger stone.      |
+| Toi et moi  | A second main stone | "You and me": two stones side by side.                    |
+| Bypass head | Optional            | Two arms pass each other, holding the stone between them. |
 
 ![Three-stone]({{base}}screenshots/components/head/three-stone.png)
 ![Five-stone]({{base}}screenshots/components/head/five-stone.png)
@@ -136,16 +136,16 @@ Side stones (round, baguette, trapezoid, pear) are set on the Accents tab. The r
 
 ## Which head for which cut?
 
-| Cut | Strong choices |
-| --- | --- |
-| Round brilliant | Almost anything. 4-prong or 6-prong for maximum light; halo for size. |
-| Oval | 4-prong, hidden halo, halo oval, bezel. |
-| Cushion | Double-claw, halo cushion, bezel, basket. |
-| Princess | 4-prong on the corners, V-prong, bezel, halo. |
-| Emerald cut, Asscher, radiant | Corner prongs or double-claw, bezel, three-stone with baguettes. |
-| Pear, marquise, heart | V-prong or bezel at the point. Three-stone works well. |
-| Trillion | V-prong, bezel, side stones. |
-| Cabochon, rose cut | Bezel, which protects the edge. |
+| Cut                           | Strong choices                                                        |
+| ----------------------------- | --------------------------------------------------------------------- |
+| Round brilliant               | Almost anything. 4-prong or 6-prong for maximum light; halo for size. |
+| Oval                          | 4-prong, hidden halo, halo oval, bezel.                               |
+| Cushion                       | Double-claw, halo cushion, bezel, basket.                             |
+| Princess                      | 4-prong on the corners, V-prong, bezel, halo.                         |
+| Emerald cut, Asscher, radiant | Corner prongs or double-claw, bezel, three-stone with baguettes.      |
+| Pear, marquise, heart         | V-prong or bezel at the point. Three-stone works well.                |
+| Trillion                      | V-prong, bezel, side stones.                                          |
+| Cabochon, rose cut            | Bezel, which protects the edge.                                       |
 
 ## Choosing for your life
 

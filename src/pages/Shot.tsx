@@ -14,7 +14,10 @@ export default function Shot() {
     document.body.style.margin = '0';
     const w = window as unknown as { __shotReady?: boolean };
     w.__shotReady = false;
-    const t = window.setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(() => (w.__shotReady = true))), 900);
+    const t = window.setTimeout(
+      () => requestAnimationFrame(() => requestAnimationFrame(() => (w.__shotReady = true))),
+      900,
+    );
     return () => window.clearTimeout(t);
   }, [kind, id]);
 

@@ -33,14 +33,25 @@ async function waitForServer(): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort', '--host', '127.0.0.1'], {
-    stdio: 'ignore',
-    env: { ...process.env, RING_BASE: BASE },
-  });
+  const server = spawn(
+    'npx',
+    ['vite', 'preview', '--port', String(PORT), '--strictPort', '--host', '127.0.0.1'],
+    {
+      stdio: 'ignore',
+      env: { ...process.env, RING_BASE: BASE },
+    },
+  );
   try {
     await waitForServer();
     const browser = await chromium.launch({
-      args: ['--use-angle=swiftshader', '--use-gl=angle', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--no-sandbox'],
+      executablePath: process.env.SHOT_CHROMIUM || undefined,
+      args: [
+        '--use-angle=swiftshader',
+        '--use-gl=angle',
+        '--enable-unsafe-swiftshader',
+        '--ignore-gpu-blocklist',
+        '--no-sandbox',
+      ],
     });
     const ctx = await browser.newContext({ viewport: { width: 720, height: 540 }, deviceScaleFactor: 1 });
     const page = await ctx.newPage();
@@ -52,7 +63,11 @@ async function main(): Promise<void> {
         await page.goto(`${URL_ROOT}#${hash}`);
         await page.evaluate(() => ((window as unknown as { __shotReady?: boolean }).__shotReady = false));
         await page.reload();
-        await page.waitForFunction(() => (window as unknown as { __shotReady?: boolean }).__shotReady === true, null, { timeout: 30000 });
+        await page.waitForFunction(
+          () => (window as unknown as { __shotReady?: boolean }).__shotReady === true,
+          null,
+          { timeout: 30000 },
+        );
         await page.locator(selector).screenshot({ path: join(OUT, file) });
         return true;
       } catch (e) {
@@ -67,12 +82,14 @@ async function main(): Promise<void> {
     for (const kind of kinds) {
       if (only && !only.includes(kind)) continue;
       for (const m of listModels(kind)) {
-        (await shoot(`/shot/${kind}/${m.id}`, `components/${kind}/${m.id}.png`)) ? ok++ : fail++;
+        if (await shoot(`/shot/${kind}/${m.id}`, `components/${kind}/${m.id}.png`)) ok++;
+        else fail++;
       }
     }
     if (!only || only.includes('examples')) {
       for (const d of exampleDesigns) {
-        (await shoot(`/shot/example/${d.id}`, `examples/${d.id}.png`)) ? ok++ : fail++;
+        if (await shoot(`/shot/example/${d.id}`, `examples/${d.id}.png`)) ok++;
+        else fail++;
       }
     }
     if (!only || only.includes('pages')) {

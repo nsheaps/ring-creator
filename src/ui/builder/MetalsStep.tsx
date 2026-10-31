@@ -31,15 +31,37 @@ export function MetalsStep({ design, update }: StepProps) {
           <span className="chip" data-testid="chip-mixed">
             Mixed metals
           </span>{' '}
-          <span className="muted bd-small">Different metals meet at the head and band, so ask your jeweler about solder lines and wear.</span>
+          <span className="muted bd-small">
+            Different metals meet at the head and band, so ask your jeweler about solder lines and wear.
+          </span>
         </p>
       )}
-      <MetalSelect id="mt-head" label="Head metal" value={e.head.metal} onChange={(v) => update((d) => void (d.engagement.head.metal = v))} />
-      <MetalSelect id="mt-shank" label="Shank metal" value={e.shank.metal} onChange={(v) => update((d) => void (d.engagement.shank.metal = v))} />
+      <MetalSelect
+        id="mt-head"
+        label="Head metal"
+        value={e.head.metal}
+        onChange={(v) => update((d) => void (d.engagement.head.metal = v))}
+      />
+      <MetalSelect
+        id="mt-shank"
+        label="Shank metal"
+        value={e.shank.metal}
+        onChange={(v) => update((d) => void (d.engagement.shank.metal = v))}
+      />
       {b ? (
         <>
-          <MetalSelect id="mt-band" label="Band metal" value={b.metal} onChange={(v) => update((d) => void (d.band && (d.band.metal = v)))} />
-          <MetalSelect id="mt-band2" label="Band accent metal" value={b.metal2} onChange={(v) => update((d) => void (d.band && (d.band.metal2 = v)))} />
+          <MetalSelect
+            id="mt-band"
+            label="Band metal"
+            value={b.metal}
+            onChange={(v) => update((d) => void (d.band && (d.band.metal = v)))}
+          />
+          <MetalSelect
+            id="mt-band2"
+            label="Band accent metal"
+            value={b.metal2}
+            onChange={(v) => update((d) => void (d.band && (d.band.metal2 = v)))}
+          />
         </>
       ) : (
         <p className="muted bd-small">Turn on the matching band in the Band step to choose its metals.</p>
@@ -61,8 +83,20 @@ export function MetalsStep({ design, update }: StepProps) {
           ))}
         </div>
       </div>
-      <FinishSelect id="mt-fin" label="Engagement ring finish" value={e.finish} onChange={(v) => update((d) => void (d.engagement.finish = v))} />
-      {b && <FinishSelect id="mt-fin-b" label="Band finish" value={b.finish} onChange={(v) => update((d) => void (d.band && (d.band.finish = v)))} />}
+      <FinishSelect
+        id="mt-fin"
+        label="Engagement ring finish"
+        value={e.finish}
+        onChange={(v) => update((d) => void (d.engagement.finish = v))}
+      />
+      {b && (
+        <FinishSelect
+          id="mt-fin-b"
+          label="Band finish"
+          value={b.finish}
+          onChange={(v) => update((d) => void (d.band && (d.band.finish = v)))}
+        />
+      )}
     </div>
   );
 }

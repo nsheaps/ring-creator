@@ -35,11 +35,11 @@ export function gemMaterials(
   const translucent = gem.transparency === 'translucent';
   const haze = clarity?.haze ?? 0;
   const outer = new THREE.MeshPhysicalMaterial({
-    color: base.clone().lerp(new THREE.Color('#ffffff'), opaque ? 0 : 0.35),
+    color: base.clone().lerp(new THREE.Color('#ffffff'), opaque ? 0 : 0.12),
     metalness: 0,
     roughness: 0.03 + haze * 0.25,
     transparent: !opaque,
-    opacity: opaque ? 1 : translucent ? 0.85 : 0.62 + haze * 0.2,
+    opacity: opaque ? 1 : translucent ? 0.85 : 0.5 + haze * 0.25,
     envMapIntensity: 2.4,
     clearcoat: 1,
     clearcoatRoughness: 0.02,

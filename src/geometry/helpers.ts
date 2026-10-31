@@ -76,7 +76,10 @@ export function sweepRing(opts: SweepOptions): THREE.BufferGeometry {
       const s = Math.sin(theta);
       const dz = opts.zOffset ? opts.zOffset(theta) : 0;
       prof.forEach((p) => positions.push(p[1] * c, p[1] * s, p[0] + dz));
-      for (let k = 1; k < n - 1; k++) (flip ? indices.push(base, base + k + 1, base + k) : indices.push(base, base + k, base + k + 1));
+      for (let k = 1; k < n - 1; k++) {
+        if (flip) indices.push(base, base + k + 1, base + k);
+        else indices.push(base, base + k, base + k + 1);
+      }
     };
     cap(0, true);
     cap(1, false);
@@ -89,24 +92,43 @@ export function sweepRing(opts: SweepOptions): THREE.BufferGeometry {
 }
 
 /** Rounded-rectangle-ish / D-shape cross-section helper: a superellipse-ish polygon centred at (u0, r0). */
-export function roundedSection(u0: number, r0: number, width: number, height: number, roundness = 0.5, points = 16): ProfilePoint[] {
+export function roundedSection(
+  u0: number,
+  r0: number,
+  width: number,
+  height: number,
+  roundness = 0.5,
+  points = 16,
+): ProfilePoint[] {
   const out: ProfilePoint[] = [];
   const e = 2 / Math.max(0.15, 0.5 + roundness * 1.5); // exponent: 2 = ellipse, larger = boxier
   for (let i = 0; i < points; i++) {
     const a = (i / points) * Math.PI * 2;
     const ca = Math.cos(a);
     const sa = Math.sin(a);
-    out.push([u0 + (width / 2) * Math.sign(ca) * Math.abs(ca) ** (2 / e), r0 + (height / 2) * Math.sign(sa) * Math.abs(sa) ** (2 / e)]);
+    out.push([
+      u0 + (width / 2) * Math.sign(ca) * Math.abs(ca) ** (2 / e),
+      r0 + (height / 2) * Math.sign(sa) * Math.abs(sa) ** (2 / e),
+    ]);
   }
   return out;
 }
 
 /** Tapered cylinder from a to b (radius ra at a, rb at b). */
-export function cylinderBetween(a: THREE.Vector3, b: THREE.Vector3, ra: number, rb: number, radial = 10): THREE.BufferGeometry {
+export function cylinderBetween(
+  a: THREE.Vector3,
+  b: THREE.Vector3,
+  ra: number,
+  rb: number,
+  radial = 10,
+): THREE.BufferGeometry {
   const len = a.distanceTo(b);
   const g = new THREE.CylinderGeometry(rb, ra, len, radial, 1, false); // top = b side
   g.translate(0, len / 2, 0);
-  const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+  const q = new THREE.Quaternion().setFromUnitVectors(
+    new THREE.Vector3(0, 1, 0),
+    b.clone().sub(a).normalize(),
+  );
   g.applyQuaternion(q);
   g.translate(a.x, a.y, a.z);
   return g.toNonIndexed().index ? g : g;
@@ -125,7 +147,8 @@ export function instanceGeometry(geo: THREE.BufferGeometry, matrices: THREE.Matr
 /** Make any geometry non-indexed with consistent attributes (position, normal) so it can be merged with faceted gems. */
 export function toFlat(geo: THREE.BufferGeometry): THREE.BufferGeometry {
   const g = geo.index ? geo.toNonIndexed() : geo.clone();
-  for (const name of Object.keys(g.attributes)) if (name !== 'position' && name !== 'normal') g.deleteAttribute(name);
+  for (const name of Object.keys(g.attributes))
+    if (name !== 'position' && name !== 'normal') g.deleteAttribute(name);
   if (!g.attributes.normal) g.computeVertexNormals();
   return g;
 }

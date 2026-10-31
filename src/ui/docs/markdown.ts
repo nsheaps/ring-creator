@@ -22,7 +22,10 @@ export function sanitizeHtml(html: string): string {
   out = out.replace(/<(script|style|iframe|object|embed|link|meta)\b[\s\S]*?<\/\1\s*>/gi, '');
   out = out.replace(/<(script|style|iframe|object|embed|link|meta)\b[^>]*\/?>/gi, '');
   out = out.replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
-  out = out.replace(/\s(href|src|xlink:href|action|formaction)\s*=\s*("|')\s*(javascript|data:text\/html|vbscript):[^"']*\2/gi, ' $1="#"');
+  out = out.replace(
+    /\s(href|src|xlink:href|action|formaction)\s*=\s*("|')\s*(javascript|data:text\/html|vbscript):[^"']*\2/gi,
+    ' $1="#"',
+  );
   out = out.replace(/\s(href|src)\s*=\s*(javascript|vbscript):[^\s>]*/gi, ' $1="#"');
   return out;
 }
@@ -39,7 +42,14 @@ export function slugify(text: string): string {
   );
 }
 
-const stripTags = (s: string) => s.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+const stripTags = (s: string) =>
+  s
+    .replace(/<[^>]*>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
 
 /** Markdown -> sanitised HTML. Headings h1-h4 get stable ids and are returned for a table of contents. */
 export function renderMarkdown(src: string, opts: { base?: string } = {}): Rendered {
@@ -48,15 +58,18 @@ export function renderMarkdown(src: string, opts: { base?: string } = {}): Rende
   const safe = sanitizeHtml(raw);
   const headings: Heading[] = [];
   const used = new Map<string, number>();
-  const html = safe.replace(/<h([1-4])(\s[^>]*)?>([\s\S]*?)<\/h\1>/g, (_m, lv: string, _attrs: string | undefined, inner: string) => {
-    const plain = stripTags(inner).trim();
-    const base = slugify(plain);
-    const n = used.get(base) ?? 0;
-    used.set(base, n + 1);
-    const id = n === 0 ? base : `${base}-${n}`;
-    headings.push({ level: Number(lv), text: plain, id });
-    return `<h${lv} id="${id}">${inner}</h${lv}>`;
-  });
+  const html = safe.replace(
+    /<h([1-4])(\s[^>]*)?>([\s\S]*?)<\/h\1>/g,
+    (_m, lv: string, _attrs: string | undefined, inner: string) => {
+      const plain = stripTags(inner).trim();
+      const base = slugify(plain);
+      const n = used.get(base) ?? 0;
+      used.set(base, n + 1);
+      const id = n === 0 ? base : `${base}-${n}`;
+      headings.push({ level: Number(lv), text: plain, id });
+      return `<h${lv} id="${id}">${inner}</h${lv}>`;
+    },
+  );
   return { html, headings };
 }
 

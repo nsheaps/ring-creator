@@ -81,7 +81,10 @@ export function cleanOutline(o: Outline): CleanOutline {
     map[i] = pts.length;
     pts.push([p[0], p[1]]);
   }
-  if (pts.length > 2 && Math.hypot(pts[0][0] - pts[pts.length - 1][0], pts[0][1] - pts[pts.length - 1][1]) < 1e-5) {
+  if (
+    pts.length > 2 &&
+    Math.hypot(pts[0][0] - pts[pts.length - 1][0], pts[0][1] - pts[pts.length - 1][1]) < 1e-5
+  ) {
     pts.pop();
     for (let i = 0; i < map.length; i++) if (map[i] === pts.length) map[i] = 0;
   }
@@ -102,7 +105,8 @@ export function cleanOutline(o: Outline): CleanOutline {
 
 function withArc(pts: V2[], corners: number[]): CleanOutline {
   const cum: number[] = [0];
-  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  for (let i = 1; i < pts.length; i++)
+    cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
   const n = pts.length;
   const perimeter = cum[n - 1] + Math.hypot(pts[0][0] - pts[n - 1][0], pts[0][1] - pts[n - 1][1]);
   return { pts, corners, cum, perimeter };
@@ -155,7 +159,14 @@ export function pointAt(o: CleanOutline, s: number): PathPt {
   if (f < 1e-6) nrm = vertexNormal(o, i);
   else if (f > 1 - 1e-6) nrm = vertexNormal(o, (i + 1) % n);
   const tan: V2 = [-nrm[1], nrm[0]];
-  return { x: a[0] + (b[0] - a[0]) * f, z: a[1] + (b[1] - a[1]) * f, nx: nrm[0], nz: nrm[1], tx: tan[0], tz: tan[1] };
+  return {
+    x: a[0] + (b[0] - a[0]) * f,
+    z: a[1] + (b[1] - a[1]) * f,
+    nx: nrm[0],
+    nz: nrm[1],
+    tx: tan[0],
+    tz: tan[1],
+  };
 }
 
 export function vertexNormal(o: CleanOutline, i: number): V2 {
@@ -244,7 +255,13 @@ export function scaleOutline(o: CleanOutline, sx: number, sz = sx): CleanOutline
 }
 
 /** A superellipse (exponent e: 2 ellipse, 4 cushion-like) that encloses the outline offset by gap. */
-export function templateOutline(o: CleanOutline, shape: 'round' | 'cushion' | 'oval', gap: number, ovalAspect = 1.25, samples = 96): CleanOutline {
+export function templateOutline(
+  o: CleanOutline,
+  shape: 'round' | 'cushion' | 'oval',
+  gap: number,
+  ovalAspect = 1.25,
+  samples = 96,
+): CleanOutline {
   const hx = support(o, 1, 0) * 0.5 + support(o, -1, 0) * 0.5;
   const hz = support(o, 0, 1) * 0.5 + support(o, 0, -1) * 0.5;
   let ax: number;
@@ -267,7 +284,10 @@ export function templateOutline(o: CleanOutline, shape: 'round' | 'cushion' | 'o
       const a = (i / samples) * Math.PI * 2;
       const c = Math.cos(a);
       const s = Math.sin(a);
-      out.push([k * ax * Math.sign(c) * Math.abs(c) ** (2 / e), k * az * Math.sign(s) * Math.abs(s) ** (2 / e)]);
+      out.push([
+        k * ax * Math.sign(c) * Math.abs(c) ** (2 / e),
+        k * az * Math.sign(s) * Math.abs(s) ** (2 / e),
+      ]);
     }
     return out;
   };
@@ -300,7 +320,13 @@ function dedupe(points: THREE.Vector3[], eps = 1e-3): THREE.Vector3[] {
 }
 
 /** Smooth open wire through points, with sphere caps at both ends. */
-export function wire(points: THREE.Vector3[], radius: number, segs = 20, radial = 8, capEnds = true): THREE.BufferGeometry[] {
+export function wire(
+  points: THREE.Vector3[],
+  radius: number,
+  segs = 20,
+  radial = 8,
+  capEnds = true,
+): THREE.BufferGeometry[] {
   const pts = dedupe(points);
   const out: THREE.BufferGeometry[] = [];
   if (pts.length < 2) return out;
@@ -327,7 +353,13 @@ export function ball(c: THREE.Vector3, r: number, detail = 1): THREE.BufferGeome
 }
 
 /** Box with given size, centred at c, axes = (ax, ay, az) (orthonormal). */
-export function orientedBox(c: THREE.Vector3, size: [number, number, number], ax: THREE.Vector3, ay: THREE.Vector3, az: THREE.Vector3): THREE.BufferGeometry {
+export function orientedBox(
+  c: THREE.Vector3,
+  size: [number, number, number],
+  ax: THREE.Vector3,
+  ay: THREE.Vector3,
+  az: THREE.Vector3,
+): THREE.BufferGeometry {
   const g = new THREE.BoxGeometry(size[0], size[1], size[2]);
   const m = new THREE.Matrix4().makeBasis(ax, ay, az).setPosition(c);
   g.applyMatrix4(m);
@@ -335,7 +367,13 @@ export function orientedBox(c: THREE.Vector3, size: [number, number, number], ax
 }
 
 /** Tapered rod between a and b with ball ends. */
-export function rod(a: THREE.Vector3, b: THREE.Vector3, ra: number, rb: number, radial = 8): THREE.BufferGeometry[] {
+export function rod(
+  a: THREE.Vector3,
+  b: THREE.Vector3,
+  ra: number,
+  rb: number,
+  radial = 8,
+): THREE.BufferGeometry[] {
   if (a.distanceTo(b) < 1e-4) return [ball(a, Math.max(ra, rb), 1)];
   const len = a.distanceTo(b);
   const g = new THREE.CylinderGeometry(rb, ra, len, radial, 1, true);
@@ -473,8 +511,21 @@ export function prongSites(o: CleanOutline, opts: ProngSiteOpts): number[] {
     g.rem = ideal - g.n;
     given += g.n;
   }
-  const order = gaps.map((g, i) => ({ i, r: g.rem })).sort((a, b) => b.r - a.r || a.i - b.i);
-  for (let k = 0; k < extra - given; k++) gaps[order[k % order.length].i].n++;
+  // Hand out the leftovers: biggest remainders first, and among (near) ties pick evenly spaced gaps so the
+  // layout stays symmetric (e.g. 6 prongs on a princess: the two extras go on opposite sides).
+  let left = extra - given;
+  const pool = gaps.map((g, i) => ({ i, r: g.rem }));
+  while (left > 0 && pool.length) {
+    const top = Math.max(...pool.map((c) => c.r));
+    const tied = pool.filter((c) => c.r >= top - 0.05).sort((a, b) => a.i - b.i);
+    const take = Math.min(left, tied.length);
+    for (let j = 0; j < take; j++) {
+      const c = tied[Math.floor((j * tied.length) / take)];
+      gaps[c.i].n++;
+      pool.splice(pool.indexOf(c), 1);
+    }
+    left -= take;
+  }
   const out: number[] = [];
   for (const g of gaps) {
     out.push(g.start);
@@ -526,7 +577,8 @@ export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeo
   const gt = Math.max(0, stone.girdleThickness);
   const baseY = Math.min(-0.05, opts.baseY);
   const depthBelow = -baseY;
-  const sites = opts.sites ?? prongSites(o, { count: opts.count, phase: opts.phase, useCorners: opts.useCorners });
+  const sites =
+    opts.sites ?? prongSites(o, { count: opts.count, phase: opts.phase, useCorners: opts.useCorners });
   const out: THREE.BufferGeometry[] = [];
   const bs = Math.min(0.95, Math.max(0.12, opts.baseScale));
   const scaleAt = (y: number) => Math.max(bs, 1 - Math.min(1, -y / pd)); // pavilion cross-section scale
@@ -570,7 +622,11 @@ export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeo
         const d = r * 0.7;
         const c = v3(p.x - p.nx * d * 0.4, crownY(stone, o, d * 0.4) + r * 0.3, p.z - p.nz * d * 0.4);
         const slope = Math.atan2(crownY(stone, o, d) - crownY(stone, o, 0), d);
-        const ax = n.clone().multiplyScalar(-Math.cos(slope)).add(v3(0, Math.sin(slope), 0)).normalize();
+        const ax = n
+          .clone()
+          .multiplyScalar(-Math.cos(slope))
+          .add(v3(0, Math.sin(slope), 0))
+          .normalize();
         const az = t.clone();
         const ay = az.clone().cross(ax).normalize();
         out.push(orientedBox(c, [r * 2.6, r * 0.7, r * 2.4], ax, ay, az));
@@ -616,7 +672,12 @@ export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeo
         baseSite = nxt;
       }
       const path = prongPath(s, baseSite);
-      if (opts.trellis && i % 2 === 1) path[1].add(v3(path[1].x, 0, path[1].z).normalize().multiplyScalar(r * 1.6));
+      if (opts.trellis && i % 2 === 1)
+        path[1].add(
+          v3(path[1].x, 0, path[1].z)
+            .normalize()
+            .multiplyScalar(r * 1.6),
+        );
       out.push(...wire(path, r));
       tip(s);
     }
@@ -628,12 +689,26 @@ export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeo
     if (y > -gt * 0.5 - r) continue;
     const sc = scaleAt(y);
     const path = resample(o, 64, 2);
-    out.push(loop(path.map((p) => v3(p.x * sc + p.nx * r * 1.05, y, p.z * sc + p.nz * r * 1.05)), r * 0.8, 72, 7));
+    out.push(
+      loop(
+        path.map((p) => v3(p.x * sc + p.nx * r * 1.05, y, p.z * sc + p.nz * r * 1.05)),
+        r * 0.8,
+        72,
+        7,
+      ),
+    );
   }
   // Seat ring at the base.
   if (opts.seat !== false) {
     const path = resample(o, 48, 2);
-    out.push(loop(path.map((p) => v3(p.x * bs, baseY + r * 0.9, p.z * bs)), r * 0.95, 48, 7));
+    out.push(
+      loop(
+        path.map((p) => v3(p.x * bs, baseY + r * 0.9, p.z * bs)),
+        r * 0.95,
+        48,
+        7,
+      ),
+    );
   }
   return out;
 }
@@ -650,10 +725,20 @@ export function ringDrop(ctx: HeadCtx, x: number): number {
 }
 
 /** Matrix placing a stone-frame object at (x, y, z), with its local +X along (ux, uz), optionally tilting its table. */
-export function placeMatrix(x: number, y: number, z: number, ux: number, uz: number, tiltOutward = 0, nx = 0, nz = 0): THREE.Matrix4 {
+export function placeMatrix(
+  x: number,
+  y: number,
+  z: number,
+  ux: number,
+  uz: number,
+  tiltOutward = 0,
+  nx = 0,
+  nz = 0,
+): THREE.Matrix4 {
   const X = v3(ux, 0, uz).normalize();
   let Y = v3(0, 1, 0);
-  if (tiltOutward !== 0) Y = v3(nx * Math.sin(tiltOutward), Math.cos(tiltOutward), nz * Math.sin(tiltOutward)).normalize();
+  if (tiltOutward !== 0)
+    Y = v3(nx * Math.sin(tiltOutward), Math.cos(tiltOutward), nz * Math.sin(tiltOutward)).normalize();
   const Z = X.clone().cross(Y).normalize();
   const X2 = Y.clone().cross(Z).normalize();
   return new THREE.Matrix4().makeBasis(X2, Y, Z).setPosition(x, y, z);
@@ -687,7 +772,11 @@ export interface AccentRingResult {
 }
 
 /** Dims of an accent stone of a given size (length) for its cut. */
-export function accentDims(ctx: HeadCtx, size: number, cut = ctx.accent.cut): { length: number; width: number; depth: number } {
+export function accentDims(
+  ctx: HeadCtx,
+  size: number,
+  cut = ctx.accent.cut,
+): { length: number; width: number; depth: number } {
   const aspect = Math.max(1, cut.defaultAspect || 1);
   const width = size / aspect;
   return { length: size, width, depth: width * (cut.defaultDepthPct || 0.6) };
@@ -723,7 +812,12 @@ export function accentRing(ctx: HeadCtx, o: AccentRingOpts): AccentRingResult {
   const rot = (u: number, v: number): V2 => [u * cosT + v * sinT, o.y - u * sinT + v * cosT];
   if (o.frame !== false) {
     const depth = o.frameDepth ?? Math.max(0.5, built.pavilionDepth * 0.9 + 0.25);
-    const section: V2[] = [rot(-w - 0.2, -0.05), rot(-w - 0.12, -depth), rot(w + 0.12, -depth), rot(w + 0.2, -0.05)];
+    const section: V2[] = [
+      rot(-w - 0.2, -0.05),
+      rot(-w - 0.12, -depth),
+      rot(w + 0.12, -depth),
+      rot(w + 0.2, -0.05),
+    ];
     metal.push(loft(resample(o.path, Math.max(48, count * 3), 1), section, true));
   }
   if (o.beads !== false) {
@@ -748,10 +842,18 @@ export function accentRing(ctx: HeadCtx, o: AccentRingOpts): AccentRingResult {
 // ---------------------------------------------------------------------------------------------
 
 export function metalPart(geos: THREE.BufferGeometry[], label: string): Part {
-  return { slot: 'head-metal', geometry: mergeFlat(geos.filter((g) => g.getAttribute('position')?.count > 0)), label };
+  return {
+    slot: 'head-metal',
+    geometry: mergeFlat(geos.filter((g) => g.getAttribute('position')?.count > 0)),
+    label,
+  };
 }
 export function accentPart(geos: THREE.BufferGeometry[], label: string): Part {
-  return { slot: 'accent-stone', geometry: mergeFlat(geos.filter((g) => g.getAttribute('position')?.count > 0)), label };
+  return {
+    slot: 'accent-stone',
+    geometry: mergeFlat(geos.filter((g) => g.getAttribute('position')?.count > 0)),
+    label,
+  };
 }
 
 /** Transform a list of geometries by a matrix (in place) and return them. */

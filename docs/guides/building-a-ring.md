@@ -14,15 +14,15 @@ The [builder](#/build) has two halves: a 3D viewer and a set of tabs to edit the
 
 Above the viewer you will find:
 
-| Control | What it does |
-| --- | --- |
-| **Design name** | Names the design (up to 80 characters). Shown in Saved and used for file names. |
-| **Save** | Stores the design in this browser, with a small thumbnail. |
-| **Share** | Copies a link that contains the whole design. |
-| **Export JSON** | Downloads the design as a file. |
-| **Import JSON** | Loads a design from a file. |
-| **Open in Compare** | Sends the design to the Compare page. |
-| **Reset** | Returns to the default ring. |
+| Control             | What it does                                                                    |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **Design name**     | Names the design (up to 80 characters). Shown in Saved and used for file names. |
+| **Save**            | Stores the design in this browser, with a small thumbnail.                      |
+| **Share**           | Copies a link that contains the whole design.                                   |
+| **Export JSON**     | Downloads the design as a file.                                                 |
+| **Import JSON**     | Loads a design from a file.                                                     |
+| **Open in Compare** | Sends the design to the Compare page.                                           |
+| **Reset**           | Returns to the default ring.                                                    |
 
 A short message appears at the bottom after each action. See [Saving, sharing and comparing](#/docs/saving-sharing-compare) for details.
 
@@ -32,11 +32,11 @@ A short message appears at the bottom after each action. See [Saving, sharing an
 
 **View buttons:**
 
-| View | Shows |
-| --- | --- |
-| Ring | The engagement ring alone |
-| Band | The wedding band alone |
-| Set | The engagement ring and band together |
+| View | Shows                                 |
+| ---- | ------------------------------------- |
+| Ring | The engagement ring alone             |
+| Band | The wedding band alone                |
+| Set  | The engagement ring and band together |
 
 Band and Set are disabled until you switch on a matching band. The viewer opens on Set when there is a band.
 
@@ -70,13 +70,13 @@ If the picture is blank or a message appears, see [Troubleshooting](#/docs/troub
 
 Pick a head card (see [Settings and mounts](#/docs/settings-and-mounts)). Cards that do not suit the current cut are disabled with the reason "Not made for ... stones". Below the cards sit the head's own options, then the **Placement** group:
 
-| Control | Range | Meaning |
-| --- | --- | --- |
-| **Orientation** | North-south or east-west | Whether the stone's long axis runs along the finger or across it |
-| **Raise (setting height)** | 0 to 5 mm | Clearance between the shank top and the stone's base. More raise sits the stone higher and shows more of the head. The builder clamps very low values so the head always joins the shank. |
-| **Tilt** | minus 25 to 25 degrees | Tips the stone toward the fingertip (positive) or the knuckle (negative) |
-| **Rotate** | minus 45 to 45 degrees | Spins the stone about its own vertical axis (set a princess as a diamond) |
-| **Offset along band** | minus 4 to 4 mm | Slides the stone along the band, for bypass or asymmetric looks |
+| Control                    | Range                    | Meaning                                                                                                                                                                                   |
+| -------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Orientation**            | North-south or east-west | Whether the stone's long axis runs along the finger or across it                                                                                                                          |
+| **Raise (setting height)** | 0 to 5 mm                | Clearance between the shank top and the stone's base. More raise sits the stone higher and shows more of the head. The builder clamps very low values so the head always joins the shank. |
+| **Tilt**                   | minus 25 to 25 degrees   | Tips the stone toward the fingertip (positive) or the knuckle (negative)                                                                                                                  |
+| **Rotate**                 | minus 45 to 45 degrees   | Spins the stone about its own vertical axis (set a princess as a diamond)                                                                                                                 |
+| **Offset along band**      | minus 4 to 4 mm          | Slides the stone along the band, for bypass or asymmetric looks                                                                                                                           |
 
 Tips: a low raise is snug and snag-resistant but leaves less room for a contoured band. A tilt of a few degrees gives a modern look. East-west with a low raise is the signature modern bezel.
 
@@ -120,14 +120,14 @@ A timeless, durable round diamond in platinum.
 
 ![Classic solitaire]({{base}}screenshots/components/head/solitaire-6-prong.png)
 
-| Tab | Choice |
-| --- | --- |
-| Stone | Diamond, colorless, **round brilliant**, 1.00 ct, clarity **VS2**, colour grade **G-J** |
-| Head | **Solitaire 6-prong**; orientation north-south; raise 1.2 mm (default) |
-| Shank | **Plain round** |
-| Metals | **Platinum** for head, shank and band (tap the platinum swatch under "Match all to") |
-| Band | Include band; style **Plain comfort**; width 2.0 mm; thickness 1.8 mm |
-| Fit | US 6.5; fit Auto |
+| Tab    | Choice                                                                                  |
+| ------ | --------------------------------------------------------------------------------------- |
+| Stone  | Diamond, colorless, **round brilliant**, 1.00 ct, clarity **VS2**, colour grade **G-J** |
+| Head   | **Solitaire 6-prong**; orientation north-south; raise 1.2 mm (default)                  |
+| Shank  | **Plain round**                                                                         |
+| Metals | **Platinum** for head, shank and band (tap the platinum swatch under "Match all to")    |
+| Band   | Include band; style **Plain comfort**; width 2.0 mm; thickness 1.8 mm                   |
+| Fit    | US 6.5; fit Auto                                                                        |
 
 Why it works: round brilliant and six prongs maximise sparkle with strong security, platinum keeps the stone white and is hypoallergenic, and a plain comfort band sits flush against a low head. Check Set view and the Side camera to see the band touching the shank.
 
@@ -137,16 +137,16 @@ A soft, glittery look with a curved band that hugs the halo.
 
 ![Vintage halo]({{base}}screenshots/components/head/halo-cushion.png)
 
-| Tab | Choice |
-| --- | --- |
-| Stone | Diamond, near-colorless, **cushion**, 1.50 ct, clarity **VS2**, colour grade **G-J** |
-| Head | **Halo cushion**; north-south; raise 1.6 mm |
-| Shank | **Milgrain** (or Vintage filigree if you want more lace) |
-| Metals | Platinum for head and shank; the band 14k rose gold or platinum |
-| Finish | Engagement ring **Polished**; band **Milgrain** |
-| Accents | Engagement: diamond, colorless, **round brilliant**, stone size 1.4 mm |
-| Band | **Contour curved**; width 1.8 mm; thickness 1.6 mm |
-| Fit | US 6.5; band fit **Contour** |
+| Tab     | Choice                                                                               |
+| ------- | ------------------------------------------------------------------------------------ |
+| Stone   | Diamond, near-colorless, **cushion**, 1.50 ct, clarity **VS2**, colour grade **G-J** |
+| Head    | **Halo cushion**; north-south; raise 1.6 mm                                          |
+| Shank   | **Milgrain** (or Vintage filigree if you want more lace)                             |
+| Metals  | Platinum for head and shank; the band 14k rose gold or platinum                      |
+| Finish  | Engagement ring **Polished**; band **Milgrain**                                      |
+| Accents | Engagement: diamond, colorless, **round brilliant**, stone size 1.4 mm               |
+| Band    | **Contour curved**; width 1.8 mm; thickness 1.6 mm                                   |
+| Fit     | US 6.5; band fit **Contour**                                                         |
 
 Why it works: a cushion with a cushion halo repeats the outline. The milgrain details sit in the vintage family, and a contour band curves around the taller halo. Use the Top camera to see the curve and the Side camera to see the gap close.
 
@@ -156,15 +156,15 @@ A low, sleek, wide stone with a two-tone look.
 
 ![Modern bezel]({{base}}screenshots/components/head/bezel-full.png)
 
-| Tab | Choice |
-| --- | --- |
-| Stone | Lab-grown diamond, colorless, **emerald cut**, 1.50 ct, clarity **VS1**; aspect ratio about 1.4 |
-| Head | **Full bezel**; **east-west**; raise 0.6 mm; tilt 0 |
-| Shank | **Plain flat** |
-| Metals | Head **14k yellow gold**; shank **platinum** |
-| Finish | Engagement ring **Satin** |
-| Band | **Mixed-metal band**; first metal 14k yellow gold, second metal platinum; width 3.0 mm; thickness 2.0 mm; finish Satin |
-| Fit | US 7; band fit **Flush** |
+| Tab    | Choice                                                                                                                 |
+| ------ | ---------------------------------------------------------------------------------------------------------------------- |
+| Stone  | Lab-grown diamond, colorless, **emerald cut**, 1.50 ct, clarity **VS1**; aspect ratio about 1.4                        |
+| Head   | **Full bezel**; **east-west**; raise 0.6 mm; tilt 0                                                                    |
+| Shank  | **Plain flat**                                                                                                         |
+| Metals | Head **14k yellow gold**; shank **platinum**                                                                           |
+| Finish | Engagement ring **Satin**                                                                                              |
+| Band   | **Mixed-metal band**; first metal 14k yellow gold, second metal platinum; width 3.0 mm; thickness 2.0 mm; finish Satin |
+| Fit    | US 7; band fit **Flush**                                                                                               |
 
 Why it works: a low full bezel is very secure and snag-resistant, the east-west emerald cut feels contemporary, the warm head sits on a cool shank, and the band repeats both metals so the two rings look related.
 

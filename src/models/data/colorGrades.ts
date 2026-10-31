@@ -8,7 +8,7 @@ export const colorGrades: ColorGradeModel[] = [
     name: 'Colorless (D-F)',
     summary: 'The top of the scale: no detectable color, even for a trained grader.',
     description:
-      "D, E and F diamonds are all graded colorless. D is the rarest, but the difference between D, E and F is only visible to an expert, and only when the stones are placed face-down side by side.\n\nThey look their best in white metals such as platinum, which keep the icy look, and carry a premium over G-J stones.",
+      'D, E and F diamonds are all graded colorless. D is the rarest, but the difference between D, E and F is only visible to an expert, and only when the stones are placed face-down side by side.\n\nThey look their best in white metals such as platinum, which keep the icy look, and carry a premium over G-J stones.',
     tags: ['colorless', 'premium'],
     pros: ['Icy white look', 'Rarest'],
     cons: ['Large premium', 'Little visible difference from G-H'],
@@ -24,7 +24,7 @@ export const colorGrades: ColorGradeModel[] = [
     name: 'Near-colorless (G-J)',
     summary: 'Faint warmth that is hard to notice once mounted; the best value band.',
     description:
-      "G to J diamonds have a trace of color that is only detectable when compared against higher grades. Once set, especially in a setting that hides the base of the stone, they usually face up white.\n\nThey cost noticeably less than D-F. Yellow gold settings flatter and mask the slight warmth.",
+      'G to J diamonds have a trace of color that is only detectable when compared against higher grades. Once set, especially in a setting that hides the base of the stone, they usually face up white.\n\nThey cost noticeably less than D-F. Yellow gold settings flatter and mask the slight warmth.',
     tags: ['near-colorless', 'value', 'popular'],
     pros: ['Looks white to most eyes', 'Great value'],
     cons: ['Slight warmth next to higher grades'],
@@ -40,7 +40,7 @@ export const colorGrades: ColorGradeModel[] = [
     name: 'Faint (K-M)',
     summary: 'A light yellow or brown tint that is visible to the eye.',
     description:
-      "K to M diamonds show a faint warm tint that is visible face-up, especially in larger stones and in white metals.\n\nThe lower price lets you buy larger stones. Yellow or rose gold settings suit the warmth and the stone can look intentionally vintage.",
+      'K to M diamonds show a faint warm tint that is visible face-up, especially in larger stones and in white metals.\n\nThe lower price lets you buy larger stones. Yellow or rose gold settings suit the warmth and the stone can look intentionally vintage.',
     tags: ['faint', 'warm', 'budget'],
     pros: ['Affordable', 'Suits warm metals and vintage looks'],
     cons: ['Visible tint, especially in white metal'],
@@ -56,7 +56,7 @@ export const colorGrades: ColorGradeModel[] = [
     name: 'Very light (N-R)',
     summary: 'A noticeable yellow or brown tint, clearly visible from above.',
     description:
-      "N to R diamonds have a clear yellow or brown cast visible to anyone. They are much cheaper per carat than higher color grades.\n\nThey can look charming as an antique-style stone, and some buyers prefer the champagne warmth, but they will not read as white.",
+      'N to R diamonds have a clear yellow or brown cast visible to anyone. They are much cheaper per carat than higher color grades.\n\nThey can look charming as an antique-style stone, and some buyers prefer the champagne warmth, but they will not read as white.',
     tags: ['very-light', 'warm', 'budget'],
     pros: ['Very affordable', 'Warm, antique character'],
     cons: ['Clearly yellow', 'Low resale'],
@@ -72,7 +72,7 @@ export const colorGrades: ColorGradeModel[] = [
     name: 'Light (S-Z)',
     summary: 'A strong yellow or brown tint at the bottom of the normal color scale.',
     description:
-      "S to Z diamonds show an obvious yellow or brown body color. Stones darker than this are classed as fancy colored diamonds and graded separately.\n\nThey are inexpensive and are sometimes chosen as a rustic, vintage-look stone. They are not usually considered for a traditional white look.",
+      'S to Z diamonds show an obvious yellow or brown body color. Stones darker than this are classed as fancy colored diamonds and graded separately.\n\nThey are inexpensive and are sometimes chosen as a rustic, vintage-look stone. They are not usually considered for a traditional white look.',
     tags: ['light', 'warm', 'inexpensive'],
     pros: ['Lowest price', 'Distinctive warm color'],
     cons: ['Obvious tint', 'Lowest resale'],

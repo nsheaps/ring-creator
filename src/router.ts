@@ -10,7 +10,11 @@ export interface Route {
 function parse(): Route {
   const h = window.location.hash.replace(/^#/, '') || '/';
   const [p, q = ''] = h.split('?');
-  return { path: p.split('/').filter(Boolean).map(decodeURIComponent), query: new URLSearchParams(q), raw: h };
+  return {
+    path: p.split('/').filter(Boolean).map(decodeURIComponent),
+    query: new URLSearchParams(q),
+    raw: h,
+  };
 }
 
 let cache = parse();

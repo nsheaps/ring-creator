@@ -38,10 +38,13 @@ export const buildStep: StoneBuilder = (dims, params, opts): BuiltStone => {
   let outline: Outline;
 
   if (mode === 'polygon') {
-    const poly = polygonVertices(pStr(params, 'shape', 'hexagon'), params, L / W) ?? polygonVertices('hexagon', params, L / W);
+    const poly =
+      polygonVertices(pStr(params, 'shape', 'hexagon'), params, L / W) ??
+      polygonVertices('hexagon', params, L / W);
     const verts = (poly ? poly.verts : []).map(([x, z]): [number, number] => [(x * L) / 2, (z * W) / 2]);
     center = polygonCentroid(verts);
-    const scaled = (r: number, y: number): V3[] => verts.map(([x, z]): V3 => [center[0] + r * (x - center[0]), y, center[1] + r * (z - center[1])]);
+    const scaled = (r: number, y: number): V3[] =>
+      verts.map(([x, z]): V3 => [center[0] + r * (x - center[0]), y, center[1] + r * (z - center[1])]);
     ringAt = (_f, y) => scaled(1, y);
     crownRing = (f, y) => scaled(1 - f * (1 - tr), y);
     pavRing = (f, y) => scaled(1 - f, y);

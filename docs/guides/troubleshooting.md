@@ -88,14 +88,14 @@ Importing replaces your current working design. If you want to keep it, press **
 
 ## Smaller things
 
-| Symptom | What is going on |
-| --- | --- |
-| Band and Set buttons are disabled | You have no band. Tick **Include matching band** on the Band tab. |
-| A head card is greyed out | It is not made for your current stone cut. The card says which. |
-| The band does not curve | Choose a contour-capable style and leave Fit on Auto or Contour. |
-| Colours look different in the snapshot | The snapshot is a PNG of what you saw. Screens and printers show colour differently. |
+| Symptom                                          | What is going on                                                                                              |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| Band and Set buttons are disabled                | You have no band. Tick **Include matching band** on the Band tab.                                             |
+| A head card is greyed out                        | It is not made for your current stone cut. The card says which.                                               |
+| The band does not curve                          | Choose a contour-capable style and leave Fit on Auto or Contour.                                              |
+| Colours look different in the snapshot           | The snapshot is a PNG of what you saw. Screens and printers show colour differently.                          |
 | The stone seems to change size when I change gem | The same carat in a denser gem is smaller. This is expected. See [Choosing a stone](#/docs/choosing-a-stone). |
-| A slider will not go further | Each control has a safe range, and values outside it are not allowed. |
+| A slider will not go further                     | Each control has a safe range, and values outside it are not allowed.                                         |
 
 ## Still stuck?
 

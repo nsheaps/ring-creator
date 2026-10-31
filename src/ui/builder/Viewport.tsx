@@ -28,7 +28,15 @@ export interface ViewportHandle {
   snapshot(): string;
 }
 
-export function Viewport({ design, viewerRef, onSnapshotDownload }: { design: Design; viewerRef: RefObject<DesignViewerHandle>; onSnapshotDownload: (url: string) => void }) {
+export function Viewport({
+  design,
+  viewerRef,
+  onSnapshotDownload,
+}: {
+  design: Design;
+  viewerRef: RefObject<DesignViewerHandle>;
+  onSnapshotDownload: (url: string) => void;
+}) {
   const [view, setView] = useState<RingView>('set');
   const [rotate, setRotate] = useState(false);
   const [info, setInfo] = useState<Info | null>(null);
@@ -37,7 +45,9 @@ export function Viewport({ design, viewerRef, onSnapshotDownload }: { design: De
   const effective: RingView = !hasBand && view !== 'ring' ? 'ring' : view;
   const e = design.engagement;
   const name = (kind: 'metal' | 'gem' | 'cut', id: string) => findModel(kind, id)?.name ?? id;
-  const metals = [...new Set([e.head.metal, e.shank.metal, ...(design.band ? [design.band.metal] : [])])].map((m) => name('metal', m));
+  const metals = [...new Set([e.head.metal, e.shank.metal, ...(design.band ? [design.band.metal] : [])])].map(
+    (m) => name('metal', m),
+  );
 
   return (
     <section className="bd-viewport" aria-label="3D preview">
@@ -59,13 +69,23 @@ export function Viewport({ design, viewerRef, onSnapshotDownload }: { design: De
         </div>
         <div className="bd-seg" role="group" aria-label="Camera">
           {PRESETS.map((p) => (
-            <button key={p.id} type="button" data-testid={`cam-${p.id.replace('/', '')}`} onClick={() => viewerRef.current?.preset(p.id)}>
+            <button
+              key={p.id}
+              type="button"
+              data-testid={`cam-${p.id.replace('/', '')}`}
+              onClick={() => viewerRef.current?.preset(p.id)}
+            >
               {p.label}
             </button>
           ))}
         </div>
         <label className="bd-check">
-          <input type="checkbox" checked={rotate} onChange={(ev) => setRotate(ev.target.checked)} data-testid="auto-rotate" />
+          <input
+            type="checkbox"
+            checked={rotate}
+            onChange={(ev) => setRotate(ev.target.checked)}
+            data-testid="auto-rotate"
+          />
           Auto-rotate
         </label>
         <button
@@ -104,7 +124,8 @@ export function Viewport({ design, viewerRef, onSnapshotDownload }: { design: De
           <div>
             <dt>Size</dt>
             <dd>
-              {info.centerLengthMm.toFixed(1)} × {info.centerWidthMm.toFixed(1)} × {info.centerDepthMm.toFixed(1)} mm
+              {info.centerLengthMm.toFixed(1)} × {info.centerWidthMm.toFixed(1)} ×{' '}
+              {info.centerDepthMm.toFixed(1)} mm
             </dd>
           </div>
         )}

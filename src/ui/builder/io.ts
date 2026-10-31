@@ -10,7 +10,12 @@ export function download(name: string, href: string): void {
 }
 
 export function slug(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'ring';
+  return (
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') || 'ring'
+  );
 }
 
 export function downloadJson(design: Design): void {
@@ -22,7 +27,14 @@ export function downloadJson(design: Design): void {
 export function parseDesign(text: string): Design | null {
   try {
     const d = JSON.parse(text) as Design;
-    return d && d.version === 1 && d.engagement && d.engagement.center && d.engagement.head && d.engagement.shank ? d : null;
+    return d &&
+      d.version === 1 &&
+      d.engagement &&
+      d.engagement.center &&
+      d.engagement.head &&
+      d.engagement.shank
+      ? d
+      : null;
   } catch {
     return null;
   }

@@ -44,10 +44,33 @@ export function BandStep({ design, update }: StepProps) {
               </span>
             )}
           />
-          <Slider label="Width" value={b.widthMm} min={1.2} max={8} step={0.1} unit="mm" testid="band-width" onChange={(v) => update((d) => void (d.band && (d.band.widthMm = v)))} />
-          <Slider label="Thickness" value={b.thicknessMm} min={1} max={3.2} step={0.1} unit="mm" testid="band-thickness" onChange={(v) => update((d) => void (d.band && (d.band.thicknessMm = v)))} />
+          <Slider
+            label="Width"
+            value={b.widthMm}
+            min={1.2}
+            max={8}
+            step={0.1}
+            unit="mm"
+            testid="band-width"
+            onChange={(v) => update((d) => void (d.band && (d.band.widthMm = v)))}
+          />
+          <Slider
+            label="Thickness"
+            value={b.thicknessMm}
+            min={1}
+            max={3.2}
+            step={0.1}
+            unit="mm"
+            testid="band-thickness"
+            onChange={(v) => update((d) => void (d.band && (d.band.thicknessMm = v)))}
+          />
           {/mixed|inlay/.test(b.style) && (
-            <MetalSelect id="bd-metal2" label="Second metal (inlay / two-tone)" value={b.metal2} onChange={(v) => update((d) => void (d.band && (d.band.metal2 = v)))} />
+            <MetalSelect
+              id="bd-metal2"
+              label="Second metal (inlay / two-tone)"
+              value={b.metal2}
+              onChange={(v) => update((d) => void (d.band && (d.band.metal2 = v)))}
+            />
           )}
         </>
       ) : (

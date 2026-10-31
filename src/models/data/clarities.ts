@@ -8,7 +8,7 @@ export const clarities: ClarityModel[] = [
     name: 'Flawless (FL)',
     summary: 'No inclusions or blemishes visible under 10x magnification.',
     description:
-      "Flawless is the top clarity grade: a skilled grader finds no internal or external imperfections at 10x magnification. Fewer than 1% of diamonds qualify.\n\nTo the eye it looks identical to IF through VS2 stones, so the large price premium buys rarity rather than visible beauty.",
+      'Flawless is the top clarity grade: a skilled grader finds no internal or external imperfections at 10x magnification. Fewer than 1% of diamonds qualify.\n\nTo the eye it looks identical to IF through VS2 stones, so the large price premium buys rarity rather than visible beauty.',
     tags: ['top-grade', 'rare', 'investment'],
     pros: ['Perfect under magnification', 'Rarest grade'],
     cons: ['Very high premium', 'No visible benefit over VS'],
@@ -25,7 +25,7 @@ export const clarities: ClarityModel[] = [
     name: 'Internally Flawless (IF)',
     summary: 'No inclusions visible at 10x, only minor surface blemishes.',
     description:
-      "Internally Flawless stones have no inclusions inside, only tiny blemishes on the surface such as a small polish line, visible at 10x.\n\nFor wearers it looks the same as FL and as much lower grades, so it mainly appeals to buyers who want the highest standard.",
+      'Internally Flawless stones have no inclusions inside, only tiny blemishes on the surface such as a small polish line, visible at 10x.\n\nFor wearers it looks the same as FL and as much lower grades, so it mainly appeals to buyers who want the highest standard.',
     tags: ['top-grade', 'rare'],
     pros: ['Nearly perfect', 'Rare'],
     cons: ['Premium price', 'No visible benefit over VS'],
@@ -42,7 +42,7 @@ export const clarities: ClarityModel[] = [
     name: 'Very, Very Slightly Included 1 (VVS1)',
     summary: 'Inclusions are extremely difficult to see even at 10x.',
     description:
-      "VVS1 stones have tiny inclusions that even trained graders struggle to find under magnification, usually only seen from the pavilion.\n\nThe stone is completely clean to the naked eye. It costs more than VS grades without a visible difference.",
+      'VVS1 stones have tiny inclusions that even trained graders struggle to find under magnification, usually only seen from the pavilion.\n\nThe stone is completely clean to the naked eye. It costs more than VS grades without a visible difference.',
     tags: ['very-high-clarity'],
     pros: ['Eye-clean with huge margin', 'High quality'],
     cons: ['Costs more than visible benefit justifies'],
@@ -59,7 +59,7 @@ export const clarities: ClarityModel[] = [
     name: 'Very, Very Slightly Included 2 (VVS2)',
     summary: 'Inclusions are very difficult to see at 10x.',
     description:
-      "VVS2 diamonds have minute inclusions that require careful magnified inspection, often visible from the crown side.\n\nThere is no visible difference in the ring, and VVS2 is often a little cheaper than VVS1.",
+      'VVS2 diamonds have minute inclusions that require careful magnified inspection, often visible from the crown side.\n\nThere is no visible difference in the ring, and VVS2 is often a little cheaper than VVS1.',
     tags: ['very-high-clarity'],
     pros: ['Eye-clean', 'Excellent quality'],
     cons: ['Premium over VS'],
@@ -76,7 +76,7 @@ export const clarities: ClarityModel[] = [
     name: 'Very Slightly Included 1 (VS1)',
     summary: 'Minor inclusions that are difficult to see at 10x and invisible to the eye.',
     description:
-      "VS1 stones have small inclusions such as tiny crystals or feathers that are hard to see at 10x. They are not visible without magnification.\n\nVS1 offers excellent value for most buyers: the stone looks flawless in a ring at a noticeably lower price than VVS.",
+      'VS1 stones have small inclusions such as tiny crystals or feathers that are hard to see at 10x. They are not visible without magnification.\n\nVS1 offers excellent value for most buyers: the stone looks flawless in a ring at a noticeably lower price than VVS.',
     tags: ['high-clarity', 'value'],
     pros: ['Eye-clean', 'Good value'],
     cons: ['Slightly higher price than VS2'],
@@ -110,7 +110,7 @@ export const clarities: ClarityModel[] = [
     name: 'Slightly Included 1 (SI1)',
     summary: 'Inclusions are noticeable at 10x and sometimes visible to the eye.',
     description:
-      "SI1 stones can be a bargain, but inclusions are easily seen under magnification and may be visible to the naked eye depending on their type and position. Borderline eye-clean: inspect the actual stone.\n\nA brilliant cut hides inclusions better than a step cut. Avoid dark crystals under the table.",
+      'SI1 stones can be a bargain, but inclusions are easily seen under magnification and may be visible to the naked eye depending on their type and position. Borderline eye-clean: inspect the actual stone.\n\nA brilliant cut hides inclusions better than a step cut. Avoid dark crystals under the table.',
     tags: ['mid-clarity', 'value'],
     pros: ['Good price', 'Often eye-clean in brilliant cuts'],
     cons: ['Borderline: some stones show inclusions', 'Needs checking'],
@@ -127,7 +127,7 @@ export const clarities: ClarityModel[] = [
     name: 'Slightly Included 2 (SI2)',
     summary: 'Inclusions are easy to see at 10x and often visible to the naked eye.',
     description:
-      "SI2 inclusions are obvious under magnification and frequently visible to the eye, especially in larger stones or those with step cuts.\n\nSome SI2 stones look clean, but the grade can also hide risks such as a large feather near the surface.",
+      'SI2 inclusions are obvious under magnification and frequently visible to the eye, especially in larger stones or those with step cuts.\n\nSome SI2 stones look clean, but the grade can also hide risks such as a large feather near the surface.',
     tags: ['mid-clarity', 'budget'],
     pros: ['Lower price', 'Allows a larger stone for the money'],
     cons: ['Often visible to the eye', 'Possible durability risk'],
@@ -161,7 +161,7 @@ export const clarities: ClarityModel[] = [
     name: 'Included 2 (I2)',
     summary: 'Heavy inclusions that are clearly visible and often affect transparency.',
     description:
-      "I2 stones have large, prominent inclusions visible to the naked eye, giving a cloudy or flawed appearance and often reducing brilliance.\n\nStructural risks such as long feathers are more likely. They are rarely chosen for engagement rings but can suit rustic or salt-and-pepper styles.",
+      'I2 stones have large, prominent inclusions visible to the naked eye, giving a cloudy or flawed appearance and often reducing brilliance.\n\nStructural risks such as long feathers are more likely. They are rarely chosen for engagement rings but can suit rustic or salt-and-pepper styles.',
     tags: ['included', 'rustic'],
     pros: ['Lowest cost'],
     cons: ['Very visible inclusions', 'Higher chance of chipping'],

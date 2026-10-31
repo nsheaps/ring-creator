@@ -130,7 +130,8 @@ export function ComponentDetail({ kind, id }: { kind: ModelKind; id: string }) {
   return (
     <main className="page rf" data-testid="component-detail">
       <nav className="rf-crumbs" aria-label="Breadcrumb">
-        <a href="#/components">Components</a> / <a href={`#/components/${kind}`}>{KIND_LABELS[kind]}</a> / <span>{model.name}</span>
+        <a href="#/components">Components</a> / <a href={`#/components/${kind}`}>{KIND_LABELS[kind]}</a> /{' '}
+        <span>{model.name}</span>
       </nav>
       <h1>{model.name}</h1>
       <p className="rf-lede">{model.summary}</p>
@@ -157,7 +158,9 @@ export function ComponentDetail({ kind, id }: { kind: ModelKind; id: string }) {
           ) : (
             <div className="viewer rf-shot">
               <ShotImage model={model} />
-              <p className="muted rf-shot-missing">The CI picture appears here once screenshots are generated.</p>
+              <p className="muted rf-shot-missing">
+                The CI picture appears here once screenshots are generated.
+              </p>
             </div>
           )}
           <div className="rf-actions">
@@ -221,7 +224,8 @@ export function ComponentDetail({ kind, id }: { kind: ModelKind; id: string }) {
                       </>
                     ) : r.swatch ? (
                       <>
-                        <span className="rf-swatch" style={{ background: r.swatch }} aria-hidden="true" /> {r.text}
+                        <span className="rf-swatch" style={{ background: r.swatch }} aria-hidden="true" />{' '}
+                        {r.text}
                       </>
                     ) : (
                       r.text
@@ -303,7 +307,8 @@ export function ComponentDetail({ kind, id }: { kind: ModelKind; id: string }) {
           <ul className="rf-related" data-testid="related">
             {related.map((m) => (
               <li key={m.id}>
-                <a href={`#/components/${m.kind}/${m.id}`}>{m.name}</a> <span className="muted">{KIND_LABELS[m.kind]}</span>
+                <a href={`#/components/${m.kind}/${m.id}`}>{m.name}</a>{' '}
+                <span className="muted">{KIND_LABELS[m.kind]}</span>
               </li>
             ))}
           </ul>

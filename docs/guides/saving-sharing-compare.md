@@ -12,11 +12,11 @@ Ring Creator has no accounts and no server that stores your designs. Everything 
 
 ## What is stored, and where
 
-| What | Where | Lasts |
-| --- | --- | --- |
-| The design you are working on | Your browser's local storage, updated as you edit | Until you replace it, reset it or clear site data |
-| Designs you press **Save** on | Your browser's local storage, with a small preview picture | Until you delete them or clear site data |
-| The Compare picks (up to three) | Your browser's session storage | Until you close the tab |
+| What                            | Where                                                      | Lasts                                             |
+| ------------------------------- | ---------------------------------------------------------- | ------------------------------------------------- |
+| The design you are working on   | Your browser's local storage, updated as you edit          | Until you replace it, reset it or clear site data |
+| Designs you press **Save** on   | Your browser's local storage, with a small preview picture | Until you delete them or clear site data          |
+| The Compare picks (up to three) | Your browser's session storage                             | Until you close the tab                           |
 
 Local storage belongs to one browser profile on one device. A design saved on your phone does not appear on your laptop, and a private or incognito window starts empty and forgets everything when closed. If you need a design on another device, use a share link or an exported file.
 

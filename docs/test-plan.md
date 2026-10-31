@@ -4,14 +4,14 @@ Stack: Vitest (unit and data contract), Playwright (e2e, screenshots, a11y), run
 
 ## Pyramid
 
-| Layer | Tool | What | Speed |
-| --- | --- | --- | --- |
-| Unit | Vitest | Model validation, `stoneMath`, placement clamping, share encode/decode, storage wrapper, history, geometry sanity | seconds |
-| Data contract | Vitest | Vocabulary ids, every example resolves, related ids, builders registered, controls well-formed | seconds |
-| E2E | Playwright (Chromium; WebKit/Firefox smoke) | Build flow, save/load, share link, gallery, compare, docs, no-WebGL | minutes |
-| Screenshot | Playwright against `#/shot/...` | Component and example pictures captured in CI, published with the docs site | minutes |
-| Accessibility | Playwright + axe-style checks (optional gate at first) | No serious/critical violations on main routes; keyboard paths | minutes |
-| Deploy smoke | Playwright against the deployed URL | Key routes load under the Pages base path with no console errors | under 1 min |
+| Layer         | Tool                                                   | What                                                                                                              | Speed       |
+| ------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ----------- |
+| Unit          | Vitest                                                 | Model validation, `stoneMath`, placement clamping, share encode/decode, storage wrapper, history, geometry sanity | seconds     |
+| Data contract | Vitest                                                 | Vocabulary ids, every example resolves, related ids, builders registered, controls well-formed                    | seconds     |
+| E2E           | Playwright (Chromium; WebKit/Firefox smoke)            | Build flow, save/load, share link, gallery, compare, docs, no-WebGL                                               | minutes     |
+| Screenshot    | Playwright against `#/shot/...`                        | Component and example pictures captured in CI, published with the docs site                                       | minutes     |
+| Accessibility | Playwright + axe-style checks (optional gate at first) | No serious/critical violations on main routes; keyboard paths                                                     | minutes     |
+| Deploy smoke  | Playwright against the deployed URL                    | Key routes load under the Pages base path with no console errors                                                  | under 1 min |
 
 ## Unit
 
@@ -58,50 +58,50 @@ typecheck, lint, unit + contract, build, e2e (against `vite preview`), screensho
 
 ## Traceability
 
-| Story | Tests |
-| --- | --- |
-| RC-001 | e2e `components.spec.ts` |
-| RC-002 | e2e `components.spec.ts` |
+| Story  | Tests                                                    |
+| ------ | -------------------------------------------------------- |
+| RC-001 | e2e `components.spec.ts`                                 |
+| RC-002 | e2e `components.spec.ts`                                 |
 | RC-003 | unit `contract.test.ts`; screenshot `component-pictures` |
-| RC-004 | e2e `components.spec.ts` |
-| RC-005 | screenshot `component-pictures` |
-| RC-006 | e2e `components.spec.ts` |
-| RC-007 | e2e `build.spec.ts` |
-| RC-008 | e2e `build.spec.ts`; unit `design-validate.test.ts` |
-| RC-009 | unit `stoneMath.test.ts`; e2e `build.spec.ts` |
-| RC-010 | unit `contract.test.ts`; e2e `build.spec.ts` |
-| RC-011 | e2e `build.spec.ts`; unit `compat.test.ts` |
-| RC-012 | e2e `build.spec.ts`; unit `geometry.test.ts` |
-| RC-013 | e2e `build.spec.ts`; unit `params.test.ts` |
-| RC-014 | e2e `build.spec.ts`; screenshot `mixed-metal` |
-| RC-015 | unit `materials.test.ts`; screenshot `finish-swatches` |
-| RC-016 | unit `placement.test.ts`; e2e `build.spec.ts` |
-| RC-017 | unit `stoneMath.test.ts`; e2e `build.spec.ts` |
-| RC-018 | e2e `build.spec.ts`; screenshot `builder-mobile` |
-| RC-019 | unit `history.test.ts` |
-| RC-020 | unit `geometry.test.ts`; e2e `build.spec.ts` |
-| RC-021 | e2e `build.spec.ts` |
-| RC-022 | e2e `build.spec.ts`; unit `geometry.test.ts` |
-| RC-023 | e2e `build.spec.ts`; unit `params.test.ts` |
-| RC-024 | unit `contour.test.ts`; screenshot `contour-fit` |
-| RC-025 | unit `contract.test.ts`; screenshot `band-styles` |
-| RC-026 | e2e `viewer.spec.ts` |
-| RC-027 | e2e `viewer.spec.ts` |
-| RC-028 | e2e `viewer.spec.ts` |
-| RC-029 | e2e `perf.spec.ts` |
-| RC-030 | e2e `save.spec.ts`; unit `storage.test.ts` |
-| RC-031 | e2e `save.spec.ts` |
-| RC-032 | unit `design-validate.test.ts`; e2e `save.spec.ts` |
-| RC-033 | unit `share.test.ts`; e2e `save.spec.ts` |
-| RC-034 | e2e `compare.spec.ts`; screenshot `compare` |
-| RC-035 | e2e `gallery.spec.ts`; screenshot `gallery` |
-| RC-036 | e2e `gallery.spec.ts` |
-| RC-037 | unit `contract.test.ts` |
-| RC-038 | e2e `docs.spec.ts` |
-| RC-039 | e2e `a11y.spec.ts` |
-| RC-040 | unit `models-validate.test.ts` |
-| RC-041 | unit `geometry.test.ts` |
-| RC-042 | unit `geometry.test.ts` |
-| RC-043 | screenshot `capture-all` |
-| RC-044 | e2e `smoke.spec.ts` |
-| RC-045 | e2e `a11y.spec.ts` |
+| RC-004 | e2e `components.spec.ts`                                 |
+| RC-005 | screenshot `component-pictures`                          |
+| RC-006 | e2e `components.spec.ts`                                 |
+| RC-007 | e2e `build.spec.ts`                                      |
+| RC-008 | e2e `build.spec.ts`; unit `design-validate.test.ts`      |
+| RC-009 | unit `stoneMath.test.ts`; e2e `build.spec.ts`            |
+| RC-010 | unit `contract.test.ts`; e2e `build.spec.ts`             |
+| RC-011 | e2e `build.spec.ts`; unit `compat.test.ts`               |
+| RC-012 | e2e `build.spec.ts`; unit `geometry.test.ts`             |
+| RC-013 | e2e `build.spec.ts`; unit `params.test.ts`               |
+| RC-014 | e2e `build.spec.ts`; screenshot `mixed-metal`            |
+| RC-015 | unit `materials.test.ts`; screenshot `finish-swatches`   |
+| RC-016 | unit `placement.test.ts`; e2e `build.spec.ts`            |
+| RC-017 | unit `stoneMath.test.ts`; e2e `build.spec.ts`            |
+| RC-018 | e2e `build.spec.ts`; screenshot `builder-mobile`         |
+| RC-019 | unit `history.test.ts`                                   |
+| RC-020 | unit `geometry.test.ts`; e2e `build.spec.ts`             |
+| RC-021 | e2e `build.spec.ts`                                      |
+| RC-022 | e2e `build.spec.ts`; unit `geometry.test.ts`             |
+| RC-023 | e2e `build.spec.ts`; unit `params.test.ts`               |
+| RC-024 | unit `contour.test.ts`; screenshot `contour-fit`         |
+| RC-025 | unit `contract.test.ts`; screenshot `band-styles`        |
+| RC-026 | e2e `viewer.spec.ts`                                     |
+| RC-027 | e2e `viewer.spec.ts`                                     |
+| RC-028 | e2e `viewer.spec.ts`                                     |
+| RC-029 | e2e `perf.spec.ts`                                       |
+| RC-030 | e2e `save.spec.ts`; unit `storage.test.ts`               |
+| RC-031 | e2e `save.spec.ts`                                       |
+| RC-032 | unit `design-validate.test.ts`; e2e `save.spec.ts`       |
+| RC-033 | unit `share.test.ts`; e2e `save.spec.ts`                 |
+| RC-034 | e2e `compare.spec.ts`; screenshot `compare`              |
+| RC-035 | e2e `gallery.spec.ts`; screenshot `gallery`              |
+| RC-036 | e2e `gallery.spec.ts`                                    |
+| RC-037 | unit `contract.test.ts`                                  |
+| RC-038 | e2e `docs.spec.ts`                                       |
+| RC-039 | e2e `a11y.spec.ts`                                       |
+| RC-040 | unit `models-validate.test.ts`                           |
+| RC-041 | unit `geometry.test.ts`                                  |
+| RC-042 | unit `geometry.test.ts`                                  |
+| RC-043 | screenshot `capture-all`                                 |
+| RC-044 | e2e `smoke.spec.ts`                                      |
+| RC-045 | e2e `a11y.spec.ts`                                       |

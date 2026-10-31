@@ -40,7 +40,13 @@ function collarDims(ctx: HeadCtx, frac = 0.5): CollarDims {
 /** Bezel cross-section: lip over the crown edge, straight wall, then a skirt tapering to the seat. */
 function bezelSection(ctx: HeadCtx, d: CollarDims): SectionPt[] {
   const t = num(ctx.params, 'bezelThickness', 0.7, 0.4, 1.5);
-  const lip = num(ctx.params, 'bezelHeight', Math.min(0.55, ctx.center.built.crownHeight * 0.5 + 0.15), 0.15, 1.5);
+  const lip = num(
+    ctx.params,
+    'bezelHeight',
+    Math.min(0.55, ctx.center.built.crownHeight * 0.5 + 0.15),
+    0.15,
+    1.5,
+  );
   const yCup = -Math.min(d.pd * 0.55, d.bd * 0.7);
   const sCup = Math.max(d.bs, 1 - Math.min(1, -yCup / d.pd));
   return [
