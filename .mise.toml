@@ -34,6 +34,10 @@ run = "bun run build"
 description = "Capture docs screenshots (component pictures) with Playwright against a production build"
 run = "bun run screenshots"
 
+[tasks.e2e]
+description = "End-to-end P0 flows with Playwright against a production build (run `mise run build` first)"
+run = "bun run e2e"
+
 [tasks.check]
 description = "Full local gate (what CI runs)"
 depends = ["lint", "typecheck", "test", "validate", "build"]

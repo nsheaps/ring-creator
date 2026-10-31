@@ -29,6 +29,17 @@ jobs:
           path: dist
           retention-days: 7
 
+  e2e:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+      - run: mise run install
+      - run: bunx playwright install --with-deps chromium
+      - run: mise run build
+      - run: mise run e2e
+
   screenshots:
     needs: check
     runs-on: ubuntu-latest

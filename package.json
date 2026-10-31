@@ -16,6 +16,7 @@
     "format:check": "prettier --check .",
     "validate": "tsx scripts/validate-models.ts",
     "screenshots": "tsx scripts/capture-screenshots.ts",
+    "e2e": "tsx e2e/app.e2e.ts",
     "catalog:build": "tsx scripts/build-examples.ts"
   },
   "dependencies": {
