@@ -33,12 +33,29 @@ interface RRing {
     finish: string | null;
     accents: string[] | null;
     orientation: string | null;
+    /** Optional fine-tuning overrides, shallow-merged per section onto the derived spec. */
+    tune?: {
+      head?: Record<string, number | string | boolean>;
+      shank?: Record<string, number | string | boolean>;
+      center?: Record<string, unknown>;
+      accent?: Record<string, unknown>;
+      placement?: Record<string, unknown>;
+      finish?: string;
+    };
   } | null;
   band: {
     style: string | null;
     metals: string[] | null;
     stones: string | null;
     widthMm: number | null;
+    tune?: {
+      params?: Record<string, number | string | boolean>;
+      thicknessMm?: number;
+      accent?: Record<string, unknown>;
+      finish?: string;
+      fit?: 'auto' | 'flush' | 'contour';
+      metal2?: string;
+    };
   } | null;
   notes: string | null;
 }
@@ -140,6 +157,21 @@ function engagementFrom(r: RRing): EngagementSpec {
       raise: headId.startsWith('bezel') || headId === 'flush-gypsy' ? 0.2 : 1.2,
     },
     finish,
+  } as EngagementSpec;
+}
+
+function tuneEngagement(
+  spec: EngagementSpec,
+  t: NonNullable<NonNullable<RRing['engagement']>['tune']>,
+): EngagementSpec {
+  return {
+    ...spec,
+    center: { ...spec.center, ...(t.center as object) },
+    accentStone: { ...spec.accentStone, ...(t.accent as object) },
+    head: { ...spec.head, params: { ...spec.head.params, ...t.head } },
+    shank: { ...spec.shank, params: { ...spec.shank.params, ...t.shank } },
+    placement: { ...spec.placement, ...(t.placement as object) },
+    finish: t.finish && findModel('finish', t.finish) ? t.finish : spec.finish,
   };
 }
 
@@ -150,20 +182,27 @@ function bandFrom(r: RRing, fallbackMetal: string): BandSpec {
   const m0 = metalId(b.metals?.[0], fallbackMetal);
   const m1 = metalId(b.metals?.[1], 'rose-gold-14k');
   const mens = style.startsWith('mens');
+  const t = b.tune ?? {};
   return {
     ...base,
+    params: { ...base.params, ...t.params },
+    accentStone: { ...base.accentStone, ...(t.accent as object) },
+    fit: t.fit ?? base.fit,
+    finish: t.finish && findModel('finish', t.finish) ? t.finish : base.finish,
     style,
     metal: m0,
-    metal2: m1,
+    metal2: t.metal2 ? metalId(t.metal2, m1) : m1,
     widthMm: b.widthMm && b.widthMm >= 1.2 && b.widthMm <= 10 ? b.widthMm : mens ? 6 : 2.6,
-    thicknessMm: mens ? 2.2 : 1.8,
+    thicknessMm: t.thicknessMm ?? (mens ? 2.2 : 1.8),
   };
 }
 
 const families = new Set<string>();
 const out = records.map((r) => {
   const now = '2026-10-31T00:00:00.000Z';
-  const engagement = r.engagement ? engagementFrom(r) : { ...defaultEngagement() };
+  const engagement = r.engagement
+    ? tuneEngagement(engagementFrom(r), r.engagement.tune ?? {})
+    : { ...defaultEngagement() };
   if (!r.engagement && r.band?.metals?.[0]) {
     const m = metalId(r.band.metals[0], 'white-gold-14k');
     engagement.head.metal = m;
