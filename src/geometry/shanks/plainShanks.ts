@@ -2,11 +2,12 @@
 import type { Params } from '@/models/types';
 import { registerShankBuilder } from '../builders';
 import type { ShankCtx, ShankResult } from '../types';
-import type { ProfilePoint } from '../helpers';
+import { sweepRing, type ProfilePoint } from '../helpers';
 import {
   TAU,
   bandSection,
   clamp,
+  facet,
   metal,
   num,
   outerExpFromRoundness,
@@ -16,6 +17,7 @@ import {
   taperedBand,
   thickAt,
   widthAt,
+  type SweepArgs,
   type Taper,
 } from './common';
 
@@ -30,7 +32,48 @@ interface PlainDefaults {
   split: number;
 }
 
-function plain(label: string, d: PlainDefaults, opts: { knife?: boolean; comfort?: boolean } = {}) {
+/**
+ * Flat-topped section with small 45 degree chamfers on the top edges (the bright edge lines of a flat band) and a
+ * softly rounded inside. Crease points are doubled so the flats and chamfers stay crisp under smooth shading.
+ */
+function flatSection(R: number, w: number, t: number, chamfer: number, innerExp: number): ProfilePoint[] {
+  const hw = w / 2;
+  const hBot = t * 0.35;
+  const rMid = R + hBot;
+  const c = Math.min(chamfer, hw * 0.3, t * 0.25);
+  const out: ProfilePoint[] = [];
+  const nIn = 12;
+  for (let i = 0; i <= nIn; i++) {
+    const a = Math.PI + (i / nIn) * Math.PI;
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
+    out.push([
+      hw * Math.sign(ca) * Math.abs(ca) ** (2 / innerExp),
+      rMid + hBot * Math.sign(sa) * Math.abs(sa) ** (2 / innerExp),
+    ]);
+  }
+  const top = R + t;
+  const crisp: ProfilePoint[] = [
+    [hw, rMid],
+    [hw, top - c],
+    [hw, top - c],
+    [hw - c, top],
+    [hw - c, top],
+    [0, top],
+    [-hw + c, top],
+    [-hw + c, top],
+    [-hw, top - c],
+    [-hw, top - c],
+    [-hw, rMid],
+  ];
+  return [...out, ...crisp];
+}
+
+function plain(
+  label: string,
+  d: PlainDefaults,
+  opts: { knife?: boolean; comfort?: boolean; flat?: boolean } = {},
+) {
   return (ctx: ShankCtx): ShankResult => {
     const p = ctx.params;
     const R = ctx.innerRadius;
@@ -47,6 +90,14 @@ function plain(label: string, d: PlainDefaults, opts: { knife?: boolean; comfort
       const dome = num(p, 'innerDome', 0.35, 0.1, 0.6);
       innerExp = 2.2;
       split = 1 - dome;
+    }
+    if (opts.flat) {
+      const chamfer = num(p, 'roundness', d.roundness, 0, 1) * 0.6 + 0.12;
+      const fg = sweep({
+        segments: 160,
+        profile: (th) => flatSection(R, widthAt(tp, th), thickAt(tp, th), chamfer, innerExp),
+      });
+      return { parts: [metal([fg], label)], seatY: R + tp.tTop, topWidth: tp.wTop };
     }
     const g = taperedBand(R, tp, { outerExp, innerExp, split, n: 24, smoothProfile: !opts.knife });
     return { parts: [metal([g], label)], seatY: R + tp.tTop, topWidth: tp.wTop };
@@ -68,16 +119,20 @@ registerShankBuilder(
 );
 registerShankBuilder(
   'plain-flat',
-  plain('plain flat shank', {
-    w: 2.2,
-    wTop: 2.3,
-    t: 1.6,
-    tTop: 1.8,
-    taperDeg: 70,
-    roundness: 0.05,
-    innerExp: 5,
-    split: 0.5,
-  }),
+  plain(
+    'plain flat shank',
+    {
+      w: 2.2,
+      wTop: 2.3,
+      t: 1.6,
+      tTop: 1.8,
+      taperDeg: 70,
+      roundness: 0.05,
+      innerExp: 5,
+      split: 0.5,
+    },
+    { flat: true },
+  ),
 );
 registerShankBuilder(
   'knife-edge',
@@ -149,7 +204,7 @@ function hammered(ctx: ShankCtx): ShankResult {
   const p: Params = ctx.params;
   const R = ctx.innerRadius;
   const tp: Taper = readTaper(p, { w: 2.4, wTop: 2.5, t: 1.8, tTop: 2.0, taperDeg: 70 });
-  const depth = num(p, 'dentDepthMm', 0.12, 0, 0.3);
+  const depth = num(p, 'dentDepthMm', 0.15, 0, 0.3);
   const cell = num(p, 'dentSizeMm', 1.1, 0.5, 2.5);
   const seed = Math.round(num(p, 'seed', 7, 1, 9999));
   const rand = rng(seed);
@@ -183,7 +238,8 @@ function hammered(ctx: ShankCtx): ShankResult {
   };
   const outerExp = outerExpFromRoundness(num(p, 'roundness', 0.5, 0, 1));
   const n = 32;
-  const g = sweep({
+  // planished metal reads as small flat facets: per-face normals
+  const g = hammerFacets({
     segments: 240,
     profile: (th) => {
       const w = widthAt(tp, th);
@@ -209,3 +265,7 @@ function hammered(ctx: ShankCtx): ShankResult {
   };
 }
 registerShankBuilder('hammered', hammered);
+
+function hammerFacets(a: SweepArgs) {
+  return facet(sweepRing({ smoothProfile: true, ...a }));
+}

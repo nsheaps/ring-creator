@@ -279,7 +279,7 @@ export const shanks: ShankModel[] = [
     builder: 'pave',
     summary: 'Tiny stones set in a row along the shoulders, held by little metal beads.',
     description:
-      'In a pave shank, small accent stones sit close together along the top of the band, each held by tiny beads raised from the metal. The effect is a line of continuous sparkle that leads the eye to the centre stone.\n\nCoverage can run from just the shoulders to most of the way round. Melee stones occasionally loosen, so a yearly check is wise.',
+      'In a pave shank, small accent stones sit almost touching in a bright-cut groove along the top of the band, each held by tiny beads raised from the metal and shared with its neighbours. The effect is a line of continuous sparkle that leads the eye to the centre stone.\n\nCoverage can run from just the shoulders to most of the way round. Melee stones occasionally loosen, so a yearly check is wise.',
     tags: ['pave', 'sparkle', 'accent-stones', 'melee'],
     pros: ['Lots of extra sparkle', 'Makes the ring look fuller', 'Works with any head'],
     cons: ['Harder to resize', 'Small stones can work loose'],
@@ -290,7 +290,7 @@ export const shanks: ShankModel[] = [
       roundness: 0.3,
       coverage: 0.5,
       stoneSizeMm: 0,
-      stoneGapMm: 0.15,
+      stoneGapMm: 0.08,
     },
     controls: [
       ...sizeControls,
@@ -509,7 +509,7 @@ export const shanks: ShankModel[] = [
     cons: ['Texture is hard to restore after resizing', 'Less mirror-like brilliance'],
     bestFor: ['Rustic and nature themes', 'Active lifestyles'],
     related: ['wide', 'twig', 'plain-flat'],
-    params: { ...sized(1.8, 2.0, 2.4, 2.5), roundness: 0.5, dentSizeMm: 1.1, dentDepthMm: 0.12, seed: 7 },
+    params: { ...sized(1.8, 2.0, 2.4, 2.5), roundness: 0.5, dentSizeMm: 1.1, dentDepthMm: 0.15, seed: 7 },
     controls: [
       ...sizeControls,
       roundness,

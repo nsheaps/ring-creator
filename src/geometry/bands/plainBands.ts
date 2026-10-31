@@ -43,7 +43,8 @@ export function profileSection(
   const innerDome = comfortFit ? Math.min(T * 0.18, W * 0.06) : 0;
   switch (kind) {
     case 'flat':
-      return makeSection(W, T, R, { dome: 0, innerDome, corner: Math.min(0.3, T * 0.2) });
+      // crisp flat top with a fine chamfer on each edge: reads as two bright lines along the band
+      return makeSection(W, T, R, { dome: 0, innerDome, corner: 0.06, bevel: Math.min(0.18, W * 0.08) });
     case 'beveled':
       return makeSection(W, T, R, { dome: 0, innerDome, corner: 0.12, bevel: Math.min(W * 0.18, 1.2) });
     case 'half-round':
@@ -67,7 +68,17 @@ function plain(kind: ProfileKind) {
     const s = profileSection(k, W, T, R, comfort);
     const z = contourZ(ctx);
     return parts(
-      part('band-metal', [sweepSection(s, { z, smooth: k !== 'knife' && k !== 'beveled' })], `${k} band`),
+      part(
+        'band-metal',
+        [
+          sweepSection(s, {
+            z,
+            smooth: k !== 'knife' && k !== 'beveled' && k !== 'flat',
+            n: k === 'flat' ? 20 : 14,
+          }),
+        ],
+        `${k} band`,
+      ),
     );
   };
 }

@@ -86,7 +86,8 @@ function split(ctx: ShankCtx): ShankResult {
   const tp = readTaper(p, { w: 2.2, wTop: 2.4, t: 1.7, tTop: 1.8, taperDeg: 70 });
   const outerExp = outerExpFromRoundness(num(p, 'roundness', 0.7, 0, 1));
   const splitAng = deg(num(p, 'splitAngleDeg', 55, 25, 85));
-  const autoGap = clamp(2 * (ctx.headHalfAlongFinger || 3) * 0.6 - tp.wTop, 0.8, 4);
+  // the arms open to roughly frame the head, leaving a clear window of finger between them
+  const autoGap = clamp(2 * (ctx.headHalfAlongFinger || 3) * 0.72 - tp.wTop, 1.0, 4.5);
   const gap = num(p, 'gapMm', 0, 0, 5) || autoGap;
   const prong = (w: number) => w * 0.55; // each half band is a bit more than half as wide
   const lower = sweep({
@@ -107,11 +108,12 @@ function split(ctx: ShankCtx): ShankResult {
         profile: (th) => {
           const w = widthAt(tp, th);
           const s = smooth(1 - fromTop(th) / splitAng);
-          const hw = prong(w);
+          // each arm tapers a little as it climbs towards the head
+          const hw = prong(w) * (1 - 0.14 * s);
           const centre = side * ((w - hw) / 2 + s * (gap / 2 + hw / 2 - (w - hw) / 2));
           return bandSection({
             w: hw,
-            t: thickAt(tp, th) * (1 - 0.08 * s),
+            t: thickAt(tp, th) * (1 - 0.1 * s),
             R,
             outerExp,
             innerExp: 3,
@@ -122,10 +124,10 @@ function split(ctx: ShankCtx): ShankResult {
       }),
     );
   }
-  const hwTop = prong(tp.wTop);
+  const hwTop = prong(tp.wTop) * 0.86;
   return {
     parts: [metal([lower, ...halves], 'split shank')],
-    seatY: R + tp.tTop * 0.92,
+    seatY: R + tp.tTop * 0.9,
     topWidth: gap + 2 * hwTop,
   };
 }

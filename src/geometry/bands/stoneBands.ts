@@ -4,6 +4,7 @@
  */
 import * as THREE from 'three';
 import { registerBandBuilder } from '../builders';
+import { fitStones, type ProfilePoint } from '../helpers';
 import type { BandCtx, Part } from '../types';
 import {
   accentStone,
@@ -25,6 +26,7 @@ import {
   ringPt,
   rod,
   segs,
+  slicePoly,
   stations,
   str,
   sweep,
@@ -56,56 +58,73 @@ function seatSection(W: number, T: number, R: number): Section {
   });
 }
 
-interface Row {
-  stones: THREE.BufferGeometry[];
-  metal: THREE.BufferGeometry[];
-}
-
 // ---------------------------------------------------------------------------------------------
 // Shared-prong eternity
 // ---------------------------------------------------------------------------------------------
 
-function sharedProngRow(ctx: BandCtx, cov: Coverage, z: ZFn | undefined): Part[] {
+function sharedProngRow(ctx: BandCtx, cov: Coverage, z: ZFn | undefined, scallop: boolean): Part[] {
   const { W, T, R } = dims(ctx);
-  // widest stone whose edge prongs stay inside the band width
+  // widest stone whose prongs stay inside the band width
   let w = stoneWidth(ctx, W);
-  for (let i = 0; i < 20 && w / 2 + prongR(w) * 0.75 > W / 2 - 0.02; i++) w *= 0.95;
-  const st = accentStone(ctx, w);
-  const gap = num(ctx.params, 'gapMm', 0.25, 0.05, 1.5);
+  for (let i = 0; i < 20 && w / 2 + prongR(w) * 0.6 > W / 2 - 0.02; i++) w *= 0.95;
+  const gap = num(ctx.params, 'gapMm', 0.12, 0.05, 1.5);
   const rTop = R + T;
+  const probe = accentStone(ctx, w);
   // girdle a little above the metal; keep the culet inside the metal
-  const rg = Math.max(rTop + st.built.crownHeight * 0.1, R + st.built.pavilionDepth + 0.25);
-  const body = seatSection(W, T, R);
+  const rg = Math.max(rTop + probe.built.crownHeight * 0.1, R + probe.built.pavilionDepth + 0.25);
   const arc = coverageArc(cov);
-  const pitch = st.length + gap;
-  const angles = stations(arc[0], arc[1], rg, pitch);
-  const row: Row = { stones: [], metal: [sweepSection(body, { z })] };
-  row.stones.push(
-    ...instances(
-      st.built.geometry,
-      angles.map((t) => ringFrame(t, 0, rg, z)),
-    ),
-  );
-  const pr = prongR(w);
+  // stone count math: a full circle shrinks the stones a touch so the row closes with even gaps
+  const fit = fitStones(arc[0], arc[1], rg, probe.length, gap);
+  const st = fit.size < probe.length - 1e-6 ? accentStone(ctx, (w * fit.size) / probe.length) : probe;
+  const angles = fit.angles;
+  const sw = st.width;
+  const pr = prongR(sw);
+  // the body is only as wide as the row needs: stones sit proud with prongs on the body edge
+  const Wb = Math.min(W, sw + pr * 1.2);
+  const body = seatSection(Wb, T, R);
   const full = cov === 'full';
-  const dA = angles.length > 1 ? angles[1] - angles[0] : 0.3;
-  const prongAngles: number[] = [];
-  for (let i = 0; i < angles.length; i++) {
-    if (i > 0 || full) prongAngles.push(angles[i] - dA / 2);
-  }
-  prongAngles.push(angles[angles.length - 1] + dA / 2);
-  if (full) prongAngles.pop();
-  const zEdge = w / 2 - pr * 0.25;
+  const dA = angles.length > 1 ? angles[1] - angles[0] : fit.pitch / rg;
+  const prongAngles: number[] = angles.map((t) => t - dA / 2);
+  if (!full && angles.length) prongAngles.push(angles[angles.length - 1] + dA / 2);
+  const metal: THREE.BufferGeometry[] = [];
+  if (scallop && angles.length) {
+    // shared-prong look: the side walls dip in a U under every stone, showing its pavilion from the side
+    const dip = Math.min(T * 0.45, st.built.pavilionDepth * 0.7);
+    const first = prongAngles[0];
+    const last = prongAngles[prongAngles.length - 1];
+    const n = 16;
+    metal.push(
+      sweep({
+        segments: segs(Math.min(900, Math.max(160, angles.length * 14)), z),
+        zOffset: z,
+        smoothProfile: true,
+        profile: (theta) => {
+          let phase = (theta - first) / dA;
+          if (full) phase = ((phase % 1) + 1) % 1;
+          const inside = full || (theta >= first && theta <= last);
+          const f = inside ? Math.sin(Math.PI * clamp(phase - Math.floor(phase), 0, 1)) ** 0.7 : 0;
+          const sec: Section = { W: Wb, bot: body.bot, top: (u) => body.top(u) - dip * f };
+          return slicePoly(sec, -Wb / 2, Wb / 2, n);
+        },
+      }),
+    );
+  } else metal.push(sweepSection(body, { z }));
+  const stones = instances(
+    st.built.geometry,
+    angles.map((t) => ringFrame(t, 0, rg, z)),
+  );
+  // each prong sits in the V between two round girdles and leans over both of them
+  const zp = Math.min(Wb / 2 - pr * 0.6, (sw / 2) * 0.74);
   const tipR = rg + st.built.crownHeight * 0.45;
   for (const t of prongAngles)
-    for (const u of [-zEdge, zEdge]) {
-      const a = ringPt(t, u, rTop - 0.3, z);
-      const b = ringPt(t, u, tipR, z);
-      row.metal.push(...rod(a, b, pr, pr * 0.9));
+    for (const u of [-zp, zp]) {
+      const a = ringPt(t, u, rTop - 0.35, z);
+      const b = ringPt(t, u * 0.93, tipR, z);
+      metal.push(...rod(a, b, pr, pr * 0.85));
     }
   return parts(
-    part('band-metal', row.metal, `shared-prong ${cov}`),
-    part('band-stone', row.stones, 'eternity stones'),
+    part('band-metal', metal, `${scallop ? 'shared-prong' : 'prong'} ${cov}`),
+    part('band-stone', stones, 'eternity stones'),
   );
 }
 
@@ -144,17 +163,23 @@ function channelRow(ctx: BandCtx, cov: Coverage, z: ZFn | undefined): Part[] {
         const u = -half + (2 * half * i) / (n - 1);
         pts.push([u, s.bot(u)]);
       }
+      // bright-cut chamfer on the inside edge of each wall, as deep as the groove allows
+      const e = Math.min(0.1, Math.max(0, s.top(inner) - fl) * 0.5);
       pts.push([half, s.top(half)]);
-      pts.push([inner, s.top(inner)]);
-      pts.push([inner, Math.min(fl, s.top(inner) - 0.01)]);
-      pts.push([-inner, Math.min(fl, s.top(-inner) - 0.01)]);
-      pts.push([-inner, s.top(-inner)]);
+      pts.push([inner + e, s.top(inner + e)]);
+      pts.push([inner, s.top(inner) - e]);
+      pts.push([inner, Math.min(fl, s.top(inner) - e - 0.01)]);
+      pts.push([-inner, Math.min(fl, s.top(-inner) - e - 0.01)]);
+      pts.push([-inner, s.top(-inner) - e]);
+      pts.push([-inner - e, s.top(-inner - e)]);
       pts.push([-half, s.top(-half)]);
       return pts;
     },
   });
   const gap = num(ctx.params, 'gapMm', 0.08, 0, 1);
-  const angles = stations(arc[0], arc[1], rg, st.length + gap);
+  const fit = fitStones(arc[0], arc[1], rg, st.length, gap);
+  if (fit.size < st.length - 1e-6) st = accentStone(ctx, (w * fit.size) / st.length);
+  const angles = fit.angles;
   const stones = instances(
     st.built.geometry,
     angles.map((t) => ringFrame(t, 0, rg, z)),
@@ -210,14 +235,49 @@ function bezelRow(ctx: BandCtx, cov: Coverage, z: ZFn | undefined, frameSides = 
 // Pave
 // ---------------------------------------------------------------------------------------------
 
+/**
+ * Profile of `s` with a bright-cut trough (half width g, bevel b, depth d) cut into the top.
+ * CCW in (u, r): inner surface left -> right, then the outer surface right -> left with the trough and bevel
+ * edges doubled so they stay crisp under smooth shading.
+ */
+function troughPoly(s: Section, g: number, b: number, d: number): ProfilePoint[] {
+  const h = s.W / 2;
+  const out: ProfilePoint[] = [];
+  const nIn = 12;
+  for (let i = 0; i < nIn; i++) {
+    const u = -h * Math.cos((Math.PI * i) / (nIn - 1));
+    out.push([u, s.bot(u)]);
+  }
+  const gg = Math.min(g, h - 0.2);
+  const bb = Math.max(0.02, Math.min(b, h - gg - 0.1));
+  const cut = (u: number) => {
+    const x = Math.abs(u);
+    if (x <= gg) return d;
+    if (x >= gg + bb) return 0;
+    return d * (1 - (x - gg) / bb);
+  };
+  const side: number[] = [h, h];
+  for (let i = 1; i <= 5; i++) side.push(h - ((h - gg - bb) * i) / 5);
+  const right = [...side, gg + bb, gg, gg, 0];
+  const us = [
+    ...right,
+    ...right
+      .slice(0, -1)
+      .reverse()
+      .map((u) => -u),
+  ];
+  for (const u of us) out.push([u, Math.max(s.bot(u) + 0.05, s.top(u) - cut(u))]);
+  return out;
+}
+
 function paveRow(ctx: BandCtx, cov: Coverage, z: ZFn | undefined): Part[] {
   const { W, T, R } = dims(ctx);
   const rows = Math.round(num(ctx.params, 'rows', 1, 1, 3));
   const edge = bool(ctx.params, 'milgrainEdges', true);
-  const rim = edge ? 0.45 : 0.25;
+  const rim = edge ? 0.5 : 0.3;
   const usable = W - 2 * rim;
-  const w = clamp(Math.min(stoneWidth(ctx, 2.2), usable / rows - 0.12), 0.8, 2.2);
-  const st = accentStone(ctx, w, 'round-brilliant');
+  const gap = 0.08;
+  let w = clamp(Math.min(stoneWidth(ctx, 2.2), usable / rows - gap), 0.8, 2.2);
   const s = makeSection(W, T, R, {
     dome: 0,
     innerDome: Math.min(T * 0.15, 0.25),
@@ -225,33 +285,55 @@ function paveRow(ctx: BandCtx, cov: Coverage, z: ZFn | undefined): Part[] {
     bevel: 0,
   });
   const rTop = s.top(0);
-  const rg = Math.max(rTop - st.built.crownHeight * 0.35, R + st.built.pavilionDepth + 0.15);
   const arc = coverageArc(cov);
-  const pitch = st.length + 0.12;
-  const rowU = Array.from({ length: rows }, (_, i) => (i - (rows - 1) / 2) * (w + 0.12));
+  const probe = accentStone(ctx, w, 'round-brilliant');
+  const rg0 = Math.max(rTop - probe.built.crownHeight * 0.7, R + probe.built.pavilionDepth + 0.15);
+  const fit = fitStones(arc[0], arc[1], rg0, w, gap);
+  if (fit.size < w - 1e-6) w = fit.size;
+  const st = w === probe.length ? probe : accentStone(ctx, w, 'round-brilliant');
+  const ch = st.built.crownHeight;
+  const rg = Math.max(rTop - ch * 0.7, R + st.built.pavilionDepth + 0.15);
+  // bright-cut trough the width of the stone rows
+  const rowsW = rows * w + (rows - 1) * gap;
+  const g = rowsW / 2 + 0.03;
+  const bev = clamp(w * 0.22, 0.15, 0.3);
+  const depth = Math.max(0, rTop - (rg - 0.05));
+  const base = fit.angles;
+  const dA = base.length > 1 ? base[1] - base[0] : fit.pitch / rg;
+  const span: [number, number] =
+    cov === 'full' ? arc : [base[0] - dA * 0.6, base[base.length - 1] + dA * 0.6];
+  const body = sweep({
+    segments: segs(cov === 'full' ? 160 : 220, z),
+    zOffset: z,
+    smoothProfile: true,
+    profile: (theta) => troughPoly(s, g, bev, depth * arcMask(theta, span, 0.05)),
+  });
+  const rowU = Array.from({ length: rows }, (_, i) => (i - (rows - 1) / 2) * (w + gap));
   const stoneMats: THREE.Matrix4[] = [];
   const beadMats: THREE.Matrix4[] = [];
-  const beadR = clamp(w * 0.16 + 0.05, 0.13, 0.3);
-  const beadU = rowU.map((u) => [u - w / 2 - 0.02, u + w / 2 + 0.02]).flat();
-  const base = stations(arc[0], arc[1], rg, pitch);
-  const dA = base.length > 1 ? base[1] - base[0] : pitch / rg;
+  const beadR = clamp(w * 0.19, 0.14, 0.32);
+  const beadLift = ch * 0.3;
   rowU.forEach((u, ri) => {
     const off = ri % 2 === 1 ? dA / 2 : 0;
     for (const t of base) {
-      if (off && cov !== 'full' && t + off > arc[1]) continue;
+      if (off && cov !== 'full' && t + off > base[base.length - 1] + 1e-9) continue;
       stoneMats.push(ringFrame(t + off, u, rg, z));
     }
   });
-  const uniqueBeadU = Array.from(new Set(beadU.map((u) => Math.round(u * 1000) / 1000)));
-  for (const u of uniqueBeadU)
-    for (const t of base) beadMats.push(ringFrame(t + dA / 2, u, rg + st.built.crownHeight * 0.2, z));
-  const metal: THREE.BufferGeometry[] = [
-    sweepSection(s, { z, smooth: false }),
-    ...instances(new THREE.SphereGeometry(beadR, 7, 4), beadMats),
-  ];
+  // shared beads: in every gap along each row, one pair holding the two neighbours; rows share their inner beads
+  const beadU = new Set<number>();
+  rowU.forEach((u) => {
+    beadU.add(Math.round((u - (w / 2) * 0.78) * 1000) / 1000);
+    beadU.add(Math.round((u + (w / 2) * 0.78) * 1000) / 1000);
+  });
+  const beadAngles =
+    cov === 'full' ? base.map((t) => t + dA / 2) : [base[0] - dA / 2, ...base.map((t) => t + dA / 2)];
+  for (const u of beadU) for (const t of beadAngles) beadMats.push(ringFrame(t, u, rg + beadLift, z));
+  const metal: THREE.BufferGeometry[] = [body, ...instances(new THREE.SphereGeometry(beadR, 8, 6), beadMats)];
   if (edge) {
-    const mb = 0.17;
-    metal.push(...milgrainRow(s, -(W / 2 - mb - 0.08), mb, z), ...milgrainRow(s, W / 2 - mb - 0.08, mb, z));
+    const mb = 0.15;
+    const ue = W / 2 - mb - 0.1;
+    metal.push(...milgrainRow(s, -ue, mb, z), ...milgrainRow(s, ue, mb, z));
   }
   return parts(
     part('band-metal', metal, `pave ${cov}`),
@@ -259,19 +341,24 @@ function paveRow(ctx: BandCtx, cov: Coverage, z: ZFn | undefined): Part[] {
   );
 }
 
-function row(ctx: BandCtx, defSetting: Setting, defCov: Coverage): Part[] {
+function row(ctx: BandCtx, defSetting: Setting, defCov: Coverage, scallopDefault = false): Part[] {
   const cov = str(ctx.params, 'coverage', COVERAGES, defCov);
   const setting = str(ctx.params, 'setting', SETTINGS, defSetting);
   const z = contourZ(ctx);
   if (setting === 'channel') return channelRow(ctx, cov, z);
   if (setting === 'bezel') return bezelRow(ctx, cov, z);
-  return sharedProngRow(ctx, cov, z);
+  return sharedProngRow(
+    ctx,
+    cov,
+    z,
+    bool(ctx.params, 'scallop', defSetting === 'shared-prong' && scallopDefault),
+  );
 }
 
 registerBandBuilder('half-eternity', (ctx) => row(ctx, 'shared-prong', 'half'));
 registerBandBuilder('three-quarter-eternity', (ctx) => row(ctx, 'shared-prong', 'three-quarter'));
 registerBandBuilder('full-eternity', (ctx) => row(ctx, 'shared-prong', 'full'));
-registerBandBuilder('shared-prong', (ctx) => row(ctx, 'shared-prong', 'half'));
+registerBandBuilder('shared-prong', (ctx) => row(ctx, 'shared-prong', 'half', true));
 registerBandBuilder('channel-band', (ctx) =>
   channelRow(ctx, str(ctx.params, 'coverage', COVERAGES, 'half'), contourZ(ctx)),
 );

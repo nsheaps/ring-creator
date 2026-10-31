@@ -355,6 +355,20 @@ describe('model-specific invariants', () => {
         edgeMin = Math.min(edgeMin, Math.hypot(a[i], a[i + 1]));
     expect(edgeMin).toBeGreaterThan(8.5 + 0.1);
   });
+  it('pave sets stones proud of a bright-cut trough, held by beads above the metal', () => {
+    const res = build('pave');
+    const stones = res.parts.filter((p) => p.slot === 'accent-stone');
+    const metal = res.parts.filter((p) => p.slot === 'shank-metal');
+    // stone tables rise above the polished rim, and the beads rise above the stones' girdles
+    expect(stats(stones).maxRadial).toBeGreaterThan(8.5 + 1.8);
+    expect(stats(metal).tris).toBeGreaterThan(stats(build('plain-flat').parts).tris * 1.5);
+  });
+  it('twisted and braided wires are round tubes (more strands, more wires)', () => {
+    const two = stats(build('twisted', { strands: 2 }).parts);
+    const four = stats(build('twisted', { strands: 4 }).parts);
+    expect(four.tris).toBeGreaterThan(two.tris);
+    expect(two.box.max.z).toBeCloseTo(2.3 / 2, 1);
+  });
   it('milgrain and filigree add bead detail beyond a plain band', () => {
     const plain = stats(build('plain-flat').parts).tris;
     expect(stats(build('milgrain').parts).tris).toBeGreaterThan(plain * 2);

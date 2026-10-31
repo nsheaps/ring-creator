@@ -8,6 +8,7 @@ import { gems } from '@/models/data/gems';
 import { buildStoneByCut } from '../stones';
 import './index';
 import { BAND_BUILDER_KEYS } from './index';
+import { fitStones } from '../helpers';
 import { signedVolume } from './common';
 
 const TRI_BUDGET = 60000;
@@ -316,6 +317,30 @@ describe('band invariants', () => {
     ]) {
       const stones = slot(build(id, {}, { thickness: 1.4, accentSize: 2.6 }), 'band-stone');
       if (stones.length) expect(stats(stones).minR, id).toBeGreaterThan(R + 0.05);
+    }
+  });
+
+  it('full eternity stones close the circle with even gaps; partial rows keep the exact pitch', () => {
+    const full = fitStones(0, Math.PI * 2, 10, 1.5, 0.12);
+    expect(full.size).toBeLessThanOrEqual(1.5);
+    expect(full.size).toBeGreaterThan(1.3);
+    expect(full.count * full.pitch).toBeCloseTo(Math.PI * 2 * 10, 6);
+    const part = fitStones(0, Math.PI, 10, 1.5, 0.12);
+    expect(part.size).toBe(1.5);
+    expect((part.angles[1] - part.angles[0]) * 10).toBeCloseTo(1.62, 6);
+    expect(part.angles[0] + part.angles[part.count - 1]).toBeCloseTo(Math.PI, 6);
+  });
+
+  it('shared-prong band has scalloped sides that the eternity styles do not', () => {
+    const a = stats(slot(build('shared-prong'), 'band-metal'));
+    const b = stats(slot(build('shared-prong', { scallop: false }), 'band-metal'));
+    expect(a.tris).not.toBe(b.tris);
+  });
+
+  it('rope and braid strands are round wires that sit on the finger', () => {
+    for (const id of ['twisted-band', 'braided-band']) {
+      const s = stats(build(id));
+      expect(s.minR, id).toBeCloseTo(R, 2);
     }
   });
 

@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { registerBandBuilder } from '../builders';
 import type { BandCtx, Part } from '../types';
-import type { ProfilePoint } from '../helpers';
+import { braidStrands, ropeStrands, type ProfilePoint } from '../helpers';
 import { profileSection, PROFILE_KINDS } from './plainBands';
 import {
   accentStone,
@@ -18,6 +18,7 @@ import {
   makeSection,
   milgrainRow,
   num,
+  outward,
   part,
   parts,
   ringFrame,
@@ -58,58 +59,26 @@ function strand(
 }
 
 // ---------------------------------------------------------------------------------------------
-// Twisted rope (two strands)
+// Twisted rope (two round wires wound around each other) and braid (three flat ribbons plaited)
 // ---------------------------------------------------------------------------------------------
 
 registerBandBuilder('twisted-band', (ctx) => {
   const { W, T, R } = dims(ctx);
   const z = contourZ(ctx);
-  const rho = Math.min(W * 0.27, T * 0.36);
-  const A = W / 2 - rho;
-  const B = Math.max(0, T / 2 - rho);
-  const rm = R + T / 2;
   const pitch = num(ctx.params, 'pitchMm', 4, 1.5, 12);
-  const twists = Math.max(6, Math.round((TAU * rm) / pitch));
-  const segments = Math.min(640, twists * 16);
-  const geo = [0, 1].map((k) =>
-    strand(
-      (t) => A * Math.cos(twists * t + k * Math.PI),
-      (t) => rm + B * Math.sin(twists * t + k * Math.PI),
-      rho,
-      segments,
-      z,
-    ),
-  );
+  const turns = Math.max(6, Math.round((TAU * (R + T / 2)) / pitch));
+  const geo = ropeStrands({ R, W, T, strands: 2, turns, z, wire: 1.1, budget: 40000 }).map((g) => outward(g));
   if (bool(ctx.params, 'twoTone', false))
     return parts(part('band-metal', [geo[0]], 'strand A'), part('band-metal2', [geo[1]], 'strand B'));
   return parts(part('band-metal', geo, 'twisted rope'));
 });
 
-// ---------------------------------------------------------------------------------------------
-// Braid (three strands, over-under)
-// ---------------------------------------------------------------------------------------------
-
 registerBandBuilder('braided-band', (ctx) => {
   const { W, T, R } = dims(ctx);
   const z = contourZ(ctx);
-  const rho = Math.min(W * 0.17, T * 0.33);
-  const A = W / 2 - rho;
-  const B = Math.max(0.05, T / 2 - rho);
-  const rm = R + T / 2;
   const pitch = num(ctx.params, 'pitchMm', 6, 2, 14);
-  const cycles = Math.max(4, Math.round((TAU * rm) / pitch));
-  const segments = Math.min(720, cycles * 24);
-  const geo = [0, 1, 2].map((k) => {
-    const ph = (k * TAU) / 3;
-    return strand(
-      (t) => A * Math.sin(cycles * t + ph),
-      (t) => rm + B * Math.sin(2 * (cycles * t + ph)),
-      rho,
-      segments,
-      z,
-      8,
-    );
-  });
+  const cycles = Math.max(4, Math.round((TAU * (R + T / 2)) / pitch));
+  const geo = braidStrands({ R, W, T, cycles, ribbon: W * 0.5, z, budget: 40000 }).map((g) => outward(g));
   if (bool(ctx.params, 'twoTone', false))
     return parts(
       part('band-metal', [geo[0], geo[2]], 'outer strands'),
