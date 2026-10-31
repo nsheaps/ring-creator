@@ -1,6 +1,17 @@
 import { registerStoneBuilder } from '../builders';
 import type { BuiltStone, StoneBuilder } from '../types';
-import { FacetMesh, clamp, pNum, pStr, nearestIndex, safeDims, uniqueParams, type V3 } from './mesh';
+import {
+  FacetMesh,
+  clamp,
+  joinRings,
+  pNum,
+  pStr,
+  nearestIndex,
+  safeDims,
+  uniqueParams,
+  type RingPt,
+  type V3,
+} from './mesh';
 import { makeShape, outlineCentroid } from './shapes';
 
 /**
@@ -8,7 +19,7 @@ import { makeShape, outlineCentroid } from './shapes';
  *
  * Params: shape, mains (k sectors; 8 for a round), tablePct (table width / stone width), crownPct (crown height / width),
  * girdlePct, starPct (star length 0..1 of table-to-girdle), lowerGirdlePct (0..1 of girdle-to-culet), culetPct (0 = pointed),
- * girdleSub (girdle segments per half sector), plus shape params (superP, tipPower, bulge, chamfer...).
+ * girdleSub (girdle segments per half sector), pavilionTiers (>= 2: chevron pavilion rows instead of long mains), plus shape params (superP, tipPower, bulge, chamfer...).
  *
  * Crown: table, k star facets, k kite bezels, 2k upper-girdle facets. Pavilion: k mains, 2k lower-girdle facets, culet.
  * Table at y = crownHeight, girdle band y in [-g/2, g/2], culet at y = -pavilionDepth; crownHeight + pavilionDepth = depth.
@@ -39,19 +50,26 @@ export const buildBrilliant: StoneBuilder = (dims, params, opts): BuiltStone => 
   const k = Math.max(3, Math.round(pNum(params, 'mains', 8)));
 
   if (opts.detail === 'low') {
+    // Melee / pave: no girdle band (invisible at this size), which buys a two-points-per-sector girdle so the crown
+    // gets star and bezel facets and the pavilion twice as many mains: small stones still sparkle as cut stones.
     const kl = Math.min(k, 8);
-    const ts = uniqueParams([...Array.from({ length: kl }, (_, i) => i / kl), ...shape.corners]);
-    const Gu = ts.map((t) => at(t, 1, yGu));
-    const Gl = ts.map((t) => at(t, 1, yGl));
-    const T = ts.map((t) => at(t, tr, yT));
-    mesh.fan(tableCenter, T);
-    mesh.strip(T, Gu);
-    mesh.strip(Gu, Gl);
-    mesh.fan(culetCenter, Gl);
+    const tsT = Array.from({ length: kl }, (_, i) => i / kl);
+    const ts = uniqueParams([...Array.from({ length: 2 * kl }, (_, i) => i / (2 * kl)), ...shape.corners]);
+    const G: RingPt[] = ts.map((t) => ({ t, p: at(t, 1, 0) }));
+    const T: RingPt[] = tsT.map((t) => ({ t, p: at(t, tr, yT) }));
+    mesh.fan(
+      tableCenter,
+      T.map((q) => q.p),
+    );
+    joinRings(mesh, T, G);
+    mesh.fan(
+      culetCenter,
+      G.map((q) => q.p),
+    );
     return {
       geometry: mesh.toGeometry(),
       outline: {
-        points: Gu.map((p) => [p[0], p[2]]),
+        points: G.map((q) => [q.p[0], q.p[2]]),
         corners: shape.corners.map((t) => nearestIndex(ts, t)),
       },
       crownHeight: crown,
@@ -108,31 +126,35 @@ export const buildBrilliant: StoneBuilder = (dims, params, opts): BuiltStone => 
   mesh.strip(Gu, Gl);
 
   // ---- pavilion
-  const cp = clamp(pNum(params, 'culetPct', 0), 0, 0.2);
-  const lg = clamp(pNum(params, 'lowerGirdlePct', 0.77), 0.3, 0.9);
-  const Lp: V3[] = [];
-  for (let i = 0; i < k; i++) {
-    const G = gl((2 * i + 1) * m);
-    const f = 1 - lg;
-    Lp.push([
-      culetCenter[0] + f * (G[0] - culetCenter[0]),
-      culetCenter[1] + f * (G[1] - culetCenter[1]),
-      culetCenter[2] + f * (G[2] - culetCenter[2]),
-    ]);
+  const tiers = Math.max(1, Math.min(4, Math.round(pNum(params, 'pavilionTiers', 1))));
+  if (tiers >= 2) buildChevronPavilion(mesh, tiers, k, at, yGl, yC, Gl, tj);
+  else {
+    const cp = clamp(pNum(params, 'culetPct', 0), 0, 0.2);
+    const lg = clamp(pNum(params, 'lowerGirdlePct', 0.77), 0.3, 0.9);
+    const Lp: V3[] = [];
+    for (let i = 0; i < k; i++) {
+      const G = gl((2 * i + 1) * m);
+      const f = 1 - lg;
+      Lp.push([
+        culetCenter[0] + f * (G[0] - culetCenter[0]),
+        culetCenter[1] + f * (G[1] - culetCenter[1]),
+        culetCenter[2] + f * (G[2] - culetCenter[2]),
+      ]);
+    }
+    const lAt = (i: number) => Lp[((i % k) + k) % k];
+    const Cp: V3[] = cp > 0 ? Array.from({ length: k }, (_, i) => at(i / k, cp, yC)) : [];
+    const cAt = (i: number): V3 => (cp > 0 ? Cp[((i % k) + k) % k] : culetCenter);
+    for (let i = 0; i < k; i++) {
+      const Gm = gl(2 * i * m);
+      // pavilion main (kite): culet, lower-girdle point, girdle main point, lower-girdle point
+      mesh.tri(cAt(i), lAt(i - 1), Gm);
+      mesh.tri(cAt(i), Gm, lAt(i));
+      if (cp > 0) mesh.tri(lAt(i), cAt(i), cAt(i + 1));
+      // lower girdle facets
+      for (let j = 2 * i * m; j < 2 * (i + 1) * m; j++) mesh.tri(lAt(i), gl(j), gl(j + 1));
+    }
+    if (cp > 0) mesh.fan(culetCenter, Cp); // open culet facet
   }
-  const lAt = (i: number) => Lp[((i % k) + k) % k];
-  const Cp: V3[] = cp > 0 ? Array.from({ length: k }, (_, i) => at(i / k, cp, yC)) : [];
-  const cAt = (i: number): V3 => (cp > 0 ? Cp[((i % k) + k) % k] : culetCenter);
-  for (let i = 0; i < k; i++) {
-    const Gm = gl(2 * i * m);
-    // pavilion main (kite): culet, lower-girdle point, girdle main point, lower-girdle point
-    mesh.tri(cAt(i), lAt(i - 1), Gm);
-    mesh.tri(cAt(i), Gm, lAt(i));
-    if (cp > 0) mesh.tri(lAt(i), cAt(i), cAt(i + 1));
-    // lower girdle facets
-    for (let j = 2 * i * m; j < 2 * (i + 1) * m; j++) mesh.tri(lAt(i), gl(j), gl(j + 1));
-  }
-  if (cp > 0) mesh.fan(culetCenter, Cp); // open culet facet
 
   const ts = Array.from({ length: N }, (_, j) => tj(j));
   return {
@@ -143,6 +165,55 @@ export const buildBrilliant: StoneBuilder = (dims, params, opts): BuiltStone => 
     girdleThickness: g,
   };
 };
+
+/**
+ * Chevron pavilion (princess, radiant, cushion): instead of k long mains meeting at the culet, the pavilion is cut in
+ * `tiers` rows. Each row is a ring of 2k points (sector mains + mid-sector points) and the mid points sit half a row
+ * lower than the mains, so neighbouring rows interlock as V-shaped chevrons. Rows follow a slightly convex profile
+ * (each row a little steeper than the one below), so straight-sided outlines do not collapse into one flat face.
+ */
+function buildChevronPavilion(
+  mesh: FacetMesh,
+  tiers: number,
+  k: number,
+  at: (t: number, r: number, y: number) => V3,
+  yGl: number,
+  yC: number,
+  Gl: V3[],
+  tj: (j: number) => number,
+): void {
+  const culet: V3 = at(0, 0, yC);
+  const n = 2 * k;
+  // radius fraction f (0 culet .. 1 girdle) -> height; the 1.2 power bows the profile outwards (steeper rows near the girdle)
+  const yAt = (f: number) => yC + (yGl - yC) * Math.pow(f, 1.2);
+  const rows: RingPt[][] = [];
+  for (let r = 1; r <= tiers; r++) {
+    const row: RingPt[] = [];
+    for (let i = 0; i < n; i++) {
+      const t = i / n;
+      const f = (i % 2 === 0 ? r : r - 0.5) / (tiers + 0.35);
+      row.push({ t, p: at(t, f, yAt(f)) });
+    }
+    rows.push(row);
+  }
+  mesh.fan(
+    culet,
+    rows[0].map((q) => q.p),
+  );
+  for (let r = 0; r + 1 < rows.length; r++) {
+    const a = rows[r];
+    const b = rows[r + 1];
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n;
+      mesh.quad(a[i].p, a[j].p, b[j].p, b[i].p);
+    }
+  }
+  joinRings(
+    mesh,
+    rows[rows.length - 1],
+    Gl.map((p, j) => ({ t: tj(j), p })),
+  );
+}
 
 /** Which side of the line a->b (projected on XZ) point p lies on. */
 function sideXZ(a: V3, b: V3, p: V3): number {

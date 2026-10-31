@@ -248,7 +248,7 @@ export const gems: GemModel[] = [
     density: 2.8,
     dispersion: 0.014,
     colors: [
-      c('peach-pink', 'Peach pink', '#f4c1b4', 'common'),
+      c('peach-pink', 'Peach pink', '#f2c3bd', 'common'),
       c('salmon', 'Salmon', '#f0a58f', 'uncommon'),
       c('pale-pink', 'Pale pink', '#f6d3dc', 'common'),
       c('rose', 'Rose', '#e892ae', 'rare'),

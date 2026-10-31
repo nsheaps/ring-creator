@@ -31,8 +31,8 @@ export const colorGrades: ColorGradeModel[] = [
     bestFor: ['Most engagement rings', 'Yellow and rose gold'],
     related: ['d-f', 'k-m', 'yellow-gold-18k'],
     letters: 'G-J',
-    tint: '#fffbee',
-    tintStrength: 0.08,
+    tint: '#fff4d6',
+    tintStrength: 0.22,
   },
   {
     kind: 'color-grade',
@@ -47,8 +47,8 @@ export const colorGrades: ColorGradeModel[] = [
     bestFor: ['Yellow and rose gold', 'Vintage styles', 'Budget builds'],
     related: ['g-j', 'n-r', 'old-european'],
     letters: 'K-M',
-    tint: '#fdf3c8',
-    tintStrength: 0.2,
+    tint: '#fbe6a6',
+    tintStrength: 0.45,
   },
   {
     kind: 'color-grade',
@@ -63,8 +63,8 @@ export const colorGrades: ColorGradeModel[] = [
     bestFor: ['Vintage styles', 'Warm-toned designs'],
     related: ['k-m', 's-z', 'yellow-gold-14k'],
     letters: 'N-R',
-    tint: '#f8e8a8',
-    tintStrength: 0.38,
+    tint: '#f4d88a',
+    tintStrength: 0.62,
   },
   {
     kind: 'color-grade',
@@ -79,7 +79,7 @@ export const colorGrades: ColorGradeModel[] = [
     bestFor: ['Rustic or antique-inspired designs'],
     related: ['n-r', 'diamond', 'yellow-gold-14k'],
     letters: 'S-Z',
-    tint: '#f1d98a',
-    tintStrength: 0.55,
+    tint: '#eec86a',
+    tintStrength: 0.78,
   },
 ];

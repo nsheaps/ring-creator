@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { disposeGroup } from '@/geometry/assemble';
+import { buildStudioScene, disposeStudioScene } from './studio';
 
 export type CameraPreset = '3/4' | 'front' | 'top' | 'side';
 
@@ -38,6 +38,7 @@ export class RingViewer {
     toT: THREE.Vector3;
   } | null = null;
   private ray = new THREE.Raycaster();
+  private envTarget: THREE.WebGLRenderTarget | null = null;
 
   private onDblClick = (e: MouseEvent): void => {
     if (!this.content) return;
@@ -107,8 +108,8 @@ export class RingViewer {
   ) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
     this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.05;
+    this.renderer.toneMapping = THREE.NeutralToneMapping;
+    this.renderer.toneMappingExposure = 1.0;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.setClearColor(opts.background ?? '#000000', opts.transparent === false ? 1 : 0);
     el.appendChild(this.renderer.domElement);
@@ -121,12 +122,21 @@ export class RingViewer {
       '3D preview of the ring. Drag to rotate, scroll to zoom.',
     );
 
+    // Image-based light: a high-contrast jewellery studio (see studio.ts), prefiltered once per viewer.
     const pmrem = new THREE.PMREMGenerator(this.renderer);
-    this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+    const studio = buildStudioScene();
+    this.envTarget = pmrem.fromScene(studio, 0, 1, 200);
+    this.scene.environment = this.envTarget.texture;
+    disposeStudioScene(studio);
     pmrem.dispose();
-    const key = new THREE.DirectionalLight('#ffffff', 1.4);
-    key.position.set(20, 40, 30);
-    this.scene.add(key, new THREE.AmbientLight('#ffffff', 0.25));
+    // Small hard direct lights: they put pin-point glints on crown facets and crisp highlights on prongs.
+    const key = new THREE.DirectionalLight('#ffffff', 2.2);
+    key.position.set(18, 40, 26);
+    const rim = new THREE.DirectionalLight('#f4f7ff', 1.4);
+    rim.position.set(-30, 22, -12);
+    const kick = new THREE.DirectionalLight('#fff6ea', 1.1);
+    kick.position.set(-12, 30, 34);
+    this.scene.add(key, rim, kick, new THREE.HemisphereLight('#ffffff', '#202024', 0.25));
 
     this.camera.position.set(...PRESETS['3/4']);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -231,6 +241,7 @@ export class RingViewer {
     this.renderer.domElement.removeEventListener('dblclick', this.onDblClick);
     this.renderer.domElement.removeEventListener('keydown', this.onKey);
     this.controls.dispose();
+    this.envTarget?.dispose();
     if (this.content) disposeGroup(this.content);
     this.renderer.dispose();
     this.renderer.domElement.remove();
