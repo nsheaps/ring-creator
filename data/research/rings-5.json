@@ -72,13 +72,13 @@
   "engagement": {
    "stone": {
     "material": null,
-    "cut": null,
+    "cut": "oval",
     "carat": null,
     "colorName": null,
     "clarity": null
    },
    "head": "bezel-half",
-   "shank": null,
+   "shank": "comfort-fit",
    "metals": [
     "yellow-gold-18k"
    ],
@@ -114,7 +114,13 @@
    ],
    "finish": null,
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 1.5,
+     "topWidthMm": 1.5
+    }
+   }
   },
   "band": null,
   "notes": "Swirled platinum tension setting, 1.5 mm at top tapering to 2.2 mm; setting only, any center stone shape."
@@ -165,18 +171,24 @@
    "stone": {
     "material": null,
     "cut": "oval",
-    "carat": null,
+    "carat": 1.5,
     "colorName": null,
     "clarity": null
    },
    "head": "bezel-half",
-   "shank": null,
+   "shank": "wide",
    "metals": [
     "yellow-gold-14k"
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "east-west"
+   "orientation": "east-west",
+   "tune": {
+    "shank": {
+     "widthMm": 4.0,
+     "topWidthMm": 4.0
+    }
+   }
   },
   "band": null,
   "notes": "Wide minimal polished band (about 4 mm) with a half bezel for a 1.5-3.0 ct horizontal oval; setting only. Page text contradicts itself on gold colour; spec table says yellow."
@@ -290,7 +302,7 @@
    "stone": {
     "material": "lab-diamond",
     "cut": "emerald-cut",
-    "carat": null,
+    "carat": 2.0,
     "colorName": null,
     "clarity": null
    },
@@ -303,7 +315,18 @@
    "accents": [
     "second stone: pear cut"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "secondRatio": 0.8
+    },
+    "shank": {
+     "widthMm": 1.7,
+     "topWidthMm": 1.7,
+     "thicknessMm": 1.6,
+     "topThicknessMm": 1.6
+    }
+   }
   },
   "band": null,
   "notes": "Two-stone ring pairing an emerald cut and a pear on a 1.7 mm plain band. Shown with 2.0 ct + 1.5 ct; carats not given per stone. Shank id is nearest."
@@ -322,7 +345,7 @@
    "stone": {
     "material": "lab-diamond",
     "cut": "emerald-cut",
-    "carat": null,
+    "carat": 2.0,
     "colorName": null,
     "clarity": null
    },
@@ -336,7 +359,12 @@
     "second stone: pear cut",
     "0.13 ctw pave"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "secondRatio": 0.8
+    }
+   }
   },
   "band": null,
   "notes": "Same toi et moi layout with a 0.13 ctw pave band in rose gold."
@@ -355,7 +383,7 @@
    "stone": {
     "material": null,
     "cut": "emerald-cut",
-    "carat": null,
+    "carat": 2.0,
     "colorName": null,
     "clarity": null
    },
@@ -370,7 +398,12 @@
    "accents": [
     "second stone: pear cut"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "secondRatio": 0.8
+    }
+   }
   },
   "band": null,
   "notes": "Offered with diamond-alternative, moissanite or lab diamond stones; 10K options have no vocabulary id so are dropped from metals except as noted here."
@@ -512,7 +545,7 @@
    "stone": {
     "material": null,
     "cut": "cushion",
-    "carat": null,
+    "carat": 3.0,
     "colorName": null,
     "clarity": null
    },
@@ -525,7 +558,13 @@
    "accents": [
     "0.12 ct total diamond weight"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 1.8,
+     "topWidthMm": 1.8
+    }
+   }
   },
   "band": null,
   "notes": "Compass-point prongs on a split shank, 1.8 mm bandwidth; designed for an 8.1 mm (about 3 ct) cushion, setting only."
@@ -645,7 +684,13 @@
    ],
    "finish": null,
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 2.0,
+     "topWidthMm": 2.0
+    }
+   }
   },
   "band": null,
   "notes": "Shield-shaped stone in six prongs on a 2 mm flat-edge band; sold out."
@@ -663,7 +708,7 @@
   "engagement": {
    "stone": {
     "material": null,
-    "cut": null,
+    "cut": "emerald-cut",
     "carat": 1.0,
     "colorName": null,
     "clarity": null
@@ -711,7 +756,16 @@
    "accents": [
     "kite 0.43 ct F/G VS bezel set"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "secondRatio": 0.75
+    },
+    "shank": {
+     "widthMm": 2.2,
+     "topWidthMm": 2.2
+    }
+   }
   },
   "band": null,
   "notes": "Pre-owned mixed-shape pair: prong-set emerald cut plus a bezel-set kite; 2.2 mm band. Title says 2-tone but second metal is not stated."
@@ -764,7 +818,7 @@
     "colorName": null,
     "clarity": null
    },
-   "head": null,
+   "head": "solitaire-4-prong",
    "shank": "plain-round",
    "metals": [
     "yellow-gold-18k"
@@ -795,7 +849,7 @@
     "clarity": "VS"
    },
    "head": "three-stone",
-   "shank": null,
+   "shank": "plain-round",
    "metals": [
     "yellow-gold-14k"
    ],
@@ -803,7 +857,16 @@
    "accents": [
     "0.90 ct round side stones F-G VS"
    ],
-   "orientation": "east-west"
+   "orientation": "east-west",
+   "tune": {
+    "shank": {
+     "widthMm": 2.3,
+     "topWidthMm": 2.3
+    },
+    "accent": {
+     "sizeMm": 2.4
+    }
+   }
   },
   "band": null,
   "notes": "Horizontal 2 ct emerald cut with round pave side stones, 2.3 mm width. Head id is nearest; construction not spelled out."
@@ -883,11 +946,11 @@
    "stone": {
     "material": "lab-diamond",
     "cut": "oval",
-    "carat": null,
+    "carat": 1.5,
     "colorName": null,
     "clarity": null
    },
-   "head": null,
+   "head": "solitaire-4-prong",
    "shank": "pave",
    "metals": [
     "yellow-gold-18k"
@@ -896,7 +959,16 @@
    "accents": [
     "pave dome band"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 2.4,
+     "topWidthMm": 2.4,
+     "thicknessMm": 2.0,
+     "topThicknessMm": 2.0,
+     "coverage": 1
+    }
+   }
   },
   "band": null,
   "notes": "Chunky domed pave band under an oval; 'starting at' price from a search result. Head not confirmed."
@@ -919,14 +991,20 @@
     "colorName": null,
     "clarity": null
    },
-   "head": null,
+   "head": "solitaire-4-prong",
    "shank": "wide",
    "metals": [
     "yellow-gold-18k"
    ],
    "finish": null,
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 5.0,
+     "topWidthMm": 5.0
+    }
+   }
   },
   "band": null,
   "notes": "DOUBTFUL URL match: bold 5 mm flat band solitaire setting; price from a search summary and may belong to a sibling listing."
@@ -949,14 +1027,20 @@
     "colorName": null,
     "clarity": null
    },
-   "head": null,
+   "head": "solitaire-4-prong",
    "shank": "knife-edge",
    "metals": [
     "white-gold-18k"
    ],
    "finish": null,
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 1.8,
+     "topWidthMm": 1.8
+    }
+   }
   },
   "band": null,
   "notes": "Slim 1.8 mm knife-edge shank; setting price from a search result."
@@ -979,7 +1063,7 @@
     "colorName": null,
     "clarity": null
    },
-   "head": null,
+   "head": "solitaire-4-prong",
    "shank": "wide",
    "metals": [
     "yellow-gold-14k"
@@ -1008,7 +1092,15 @@
     "yellow-gold-14k"
    ],
    "stones": "emerald-cut",
-   "widthMm": null
+   "widthMm": null,
+   "tune": {
+    "params": {
+     "coverage": "full"
+    },
+    "accent": {
+     "cut": "emerald-cut"
+    }
+   }
   },
   "notes": "Eternity band of emerald-cut lab diamonds each in a small bezel; only seen in search results, no price or width captured."
  },
@@ -1024,12 +1116,16 @@
   "kind": "band",
   "engagement": null,
   "band": {
-   "style": "plain-comfort",
+   "style": "plain-flat",
    "metals": [
     "yellow-gold-18k"
    ],
    "stones": "rose-cut",
-   "widthMm": 1.2
+   "widthMm": 1.2,
+   "tune": {
+    "finish": "hammered",
+    "thicknessMm": 1.2
+   }
   },
   "notes": "Stacking ring with rough hammered 1.2 mm square shank and rose-cut diamonds; search snippet only, style id nearest."
  }
