@@ -162,16 +162,29 @@ function cluster(ctx: HeadCtx): Part[] {
     y,
     spacing: num(ctx.params, 'petalSpacing', 0.15, 0, 1),
     minCount: 6,
+    frame: false,
   });
   metal.push(...r.metal);
-  // a scalloped gallery plate under the petals
-  const plate: THREE.Vector3[] = [];
-  for (let i = 0; i < 64; i++) {
-    const p = pointAt(path, (i / 64) * path.perimeter);
-    plate.push(v3(p.x * 0.85, y - size * 0.65, p.z * 0.85));
+  // an open basket under the petals: two rails hugging their pavilions, tied to the centre seat by struts
+  const petal = ctx.stone(ctx.accent.cut.id, accentDims(ctx, size), { detail: 'low' });
+  const ppd = Math.max(0.2, petal.pavilionDepth);
+  const wr = Math.max(0.22, opts.wireMm * 0.32);
+  for (const [f, k] of [
+    [0.35, 0.62],
+    [0.7, 0.3],
+  ] as const) {
+    const yy = y - ppd * f;
+    for (const side of [-1, 1]) {
+      const rail: THREE.Vector3[] = [];
+      for (let i = 0; i < 72; i++) {
+        const p = pointAt(path, (i / 72) * path.perimeter);
+        const off = side * (w / 2) * k + side * wr * 0.9;
+        rail.push(v3(p.x + p.nx * off, yy, p.z + p.nz * off));
+      }
+      metal.push(loop(rail, wr, 96, 7));
+    }
   }
-  metal.push(loop(plate, Math.max(0.3, opts.wireMm * 0.4), 64, 6));
-  metal.push(...struts(ctx, path, y - size * 0.6, opts.baseScale, opts.wireMm));
+  metal.push(...struts(ctx, path, y - ppd * 0.7, opts.baseScale, opts.wireMm));
   return [metalPart(metal, 'cluster head'), accentPart([r.stones], 'cluster stones')];
 }
 

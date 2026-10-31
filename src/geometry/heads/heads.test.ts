@@ -8,6 +8,7 @@ import { cleanOutline, prongSites, signedVolume } from './common';
 import { STUB_CUTS, stubCtx, stubStone } from './testStub';
 
 const TRI_BUDGET = 60000;
+const MULTI = new Set(['three-stone', 'five-stone', 'toi-et-moi', 'bypass-head']);
 
 function stats(parts: Part[]) {
   const box = new THREE.Box3();
@@ -121,7 +122,13 @@ describe('head builders', () => {
             // reaches the shank seat
             const m = stats(metal).box;
             expect(m.min.y).toBeLessThanOrEqual(-baseDrop + 0.15);
-            expect(box.min.y).toBeGreaterThan(-Math.max(baseDrop, ctx.center.built.pavilionDepth * 1.2) - 4);
+            if (MULTI.has(id))
+              // side stones follow the curve of the shank: they may wrap down it, but never past the ring's equator
+              expect(box.min.y).toBeGreaterThan(-baseDrop - (ctx.innerRadius + 1.8) * 0.75);
+            else
+              expect(box.min.y).toBeGreaterThan(
+                -Math.max(baseDrop, ctx.center.built.pavilionDepth * 1.2) - 4,
+              );
             expect(box.max.y).toBeLessThan(ctx.center.built.crownHeight + 2);
             expect(box.max.y).toBeGreaterThan(0);
             const lim = L * 2.6 + 6;

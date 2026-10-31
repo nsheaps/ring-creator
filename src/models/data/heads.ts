@@ -26,11 +26,11 @@ const prongWidth: Control = {
   type: 'number',
   key: 'prongWidth',
   label: 'Prong wire',
-  min: 0.5,
+  min: 0,
   max: 1.6,
   step: 0.05,
   unit: 'mm',
-  help: 'Wire diameter. Thicker prongs are stronger but cover more of the stone.',
+  help: 'Wire diameter. 0 = automatic (about 1 mm on a 1 ct round). Thicker prongs are stronger but cover more of the stone.',
 };
 const galleryRails: Control = {
   type: 'number',
@@ -60,7 +60,7 @@ const prongControls = (min: number, max: number): Control[] => [
 const prongDefaults = (count: number, style: string, rails: number): Params => ({
   prongCount: count,
   prongStyle: style,
-  prongWidth: 0.9,
+  prongWidth: 0,
   galleryRails: rails,
   baseScale: 0,
 });
@@ -119,7 +119,7 @@ const haloDefaults = (shape: string): Params => ({
   meleeSpacing: 0.12,
   haloDrop: 0.3,
   prongStyle: 'round',
-  prongWidth: 0.8,
+  prongWidth: 0,
 });
 
 const sideControls = (five: boolean): Control[] => [
@@ -326,7 +326,7 @@ export const heads: HeadModel[] = [
     cons: ['Less light from the sides', 'Harder to reset or swap stones'],
     bestFor: ['Active lifestyles', 'Soft or fragile gems like opal and emerald'],
     related: ['bezel-half', 'flush-gypsy', 'tension'],
-    params: { bezelThickness: 0.7, bezelHeight: 0.4, baseScale: 0 },
+    params: { bezelThickness: 0.6, bezelHeight: 0.4, baseScale: 0 },
     controls: [
       {
         type: 'number',
@@ -368,7 +368,7 @@ export const heads: HeadModel[] = [
     cons: ['Open sides are less protected', 'Fewer vintage associations'],
     bestFor: ['Oval, emerald and round cuts', 'Modern minimalists'],
     related: ['bezel-full', 'tension', 'flush-gypsy'],
-    params: { bezelThickness: 0.7, bezelHeight: 0.4, coverAngle: 55, baseScale: 0 },
+    params: { bezelThickness: 0.6, bezelHeight: 0.4, coverAngle: 55, baseScale: 0 },
     controls: [
       {
         type: 'number',
@@ -488,7 +488,7 @@ export const heads: HeadModel[] = [
       meleeSize: 0,
       meleeSpacing: 0.1,
       prongStyle: 'round',
-      prongWidth: 0.85,
+      prongWidth: 0,
     },
     controls: [
       {
@@ -572,7 +572,7 @@ export const heads: HeadModel[] = [
       sideCut: 'accent',
       sideProngs: 4,
       prongStyle: 'round',
-      prongWidth: 0.9,
+      prongWidth: 0,
     },
     controls: sideControls(false),
     fitsCuts: ALL,
@@ -601,7 +601,7 @@ export const heads: HeadModel[] = [
       sideCut: 'accent',
       sideProngs: 4,
       prongStyle: 'round',
-      prongWidth: 0.85,
+      prongWidth: 0,
     },
     controls: sideControls(true),
     fitsCuts: ALL,
@@ -629,7 +629,7 @@ export const heads: HeadModel[] = [
       petalDrop: 0.25,
       petalSpacing: 0.15,
       prongStyle: 'claw',
-      prongWidth: 0.8,
+      prongWidth: 0,
     },
     controls: [
       {
@@ -687,7 +687,7 @@ export const heads: HeadModel[] = [
     cons: ['Hard to resize', 'Only for hard stones', 'Exposed top and bottom'],
     bestFor: ['Diamond, sapphire, moissanite', 'Modern minimalists'],
     related: ['bezel-half', 'bezel-full', 'bypass-head'],
-    params: { jawThickness: 2.2, bite: 0.25, jawWidth: 2.8 },
+    params: { jawThickness: 2.2, bite: 0.25, jawWidth: 0 },
     controls: [
       { type: 'number', key: 'jawThickness', label: 'Jaw length', min: 1, max: 4, step: 0.1, unit: 'mm' },
       {
@@ -700,7 +700,16 @@ export const heads: HeadModel[] = [
         unit: 'mm',
         help: 'How far the grooves reach over the girdle.',
       },
-      { type: 'number', key: 'jawWidth', label: 'Jaw width', min: 1.5, max: 6, step: 0.1, unit: 'mm' },
+      {
+        type: 'number',
+        key: 'jawWidth',
+        label: 'Jaw width',
+        min: 0,
+        max: 6,
+        step: 0.1,
+        unit: 'mm',
+        help: '0 = automatic (a little wider than the shank).',
+      },
     ],
     fitsCuts: ALL,
     extraStones: '0',
@@ -817,7 +826,7 @@ export const heads: HeadModel[] = [
     cons: ['Off-centre unless offset', 'Two settings to maintain'],
     bestFor: ['Pear, oval and heart pairs', 'Mixing two gemstones'],
     related: ['bypass-head', 'three-stone', 'five-stone'],
-    params: { secondRatio: 0.85, secondGap: 0.4, mirrorSecond: true, prongStyle: 'claw', prongWidth: 0.9 },
+    params: { secondRatio: 0.85, secondGap: 0.4, mirrorSecond: true, prongStyle: 'claw', prongWidth: 0 },
     controls: [
       {
         type: 'number',
@@ -864,7 +873,7 @@ export const heads: HeadModel[] = [
       secondCut: 'accent',
       swoopWidth: 1.4,
       prongStyle: 'round',
-      prongWidth: 0.85,
+      prongWidth: 0,
     },
     controls: [
       { type: 'number', key: 'secondRatio', label: 'Second stone size', min: 0.3, max: 1, step: 0.01 },

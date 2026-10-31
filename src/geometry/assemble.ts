@@ -178,6 +178,15 @@ function buildEngagement(design: Design, center: ResolvedStone): Engagement {
   };
 }
 
+/**
+ * The engagement ring's parts in the ring frame (shank, head metal, centre and accent stones), before materials are
+ * assigned. Used by tests and tools that need to inspect geometry per slot.
+ */
+export function engagementParts(design: Design): { parts: Part[]; seatY: number; girdleY: number } {
+  const e = buildEngagement(design, resolveCenter(design.engagement.center));
+  return { parts: e.parts, seatY: e.seatY, girdleY: e.girdleY };
+}
+
 function buildBand(design: Design, band: BandSpec, contour: ContourSpec | undefined): Part[] {
   const style = getModel('band', band.style);
   const fn = bandBuilders.get(style.builder);

@@ -6,6 +6,7 @@ import type { StoneDims } from '@/models/stoneMath';
 import {
   PRONG_STYLES,
   accentDims,
+  autoWireMm,
   accentPart,
   bool,
   cleanOutline,
@@ -37,6 +38,8 @@ interface Placed {
   along: number;
   /** half extent of this stone along the band, away from the centre */
   outerHalf: number;
+  /** arc position of this stone's outer edge (chain the next stone from here) */
+  outerArc: number;
   baseY: number;
 }
 
@@ -54,6 +57,7 @@ function placeSide(
   localX: [number, number],
   yDrop: number,
   tiltScale = 0.5,
+  follow = true,
 ): Placed {
   const [ax, az] = ctx.bandAxis;
   const px = -az;
@@ -62,31 +66,38 @@ function placeSide(
   const rotOnly = placeMatrix(0, 0, 0, localX[0], localX[1]);
   const innerHalf = supportWorld(o, rotOnly, -sign * ax, -sign * az);
   const outerHalf = supportWorld(o, rotOnly, sign * ax, sign * az);
-  const along = innerEdge + gap + innerHalf;
-  const R = ctx.innerRadius + 1.8 + ctx.baseDrop;
-  const tilt = Math.atan2(along, R) * tiltScale;
-  const y = -yDrop - ringDrop(ctx, along) * 0.35;
+  // Side stones sit on a circle concentric with the shank (same culet clearance as the centre stone, within reason),
+  // tilted to follow the ring's curve, with their baskets standing on the shank.
+  const cb = ctx.center.built;
+  const clear = Math.min(1, Math.max(0.35, ctx.baseDrop - cb.pavilionDepth - cb.girdleThickness * 0.5));
+  const Rs = ctx.innerRadius + 1.8; // shank top radius (estimate, as ringDrop)
+  const stand = clear + built.pavilionDepth + built.girdleThickness * 0.5; // girdle height above the shank
+  const Rg = Rs + stand;
+  const arc = innerEdge + gap + innerHalf;
+  // follow: on the circle (rows of stones); otherwise nearly level with the centre (pairs), on a taller basket
+  const phi = follow ? Math.min(1.2, arc / Rg) : 0;
+  const along = follow ? Rg * Math.sin(phi) : arc;
+  const yRing = follow ? -(ctx.baseDrop + Rs) + Rg * Math.cos(phi) : -yDrop - ringDrop(ctx, along) * 0.35;
+  const y = Math.min(-yDrop, yRing);
+  const tilt = follow ? phi * tiltScale : Math.atan2(along, Rg) * tiltScale;
   const x = sign * ax * along + px * across;
   const z = sign * az * along + pz * across;
   const m = placeMatrix(x, y, z, localX[0], localX[1], tilt, sign * ax, sign * az);
-  // Side stones sit on a gallery: their prongs go down to the shank if it is close, otherwise to a bar
-  // just under their own culet that bridges back to the centre seat.
-  const shankTop = -(ctx.baseDrop + ringDrop(ctx, along));
-  const gallery = y - (built.pavilionDepth + 0.6);
-  const seatY = Math.max(shankTop, Math.min(gallery, -ctx.baseDrop));
-  const baseYLocal = Math.min(-0.3, seatY - y);
+  const seatY = -(ctx.baseDrop + ringDrop(ctx, along));
+  // the seat is under the stone along its own (tilted) axis; sink it 0.1 mm into the shank
+  const baseYLocal = -Math.max(0.3, (follow ? stand - (yRing - y) : y - seatY) / Math.cos(tilt) + 0.1);
   const p = ctx.params;
   const metal = prongSet(built, {
     count: Math.round(num(p, 'sideProngs', 4, 3, 6)),
     style: str(p, 'prongStyle', PRONG_STYLES, 'round'),
-    wireMm: num(p, 'prongWidth', 0.9, 0.5, 1.6) * 0.85,
+    wireMm: num(p, 'prongWidth', 0, 0, 1.6) * 0.85 || autoWireMm(built),
     baseY: baseYLocal,
     baseScale: 0.45,
     rails: [0.45],
   });
   transformAll(metal, m);
   const stone = built.geometry.clone().applyMatrix4(m);
-  return { stone, metal, along, outerHalf, baseY: seatY };
+  return { stone, metal, along, outerHalf, outerArc: arc + outerHalf, baseY: seatY };
 }
 
 /** Bars along the band joining the seats of neighbouring stones. */
@@ -106,11 +117,15 @@ function bridge(
   const half = Math.min(ctx.shankWidth * 0.3, 0.8);
   for (const k of [-1, 1]) {
     const off = across + k * half;
-    const pa = v3(ax * a + px * off, yA + r, az * a + pz * off);
-    const pb = v3(ax * b + px * off, yB + r, az * b + pz * off);
-    const mid = pa.clone().add(pb).multiplyScalar(0.5);
-    mid.y += 0.1;
-    out.push(...wire([pa, mid, pb], r, 10, 7));
+    // the ends sit on the two seats; in between the bar lies on the curved shank
+    const pts = [v3(ax * a + px * off, yA + r, az * a + pz * off)];
+    for (const t of [0.25, 0.5, 0.75]) {
+      const at = a + (b - a) * t;
+      const y = Math.max(-(ctx.baseDrop + ringDrop(ctx, at)), yA + (yB - yA) * t) + r * 0.9;
+      pts.push(v3(ax * at + px * off, y, az * at + pz * off));
+    }
+    pts.push(v3(ax * b + px * off, yB + r, az * b + pz * off));
+    out.push(...wire(pts, r, 16, 7));
   }
   return out;
 }
@@ -155,11 +170,11 @@ function multiStone(ctx: HeadCtx, perSide: 1 | 2): Part[] {
       // elongated side stones run across the band (classic three-stone look)
       const localX: [number, number] = [sign * px, sign * pz];
       const drop = (centerAcross - size) * 0.12 + 0.1;
-      const placed = placeSide(ctx, built, sign, inner, gap, 0, localX, drop);
+      const placed = placeSide(ctx, built, sign, inner, gap, 0, localX, drop, 0.9);
       stones.push(placed.stone);
       metal.push(...placed.metal);
       metal.push(...bridge(ctx, sign * lastAlong, sign * placed.along, lastY, placed.baseY, r));
-      inner = placed.along + placed.outerHalf;
+      inner = placed.outerArc;
       lastAlong = placed.along;
       lastY = placed.baseY;
       size *= ratio2;
@@ -196,7 +211,7 @@ function toiEtMoi(ctx: HeadCtx): Part[] {
     0,
     localX,
     (c.width - c.width * ratio) * 0.1,
-    0.25,
+    0.7,
   );
   metal.push(...placed.metal);
   metal.push(...bridge(ctx, 0, placed.along, -ctx.baseDrop, placed.baseY, opts.wireMm * 0.45));
@@ -229,6 +244,7 @@ function bypassHead(ctx: HeadCtx): Part[] {
     [px, pz],
     across * (1 - ratio) * 0.1,
     0.3,
+    false,
   );
   metal.push(...placed.metal);
   metal.push(...bridge(ctx, 0, placed.along, -ctx.baseDrop, placed.baseY, opts.wireMm * 0.45, off * 0.5));

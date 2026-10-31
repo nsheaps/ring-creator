@@ -425,50 +425,111 @@ export function ensureOutward(g: THREE.BufferGeometry): THREE.BufferGeometry {
   return toFlat(flat);
 }
 
-/**
- * Loft a 2D section along a path in the xz plane. Section points are [offset along the path's outward normal, y].
- * The section is closed. Closed paths make a closed ring; open paths get flat end caps. Output winds outward.
- */
 export type SectionPt = [number, number] | [number, number, number];
+/**
+ * Loft a 2D section along a path in the xz plane. Section points are [offset along the path's outward normal, y, scale?]:
+ * the path point is first scaled about the origin, then offset along its normal. The section is closed. Closed paths make
+ * a closed ring; open paths get flat end caps. Output winds outward; normals are smooth along the path and hard across
+ * section corners (so a round-ish section reads as polished metal, a sharp one keeps its edges).
+ */
 export function loft(path: PathPt[], section: SectionPt[], closed = true): THREE.BufferGeometry {
-  const pos: number[] = [];
   const m = section.length;
-  // [offset, y, scale?]: the path point is first scaled about the origin, then offset along its normal.
   const vert = (p: PathPt, s: SectionPt) => {
     const k = s.length === 3 ? s[2] : 1;
-    return [p.x * k + p.nx * s[0], s[1], p.z * k + p.nz * s[0]];
+    return new THREE.Vector3(p.x * k + p.nx * s[0], s[1], p.z * k + p.nz * s[0]);
   };
-  const segs = closed ? path.length : path.length - 1;
+  const nP = path.length;
+  const segs = closed ? nP : nP - 1;
+  const V = path.map((p) => section.map((s) => vert(p, s)));
+  const faceN: THREE.Vector3[][] = [];
+  const e1 = new THREE.Vector3();
+  const e2 = new THREE.Vector3();
   for (let i = 0; i < segs; i++) {
-    const p0 = path[i];
-    const p1 = path[(i + 1) % path.length];
+    const row: THREE.Vector3[] = [];
+    const i1 = (i + 1) % nP;
     for (let k = 0; k < m; k++) {
-      const a = vert(p0, section[k]);
-      const b = vert(p0, section[(k + 1) % m]);
-      const c = vert(p1, section[k]);
-      const d = vert(p1, section[(k + 1) % m]);
-      pos.push(...a, ...c, ...b, ...b, ...c, ...d);
+      const k1 = (k + 1) % m;
+      const a = V[i][k];
+      const b = V[i][k1];
+      const c = V[i1][k];
+      const d = V[i1][k1];
+      const n1 = e1.subVectors(c, a).clone().cross(e2.subVectors(b, a));
+      const n2 = e1.subVectors(c, b).clone().cross(e2.subVectors(d, b));
+      row.push(n1.add(n2));
+    }
+    faceN.push(row);
+  }
+  // orientation from the signed volume of the side walls plus caps
+  const pos: number[] = [];
+  const nor: number[] = [];
+  const tri = (
+    a: THREE.Vector3,
+    b: THREE.Vector3,
+    c: THREE.Vector3,
+    na: THREE.Vector3,
+    nb: THREE.Vector3,
+    nc: THREE.Vector3,
+  ) => {
+    pos.push(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+    nor.push(na.x, na.y, na.z, nb.x, nb.y, nb.z, nc.x, nc.y, nc.z);
+  };
+  const vN = (i: number, seg: number, k: number) => {
+    // normal at path vertex i for the face column k, smoothing with the neighbouring segment
+    const other = seg === i ? i - 1 : i; // the other segment touching vertex i
+    const o = closed ? faceN[(other + segs) % segs][k] : other >= 0 && other < segs ? faceN[other][k] : null;
+    const n = faceN[seg][k].clone();
+    if (o && o.lengthSq() > 0 && n.lengthSq() > 0 && n.clone().normalize().dot(o.clone().normalize()) > 0.5)
+      n.add(o.clone().normalize().multiplyScalar(n.length()));
+    return n.lengthSq() > 0 ? n.normalize() : new THREE.Vector3(0, 1, 0);
+  };
+  for (let i = 0; i < segs; i++) {
+    const i1 = (i + 1) % nP;
+    for (let k = 0; k < m; k++) {
+      const k1 = (k + 1) % m;
+      const a = V[i][k];
+      const b = V[i][k1];
+      const c = V[i1][k];
+      const d = V[i1][k1];
+      const na = vN(i, i, k);
+      const nc = vN(closed ? i1 : i + 1, i, k);
+      tri(a, c, b, na, nc, na);
+      tri(b, c, d, na, nc, nc);
     }
   }
   if (!closed) {
-    const cap = (p: PathPt, flip: boolean) => {
+    const cap = (p: PathPt, row: THREE.Vector3[], flip: boolean) => {
       const cx = section.reduce((s, q) => s + q[0], 0) / m;
       const cy = section.reduce((s, q) => s + q[1], 0) / m;
       const ck = section.reduce((s, q) => s + (q.length === 3 ? q[2] : 1), 0) / m;
       const c = vert(p, [cx, cy, ck]);
       for (let k = 0; k < m; k++) {
-        const a = vert(p, section[k]);
-        const b = vert(p, section[(k + 1) % m]);
-        if (flip) pos.push(...c, ...b, ...a);
-        else pos.push(...c, ...a, ...b);
+        const a = row[k];
+        const b = row[(k + 1) % m];
+        const n = (
+          flip ? b.clone().sub(c).cross(a.clone().sub(c)) : a.clone().sub(c).cross(b.clone().sub(c))
+        ).normalize();
+        if (flip) tri(c, b, a, n, n, n);
+        else tri(c, a, b, n, n, n);
       }
     };
-    cap(path[0], false);
-    cap(path[path.length - 1], true);
+    cap(path[0], V[0], false);
+    cap(path[nP - 1], V[nP - 1], true);
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  return ensureOutward(g);
+  if (signedVolume(g) < 0) {
+    // flip every triangle and its normals
+    for (let t = 0; t < pos.length; t += 9) {
+      for (let j = 0; j < 3; j++) {
+        [pos[t + 3 + j], pos[t + 6 + j]] = [pos[t + 6 + j], pos[t + 3 + j]];
+        [nor[t + 3 + j], nor[t + 6 + j]] = [nor[t + 6 + j], nor[t + 3 + j]];
+      }
+    }
+    for (let t = 0; t < nor.length; t++) nor[t] = -nor[t];
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  }
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  return g;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -537,7 +598,7 @@ export function prongSites(o: CleanOutline, opts: ProngSiteOpts): number[] {
 export interface ProngSetOpts {
   count: number;
   style: ProngStyle;
-  /** wire diameter, mm */
+  /** wire diameter, mm (0 = automatic from the stone size) */
   wireMm: number;
   /** y of the seat (bottom of the head) in this stone's frame (negative). */
   baseY: number;
@@ -545,7 +606,7 @@ export interface ProngSetOpts {
   baseScale: number;
   phase?: number;
   useCorners?: boolean;
-  /** gallery rails at these fractions of the pavilion depth (0 = girdle, 1 = culet). */
+  /** gallery rails at these fractions of the way from the girdle (0) down to the seat (1). */
   rails?: number[];
   /** Each prong is two wires side by side (double claw). */
   double?: boolean;
@@ -557,71 +618,232 @@ export interface ProngSetOpts {
   seat?: boolean;
   /** Explicit arc-length sites (overrides count/phase). */
   sites?: number[];
+  /** Extra downward drop (mm, >= 0) of the seat at stone-frame (x, z): lets the seat follow a curved shank. */
+  seatDrop?: (x: number, z: number) => number;
 }
 
-/** Height of the crown surface at an inward distance d from the girdle edge (approximate). */
-function crownY(stone: BuiltStone, o: CleanOutline, d: number): number {
+// ---------------------------------------------------------------------------------------------
+// Stone surface probes (exact crown / pavilion heights from the stone mesh)
+// ---------------------------------------------------------------------------------------------
+
+interface SurfaceProbe {
+  top: number[];
+  bottom: number[];
+}
+const probeCache = new WeakMap<BuiltStone, SurfaceProbe>();
+
+function probeOf(stone: BuiltStone): SurfaceProbe {
+  const hit = probeCache.get(stone);
+  if (hit) return hit;
+  const g = stone.geometry;
+  const pos = g.getAttribute('position');
+  const idx = g.getIndex();
+  const count = idx ? idx.count : pos.count;
+  const get = (k: number) => (idx ? idx.getX(k) : k);
+  const top: number[] = [];
+  const bottom: number[] = [];
+  for (let k = 0; k + 2 < count; k += 3) {
+    const a = [pos.getX(get(k)), pos.getY(get(k)), pos.getZ(get(k))];
+    const b = [pos.getX(get(k + 1)), pos.getY(get(k + 1)), pos.getZ(get(k + 1))];
+    const c = [pos.getX(get(k + 2)), pos.getY(get(k + 2)), pos.getZ(get(k + 2))];
+    const ux = b[0] - a[0];
+    const uy = b[1] - a[1];
+    const uz = b[2] - a[2];
+    const vx = c[0] - a[0];
+    const vy = c[1] - a[1];
+    const vz = c[2] - a[2];
+    const nx = uy * vz - uz * vy;
+    const ny = uz * vx - ux * vz;
+    const nz = ux * vy - uy * vx;
+    const l = Math.hypot(nx, ny, nz);
+    if (l < 1e-12) continue;
+    const t = ny / l;
+    if (t > 0.02) top.push(...a, ...b, ...c);
+    else if (t < -0.02) bottom.push(...a, ...b, ...c);
+  }
+  const out = { top, bottom };
+  probeCache.set(stone, out);
+  return out;
+}
+
+/** Height of the stone's top (crown) or bottom (pavilion) surface above (x, z), or null outside the stone. */
+export function stoneSurfaceY(
+  stone: BuiltStone,
+  x: number,
+  z: number,
+  side: 'top' | 'bottom',
+): number | null {
+  const tris = side === 'top' ? probeOf(stone).top : probeOf(stone).bottom;
+  let best: number | null = null;
+  for (let k = 0; k < tris.length; k += 9) {
+    const ax = tris[k];
+    const az = tris[k + 2];
+    const bx = tris[k + 3];
+    const bz = tris[k + 5];
+    const cx = tris[k + 6];
+    const cz = tris[k + 8];
+    const det = (bz - cz) * (ax - cx) + (cx - bx) * (az - cz);
+    if (Math.abs(det) < 1e-12) continue;
+    const l1 = ((bz - cz) * (x - cx) + (cx - bx) * (z - cz)) / det;
+    const l2 = ((cz - az) * (x - cx) + (ax - cx) * (z - cz)) / det;
+    const l3 = 1 - l1 - l2;
+    if (l1 < -1e-6 || l2 < -1e-6 || l3 < -1e-6) continue;
+    const y = l1 * tris[k + 1] + l2 * tris[k + 4] + l3 * tris[k + 7];
+    if (best === null || (side === 'top' ? y > best : y < best)) best = y;
+  }
+  return best;
+}
+
+/** Height of the crown surface at an inward distance d from the outline point p (falls back to the girdle top). */
+export function crownAt(stone: BuiltStone, p: PathPt, d: number): number {
+  const gTop = Math.max(0, stone.girdleThickness) * 0.5;
+  if (d <= 1e-3) return gTop;
+  const y = stoneSurfaceY(stone, p.x - p.nx * d, p.z - p.nz * d, 'top');
+  return Math.max(gTop, y ?? gTop);
+}
+
+/** Average inward distance from the girdle edge at which the crown reaches height h (a bezel lip burnished to h). */
+export function crownInset(stone: BuiltStone, h: number): number {
+  const o = cleanOutline(stone.outline);
   const half = Math.min(support(o, 1, 0), support(o, 0, 1));
-  const crownRun = Math.max(0.3, half * 0.42); // girdle edge to table edge, horizontally
-  return stone.crownHeight * Math.min(1, Math.max(0, d) / crownRun) + stone.girdleThickness * 0.5;
+  const n = 16;
+  let sum = 0;
+  for (let i = 0; i < n; i++) {
+    const p = pointAt(o, ((i + 0.5) / n) * o.perimeter);
+    let lo = 0;
+    let hi = half * 0.6;
+    if (crownAt(stone, p, hi) < h) {
+      sum += hi;
+      continue;
+    }
+    for (let k = 0; k < 18; k++) {
+      const mid = (lo + hi) / 2;
+      if (crownAt(stone, p, mid) < h) lo = mid;
+      else hi = mid;
+    }
+    sum += hi;
+  }
+  return sum / n;
+}
+
+/** Half of the interior angle of the outline at arc length s (PI/2 on smooth parts). */
+export function halfAngleAt(o: CleanOutline, s: number): number {
+  const n = o.pts.length;
+  for (const c of o.corners) {
+    const P = o.perimeter;
+    const ds = Math.abs(((((o.cum[c] - s) % P) + P * 1.5) % P) - P * 0.5);
+    if (ds > 1e-4) continue;
+    const cur = o.pts[c];
+    const prev = o.pts[(c - 1 + n) % n];
+    const next = o.pts[(c + 1) % n];
+    const a = norm2([prev[0] - cur[0], prev[1] - cur[1]]);
+    const b = norm2([next[0] - cur[0], next[1] - cur[1]]);
+    const ang = Math.acos(Math.min(1, Math.max(-1, a[0] * b[0] + a[1] * b[1])));
+    return Math.max(0.25, Math.min(Math.PI / 2, ang / 2));
+  }
+  return Math.PI / 2;
+}
+
+/** Automatic prong wire diameter for a stone: ~1.0 mm on a 6.5 mm round, thinner for melee, thicker for big stones. */
+export function autoWireMm(stone: BuiltStone): number {
+  const o = cleanOutline(stone.outline);
+  const L = support(o, 1, 0) + support(o, -1, 0);
+  const W = support(o, 0, 1) + support(o, 0, -1);
+  const d = Math.sqrt(Math.max(0.01, L * W));
+  return Math.min(1.35, Math.max(0.45, 0.55 + 0.07 * d));
+}
+
+/** How far a prong's wire centre sits outside the girdle (it bites into the girdle a little, so it grips). */
+export function prongSeatOffset(r: number, halfAngle: number): number {
+  return Math.min(2.4 * r, (r * 0.6) / Math.max(0.3, Math.sin(halfAngle)));
+}
+
+/**
+ * The prongs of a head form a ruled surface from the girdle (just outside the outline) down to the seat (the outline
+ * scaled by baseScale). Returns the (x, z) of that surface for outline point q at height y.
+ */
+export function galleryXZ(
+  q: PathPt,
+  y: number,
+  top: { y: number; off: number },
+  base: { y: number; scale: number },
+): V2 {
+  const span = top.y - base.y;
+  const t = span > 1e-6 ? Math.min(1, Math.max(0, (top.y - y) / span)) : 0;
+  const gx = q.x + q.nx * top.off;
+  const gz = q.z + q.nz * top.off;
+  return [gx + (q.x * base.scale - gx) * t, gz + (q.z * base.scale - gz) * t];
 }
 
 /**
  * A full prong setting (prongs, optional rails, seat ring) for one stone, in that stone's frame.
+ * Prongs run in a straight, slightly curved line from the seat up to the girdle, touch (bite into) the girdle edge,
+ * then fold over the crown: a bead, a claw lying on the crown facets, a flat tab or a V over a corner.
  * Returns flat geometries ready for mergeFlat.
  */
 export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeometry[] {
   const o = cleanOutline(stone.outline);
-  const r = Math.max(0.2, opts.wireMm / 2);
-  const pd = Math.max(0.1, stone.pavilionDepth);
+  const wireMm = opts.wireMm > 0 ? opts.wireMm : autoWireMm(stone);
+  const r = Math.max(0.15, wireMm / 2);
   const gt = Math.max(0, stone.girdleThickness);
   const baseY = Math.min(-0.05, opts.baseY);
-  const depthBelow = -baseY;
   const sites =
     opts.sites ?? prongSites(o, { count: opts.count, phase: opts.phase, useCorners: opts.useCorners });
   const out: THREE.BufferGeometry[] = [];
   const bs = Math.min(0.95, Math.max(0.12, opts.baseScale));
-  const scaleAt = (y: number) => Math.max(bs, 1 - Math.min(1, -y / pd)); // pavilion cross-section scale
-  // Pavilion waypoint height.
-  const yMid = -Math.min(0.55 * pd, 0.6 * depthBelow);
-  const sMid = Math.max(scaleAt(yMid), bs);
+  const drop = opts.seatDrop ?? (() => 0);
+  const yG = -gt * 0.5 - Math.min(0.12, r * 0.3); // where the prong meets the girdle (just under its edge)
+  const ySeat = baseY + r * 0.9; // centre line of the seat ring
   const half = Math.min(support(o, 1, 0), support(o, 0, 1));
   const step = Math.min(0.9, half * 0.2);
+  const lowSeat = yG - ySeat < r * 2.2; // very shallow head: no room for a curved body
 
-  const prongPath = (s: number, baseSite: number): THREE.Vector3[] => {
+  /** Wire path from the seat to the point where the prong leaves the girdle. */
+  const body = (s: number, baseSite: number, rr: number, bow = 0): THREE.Vector3[] => {
     const p = pointAt(o, s);
     const b = pointAt(o, baseSite);
-    const off = r * 1.05;
-    const pts = [
-      v3(b.x * bs, baseY + r * 0.5, b.z * bs),
-      v3((p.x + b.x) * 0.5 * sMid + p.nx * off, yMid, (p.z + b.z) * 0.5 * sMid + p.nz * off),
-      v3(p.x + p.nx * off, -gt * 0.5 - 0.15, p.z + p.nz * off),
-      v3(p.x + p.nx * off * 0.9, crownY(stone, o, 0) + r * 0.2, p.z + p.nz * off * 0.9),
-    ];
-    if (depthBelow < 0.35) pts.splice(1, 1); // very low seat: skip the pavilion waypoint
-    return pts;
+    const off = prongSeatOffset(rr, halfAngleAt(o, s));
+    const g = v3(p.x + p.nx * off, yG, p.z + p.nz * off);
+    const bx = b.x * bs;
+    const bz = b.z * bs;
+    const seat = v3(bx, ySeat - drop(bx, bz), bz);
+    if (lowSeat) return [seat, g];
+    // gentle S: leave the seat fairly upright, straighten out, arrive at the girdle almost vertical
+    const lerp = (t: number) => seat.clone().lerp(g, t);
+    const m1 = lerp(0.35);
+    const m2 = lerp(0.72);
+    const radial = v3(p.nx, 0, p.nz);
+    m1.addScaledVector(radial, -0.06 + bow);
+    m2.addScaledVector(radial, 0.04 + bow * 0.6);
+    return [seat, m1, m2, g];
   };
 
-  const tip = (s: number) => {
+  const tip = (s: number, rr: number, from: THREE.Vector3): void => {
     const p = pointAt(o, s);
     const n = v3(p.nx, 0, p.nz);
     const t = v3(p.tx, 0, p.tz);
-    const top = v3(p.x + p.nx * r * 0.95, crownY(stone, o, 0) + r * 0.2, p.z + p.nz * r * 0.95);
+    const off = prongSeatOffset(rr, halfAngleAt(o, s));
+    // the prong rises past the girdle edge before it folds over
+    const knee = v3(p.x + p.nx * off * 0.55, crownAt(stone, p, 0) + rr * 0.35, p.z + p.nz * off * 0.55);
     switch (opts.style) {
       case 'round': {
-        const c = v3(p.x + p.nx * r * 0.25, crownY(stone, o, r * 0.6) + r * 0.45, p.z + p.nz * r * 0.25);
-        out.push(...rod(top, c, r, r * 1.05));
+        const d = rr * 0.35;
+        const c = v3(p.x - p.nx * d, crownAt(stone, p, d) + rr * 0.3, p.z - p.nz * d);
+        out.push(...wire([from, knee, c], rr, 8, 8, false));
+        out.push(ball(c, rr * 1.04, 1));
         break;
       }
       case 'claw': {
-        const end = v3(p.x - p.nx * r * 1.3, crownY(stone, o, r * 1.3) + r * 0.2, p.z - p.nz * r * 1.3);
-        out.push(...rod(top, end, r, r * 0.12));
+        const d = rr * 1.6;
+        const end = v3(p.x - p.nx * d, crownAt(stone, p, d) + rr * 0.18, p.z - p.nz * d);
+        out.push(...wire([from, knee], rr, 6, 8, false));
+        out.push(...rod(knee, end, rr, rr * 0.2));
         break;
       }
       case 'tab': {
-        const d = r * 0.7;
-        const c = v3(p.x - p.nx * d * 0.4, crownY(stone, o, d * 0.4) + r * 0.3, p.z - p.nz * d * 0.4);
-        const slope = Math.atan2(crownY(stone, o, d) - crownY(stone, o, 0), d);
+        const d = rr * 1.1;
+        const c = v3(p.x - p.nx * d * 0.45, crownAt(stone, p, d * 0.45) + rr * 0.3, p.z - p.nz * d * 0.45);
+        const slope = Math.atan2(crownAt(stone, p, d) - crownAt(stone, p, 0), d);
         const ax = n
           .clone()
           .multiplyScalar(-Math.cos(slope))
@@ -629,20 +851,29 @@ export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeo
           .normalize();
         const az = t.clone();
         const ay = az.clone().cross(ax).normalize();
-        out.push(orientedBox(c, [r * 2.6, r * 0.7, r * 2.4], ax, ay, az));
-        out.push(ball(top, r, 1));
+        out.push(...wire([from, knee], rr, 6, 8, false));
+        out.push(orientedBox(c, [rr * 2.4, rr * 0.75, rr * 2.1], ax, ay, az));
+        out.push(ball(knee, rr, 1));
         break;
       }
       case 'v': {
-        // Chevron: two bars running along the outline either side of the site, hugging the crown edge.
-        const len = Math.min(1.4, o.perimeter * 0.05) + r;
-        const a = pointAt(o, s - len);
-        const b = pointAt(o, s + len);
-        const y0 = crownY(stone, o, 0) + r * 0.25;
-        const corner = v3(p.x + p.nx * r * 0.2, y0 + r * 0.15, p.z + p.nz * r * 0.2);
-        out.push(...rod(corner, v3(a.x - a.nx * r * 0.2, y0, a.z - a.nz * r * 0.2), r * 0.95, r * 0.6));
-        out.push(...rod(corner, v3(b.x - b.nx * r * 0.2, y0, b.z - b.nz * r * 0.2), r * 0.95, r * 0.6));
-        out.push(ball(top, r, 1));
+        // Chevron: two bars running along the outline either side of the site, lying on the crown edge.
+        const len = Math.min(1.6, o.perimeter * 0.05) + rr;
+        const corner = v3(p.x + p.nx * rr * 0.15, crownAt(stone, p, 0) + rr * 0.45, p.z + p.nz * rr * 0.15);
+        out.push(...wire([from, knee, corner], rr, 8, 8, false));
+        for (const sgn of [-1, 1]) {
+          const q = pointAt(o, s + sgn * len);
+          const qd = rr * 0.35;
+          out.push(
+            ...rod(
+              corner,
+              v3(q.x - q.nx * qd, crownAt(stone, q, qd) + rr * 0.3, q.z - q.nz * qd),
+              rr * 0.95,
+              rr * 0.55,
+            ),
+          );
+        }
+        out.push(ball(corner, rr, 1));
         break;
       }
     }
@@ -651,62 +882,61 @@ export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeo
   sites.forEach((s, i) => {
     if (opts.double || opts.split) {
       const d = Math.min(step, r * 1.6);
+      const rr = r * 0.8;
       for (const sgn of [-1, 1]) {
-        const path = prongPath(s + sgn * d, opts.split ? s : s + sgn * d);
+        const site = s + sgn * d;
         if (opts.split) {
-          // shared post to just under the girdle, then two branches
-          const post = path.slice(0, path.length - 2);
-          const branch = path.slice(path.length - 3);
-          if (sgn < 0) out.push(...wire(post, r));
-          out.push(...wire(branch, r * 0.8, 10, 7));
-        } else out.push(...wire(path, r * 0.8, 20, 7));
-        const p = pointAt(o, s + sgn * d);
-        const top = v3(p.x + p.nx * r * 0.8, crownY(stone, o, 0) + r * 0.2, p.z + p.nz * r * 0.8);
-        const c = v3(p.x + p.nx * r * 0.2, crownY(stone, o, r * 0.5) + r * 0.35, p.z + p.nz * r * 0.2);
-        out.push(...rod(top, c, r * 0.8, r * 0.85));
+          // one post up to just under the girdle, then two branches
+          const post = body(s, s, r);
+          const fork = post.length > 2 ? post[post.length - 2] : post[0];
+          if (sgn < 0) out.push(...wire(post.slice(0, -1), r, 14, 8));
+          const g = body(site, site, rr).pop() ?? fork;
+          out.push(...wire([fork, g], rr, 8, 7, false));
+          tip(site, rr, g);
+        } else {
+          const path = body(site, site, rr);
+          out.push(...wire(path, rr, 18, 7));
+          tip(site, rr, path[path.length - 1]);
+        }
       }
     } else {
       let baseSite = s;
+      let bow = 0;
       if (opts.trellis) {
-        const nxt = sites[(i + (i % 2 === 0 ? 1 : -1) + sites.length) % sites.length];
-        baseSite = nxt;
+        baseSite = sites[(i + (i % 2 === 0 ? 1 : -1) + sites.length) % sites.length];
+        bow = i % 2 === 1 ? r * 1.6 : 0;
       }
-      const path = prongPath(s, baseSite);
-      if (opts.trellis && i % 2 === 1)
-        path[1].add(
-          v3(path[1].x, 0, path[1].z)
-            .normalize()
-            .multiplyScalar(r * 1.6),
-        );
-      out.push(...wire(path, r));
-      tip(s);
+      const path = body(s, baseSite, r, bow);
+      out.push(...wire(path, r, 18, 8));
+      tip(s, r, path[path.length - 1]);
     }
   });
 
-  // Gallery rails, hugging the pavilion just outside the prongs.
+  // Gallery rails: on the prongs' ruled surface, so they tie the prongs together and clear the pavilion.
+  const avgOff = prongSeatOffset(r, Math.PI / 2);
   for (const f of opts.rails ?? []) {
-    const y = -Math.min(f * pd, depthBelow - r * 2);
-    if (y > -gt * 0.5 - r) continue;
-    const sc = scaleAt(y);
-    const path = resample(o, 64, 2);
-    out.push(
-      loop(
-        path.map((p) => v3(p.x * sc + p.nx * r * 1.05, y, p.z * sc + p.nz * r * 1.05)),
-        r * 0.8,
-        72,
-        7,
-      ),
-    );
+    if (lowSeat) break;
+    const y = yG + (ySeat - yG) * Math.min(0.85, Math.max(0.1, f));
+    const path = resample(o, 72, 2);
+    const pts = path.map((q) => {
+      const [x, z] = galleryXZ(q, y, { y: yG, off: avgOff }, { y: ySeat, scale: bs });
+      return v3(x, y - drop(x, z) * ((y - yG) / (ySeat - yG)), z);
+    });
+    out.push(loop(pts, r * 0.62, 96, 7));
   }
-  // Seat ring at the base.
+  // Seat ring at the base (follows the shank's curve when seatDrop is given).
   if (opts.seat !== false) {
     const path = resample(o, 48, 2);
     out.push(
       loop(
-        path.map((p) => v3(p.x * bs, baseY + r * 0.9, p.z * bs)),
+        path.map((p) => {
+          const x = p.x * bs;
+          const z = p.z * bs;
+          return v3(x, ySeat - drop(x, z), z);
+        }),
         r * 0.95,
-        48,
-        7,
+        64,
+        8,
       ),
     );
   }
@@ -722,6 +952,12 @@ export function ringDrop(ctx: HeadCtx, x: number): number {
   const R = ctx.innerRadius + 1.8; // typical shank thickness
   const ax = Math.min(Math.abs(x), R * 0.95);
   return R - Math.sqrt(R * R - ax * ax);
+}
+
+/** Seat drop callback for prongSet: the shank top falls away along the band axis, so the seat ring follows it. */
+export function seatDropFor(ctx: HeadCtx): (x: number, z: number) => number {
+  const [ax, az] = ctx.bandAxis;
+  return (x, z) => ringDrop(ctx, x * ax + z * az);
 }
 
 /** Matrix placing a stone-frame object at (x, y, z), with its local +X along (ux, uz), optionally tilting its table. */
@@ -811,24 +1047,33 @@ export function accentRing(ctx: HeadCtx, o: AccentRingOpts): AccentRingResult {
   const sinT = Math.sin(tilt);
   const rot = (u: number, v: number): V2 => [u * cosT + v * sinT, o.y - u * sinT + v * cosT];
   if (o.frame !== false) {
+    // a rounded U-channel under the stones; its top edges sit just under the melee girdles
     const depth = o.frameDepth ?? Math.max(0.5, built.pavilionDepth * 0.9 + 0.25);
+    const e = Math.min(0.22, o.size * 0.14);
     const section: V2[] = [
-      rot(-w - 0.2, -0.05),
-      rot(-w - 0.12, -depth),
-      rot(w + 0.12, -depth),
-      rot(w + 0.2, -0.05),
+      rot(-w - e * 0.8, 0.02),
+      rot(-w - e, -depth * 0.4),
+      rot(-w * 0.8 - e * 0.5, -depth * 0.88),
+      rot(0, -depth),
+      rot(w * 0.8 + e * 0.5, -depth * 0.88),
+      rot(w + e, -depth * 0.4),
+      rot(w + e * 0.8, 0.02),
     ];
-    metal.push(loft(resample(o.path, Math.max(48, count * 3), 1), section, true));
+    metal.push(loft(resample(o.path, Math.max(64, count * 4), 1), section, true));
   }
   if (o.beads !== false) {
-    const beadR = Math.max(0.12, o.size * 0.16);
-    const beadGeo = new THREE.IcosahedronGeometry(beadR, 0);
+    // shared beads between neighbouring stones, pressed onto both crowns
+    const beadR = Math.max(0.1, o.size * 0.14);
+    const beadGeo = new THREE.IcosahedronGeometry(beadR, 1);
     const bm: THREE.Matrix4[] = [];
     for (let i = 0; i < count; i++) {
       const p = pointAt(o.path, ((i + 0.5) / count) * o.path.perimeter);
       const a = centers[i];
       for (const side of [-1, 1]) {
-        const [off, y] = rot(side * (w * 0.85), built.crownHeight * 0.4 + beadR * 0.3);
+        const [off, y] = rot(
+          side * (w * 0.78),
+          built.crownHeight * 0.25 + built.girdleThickness * 0.5 + beadR * 0.35,
+        );
         bm.push(new THREE.Matrix4().makeTranslation(p.x + a.nx * off, y, p.z + a.nz * off));
       }
     }
@@ -868,6 +1113,6 @@ export { v3 };
 export function baseScaleFor(o: CleanOutline, ctx: HeadCtx, frac: number): number {
   // footprint ~ frac of the outline but never narrower than ~1.6 mm or wider than the shank allows comfortably
   const r = meanRadius(o);
-  const wanted = Math.max(0.8, Math.min(r * frac, Math.max(ctx.shankWidth * 0.75, r * 0.35)));
+  const wanted = Math.max(0.8, Math.min(r * frac, Math.max(ctx.shankWidth * 0.9, r * 0.4)));
   return Math.min(0.9, Math.max(0.15, wanted / r));
 }

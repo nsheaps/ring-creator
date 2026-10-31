@@ -4,6 +4,8 @@ import { registerHeadBuilder } from '../builders';
 import type { HeadCtx, Part } from '../types';
 import {
   PRONG_STYLES,
+  autoWireMm,
+  seatDropFor,
   ball,
   baseScaleFor,
   bool,
@@ -41,13 +43,14 @@ export function prongOpts(ctx: HeadCtx, d: ProngDefaults): ProngSetOpts {
   const o = cleanOutline(ctx.center.built.outline);
   const p = ctx.params;
   const railsN = Math.round(num(p, 'galleryRails', d.rails, 0, 3));
-  const rails = railsN === 0 ? [] : railsN === 1 ? [0.45] : railsN === 2 ? [0.3, 0.68] : [0.25, 0.5, 0.75];
+  const rails = railsN === 0 ? [] : railsN === 1 ? [0.3] : railsN === 2 ? [0.25, 0.6] : [0.2, 0.45, 0.7];
   return {
     count: Math.round(num(p, 'prongCount', d.count, 2, 12)),
     style: str(p, 'prongStyle', PRONG_STYLES, d.style),
-    wireMm: num(p, 'prongWidth', 0.9, 0.5, 1.6),
+    wireMm: num(p, 'prongWidth', 0, 0, 1.6) || autoWireMm(ctx.center.built),
     baseY: -ctx.baseDrop,
-    baseScale: num(p, 'baseScale', 0, 0, 0.95) || baseScaleFor(o, ctx, d.baseFrac ?? 0.45),
+    baseScale: num(p, 'baseScale', 0, 0, 0.95) || baseScaleFor(o, ctx, d.baseFrac ?? 0.5),
+    seatDrop: seatDropFor(ctx),
     phase: d.phase,
     useCorners: d.useCorners,
     rails,
