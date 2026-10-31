@@ -24,10 +24,26 @@
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 6,
+     "prongWidth": 0.8,
+     "galleryRails": 0
+    },
+    "shank": {
+     "widthMm": 1.9,
+     "topWidthMm": 1.9,
+     "thicknessMm": 1.7,
+     "topThicknessMm": 1.7
+    },
+    "placement": {
+     "raise": 2.2
+    }
+   }
   },
   "band": null,
-  "notes": "Setting-only price (no centre stone). Slender 1.9mm band with a six-prong head; shank profile not stated on page, plain-round is the nearest id."
+  "notes": "Setting-only price. Six-prong head, 1.9mm slender polished band; shank profile not stated."
  },
  {
   "id": "r1-002",
@@ -54,7 +70,23 @@
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 6,
+     "prongWidth": 0.7,
+     "galleryRails": 0
+    },
+    "shank": {
+     "widthMm": 1.8,
+     "topWidthMm": 1.8,
+     "thicknessMm": 1.5,
+     "topThicknessMm": 1.5
+    },
+    "placement": {
+     "raise": 2.0
+    }
+   }
   },
   "band": null,
   "notes": "Setting-only price. Finer 1.8mm band than the classic six-prong; shank id 'dainty' is inferred from width."
@@ -84,7 +116,23 @@
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 6,
+     "prongWidth": 0.8,
+     "galleryRails": 0
+    },
+    "shank": {
+     "widthMm": 2.0,
+     "topWidthMm": 2.0,
+     "thicknessMm": 1.7,
+     "topThicknessMm": 1.7
+    },
+    "placement": {
+     "raise": 1.8
+    }
+   }
   },
   "band": null,
   "notes": "Setting-only price. Six prongs on a 2mm low-dome comfort-fit band; shank id is the nearest match."
@@ -114,7 +162,13 @@
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 2.5,
+     "topWidthMm": 2.5
+    }
+   }
   },
   "band": null,
   "notes": "Setting-only price. Page does not state full vs half bezel; bezel-full assumed from the name. Accepts round, princess and cushion among others."
@@ -146,10 +200,24 @@
    "accents": [
     "hidden halo of melee under the head (page does not give count)"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 4
+    },
+    "shank": {
+     "widthMm": 1.5,
+     "topWidthMm": 1.5,
+     "thicknessMm": 1.5,
+     "topThicknessMm": 1.5
+    },
+    "accent": {
+     "sizeMm": 1.2
+    }
+   }
   },
   "band": null,
-  "notes": "Setting-only price. Claw prongs, 1.5mm width; page does not state the shank, pave is an unverified guess from the 'Diamond Ring' name. Centre shapes include Old Mine."
+  "notes": "Setting-only price. Four claw prongs with gallery wire; 13 round melee in a scalloped pave hidden halo under the head, 1.5mm band. Centre shapes include Old Mine."
  },
  {
   "id": "r1-006",
@@ -179,7 +247,19 @@
     "68 round accents (0.39 ct tw) under the gallery",
     "scalloped pave shank"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 4
+    },
+    "shank": {
+     "widthMm": 1.4,
+     "topWidthMm": 1.4
+    },
+    "accent": {
+     "sizeMm": 1.2
+    }
+   }
   },
   "band": null,
   "notes": "Setting-only price. Claw prongs with a raised gallery wire and a 1.4mm scalloped pave shank; also offered in 18K, rose, yellow and platinum."
@@ -211,10 +291,24 @@
    "accents": [
     "14 shared-prong round accents in hidden halo"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 4
+    },
+    "shank": {
+     "widthMm": 1.3,
+     "topWidthMm": 2.0,
+     "thicknessMm": 1.6,
+     "topThicknessMm": 1.8
+    },
+    "accent": {
+     "sizeMm": 1.1
+    }
+   }
   },
   "band": null,
-  "notes": "Setting-only price. Band tapers from 2mm at centre to 1.3mm; deep band depth for stacking."
+  "notes": "Setting-only price. Claw prongs with gallery wire; 14 shared-prong round melee; band tapers 2mm at centre to 1.3mm at the edges."
  },
  {
   "id": "r1-008",
@@ -241,7 +335,22 @@
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 6,
+     "prongStyle": "claw",
+     "prongWidth": 0.9,
+     "galleryRails": 0
+    },
+    "shank": {
+     "widthMm": 2.0,
+     "topWidthMm": 2.0
+    },
+    "placement": {
+     "raise": 3.0
+    }
+   }
   },
   "band": null,
   "notes": "Price is 'from $1,650' on Tiffany's platinum listing page, carat not shown. The six-claw raised head dates to 1886 per Wikipedia. Shank id is the nearest match."
@@ -271,7 +380,22 @@
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 6,
+     "prongStyle": "claw",
+     "prongWidth": 0.9,
+     "galleryRails": 0
+    },
+    "shank": {
+     "widthMm": 2.2,
+     "topWidthMm": 2.2
+    },
+    "placement": {
+     "raise": 3.0
+    }
+   }
   },
   "band": null,
   "notes": "Pre-owned Tiffany Setting in PT950; listing shows only an estimated retail of $16,500 and no asking price. Head/shank ids taken from the Tiffany Setting design, not the listing."
@@ -303,7 +427,20 @@
    "accents": [
     "0.16 ct pave side stones lined along the band"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 4,
+     "prongStyle": "claw",
+     "galleryRails": 0
+    },
+    "accent": {
+     "sizeMm": 1.3
+    },
+    "placement": {
+     "raise": 2.0
+    }
+   }
   },
   "band": null,
   "notes": "Four-prong head on a pave-lined band, 1.07 ctw total. Listing sold out; only estimated retail ($15,800) shown."
@@ -333,7 +470,22 @@
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 4,
+     "prongStyle": "claw",
+     "prongWidth": 0.8,
+     "galleryRails": 0
+    },
+    "shank": {
+     "widthMm": 2.0,
+     "topWidthMm": 2.0
+    },
+    "placement": {
+     "raise": 2.4
+    }
+   }
   },
   "band": null,
   "notes": "Pre-owned Cartier 1895 in platinum; listing gives no head detail, four-prong is from other 1895 listings seen in search results. No asking price on the page."
@@ -428,7 +580,16 @@
    "accents": [
     "filigree and milgrain shoulders"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 1.6,
+     "topWidthMm": 1.6
+    },
+    "placement": {
+     "raise": 0.6
+    }
+   }
   },
   "band": null,
   "notes": "Low-set solitaire with open filigree shoulders into a fine half-round shank. Title says .70, text says .72; I used .72. Sold; no price."
@@ -558,7 +719,13 @@
    "accents": [
     "multi-layered hexagonal head, 8.1mm"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 1.3,
+     "topWidthMm": 1.3
+    }
+   }
   },
   "band": null,
   "notes": "14k yellow gold solitaire with a stepped hexagonal head and 1.3mm shank. Vocabulary has no hexagonal head, basket is nearest. Sold out; no price."
@@ -591,7 +758,12 @@
    "accents": [
     "six old mine accent diamonds, about 0.80 ct total"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "accent": {
+     "sizeMm": 3.0
+    }
+   }
   },
   "band": null,
   "notes": "GIA-graded old mine centre with six old mine accents in silver-topped 18k rose gold. Cut id is old-european because there is no old-mine id. Price not shown."
@@ -686,7 +858,13 @@
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 2.0,
+     "topWidthMm": 2.0
+    }
+   }
   },
   "band": null,
   "notes": "GIA-reported old mine cushion in a handmade 18k rose gold setting, 2.02mm band. Head id is a guess (page does not describe it). Listing shows sold at $7,000."
@@ -751,7 +929,16 @@
    "accents": [
     "white gold illusion box head, yellow gold shank"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 4
+    },
+    "shank": {
+     "widthMm": 1.5,
+     "topWidthMm": 2.4
+    }
+   }
   },
   "band": null,
   "notes": "Small illusion-style white gold head, 5.7mm wide, on a yellow gold shank tapering 2.4mm to 1.5mm. Mixed-tone is the distinctive trait."
@@ -813,7 +1000,13 @@
    "accents": [
     "bezel-set baguette side stones"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "accent": {
+     "cut": "baguette",
+     "sizeMm": 3.0
+    }
+   }
   },
   "band": null,
   "notes": "Emerald-cut centre between baguettes on a platinum band. The source gives both 10.48 and 10.38 ct; shank id is a guess."
@@ -833,7 +1026,7 @@
     "material": "sapphire",
     "cut": "oval",
     "carat": 12.0,
-    "colorName": null,
+    "colorName": "Ceylon blue",
     "clarity": null
    },
    "head": "halo-oval",
@@ -845,7 +1038,12 @@
    "accents": [
     "14 surrounding diamonds"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "accent": {
+     "sizeMm": 2.4
+    }
+   }
   },
   "band": null,
   "notes": "Oval Ceylon sapphire framed by 14 diamonds in 18k white gold, designed by Garrard. Sources vary on weight (12 to 18 ct); shank id is a guess."
