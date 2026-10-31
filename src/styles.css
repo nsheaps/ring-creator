@@ -306,3 +306,13 @@ td {
     transition: none !important;
   }
 }
+
+.viewer-hint {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  opacity: 0.85;
+  pointer-events: none;
+}

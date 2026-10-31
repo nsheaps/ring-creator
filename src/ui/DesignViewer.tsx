@@ -6,6 +6,9 @@ import { RingViewer, type CameraPreset } from '@/scene/RingViewer';
 export interface DesignViewerHandle {
   snapshot(): string;
   preset(p: CameraPreset): void;
+  setPanMode(on: boolean): void;
+  resetView(): void;
+  focusHead(): void;
 }
 
 interface Props {
@@ -36,6 +39,9 @@ export const DesignViewer = forwardRef<DesignViewerHandle, Props>(function Desig
   useImperativeHandle(ref, () => ({
     snapshot: () => viewer.current?.snapshot() ?? '',
     preset: (p) => viewer.current?.setPreset(p),
+    setPanMode: (on) => viewer.current?.setPanMode(on),
+    resetView: () => viewer.current?.resetView(),
+    focusHead: () => viewer.current?.focusHead(),
   }));
 
   useEffect(() => {
@@ -80,6 +86,9 @@ export const DesignViewer = forwardRef<DesignViewerHandle, Props>(function Desig
   return (
     <div className={`viewer ${className ?? ''}`} data-testid="viewer">
       <div ref={host} className="viewer-canvas" />
+      <div className="viewer-hint" aria-hidden="true">
+        drag: rotate · right-drag / two fingers: pan · scroll: zoom · double-click: focus
+      </div>
       {error && (
         <div className="viewer-error" role="alert">
           <strong>Can’t draw this ring.</strong>

@@ -39,6 +39,7 @@ export function Viewport({
 }) {
   const [view, setView] = useState<RingView>('set');
   const [rotate, setRotate] = useState(false);
+  const [pan, setPan] = useState(false);
   const [info, setInfo] = useState<Info | null>(null);
   const lastInfo = useRef<string>('');
   const hasBand = !!design.band;
@@ -78,6 +79,36 @@ export function Viewport({
               {p.label}
             </button>
           ))}
+        </div>
+        <div className="bd-seg" role="group" aria-label="Navigate">
+          <button
+            type="button"
+            data-testid="focus-head"
+            onClick={() => viewerRef.current?.focusHead()}
+            title="Zoom in on the stone and setting"
+          >
+            Focus stone
+          </button>
+          <button
+            type="button"
+            data-testid="reset-view"
+            onClick={() => viewerRef.current?.resetView()}
+            title="Reset camera (0)"
+          >
+            Reset
+          </button>
+          <button
+            type="button"
+            aria-pressed={pan}
+            data-testid="pan-mode"
+            title="Left-drag pans instead of rotating (right-drag, two fingers or arrow keys also pan)"
+            onClick={() => {
+              setPan(!pan);
+              viewerRef.current?.setPanMode(!pan);
+            }}
+          >
+            Pan
+          </button>
         </div>
         <label className="bd-check">
           <input

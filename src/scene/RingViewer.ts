@@ -28,6 +28,78 @@ export class RingViewer {
   private ro: ResizeObserver;
   private disposed = false;
   private target = new THREE.Vector3(0, 7, 0);
+  private home: { pos: THREE.Vector3; target: THREE.Vector3 } | null = null;
+  private anim: {
+    t0: number;
+    dur: number;
+    fromP: THREE.Vector3;
+    toP: THREE.Vector3;
+    fromT: THREE.Vector3;
+    toT: THREE.Vector3;
+  } | null = null;
+  private ray = new THREE.Raycaster();
+
+  private onDblClick = (e: MouseEvent): void => {
+    if (!this.content) return;
+    const r = this.renderer.domElement.getBoundingClientRect();
+    const ndc = new THREE.Vector2(
+      ((e.clientX - r.left) / r.width) * 2 - 1,
+      -((e.clientY - r.top) / r.height) * 2 + 1,
+    );
+    this.ray.setFromCamera(ndc, this.camera);
+    const hit = this.ray.intersectObject(this.content, true)[0];
+    if (!hit) return;
+    const dir = this.camera.position.clone().sub(this.controls.target).normalize();
+    const dist = Math.max(6, this.camera.position.distanceTo(this.controls.target) * 0.45);
+    this.flyTo(hit.point.clone().addScaledVector(dir, dist), hit.point.clone());
+  };
+
+  private onKey = (e: KeyboardEvent): void => {
+    if (e.key === '+' || e.key === '=') this.dolly(0.8);
+    else if (e.key === '-' || e.key === '_') this.dolly(1.25);
+    else if (e.key === '0') this.resetView();
+  };
+
+  private dolly(factor: number): void {
+    const off = this.camera.position.clone().sub(this.controls.target).multiplyScalar(factor);
+    this.camera.position.copy(this.controls.target).add(off);
+  }
+
+  private flyTo(pos: THREE.Vector3, target: THREE.Vector3, dur = 450): void {
+    this.anim = {
+      t0: performance.now(),
+      dur,
+      fromP: this.camera.position.clone(),
+      toP: pos,
+      fromT: this.controls.target.clone(),
+      toT: target,
+    };
+  }
+
+  /** Left-drag pans instead of rotating (touch users and trackpads without a right button). */
+  setPanMode(on: boolean): void {
+    this.controls.mouseButtons.LEFT = on ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
+    this.controls.touches.ONE = on ? THREE.TOUCH.PAN : THREE.TOUCH.ROTATE;
+  }
+
+  resetView(): void {
+    if (this.home) this.flyTo(this.home.pos.clone(), this.home.target.clone());
+  }
+
+  /** Zooms to the stone and its setting: the highest quarter of the content. */
+  focusHead(): void {
+    if (!this.content) return;
+    const box = new THREE.Box3().setFromObject(this.content);
+    const top = new THREE.Box3(
+      new THREE.Vector3(box.min.x, box.max.y - (box.max.y - box.min.y) * 0.28, box.min.z),
+      box.max.clone(),
+    );
+    const c = top.getCenter(new THREE.Vector3());
+    const r = top.getSize(new THREE.Vector3()).length() / 2;
+    const dir = this.camera.position.clone().sub(this.controls.target).normalize();
+    const dist = (r / Math.sin((this.camera.fov * Math.PI) / 360)) * 1.05;
+    this.flyTo(c.clone().addScaledVector(dir, dist), c);
+  }
 
   constructor(
     private readonly el: HTMLElement,
@@ -61,18 +133,41 @@ export class RingViewer {
     this.controls.target.copy(this.target);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
-    this.controls.minDistance = 18;
-    this.controls.maxDistance = 140;
+    this.controls.minDistance = 3;
+    this.controls.maxDistance = 160;
+    this.controls.enablePan = true;
+    this.controls.screenSpacePanning = true;
+    this.controls.zoomToCursor = true;
+    this.controls.panSpeed = 1.1;
+    this.controls.mouseButtons = {
+      LEFT: THREE.MOUSE.ROTATE,
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT: THREE.MOUSE.PAN,
+    };
+    this.controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+    this.controls.keyPanSpeed = 14;
+    this.renderer.domElement.tabIndex = 0;
+    this.controls.listenToKeyEvents(this.renderer.domElement);
+    this.renderer.domElement.addEventListener('dblclick', this.onDblClick);
+    this.renderer.domElement.addEventListener('keydown', this.onKey);
     this.controls.autoRotate = !!opts.autoRotate;
     this.controls.autoRotateSpeed = 1.4;
     this.controls.update();
 
+    (window as unknown as { __ringViewer?: RingViewer }).__ringViewer = this;
     this.ro = new ResizeObserver(() => this.resize());
     this.ro.observe(el);
     this.resize();
     const loop = () => {
       if (this.disposed) return;
       this.raf = requestAnimationFrame(loop);
+      if (this.anim) {
+        const k = Math.min(1, (performance.now() - this.anim.t0) / this.anim.dur);
+        const e = k * k * (3 - 2 * k);
+        this.camera.position.lerpVectors(this.anim.fromP, this.anim.toP, e);
+        this.controls.target.lerpVectors(this.anim.fromT, this.anim.toT, e);
+        if (k >= 1) this.anim = null;
+      }
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
     };
@@ -110,6 +205,7 @@ export class RingViewer {
     this.controls.target.copy(c);
     this.camera.position.copy(c).addScaledVector(dir, dist);
     this.controls.update();
+    this.home = { pos: this.camera.position.clone(), target: c.clone() };
   }
 
   setPreset(p: CameraPreset): void {
@@ -132,6 +228,8 @@ export class RingViewer {
     this.disposed = true;
     cancelAnimationFrame(this.raf);
     this.ro.disconnect();
+    this.renderer.domElement.removeEventListener('dblclick', this.onDblClick);
+    this.renderer.domElement.removeEventListener('keydown', this.onKey);
     this.controls.dispose();
     if (this.content) disposeGroup(this.content);
     this.renderer.dispose();

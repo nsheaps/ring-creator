@@ -1,36 +1,59 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { findModel } from '@/models/registry';
 import type { ModelKind } from '@/models/types';
 import { exampleDesigns } from '@/models/data/examples';
 import { ModelViewer } from '@/ui/ModelViewer';
-import { DesignViewer } from '@/ui/DesignViewer';
+import { DesignViewer, type DesignViewerHandle } from '@/ui/DesignViewer';
+import type { CameraPreset } from '@/scene/RingViewer';
+import { decodeDesign } from '@/state/store';
 import { useRoute } from '@/router';
 
-/** Screenshot harness: `#/shot/<kind>/<id>` or `#/shot/example/<id>`. Not linked from the UI; scripts/capture-screenshots.ts drives it. */
+/**
+ * Screenshot harness (not linked from the UI; scripts/capture-screenshots.ts and scripts/render.ts drive it).
+ *   #/shot/<kind>/<id>                       one component model
+ *   #/shot/example/<id>                      one example ring
+ *   #/shot/design?d=<encodeDesign()>         any design
+ * Query: cam=3/4|front|top|side, focus=1 (zoom on the stone/setting), view=ring|band|set, size=WxH
+ */
 export default function Shot() {
-  const { path } = useRoute();
+  const { path, query } = useRoute();
   const [, kind, id] = path;
+  const ref = useRef<DesignViewerHandle>(null);
+  const cam = query.get('cam') as CameraPreset | null;
+  const focus = query.get('focus') === '1';
+  const size = (query.get('size') ?? '720x540').split('x').map(Number);
+  const [w, h] = [size[0] || 720, size[1] || 540];
+
   useEffect(() => {
     document.body.style.margin = '0';
-    const w = window as unknown as { __shotReady?: boolean };
-    w.__shotReady = false;
-    const t = window.setTimeout(
-      () => requestAnimationFrame(() => requestAnimationFrame(() => (w.__shotReady = true))),
-      900,
-    );
+    const win = window as unknown as { __shotReady?: boolean };
+    win.__shotReady = false;
+    const t = window.setTimeout(() => {
+      if (cam) ref.current?.preset(cam);
+      if (focus) ref.current?.focusHead();
+      window.setTimeout(
+        () => requestAnimationFrame(() => requestAnimationFrame(() => (win.__shotReady = true))),
+        cam || focus ? 700 : 0,
+      );
+    }, 900);
     return () => window.clearTimeout(t);
-  }, [kind, id]);
+  }, [kind, id, cam, focus]);
 
   let body = <p style={{ color: '#fff' }}>Unknown shot</p>;
+  const view = (query.get('view') as 'ring' | 'band' | 'set' | null) ?? undefined;
   if (kind === 'example') {
     const ex = exampleDesigns.find((d) => d.id === id);
-    if (ex) body = <DesignViewer design={ex} view={ex.view ?? (ex.band ? 'set' : 'ring')} />;
+    if (ex)
+      body = <DesignViewer ref={ref} design={ex} view={view ?? ex.view ?? (ex.band ? 'set' : 'ring')} />;
+  } else if (kind === 'design') {
+    const d = decodeDesign(query.get('d') ?? '');
+    if (d) body = <DesignViewer ref={ref} design={d} view={view ?? (d.band ? 'set' : 'ring')} />;
   } else if (kind) {
     const model = findModel(kind as ModelKind, id ?? '');
     if (model) body = <ModelViewer model={model} autoRotate={false} />;
   }
   return (
-    <div id="shot" style={{ width: 720, height: 540 }}>
+    <div id="shot" style={{ width: w, height: h }}>
       <div style={{ width: '100%', height: '100%', display: 'grid' }}>{body}</div>
     </div>
   );
