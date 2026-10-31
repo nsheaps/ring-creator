@@ -21,7 +21,7 @@ plain-round, plain-flat, knife-edge, tapered, cathedral, split, pave, channel, t
 milgrain, crossover, wide, dainty, hammered, braided, leaf-vine, twig, comfort-fit
 
 ## Metals (`metal`)
-yellow-gold-14k, yellow-gold-18k, white-gold-14k, white-gold-18k, rose-gold-14k, rose-gold-18k, platinum,
+yellow-gold-10k, white-gold-10k, rose-gold-10k, green-gold-18k, yellow-gold-14k, yellow-gold-18k, white-gold-14k, white-gold-18k, rose-gold-14k, rose-gold-18k, platinum,
 palladium, sterling-silver, titanium, tungsten, black-zirconium, tantalum
 
 ## Finishes (`finish`)

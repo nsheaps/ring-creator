@@ -149,7 +149,7 @@ export const clarities: ClarityModel[] = [
     pros: ['Very affordable', 'Larger size for the price'],
     cons: ['Visible inclusions', 'May affect durability and sparkle'],
     bestFor: ['Very tight budgets', 'Fashion rings'],
-    related: ['i2', 'si2', 'salt-and-pepper'],
+    related: ['i2', 'si2', 'diamond'],
     code: 'I1',
     rank: 8,
     haze: 0.62,
