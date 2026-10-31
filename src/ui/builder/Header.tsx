@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, type ReactNode } from 'react';
 import type { Design } from '@/models/types';
 
 export function BuilderHeader({
@@ -10,6 +10,7 @@ export function BuilderHeader({
   onImport,
   onReset,
   onCompare,
+  children,
 }: {
   design: Design;
   onName: (n: string) => void;
@@ -19,6 +20,8 @@ export function BuilderHeader({
   onImport: (file: File) => void;
   onReset: () => void;
   onCompare: () => void;
+  /** Extra actions (e.g. the Export menu), shown after Import. */
+  children?: ReactNode;
 }) {
   const file = useRef<HTMLInputElement>(null);
   return (
@@ -59,6 +62,7 @@ export function BuilderHeader({
             e.target.value = '';
           }}
         />
+        {children}
         <button type="button" className="btn ghost" data-testid="btn-compare" onClick={onCompare}>
           Open in Compare
         </button>

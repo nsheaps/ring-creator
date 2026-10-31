@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import type { Design } from '@/models/types';
 import { navigate } from '@/router';
 import { store, useStore, type SavedDesign } from '@/state/store';
+import { ExportMenu } from '@/ui/builder/ExportMenu';
 import { compareHref } from '@/ui/home/compareLinks';
 import { summarize } from '@/ui/home/describe';
 import { useThumbnail } from '@/ui/home/useThumbnail';
@@ -150,6 +151,7 @@ function Item({ item, onNote }: { item: SavedDesign; onNote: (m: string) => void
           <button className="btn" onClick={exportOne}>
             Export JSON
           </button>
+          <ExportMenu design={d} getRender={() => img} onDone={onNote} testId="saved-export" />
           <button className="btn ghost" onClick={remove} data-testid="saved-delete">
             Delete
           </button>

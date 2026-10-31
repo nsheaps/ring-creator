@@ -267,6 +267,18 @@ async function main(): Promise<void> {
       await bp.getByTestId('input-import').setInputFiles(bad);
       await bp.getByTestId('toast').filter({ hasText: 'not a Ring Creator design' }).waitFor();
     });
+
+    await check('export menu downloads a jeweler pack ZIP and a BOM CSV', async () => {
+      await go(bp, '/build');
+      await ready(bp);
+      await bp.getByTestId('btn-export-menu').click();
+      const [csv] = await Promise.all([bp.waitForEvent('download'), bp.getByTestId('export-csv').click()]);
+      assert(csv.suggestedFilename().endsWith('-bom.csv'), `csv name: ${csv.suggestedFilename()}`);
+      await bp.getByTestId('btn-export-menu').click();
+      const [zip] = await Promise.all([bp.waitForEvent('download'), bp.getByTestId('export-zip').click()]);
+      assert(zip.suggestedFilename().endsWith('-jeweler-pack.zip'), `zip name: ${zip.suggestedFilename()}`);
+      await bp.getByTestId('toast').filter({ hasText: 'Exported' }).waitFor();
+    });
     await bp.close();
 
     await check('gallery shows >= 100 cards, search filters, opening an example loads it', async () => {

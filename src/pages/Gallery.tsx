@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { exampleDesigns, type ExampleDesign } from '@/models/data/examples';
 import { findModel } from '@/models/registry';
 import { navigate, useRoute } from '@/router';
 import { store } from '@/state/store';
 import { DesignCard } from '@/ui/DesignCard';
-import { DesignViewer } from '@/ui/DesignViewer';
+import { DesignViewer, type DesignViewerHandle } from '@/ui/DesignViewer';
+import { ExportMenu } from '@/ui/builder/ExportMenu';
 import type { RingView } from '@/geometry/assemble';
 import { addToCompare } from '@/ui/home/compareLinks';
 import {
@@ -26,6 +27,7 @@ function uniq(xs: string[]): string[] {
 
 function Detail({ ex }: { ex: ExampleDesign }) {
   const [view, setView] = useState<RingView>(ex.band ? 'set' : 'ring');
+  const viewer = useRef<DesignViewerHandle>(null);
   const s = summarize(ex);
   const rows: [string, string][] = [
     ['Center stone', `${s.stone}, ${s.carat}`],
@@ -52,7 +54,7 @@ function Detail({ ex }: { ex: ExampleDesign }) {
       <p className="muted">{ex.blurb}</p>
       <div className="gal-detail">
         <div>
-          <DesignViewer design={ex} view={view} refit />
+          <DesignViewer ref={viewer} design={ex} view={view} refit />
           <div className="gal-toggle" role="group" aria-label="What to show">
             {views.map(([v, l]) => (
               <button
@@ -104,6 +106,11 @@ function Detail({ ex }: { ex: ExampleDesign }) {
             <button className="btn" data-testid="add-to-compare" onClick={() => addToCompare(ex.id)}>
               Add to compare
             </button>
+            <ExportMenu
+              design={ex}
+              getRender={() => viewer.current?.snapshot() ?? ''}
+              testId="gallery-export"
+            />
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { navigate, useRoute } from '@/router';
 import { decodeDesign, encodeDesign, store, useStore } from '@/state/store';
 import type { DesignViewerHandle } from '@/ui/DesignViewer';
 import { BuilderHeader } from '@/ui/builder/Header';
+import { ExportMenu } from '@/ui/builder/ExportMenu';
 import { StepTabs } from '@/ui/builder/Tabs';
 import { Viewport } from '@/ui/builder/Viewport';
 import { StoneStep } from '@/ui/builder/StoneStep';
@@ -101,7 +102,9 @@ export default function Builder() {
           say('Reset to the default ring.');
         }}
         onCompare={() => navigate(`/compare?d=${encodeDesign(design)}`)}
-      />
+      >
+        <ExportMenu design={design} getRender={() => viewer.current?.snapshot() ?? ''} onDone={say} />
+      </BuilderHeader>
       <div className="bd-layout">
         <Viewport
           design={design}

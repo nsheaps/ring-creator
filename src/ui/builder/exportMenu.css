@@ -1,0 +1,73 @@
+.xm {
+  position: relative;
+  display: inline-block;
+}
+.xm-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 30;
+  width: min(320px, calc(100vw - 32px));
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r1);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  padding: 10px;
+}
+.xm-scope {
+  border: 0;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+.xm-scope legend {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+.xm-scope label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.xm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.xm-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 7px 8px;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+.xm-item:hover,
+.xm-item:focus-visible {
+  background: var(--surface-2);
+}
+.xm-item[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+.xm-label {
+  font-weight: 600;
+}
+.xm-help,
+.xm-note {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.xm-note {
+  margin: 6px 8px 0;
+}
