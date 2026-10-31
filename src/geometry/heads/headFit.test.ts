@@ -35,7 +35,8 @@ function design(head: string, cut: string, o: Partial<Design['engagement']['plac
   const d = JSON.parse(JSON.stringify(base)) as Design;
   d.engagement.head = { ...d.engagement.head, id: head, params: {} };
   d.engagement.center.cut = cut;
-  d.engagement.placement = { ...d.engagement.placement, ...o };
+  d.engagement.center.carat = 1;
+  d.engagement.placement = { ...d.engagement.placement, raise: 1.2, ...o };
   return d;
 }
 
