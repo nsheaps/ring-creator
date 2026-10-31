@@ -42,6 +42,8 @@ The width you choose (see the options under each shank card) matters as much as 
 ![Tapered]({{base}}screenshots/components/shank/tapered.png)
 ![Cathedral]({{base}}screenshots/components/shank/cathedral.png)
 
+::component[shank:cathedral]
+
 A **tapered** shank is wider at the shoulders near the stone and slims toward the bottom, which shows off the head and keeps the underside comfortable. A **cathedral** shank arches up on either side to cradle the head, like the vaults of a church, lifting the stone and adding a classic profile. Cathedral shanks look good under a basket head.
 
 ### Split and crossover shanks

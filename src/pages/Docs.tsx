@@ -1,6 +1,9 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { createRoot } from 'react-dom/client';
 import { useRoute } from '@/router';
 import { guides, renderGuide } from '@/ui/docs/guides';
+import { specFromElement } from '@/ui/docs/embed';
+import { LiveEmbed } from '@/ui/docs/LiveEmbed';
 import './reference.css';
 
 function Index() {
@@ -30,6 +33,24 @@ function Article({ slug }: { slug: string }) {
   const rendered = useMemo(() => (guide ? renderGuide(guide) : null), [guide]);
   const { query } = useRoute();
   const anchor = query.get('s');
+  const articleRef = useRef<HTMLDivElement>(null);
+
+  // Mount a lazy live 3D viewer into every embed placeholder produced by the markdown renderer.
+  useEffect(() => {
+    const host = articleRef.current;
+    if (!host || !rendered) return;
+    const roots = Array.from(host.querySelectorAll<HTMLElement>('.live-embed')).flatMap((el) => {
+      const spec = specFromElement(el);
+      if (!spec) return [];
+      const root = createRoot(el);
+      root.render(<LiveEmbed spec={spec} />);
+      return [root];
+    });
+    return () => {
+      // Defer: unmounting synchronously during a React render pass is not allowed.
+      setTimeout(() => roots.forEach((r) => r.unmount()), 0);
+    };
+  }, [rendered]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -98,6 +119,7 @@ function Article({ slug }: { slug: string }) {
       </aside>
       <article className="rf-article">
         <div
+          ref={articleRef}
           className="prose"
           onClick={onClick}
           dangerouslySetInnerHTML={{ __html: rendered.html }}

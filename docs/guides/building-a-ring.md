@@ -10,6 +10,8 @@ The [builder](#/build) has two halves: a 3D viewer and a set of tabs to edit the
 
 ![The builder]({{base}}screenshots/pages/builder.png)
 
+::ring[r1-001]
+
 ## The top bar
 
 Above the viewer you will find:
@@ -68,6 +70,8 @@ If the picture is blank or a message appears, see [Troubleshooting](#/docs/troub
 
 ![Head tab]({{base}}screenshots/components/head/halo-round.png)
 
+::component[head:halo-round]
+
 Pick a head card (see [Settings and mounts](#/docs/settings-and-mounts)). Cards that do not suit the current cut are disabled with the reason "Not made for ... stones". Below the cards sit the head's own options, then the **Placement** group:
 
 | Control                    | Range                    | Meaning                                                                                                                                                                                   |
@@ -84,11 +88,15 @@ Tips: a low raise is snug and snag-resistant but leaves less room for a contoure
 
 ![Shank tab]({{base}}screenshots/components/shank/tapered.png)
 
+::component[shank:tapered]
+
 Pick the shank card (see [Shanks and styles](#/docs/shanks-and-styles)), then fine-tune its options. Picking a new shank resets that shank's options to their defaults but keeps your head, metals and stone.
 
 ### Metals
 
 ![Metals tab]({{base}}screenshots/components/metal/platinum.png)
+
+::component[metal:platinum]
 
 Metal selectors for head, shank, band and band accent metal, a "Match all to" row of swatches and finish selectors (engagement ring and band). When metals differ, a **Mixed metals** chip appears. See [Metals and mixed metals](#/docs/metals-and-mixed-metals).
 
@@ -101,6 +109,8 @@ Accent stones are the small ones: halo stones, side stones, pave on the shank. T
 ### Band
 
 ![Band tab]({{base}}screenshots/components/band/contour-curved.png)
+
+::component[band:contour-curved]
 
 Tick **Include matching band** to add one. Choose a style, then set **Width** (1.2 to 8 mm) and **Thickness** (1.0 to 3.2 mm). Styles that use two metals (the mixed-metal band and men's inlay) show a **Second metal** selector. See [Wedding bands and fit](#/docs/wedding-bands-and-fit).
 

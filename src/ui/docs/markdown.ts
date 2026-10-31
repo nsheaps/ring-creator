@@ -1,4 +1,5 @@
 import { marked } from 'marked';
+import { expandEmbeds } from './embed';
 
 export interface Heading {
   level: number;
@@ -53,7 +54,8 @@ const stripTags = (s: string) =>
 
 /** Markdown -> sanitised HTML. Headings h1-h4 get stable ids and are returned for a table of contents. */
 export function renderMarkdown(src: string, opts: { base?: string } = {}): Rendered {
-  const text = opts.base === undefined ? src : src.replace(/\{\{base\}\}/g, opts.base);
+  const based = opts.base === undefined ? src : src.replace(/\{\{base\}\}/g, opts.base);
+  const text = expandEmbeds(based);
   const raw = marked.parse(text, { async: false, gfm: true }) as string;
   const safe = sanitizeHtml(raw);
   const headings: Heading[] = [];

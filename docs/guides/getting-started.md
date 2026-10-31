@@ -17,7 +17,13 @@ Ring Creator lets you design an engagement ring and a matching wedding band, the
 5. **Add the wedding band.** Open the band step and choose a style. Contour bands bend around the head so the two rings sit flush. Use the toolbar to switch between ring, band and both together.
 6. **Save and share.** Give the design a name and choose **Save**. Saved designs appear under **Saved**, where you can reopen, compare or export them.
 
+Spin this one with your mouse or finger. The same controls work everywhere in the app:
+
+::ring[r1-001]
+
 ## Where to go next
+
+- Learn the 3D controls in [Navigating the 3D view](#/docs/navigating-3d).
 
 - Browse every part in the [component reference](#/components) to see specs, pros and cons, and a live 3D preview.
 - Use **Use in builder** on any component page to drop it straight into your current design.

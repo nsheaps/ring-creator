@@ -36,6 +36,8 @@ The aspect ranges below are typical trade figures, not a promise of what every s
 
 ![Round brilliant]({{base}}screenshots/components/cut/round-brilliant.png)
 
+::component[cut:round-brilliant]
+
 The classic. Its symmetry returns light from every angle, so it is the most sparkly shape per carat and the one most often given a formal quality grade. It has no corners to chip. It costs more per carat than fancy shapes because more rough crystal is lost cutting it. **Best for** sparkle-first buyers and almost any head. It is also the most forgiving shape for imperfect colour and clarity.
 
 ## Princess
@@ -59,6 +61,8 @@ An elongated brilliant with no corners. It makes fingers look longer and has a l
 ## Emerald cut
 
 ![Emerald cut]({{base}}screenshots/components/cut/emerald-cut.png)
+
+::component[cut:emerald-cut]
 
 A rectangle with clipped corners and long stepped facets. It shows clarity and colour more openly than a brilliant, so aim for a better clarity grade, and you get the elegant hall-of-mirrors effect. The clipped corners are sturdier than sharp ones but still deserve protection. **Best for** Art Deco and minimalist looks. East-west placement is striking.
 

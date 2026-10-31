@@ -39,6 +39,8 @@ A rough rule: 8 and above is comfortable for daily wear, 7 to 7.5 is fine with s
 
 ![Diamond]({{base}}screenshots/components/gem/diamond.png)
 ![Sapphire]({{base}}screenshots/components/gem/sapphire.png)
+
+::component[gem:sapphire]
 ![Emerald]({{base}}screenshots/components/gem/emerald.png)
 
 ## The 4 Cs
