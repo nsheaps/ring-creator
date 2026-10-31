@@ -16,7 +16,7 @@
     "format:check": "prettier --check .",
     "validate": "tsx scripts/validate-models.ts",
     "screenshots": "tsx scripts/capture-screenshots.ts",
-    "catalog:build": "tsx scripts/build-catalog.ts"
+    "catalog:build": "tsx scripts/build-examples.ts"
   },
   "dependencies": {
     "marked": "14.1.4",
