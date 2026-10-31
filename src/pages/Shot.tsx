@@ -35,7 +35,7 @@ export default function Shot() {
     win.__shotReady = false;
     const t = window.setTimeout(() => {
       if (cam) ref.current?.preset(cam);
-      if (focus) ref.current?.focusHead();
+      if (focus) ref.current?.focusHead(true);
       window.setTimeout(
         () => requestAnimationFrame(() => requestAnimationFrame(() => (win.__shotReady = true))),
         cam || focus ? 700 : 0,

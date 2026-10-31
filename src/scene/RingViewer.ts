@@ -88,7 +88,7 @@ export class RingViewer {
   }
 
   /** Zooms to the stone and its setting: the highest quarter of the content. */
-  focusHead(): void {
+  focusHead(instant = false): void {
     if (!this.content) return;
     const box = new THREE.Box3().setFromObject(this.content);
     const top = new THREE.Box3(
@@ -99,7 +99,7 @@ export class RingViewer {
     const r = top.getSize(new THREE.Vector3()).length() / 2;
     const dir = this.camera.position.clone().sub(this.controls.target).normalize();
     const dist = (r / Math.sin((this.camera.fov * Math.PI) / 360)) * 1.05;
-    this.flyTo(c.clone().addScaledVector(dir, dist), c);
+    this.flyTo(c.clone().addScaledVector(dir, dist), c, instant ? 0 : 450);
   }
 
   constructor(
@@ -172,7 +172,7 @@ export class RingViewer {
       if (this.disposed) return;
       this.raf = requestAnimationFrame(loop);
       if (this.anim) {
-        const k = Math.min(1, (performance.now() - this.anim.t0) / this.anim.dur);
+        const k = this.anim.dur > 0 ? Math.min(1, (performance.now() - this.anim.t0) / this.anim.dur) : 1;
         const e = k * k * (3 - 2 * k);
         this.camera.position.lerpVectors(this.anim.fromP, this.anim.toP, e);
         this.controls.target.lerpVectors(this.anim.fromT, this.anim.toT, e);

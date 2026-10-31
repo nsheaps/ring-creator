@@ -8,7 +8,7 @@ export interface DesignViewerHandle {
   preset(p: CameraPreset): void;
   setPanMode(on: boolean): void;
   resetView(): void;
-  focusHead(): void;
+  focusHead(instant?: boolean): void;
 }
 
 interface Props {
@@ -41,7 +41,7 @@ export const DesignViewer = forwardRef<DesignViewerHandle, Props>(function Desig
     preset: (p) => viewer.current?.setPreset(p),
     setPanMode: (on) => viewer.current?.setPanMode(on),
     resetView: () => viewer.current?.resetView(),
-    focusHead: () => viewer.current?.focusHead(),
+    focusHead: (instant) => viewer.current?.focusHead(instant),
   }));
 
   useEffect(() => {
