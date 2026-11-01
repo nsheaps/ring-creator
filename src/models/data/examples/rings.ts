@@ -4052,7 +4052,7 @@ export const rings: ExampleDesign[] = [
     tags: ['colored-stone', 'engagement'],
     category: 'colored-stone',
     blurb:
-      'Raised basket head with marquise and round diamonds arranged like butterfly wings around a heat-treated Australian teal sapphire; 1.7 mm round shank. Photo audit: oval sapphire flanked by a marquise-and-round diamond cluster on each side; modelled as a three-stone with marquise sides.',
+      'Raised basket head with marquise and round diamonds arranged like butterfly wings around a heat-treated Australian teal sapphire; 1.7 mm round shank. Photo audit: oval sapphire flanked by a tiered marquise-and-round diamond cluster on each side, each stone in its own prongs, leaning outward and stepping down to the shoulders; modelled as a cluster-flank fan.',
     priceUsd: 9101,
     designFamily: 'cluster-flank / plain-round / oval',
     view: 'ring',

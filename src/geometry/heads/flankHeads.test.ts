@@ -128,6 +128,37 @@ describe('cluster-flank fan', () => {
         }
   });
 
+  it('stands up around the centre: stones lean outward, step down towards the shoulders and rise on stems', () => {
+    const axis: [number, number] = [0, 1];
+    const { ctx, parts } = fan(axis, { flankCount: 3, flankRatio: 0.3, fanCut: 'marquise' });
+    const mean = (g: [number, number, number][], k: 0 | 1 | 2) => g.reduce((a, q) => a + q[k], 0) / g.length;
+    const right = stoneGroups(parts, axis).filter((g) => mean(g, 0) > 0);
+    expect(right.length).toBeGreaterThanOrEqual(5);
+    // tiered: the stone furthest along the band sits clearly lower than the one nearest the centre
+    const byU = [...right].sort((a, b) => mean(a, 0) - mean(b, 0));
+    expect(mean(byU[byU.length - 1], 2)).toBeLessThan(mean(byU[0], 2) - 0.3);
+    // each stone leans away from the centre: its girdle is higher on the side facing the centre than on the far side
+    for (const g of right) {
+      const cu = mean(g, 0);
+      const cv = mean(g, 1);
+      const r = Math.hypot(cu, cv);
+      const along = (q: [number, number, number]) => ((q[0] - cu) * cu + (q[1] - cv) * cv) / r;
+      const near = g.filter((q) => along(q) < -0.3);
+      const far = g.filter((q) => along(q) > 0.3);
+      expect(Math.max(...near.map((q) => q[2]))).toBeGreaterThan(Math.max(...far.map((q) => q[2])) + 0.15);
+    }
+    // the metal reaches down to the shank top beside the centre (stems from the shoulders), not only under it
+    const o = cleanOutline(ctx.center.built.outline);
+    const halfU = support(o, 0, 1);
+    let lowOut = Infinity;
+    for (const p of parts.filter((q) => q.slot !== 'accent-stone')) {
+      const pos = p.geometry.getAttribute('position');
+      for (let i = 0; i < pos.count; i++)
+        if (Math.abs(pos.getZ(i)) > halfU * 1.1) lowOut = Math.min(lowOut, pos.getY(i));
+    }
+    expect(lowOut).toBeLessThan(-ctx.baseDrop);
+  });
+
   it('ellipsesOverlap detects touching and separated girdles', () => {
     const e = (u: number, v: number) => ({ u, v, du: 1, dv: 0, a: 1, b: 0.5 });
     expect(ellipsesOverlap(e(0, 0), e(1.9, 0), 0)).toBe(true);
@@ -141,8 +172,13 @@ type P2 = [number, number];
 
 /** Split the accent geometry into stones (connected by shared vertices) and return each one's (u, v) convex hull. */
 function stoneHulls(parts: Part[], axis: [number, number]): P2[][] {
-  const pts: P2[] = accentUV(parts, axis).map(([u, v]) => [u, v]);
-  const keys = accentUV(parts, axis).map((q) => q.map((x) => x.toFixed(5)).join(','));
+  return stoneGroups(parts, axis).map((g) => hull(g.map(([u, v]) => [u, v] as P2)));
+}
+
+/** Split the accent geometry into stones (connected by shared vertices): each one's (u, v, y) points. */
+function stoneGroups(parts: Part[], axis: [number, number]): [number, number, number][][] {
+  const pts = accentUV(parts, axis);
+  const keys = pts.map((q) => q.map((x) => x.toFixed(5)).join(','));
   const parent = pts.map((_, i) => i);
   const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])));
   const first = new Map<string, number>();
@@ -155,14 +191,14 @@ function stoneHulls(parts: Part[], axis: [number, number]): P2[][] {
     parent[find(t + 1)] = find(t);
     parent[find(t + 2)] = find(t);
   }
-  const groups = new Map<number, P2[]>();
+  const groups = new Map<number, [number, number, number][]>();
   pts.forEach((p, i) => {
     const r = find(i);
     const g = groups.get(r) ?? [];
     g.push(p);
     groups.set(r, g);
   });
-  return [...groups.values()].map(hull);
+  return [...groups.values()];
 }
 
 function hull(points: P2[]): P2[] {

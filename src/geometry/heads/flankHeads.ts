@@ -12,6 +12,8 @@ import {
   cleanOutline,
   placeMatrix,
   prongSet,
+  ringDrop,
+  shankTopRadius,
   transformAll,
   wire,
   type CleanOutline,
@@ -128,9 +130,10 @@ function rayHit(o: CleanOutline, ctx: HeadCtx, du: number, dv: number, u0 = 0, v
  * Fan flank: on each side of the centre a compact fan of marquises (the middle one along the band, the others angled
  * towards the centre's ends), each with its inner tip against the centre stone's girdle, plus small rounds in the
  * wedges between them and tucked against the centre beyond the end marquises. The fan starts from a short column beside
- * the stone rather than from its middle, so it hugs the centre like butterfly wings instead of a sunburst. The stones'
- * girdles sit level with the centre's girdle, below its crown, so the centre stays on top; a shared gallery of rods
- * carries them down to the shank.
+ * the stone rather than from its middle, so it hugs the centre like butterfly wings instead of a sunburst. Every stone
+ * leans away from the centre (about 24 degrees) and steps down a tiered arc towards the shoulder, inner ends level with
+ * the centre's girdle, so the cluster stands up around the centre like petals; each sits in its own small prongs on a
+ * stem rising from the shank's top.
  */
 function fanFlank(ctx: HeadCtx): Part[] {
   const o = cleanOutline(ctx.center.built.outline);
@@ -157,10 +160,22 @@ function fanFlank(ctx: HeadCtx): Part[] {
   const accentAspect = Math.max(1, ctx.accent.cut.defaultAspect || 1);
   const aspect = round ? 1 : (FAN_ASPECT[cutKey] ?? accentAspect);
   const mw = ml / aspect;
-  const rd = Math.max(0.9, ml * (round ? 0.62 : 0.26));
+  const rd = Math.max(0.9, ml * (round ? 0.62 : 0.3));
   /** Footprints already placed on this side (centre u, v; unit direction; half length, half width). */
   let placed: { u: number; v: number; du: number; dv: number; a: number; b: number }[] = [];
-  const tilt = 0.12 * tiltK;
+  // outward lean of the side stones' tables (about 24 degrees at flankTilt 1)
+  const fanTilt = Math.min(0.7, 0.42 * tiltK);
+  const edgeU = support(o, ax, az);
+  const footV = Math.max(0.2, ctx.shankWidth * 0.3);
+  // a circle through the centre's girdle edge, tighter than the shank's so the outer stones step down towards the
+  // shoulders: y of the fan's tiered arc at u
+  // (the compact round trio keeps to the shank's own curve and leans half as far, so it stays a tidy cluster)
+  const trio = round && n === 1;
+  const Rh = (shankTopRadius(ctx) + ctx.baseDrop) * (trio ? 1 : 0.55);
+  const arcY = (u: number): number => {
+    const q = (x: number) => Math.sqrt(Rh * Rh - Math.min(Math.abs(x), Rh * 0.95) ** 2);
+    return Math.min(0, q(u) - q(edgeU));
+  };
   const step = n > 1 ? Math.min((38 * Math.PI) / 180, spread / (n - 1)) : 0;
   // the marquises' inner tips stand in a short column beside the centre, inside its middle part
   const pitch = n > 1 ? Math.min((1.5 * half) / (n - 1), Math.max(mw * 0.95, half / (n - 1))) : 0;
@@ -214,11 +229,23 @@ function fanFlank(ctx: HeadCtx): Part[] {
     const built = ctx.stone(cut, { length: len, width: wid, depth: wid * 0.6 }, { detail: 'full' });
     const cx = ax * cu - az * cv;
     const cz = az * cu + ax * cv;
-    // tilted outwards about its middle; dropped so the inner end's girdle meets the centre's girdle plane
-    const y = -(len / 2) * Math.sin(tilt) - 0.05;
-    const m = placeMatrix(cx, y, cz, dx, dz, tilt, dx, dz);
+    // tilted away from the centre stone (radially in plan), so the cluster stands up around it like petals
+    const rho = Math.hypot(cu, cv) || 1;
+    const ru = cu / rho;
+    const rv = cv / rho;
+    const nx = ax * ru - az * rv;
+    const nz = az * ru + ax * rv;
+    const lean = trio ? fanTilt * 0.5 : rod ? fanTilt : fanTilt * 1.15;
+    // half the stone's girdle measured along that outward direction
+    const cosA = du * ru + dv * rv;
+    const sinA = du * rv - dv * ru;
+    const reach = Math.hypot((len / 2) * cosA, (wid / 2) * sinA);
+    // tiered arc: the further a stone sits along the band, the lower it sits, following the shoulder's curve, with its
+    // inner end level with the centre's girdle
+    const y = arcY(cu) - reach * Math.sin(lean) + 0.12;
+    const m = placeMatrix(cx, y, cz, dx, dz, lean, nx, nz);
     stones.push(built.geometry.clone().applyMatrix4(m));
-    const baseY = Math.min(-0.2, -(built.pavilionDepth + 0.35));
+    const baseY = Math.min(-0.2, -(built.pavilionDepth + 0.3));
     metal.push(
       ...transformAll(
         prongSet(built, {
@@ -233,31 +260,20 @@ function fanFlank(ctx: HeadCtx): Part[] {
         m,
       ),
     );
-    if (!rod) return;
-    // a rod from the stone's underside to under the centre stone's seat, joining the shared gallery
+    // its own stem down to the shoulder: from the basket's foot to the shank top under the stone, kept within the
+    // shank's width so the cluster rises out of the band instead of hanging beside it
     const foot = new THREE.Vector3(0, baseY, 0).applyMatrix4(m);
-    const ru = sign * edge * 0.5;
-    const rv = v0 * 0.5;
-    const root = new THREE.Vector3(ax * ru - az * rv, -ctx.baseDrop + 0.15, az * ru + ax * rv);
-    metal.push(
-      ...wire(
-        [
-          foot,
-          foot
-            .clone()
-            .lerp(root, 0.5)
-            .setY(Math.min(foot.y, root.y) * 0.6 + Math.max(foot.y, root.y) * 0.4),
-          root,
-        ],
-        rr,
-        12,
-        6,
-      ),
-    );
+    const su = sign * Math.max(edgeU * 0.8, Math.abs(cu) * 0.85);
+    const sv = Math.max(-footV, Math.min(footV, cv * 0.35));
+    const sy = -(ctx.baseDrop + ringDrop(ctx, su)) + 0.05;
+    const toe = new THREE.Vector3(ax * su - az * sv, sy, az * su + ax * sv);
+    const knee = foot.clone().lerp(toe, 0.5);
+    knee.y = foot.y * 0.35 + toe.y * 0.65;
+    metal.push(...wire([foot, knee, toe], rod ? rr : rr * 0.75, 12, 6));
   };
   for (const sign of [-1, 1] as const) {
     placed = [];
-    if (round && n === 1) {
+    if (trio) {
       // a tidy trio of equal rounds: two side by side against the centre, the third nested outside between them
       const rt = ml * 0.8;
       const vt = rt / 2 + gap * 0.5 + 0.06;
