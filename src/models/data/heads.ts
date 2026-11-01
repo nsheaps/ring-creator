@@ -1456,7 +1456,7 @@ export const heads: HeadModel[] = [
         min: 0.5,
         max: 1,
         step: 0.01,
-        help: 'In a row, each stone relative to the one before.',
+        help: 'In a row, each stone relative to the one before; in a fan, the outer stones relative to the middle one.',
       },
       { type: 'number', key: 'flankGap', label: 'Gap', min: 0, max: 1.5, step: 0.05, unit: 'mm' },
       {
