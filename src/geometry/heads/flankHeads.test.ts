@@ -114,6 +114,36 @@ describe('cluster-flank fan', () => {
     }
   });
 
+  it('flankTaper sets the outer marquises against the long middle one (a sunburst)', () => {
+    for (const taper of [0.7, 0.85, 1]) {
+      const { calls } = fan([0, 1], { flankCount: 3, fanCut: 'marquise', flankTaper: taper });
+      const lens = calls.filter((c) => c.id === 'marquise').map((c) => c.dims.length);
+      expect(Math.min(...lens) / Math.max(...lens), `taper ${taper}`).toBeCloseTo(taper, 3);
+    }
+  });
+
+  it('a round trio sits snug and low: below the centre girdle, clear of the shank, beside the centre', () => {
+    const axis: [number, number] = [0, 1];
+    const { ctx, parts } = fan(axis, { flankCount: 1, fanCut: 'round', flankRatio: 0.21 }, 'emerald-cut');
+    const o = cleanOutline(ctx.center.built.outline);
+    const halfU = support(o, 0, 1);
+    const groups = stoneGroups(parts, axis);
+    expect(groups.length).toBe(6);
+    for (const g of groups) {
+      const top = Math.max(...g.map((q) => q[2]));
+      const low = Math.min(...g.map((q) => q[2]));
+      // settled well below the girdle, beside the centre's pavilion (not perched level with it on long stems) ...
+      expect(top).toBeLessThan(-ctx.center.built.pavilionDepth * 0.4);
+      // ... but still above the top of the shank
+      expect(low).toBeGreaterThan(-ctx.baseDrop - 1.5);
+      // the stone nearest the centre touches its side, within 0.6 mm
+      const inner = Math.min(...g.map((q) => Math.abs(q[0])));
+      expect(inner).toBeGreaterThan(halfU - 0.05);
+    }
+    const nearest = Math.min(...groups.map((g) => Math.min(...g.map((q) => Math.abs(q[0])))));
+    expect(nearest - halfU).toBeLessThan(0.6);
+  });
+
   it('no two flank stones overlap, for every count and fan cut', () => {
     for (const n of [1, 2, 3, 4, 5])
       for (const fanCut of ['marquise', 'pear', 'oval', 'round'])

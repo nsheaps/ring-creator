@@ -146,6 +146,8 @@ function fanFlank(ctx: HeadCtx): Part[] {
   const gap = num(p, 'flankGap', 0.2, 0, 1.5);
   const tiltK = num(p, 'flankTilt', 1, 0.4, 1.6);
   const spread = (num(p, 'fanSpread', 80, 30, 120) * Math.PI) / 180;
+  // the outermost marquises' length relative to the middle one (a sunburst has a long middle ray)
+  const taper = num(p, 'flankTaper', 0.85, 0.5, 1);
   const style = str(p, 'prongStyle', PRONG_STYLES, 'round') as ProngStyle;
   const cutKey = str(p, 'fanCut', ['marquise', 'pear', 'oval', 'round', 'accent'] as const, 'marquise');
   const cutId = cutKey === 'accent' ? ctx.accent.cut.id : cutKey === 'round' ? 'round-brilliant' : cutKey;
@@ -168,10 +170,11 @@ function fanFlank(ctx: HeadCtx): Part[] {
   const edgeU = support(o, ax, az);
   const footV = Math.max(0.2, ctx.shankWidth * 0.3);
   // a circle through the centre's girdle edge, tighter than the shank's so the outer stones step down towards the
-  // shoulders: y of the fan's tiered arc at u
-  // (the compact round trio keeps to the shank's own curve and leans half as far, so it stays a tidy cluster)
+  // shoulders: y of the fan's tiered arc at u; a lower flankTilt also flattens the steps, so the fan stands up taller
+  // and level around the centre (the compact round trio keeps to the shank's own curve, so it stays a tidy cluster
+  // snug against the centre)
   const trio = round && n === 1;
-  const Rh = (shankTopRadius(ctx) + ctx.baseDrop) * (trio ? 1 : 0.55);
+  const Rh = (shankTopRadius(ctx) + ctx.baseDrop) * (trio ? 1 : Math.min(1, 0.55 / tiltK ** 1.5));
   const arcY = (u: number): number => {
     const q = (x: number) => Math.sqrt(Rh * Rh - Math.min(Math.abs(x), Rh * 0.95) ** 2);
     return Math.min(0, q(u) - q(edgeU));
@@ -235,14 +238,17 @@ function fanFlank(ctx: HeadCtx): Part[] {
     const rv = cv / rho;
     const nx = ax * ru - az * rv;
     const nz = az * ru + ax * rv;
-    const lean = trio ? fanTilt * 0.5 : rod ? fanTilt : fanTilt * 1.15;
+    const lean = trio ? fanTilt * 0.85 : rod ? fanTilt : fanTilt * 1.15;
     // half the stone's girdle measured along that outward direction
     const cosA = du * ru + dv * rv;
     const sinA = du * rv - dv * ru;
     const reach = Math.hypot((len / 2) * cosA, (wid / 2) * sinA);
     // tiered arc: the further a stone sits along the band, the lower it sits, following the shoulder's curve, with its
     // inner end level with the centre's girdle
-    const y = arcY(cu) - reach * Math.sin(lean) + 0.12;
+    let y = arcY(cu) - reach * Math.sin(lean) + 0.12;
+    // a trio settles half way down towards the shoulder (just clear of the shank), snug beside the centre's pavilion,
+    // instead of standing on stilts at the girdle of a tall head
+    if (trio) y = Math.min(y, (y - (ctx.baseDrop + ringDrop(ctx, cu)) + built.pavilionDepth + 0.45) / 2);
     const m = placeMatrix(cx, y, cz, dx, dz, lean, nx, nz);
     stones.push(built.geometry.clone().applyMatrix4(m));
     const baseY = Math.min(-0.2, -(built.pavilionDepth + 0.3));
@@ -263,13 +269,14 @@ function fanFlank(ctx: HeadCtx): Part[] {
     // its own stem down to the shoulder: from the basket's foot to the shank top under the stone, kept within the
     // shank's width so the cluster rises out of the band instead of hanging beside it
     const foot = new THREE.Vector3(0, baseY, 0).applyMatrix4(m);
-    const su = sign * Math.max(edgeU * 0.8, Math.abs(cu) * 0.85);
-    const sv = Math.max(-footV, Math.min(footV, cv * 0.35));
+    // (a trio's three stems gather onto one foot on the shoulder, like a single cluster gallery)
+    const su = sign * (trio ? edgeU + rd * 0.55 : Math.max(edgeU * 0.8, Math.abs(cu) * 0.85));
+    const sv = trio ? 0 : Math.max(-footV, Math.min(footV, cv * 0.35));
     const sy = -(ctx.baseDrop + ringDrop(ctx, su)) + 0.05;
     const toe = new THREE.Vector3(ax * su - az * sv, sy, az * su + ax * sv);
     const knee = foot.clone().lerp(toe, 0.5);
     knee.y = foot.y * 0.35 + toe.y * 0.65;
-    metal.push(...wire([foot, knee, toe], rod ? rr : rr * 0.75, 12, 6));
+    metal.push(...wire([foot, knee, toe], trio ? rr * 1.2 : rod ? rr : rr * 0.75, 12, 6));
   };
   for (const sign of [-1, 1] as const) {
     placed = [];
@@ -284,7 +291,7 @@ function fanFlank(ctx: HeadCtx): Part[] {
     const rows: { v: number; th: number; len: number; wid: number }[] = [];
     for (let i = 0; i < n; i++) {
       const t = i - (n - 1) / 2;
-      const k = 1 - 0.15 * (Math.abs(t) / Math.max(1, (n - 1) / 2));
+      const k = 1 - (1 - taper) * (Math.abs(t) / Math.max(1, (n - 1) / 2));
       rows.push({ v: t * pitch, th: t * step, len: ml * k, wid: mw * k });
     }
     // middle stone first, then outwards, so the outer ones step aside for it rather than the other way round

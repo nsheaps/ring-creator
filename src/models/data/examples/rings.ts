@@ -4039,7 +4039,11 @@ export const rings: ExampleDesign[] = [
         metal: 'yellow-gold-14k',
         params: {
           flankCount: 3,
-          flankRatio: 0.3,
+          flankRatio: 0.36,
+          flankTaper: 0.7,
+          flankGap: 0.1,
+          flankTilt: 0.8,
+          fanSpread: 84,
           arrangement: 'fan',
           prongStyle: 'claw',
         },
@@ -4071,7 +4075,7 @@ export const rings: ExampleDesign[] = [
     tags: ['colored-stone', 'engagement'],
     category: 'colored-stone',
     blurb:
-      'Raised basket head with marquise and round diamonds arranged like butterfly wings around a heat-treated Australian teal sapphire; 1.7 mm round shank. Photo audit: oval sapphire flanked by a tiered marquise-and-round diamond cluster on each side, each stone in its own prongs, leaning outward and stepping down to the shoulders; modelled as a cluster-flank fan.',
+      'Raised basket head with marquise and round diamonds arranged like butterfly wings around a heat-treated Australian teal sapphire; 1.7 mm round shank. Photo audit: oval sapphire flanked by a tiered marquise-and-round diamond cluster on each side, each stone in its own prongs, leaning outward and stepping down to the shoulders; modelled as a cluster-flank fan. Compared with the photo: a fuller sunburst tight against the oval, a long middle marquise along the band and shorter ones angled up and down (flankTaper 0.7, fanSpread 84), larger stones (flankRatio 0.36) standing nearly level with the girdle (flankTilt 0.8).',
     priceUsd: 9101,
     designFamily: 'cluster-flank / plain-round / oval',
     view: 'ring',
@@ -4241,7 +4245,8 @@ export const rings: ExampleDesign[] = [
         metal: 'yellow-gold-14k',
         params: {
           flankCount: 1,
-          flankRatio: 0.17,
+          flankRatio: 0.21,
+          flankGap: 0.08,
           arrangement: 'fan',
           fanCut: 'round',
         },
@@ -4255,7 +4260,10 @@ export const rings: ExampleDesign[] = [
           widthMm: 1.7,
           topWidthMm: 1.7,
           stoneSizeMm: 1.2,
-          coverage: 0.6,
+          coverage: 0.65,
+          grade: 'both',
+          gradeTo: 0.75,
+          gradeColor: 'gray',
         },
       },
       placement: {
@@ -4275,7 +4283,7 @@ export const rings: ExampleDesign[] = [
     tags: ['colored-stone', 'engagement'],
     category: 'colored-stone',
     blurb:
-      'Hand-faceted rose-cut emerald-shaped salt-and-pepper diamond with round white clusters and an ombre band. Nearest cut id emerald-cut. Photo audit: emerald shape stands north-south with a small round cluster each side and a half-pave band.',
+      'Hand-faceted rose-cut emerald-shaped salt-and-pepper diamond with round white clusters and an ombre band. Nearest cut id emerald-cut. Photo audit: emerald shape stands north-south with a small round cluster each side and a half-pave band. Compared with the photo: three larger rounds per side in a triangle snug against the long sides, sitting low on the shoulders (flankRatio 0.21, flankGap 0.08), and graded pave stepping down in size and from white to grey along the shank (grade both, gradeTo 0.75, gradeColor gray).',
     priceUsd: 7613,
     designFamily: 'cluster-flank / pave / emerald-cut',
     view: 'ring',
