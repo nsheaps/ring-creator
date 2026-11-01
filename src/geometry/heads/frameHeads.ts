@@ -231,6 +231,71 @@ function sideBezels(
 // ---------------------------------------------------------------------------------------------
 
 const PLAQUE_PATTERNS = ['web', 'sunburst'] as const;
+const END_PANELS = ['plain', 'scroll'] as const;
+
+/** Classic heart curve, t in [0, 2PI): cusp at (0, 5) between the lobes, point at (0, -17), widest +-16 at y = 4. */
+function heartPt(t: number): [number, number] {
+  const s = Math.sin(t);
+  return [16 * s * s * s, 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)];
+}
+
+/**
+ * A solid blob lying on the dome over a star-shaped region: `outline` (closed) and `centre` are (angle, u) dome
+ * positions; the top `top` mm above the dome surface, the bottom `bottom` mm below it, closed by a side wall.
+ */
+function domeBlob(
+  at: (a: number, u: number, lift: number) => THREE.Vector3,
+  centre: [number, number],
+  outline: [number, number][],
+  top: number,
+  bottom: number,
+): THREE.BufferGeometry {
+  const nr = 5;
+  const pos: number[] = [];
+  const tri = (p: THREE.Vector3, q: THREE.Vector3, r: THREE.Vector3) =>
+    pos.push(p.x, p.y, p.z, q.x, q.y, q.z, r.x, r.y, r.z);
+  const quad = (p: THREE.Vector3, q: THREE.Vector3, r: THREE.Vector3, s: THREE.Vector3) => {
+    tri(p, q, r);
+    tri(p, r, s);
+  };
+  const pt = (i: number, j: number, lift: number) => {
+    const [a, u] = outline[i % outline.length];
+    const f = j / nr;
+    return at(centre[0] + (a - centre[0]) * f, centre[1] + (u - centre[1]) * f, lift);
+  };
+  const n = outline.length;
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < nr; j++) {
+      quad(pt(i, j, top), pt(i, j + 1, top), pt(i + 1, j + 1, top), pt(i + 1, j, top));
+      quad(pt(i, j, -bottom), pt(i + 1, j, -bottom), pt(i + 1, j + 1, -bottom), pt(i, j + 1, -bottom));
+    }
+    quad(pt(i, nr, top), pt(i, nr, -bottom), pt(i + 1, nr, -bottom), pt(i + 1, nr, top));
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  // wind outward whichever way round the outline runs
+  if (signedVolumeFlat(pos) < 0) {
+    const arr = g.getAttribute('position').array as Float32Array;
+    for (let k = 0; k < arr.length; k += 9)
+      for (let c = 0; c < 3; c++) {
+        const t = arr[k + 3 + c];
+        arr[k + 3 + c] = arr[k + 6 + c];
+        arr[k + 6 + c] = t;
+      }
+  }
+  g.computeVertexNormals();
+  return g;
+}
+
+/** Signed volume of a flat triangle list. */
+function signedVolumeFlat(pos: number[]): number {
+  let v = 0;
+  for (let k = 0; k + 8 < pos.length; k += 9) {
+    const [ax, ay, az, bx, by, bz, cx, cy, cz] = pos.slice(k, k + 9);
+    v += (ax * (by * cz - bz * cy) - ay * (bx * cz - bz * cx) + az * (bx * cy - by * cx)) / 6;
+  }
+  return v;
+}
 
 /** The frame stretched by `e` along the band axis (ax, az); its corner angles follow the stretch. */
 function stretchAlongBand(
@@ -317,7 +382,9 @@ function domePatch(
  * Optional extras, all off by default: `elongation` stretches the plaque along the band; `pattern: 'sunburst'` fans the
  * ribs out along the band only, over deep piercings, and leaves a solid cartouche at each end across the band holding
  * `cartoucheStones` small stones in milgrain cups; `ribMilgrain` beads every rib; `collarSides` frames the stone in a
- * polygon collar with a bead at each corner; `rimStoneCount` fixes the number of rim diamonds.
+ * polygon collar with a bead at each corner; `rimStoneCount` fixes the number of rim diamonds; `endPanel: 'scroll'`
+ * (sunburst only) turns each cartouche into a raised heart of two lobes outlined in milgrain wire, over open piercing
+ * with a scroll curl each side of its point, the cartouche stones one in each lobe.
  */
 function decoPlaque(ctx: HeadCtx): Part[] {
   const p = ctx.params;
@@ -391,6 +458,30 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   const cartCentres = sunburst ? [aBand + Math.PI / 2, aBand - Math.PI / 2] : [];
   const inCartouche = (a: number, margin = 0) =>
     cartCentres.some((c) => angleDiff(a, c) < CART_HALF + margin);
+  // scroll end panels: each cartouche becomes a raised heart of two lobes outlined in milgrain wire, over open piercing
+  // with a scroll curl each side of its point
+  const scroll = sunburst && str(p, 'endPanel', END_PANELS, 'plain') === 'scroll';
+  const horiz = (a: number, u: number) => {
+    const q = at(a, u);
+    return Math.hypot(q.x, q.z);
+  };
+  /** local panel coordinates (mm along the arc x, mm outward y, about the point (c, uc)) to dome (angle, u) */
+  const panelMap = (c: number) => {
+    const L = Math.max(0.5, at(c, 0).setY(0).distanceTo(at(c, 1).setY(0)));
+    const halfW = horiz(c, 0.5) * CART_HALF * 0.9;
+    // the heart spans the dome from just outside the collar to just inside the rim, a little wider than tall
+    const ky = (0.9 * L) / 29;
+    const kx = Math.min(halfW / 16, ky * 1.4);
+    const uc = 0.07 + (17 * ky) / L;
+    const toDome = (x: number, y: number): [number, number] => {
+      const u = uc + y / L;
+      return [c + x / Math.max(0.5, horiz(c, u)), u];
+    };
+    return { kx, ky, toDome };
+  };
+  const panelBeads: THREE.Matrix4[] = [];
+  const scrollLobes: [number, number][] = [];
+  let lobeMm = Infinity;
   if (!sunburst) {
     // lattice: radial ribs from the collar to the rim, following the dome
     for (let i = 0; i < ribs; i++) rib(((i + 0.5) / ribs) * Math.PI * 2);
@@ -400,8 +491,73 @@ function decoPlaque(ctx: HeadCtx): Part[] {
     const fan = Math.PI - 2 * CART_HALF;
     for (const side of [0, Math.PI])
       for (let i = 0; i <= perSide; i++) rib(aBand + side - fan / 2 + (fan * i) / perSide);
-    for (const c of cartCentres)
-      geos.push(domePatch(at, c - CART_HALF, c + CART_HALF, 0.05, RIB_END, rr * 0.9, pierce));
+    for (const c of cartCentres) {
+      if (!scroll) {
+        geos.push(domePatch(at, c - CART_HALF, c + CART_HALF, 0.05, RIB_END, rr * 0.9, pierce));
+        continue;
+      }
+      const { kx, ky, toDome } = panelMap(c);
+      const N = 72;
+      const heart = Array.from({ length: N }, (_, i) => heartPt((i / N) * Math.PI * 2));
+      // the raised heart panel, its foot sunk into the plate below the piercing
+      geos.push(
+        domeBlob(
+          at,
+          toDome(0, -2 * ky),
+          heart.map(([x, y]) => toDome(x * kx, y * ky)),
+          rr * 0.9,
+          pierce + 0.05,
+        ),
+      );
+      // raised milgrain outline round the heart and down its middle, between the lobes
+      const wl = rr * 0.9 + rr * 0.35;
+      const edge = heart.map(([x, y]) => {
+        const [a, u] = toDome(x * kx, y * ky);
+        return at(a, u, wl);
+      });
+      geos.push(loop(edge, rr * 0.6, N * 2, 6));
+      const mid = [5, 0, -6, -12, -17].map((y) => {
+        const [a, u] = toDome(0, y * ky);
+        return at(a, u, wl);
+      });
+      geos.push(...wire(mid, rr * 0.5, 16, 6));
+      for (const path of [edge, mid]) {
+        const closed = path === edge;
+        let len = 0;
+        const seg: number[] = [];
+        for (let i = 0; i + (closed ? 0 : 1) < path.length; i++) {
+          const d = path[i].distanceTo(path[(i + 1) % path.length]);
+          seg.push(d);
+          len += d;
+        }
+        const nb = Math.max(6, Math.round(len / (beadR * 2.3)));
+        for (let k = 0; k < nb; k++) {
+          let sArc = (k / nb) * len;
+          let i = 0;
+          while (i < seg.length - 1 && sArc > seg[i]) sArc -= seg[i++];
+          const q = path[i]
+            .clone()
+            .lerp(path[(i + 1) % path.length], Math.min(1, sArc / Math.max(1e-6, seg[i])));
+          panelBeads.push(new THREE.Matrix4().makeTranslation(q.x, q.y + rr * 0.55, q.z));
+        }
+      }
+      // a scroll curl in the open piercing each side of the heart's point
+      for (const side of [-1, 1]) {
+        const cx = side * 11.5 * kx;
+        const cy = -9 * ky;
+        const rs = Math.min(4.5 * kx, 5 * ky);
+        const curl = Array.from({ length: 28 }, (_, i) => {
+          const f = i / 27;
+          const ang = side * (Math.PI * 0.5 + f * Math.PI * 3);
+          const r = rs * (1 - 0.75 * f);
+          const [a, u] = toDome(cx + Math.cos(ang) * r, cy + Math.sin(ang) * r);
+          return at(a, u, 0);
+        });
+        geos.push(...wire(curl, rr * 0.55, 56, 6));
+      }
+      for (const side of [-1, 1]) scrollLobes.push(toDome(side * 8.5 * kx, 4 * ky));
+      lobeMm = Math.min(lobeMm, 12 * Math.min(kx, ky));
+    }
   }
   const ringAt = (u: number, r: number) =>
     geos.push(
@@ -449,16 +605,18 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR, 1)), mats));
   if (ribBeads.length)
     geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR * 0.9, 0)), ribBeads));
+  if (panelBeads.length)
+    geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR * 0.85, 0)), panelBeads));
   // small accent stones in milgrain cups lying on the dome at (angle, u) sites, tables tilted with the slope
-  const cupStones = (size: number, sites: [number, number][]): THREE.BufferGeometry => {
+  const cupStones = (size: number, sites: [number, number][], raise = 0): THREE.BufferGeometry => {
     const dims = accentDims(ctx, size);
     const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
     const rc = Math.max(dims.length, dims.width) / 2 + rr * 0.35;
     const sm: THREE.Matrix4[] = [];
     for (const [a, u] of sites) {
-      const q = at(a, u, rr * 0.9);
-      const qo = at(a, Math.min(1, u + 0.05), rr * 0.9);
-      const qi = at(a, u - 0.05, rr * 0.9);
+      const q = at(a, u, rr * 0.9 + raise);
+      const qo = at(a, Math.min(1, u + 0.05), rr * 0.9 + raise);
+      const qi = at(a, u - 0.05, rr * 0.9 + raise);
       const run = Math.max(1e-3, Math.hypot(qo.x - qi.x, qo.z - qi.z));
       const tilt = Math.min(0.45, Math.atan2(qi.y - qo.y, run)); // set a little flatter than a steep slope
       const nx = (qo.x - qi.x) / run;
@@ -515,12 +673,19 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   // cartouche stones: small stones in milgrain cups on each cartouche, out towards the rim
   const nCart = sunburst ? Math.round(num(p, 'cartoucheStones', 0, 0, 3)) : 0;
   if (nCart > 0) {
-    const size = Math.max(0.8, Math.min(2.4, num(p, 'cartoucheSize', 0, 0, 3) || ctx.accent.sizeMm || 1.4));
+    let size = Math.max(0.8, Math.min(2.4, num(p, 'cartoucheSize', 0, 0, 3) || ctx.accent.sizeMm || 1.4));
     const sites: [number, number][] = [];
-    for (const c of cartCentres)
-      for (let i = 0; i < nCart; i++)
-        sites.push([c + (nCart === 1 ? 0 : CART_HALF * 0.5 * ((2 * i) / (nCart - 1) - 1)), 0.55]);
-    stones.push(cupStones(size, sites));
+    if (scroll) {
+      // one stone in each lobe of the heart (one stone: on the heart's middle line), sized to sit inside its outline
+      size = Math.max(0.6, Math.min(size, lobeMm));
+      if (nCart === 1) for (const c of cartCentres) sites.push(panelMap(c).toDome(0, -2 * panelMap(c).ky));
+      else sites.push(...scrollLobes);
+    } else
+      for (const c of cartCentres)
+        for (let i = 0; i < nCart; i++)
+          sites.push([c + (nCart === 1 ? 0 : CART_HALF * 0.5 * ((2 * i) / (nCart - 1) - 1)), 0.55]);
+    // on a scroll heart the stones sit up on the raised panel
+    stones.push(cupStones(size, sites, scroll ? rr * 0.6 : 0));
   }
   // corner studs: a larger bead at each polygon corner
   for (const a of corners) if (!inCartouche(a, -0.2)) geos.push(ball(at(a, 1, rr * 1.6), rr * 1.5, 1));

@@ -598,7 +598,8 @@
           "ribMilgrain": true,
           "cartoucheStones": 2,
           "cartoucheSize": 1.6,
-          "rimStoneCount": 6
+          "rimStoneCount": 6,
+          "endPanel": "scroll"
         },
         "shank": {
           "widthMm": 1.8,
@@ -609,7 +610,7 @@
       }
     },
     "band": null,
-    "notes": "Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown. Photo audit: a wide openwork plaque about three times the stone, ten small diamonds around it, narrow engraved shank; modelled as a long sunburst plaque: milgrain ribs fanning out along the band, an octagonal collar, a pair of stones on each cartouche and three stones on each side."
+    "notes": "Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown. Photo audit: a wide openwork plaque about three times the stone, ten small diamonds around it, narrow engraved shank; modelled as a long sunburst plaque: milgrain ribs fanning out along the band, an octagonal collar, a pair of stones on each cartouche, one in each lobe of a raised, pierced scroll heart outlined in milgrain, and three stones on each side."
   },
   {
     "id": "r1-014",

@@ -1240,7 +1240,7 @@ export const heads: HeadModel[] = [
     builder: 'deco-plaque',
     summary: 'A domed octagonal plaque of pierced openwork, milgrain and small diamonds round the stone.',
     description:
-      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger on a sculpted plaque.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: stretch the plaque along the band, fan the ribs into a sunburst with a solid cartouche at each end holding small stones in milgrain cups, bead the ribs and frame the stone in an octagonal collar. The openwork collects dust.',
+      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger on a sculpted plaque.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: stretch the plaque along the band, fan the ribs into a sunburst with a cartouche at each end holding stones in milgrain cups (or pierced scroll hearts), bead the ribs and frame the stone in an octagonal collar. The openwork collects dust.',
     tags: ['art-deco', 'vintage', 'plaque', 'openwork', 'milgrain'],
     pros: ['Big vintage presence from a small stone', 'Rich detail from every angle', 'Protects the girdle'],
     cons: ['Openwork traps dirt', 'Tall, wide face', 'Delicate details wear over decades'],
@@ -1265,6 +1265,7 @@ export const heads: HeadModel[] = [
       collarSides: 0,
       cartoucheStones: 0,
       cartoucheSize: 0,
+      endPanel: 'plain',
     },
     controls: [
       {
@@ -1378,6 +1379,16 @@ export const heads: HeadModel[] = [
         step: 0.1,
         unit: 'mm',
         help: '0 = use the accent stone size.',
+      },
+      {
+        type: 'select',
+        key: 'endPanel',
+        label: 'End panels',
+        options: [
+          { value: 'plain', label: 'Plain cartouche' },
+          { value: 'scroll', label: 'Scroll heart' },
+        ],
+        help: 'Sunburst only. Scroll heart: each cartouche becomes a raised heart of two lobes outlined in milgrain, over open piercing with a scroll curl each side; the cartouche stones sit one in each lobe.',
       },
     ],
     fitsCuts: ALL,

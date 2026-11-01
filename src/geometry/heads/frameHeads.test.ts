@@ -396,6 +396,64 @@ describe('deco plaque extras: sunburst, cartouche stones, stretch, rib milgrain,
     for (const q of v) expect(Math.abs(q.x)).toBeGreaterThan(Math.abs(q.z) * 0.3);
   });
 
+  it('scroll end panels: off by default, sunburst only, deterministic and in budget', () => {
+    const plain = build('deco-plaque', 'old-european', DECO, [1, 0]);
+    expect(positions(build('deco-plaque', 'old-european', { ...DECO, endPanel: 'plain' }, [1, 0]))).toEqual(
+      positions(plain),
+    );
+    // without the sunburst there are no cartouches, so nothing changes
+    expect(
+      positions(build('deco-plaque', 'old-european', { endPanel: 'scroll', cartoucheStones: 2 }, [1, 0])),
+    ).toEqual(positions(build('deco-plaque', 'old-european', { cartoucheStones: 2 }, [1, 0])));
+    const scroll = build('deco-plaque', 'old-european', { ...DECO, endPanel: 'scroll' }, [1, 0]);
+    expect(positions(scroll)).not.toEqual(positions(plain));
+    expect(positions(build('deco-plaque', 'old-european', { ...DECO, endPanel: 'scroll' }, [1, 0]))).toEqual(
+      positions(scroll),
+    );
+    let tris = 0;
+    for (const p of scroll) {
+      const arr = p.geometry.getAttribute('position').array as ArrayLike<number>;
+      for (let i = 0; i < arr.length; i++) expect(Number.isFinite(arr[i])).toBe(true);
+      tris += arr.length / 9;
+    }
+    expect(tris).toBeLessThan(80000);
+  });
+
+  for (const bandAxis of [
+    [1, 0],
+    [0, 1],
+  ] as [number, number][])
+    it(`scroll end panels hold one stone in each lobe of a raised, outlined heart (band axis ${bandAxis.join(',')})`, () => {
+      const only = { ...DECO, rimStones: false, endPanel: 'scroll' };
+      const [ax, az] = bandAxis;
+      const along = (v: THREE.Vector3) => v.x * ax + v.z * az;
+      const across = (v: THREE.Vector3) => -v.x * az + v.z * ax;
+      const stones = verts(build('deco-plaque', 'round-brilliant', only, bandAxis), 'accent-stone');
+      const one = verts(
+        build('deco-plaque', 'round-brilliant', { ...only, cartoucheStones: 1 }, bandAxis),
+        'accent-stone',
+      );
+      expect(one.length).toBeGreaterThan(0);
+      // two lobes on each of the two ends
+      expect(stones.length).toBe(2 * one.length);
+      for (const v of stones)
+        expect(Math.abs(across(v)), 'on the ends across the band').toBeGreaterThan(Math.abs(along(v)));
+      for (const end of [1, -1]) {
+        const mine = stones.filter((v) => Math.sign(across(v)) === end);
+        // one lobe each side of the end's middle line
+        expect(mine.some((v) => along(v) > 0.4)).toBe(true);
+        expect(mine.some((v) => along(v) < -0.4)).toBe(true);
+      }
+      // the milgrain outline stands above the plain cartouche's flat top
+      const top = (p: Params) =>
+        Math.max(
+          ...verts(build('deco-plaque', 'round-brilliant', p, bandAxis), 'head-metal')
+            .filter((v) => Math.abs(across(v)) > Math.abs(along(v)) * 2 && Math.abs(across(v)) > 4.5)
+            .map((v) => v.y),
+        );
+      expect(top(only)).toBeGreaterThan(top({ ...DECO, rimStones: false }) + 0.05);
+    });
+
   it('rib milgrain and the polygon collar add metal', () => {
     const n = (p: Params) => verts(build('deco-plaque', 'round-brilliant', p), 'head-metal').length;
     expect(n({ ribMilgrain: true })).toBeGreaterThan(n({}));

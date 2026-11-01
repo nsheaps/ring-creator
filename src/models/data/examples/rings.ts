@@ -785,6 +785,7 @@ export const rings: ExampleDesign[] = [
           cartoucheStones: 2,
           cartoucheSize: 1.6,
           rimStoneCount: 6,
+          endPanel: 'scroll',
         },
       },
       shank: {
@@ -814,7 +815,7 @@ export const rings: ExampleDesign[] = [
     tags: ['art-deco', 'engagement'],
     category: 'art-deco',
     blurb:
-      'Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown. Photo audit: a wide openwork plaque about three times the stone, ten small diamonds around it, narrow engraved shank; modelled as a long sunburst plaque: milgrain ribs fanning out along the band, an octagonal collar, a pair of stones on each cartouche and three stones on each side.',
+      'Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown. Photo audit: a wide openwork plaque about three times the stone, ten small diamonds around it, narrow engraved shank; modelled as a long sunburst plaque: milgrain ribs fanning out along the band, an octagonal collar, a pair of stones on each cartouche, one in each lobe of a raised, pierced scroll heart outlined in milgrain, and three stones on each side.',
     priceUsd: null,
     designFamily: 'deco-plaque / vintage-filigree / old-european',
     view: 'ring',
