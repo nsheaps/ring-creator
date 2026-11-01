@@ -39,9 +39,9 @@ export const rings: ExampleDesign[] = [
         metal: 'platinum',
         params: {
           widthMm: 1.9,
-          thicknessMm: 1.5,
+          thicknessMm: 1.7,
           topWidthMm: 2.6,
-          topThicknessMm: 1.8,
+          topThicknessMm: 2.1,
           taperDeg: 100,
         },
       },
@@ -227,8 +227,11 @@ export const rings: ExampleDesign[] = [
         id: 'plain-round',
         metal: 'yellow-gold-18k',
         params: {
-          widthMm: 2.5,
-          topWidthMm: 2.5,
+          widthMm: 2.4,
+          topWidthMm: 3.3,
+          thicknessMm: 2.0,
+          topThicknessMm: 2.7,
+          taperDeg: 100,
         },
       },
       placement: {
@@ -410,10 +413,10 @@ export const rings: ExampleDesign[] = [
         id: 'crossover',
         metal: 'rose-gold-14k',
         params: {
-          widthMm: 1.3,
-          topWidthMm: 2,
-          thicknessMm: 1.6,
-          topThicknessMm: 1.8,
+          widthMm: 1.2,
+          topWidthMm: 1.8,
+          thicknessMm: 1.3,
+          topThicknessMm: 1.5,
         },
       },
       placement: {
@@ -953,7 +956,7 @@ export const rings: ExampleDesign[] = [
         params: {
           widthMm: 1.6,
           topWidthMm: 1.6,
-          thicknessMm: 1.5,
+          thicknessMm: 1.7,
           topThicknessMm: 1.5,
           shoulderStones: true,
           stoneSizeMm: 0.9,
@@ -2049,7 +2052,7 @@ export const rings: ExampleDesign[] = [
         params: {
           widthMm: 1.8,
           topWidthMm: 1.8,
-          thicknessMm: 1.5,
+          thicknessMm: 1.7,
           topThicknessMm: 1.5,
         },
       },
@@ -4093,7 +4096,7 @@ export const rings: ExampleDesign[] = [
         params: {
           widthMm: 1.6,
           topWidthMm: 1.6,
-          thicknessMm: 1.5,
+          thicknessMm: 1.7,
           topThicknessMm: 1.5,
         },
       },
@@ -4211,9 +4214,10 @@ export const rings: ExampleDesign[] = [
         id: 'cluster-flank',
         metal: 'yellow-gold-14k',
         params: {
-          flankCount: 3,
-          flankRatio: 0.24,
-          arrangement: 'column',
+          flankCount: 1,
+          flankRatio: 0.13,
+          arrangement: 'fan',
+          fanCut: 'round',
         },
       },
       shank: {
@@ -4497,12 +4501,12 @@ export const rings: ExampleDesign[] = [
         sizeMm: 2.6,
       },
       head: {
-        id: 'cluster-flank',
+        id: 'three-stone',
         metal: 'rose-gold-14k',
         params: {
-          flankCount: 3,
-          flankRatio: 0.24,
-          arrangement: 'chevron',
+          sideRatio: 0.5,
+          sideGap: 0.25,
+          sideProngs: 4,
         },
       },
       shank: {
@@ -4532,7 +4536,7 @@ export const rings: ExampleDesign[] = [
     blurb:
       'Oval lab-grown alexandrite on a pave rose-gold band; head and carat not stated on page (search snippet says approx. 2 ct, 7x9 mm). Head style not stated on page; prong head assumed. Photo audit: oval centre with two round side stones over a pave band; the blue-violet colour-change is not in the alexandrite colour list.',
     priceUsd: 2295,
-    designFamily: 'cluster-flank / pave / oval',
+    designFamily: 'three-stone / pave / oval',
     view: 'ring',
   },
   {
