@@ -29,9 +29,15 @@ import { prongOpts } from './prongHeads';
 
 const LEAF_STYLES = ['metal', 'stone'] as const;
 
-const smooth = (t: number): number => {
-  const c = Math.min(1, Math.max(0, t));
-  return c * c * (3 - 2 * c);
+/** 0..1 climb profile: eases in over the first 35 %, rises at a steady slope, levels off over the last 20 %. */
+const climb = (t: number): number => {
+  const x = Math.min(1, Math.max(0, t));
+  const a = 0.35;
+  const b = 0.2;
+  const vm = 1 / (1 - (a + b) / 2);
+  if (x < a) return (vm * x * x) / (2 * a);
+  if (x < 1 - b) return vm * (a / 2 + x - a);
+  return 1 - (vm * (1 - x) ** 2) / (2 * b);
 };
 
 /** Closed indexed loft -> outward winding, smooth normals, flat (non-indexed) buffer. */
@@ -253,26 +259,50 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
       y: number;
       r: number;
     }
+    const rRoot = r0 * 1.2;
     const lead: S[] = [];
     for (let k = 0; k < 4; k++) {
       const f = k / 4;
       const u = uL + 0.6 * (1 - f);
-      lead.push({ u, v: v0, y: shankTop(u) - r0 * 1.1 + r0 * f, r: r0 * 1.1 });
+      lead.push({ u, v: v0, y: shankTop(u) - r0 + r0 * 0.85 * f, r: rRoot });
     }
-    const path: S[] = [];
+    // plan: the lead-in curve with a slight S wobble, then the arc round the stone
+    const plan: { u: number; v: number; phi: number }[] = [];
     const NB = 24;
+    const wob = Math.min(0.22, run * 0.05);
     for (let k = 0; k <= NB; k++) {
       const f = k / NB;
       const [u, v] = bez(f);
-      const st = shankTop(u) - r0 * 0.1;
-      path.push({ u, v, y: st + (yArc - st) * smooth(f) ** 0.6, r: r0 * (1.1 - 0.1 * f) });
+      plan.push({ u, v: v + wob * Math.sin(2 * Math.PI * f) * Math.sin(Math.PI * f), phi: -1 });
     }
     const NA = Math.max(6, Math.round(((phiEnd - phiIn) * 180) / Math.PI / 6));
     for (let k = 1; k <= NA; k++) {
       const phi = phiIn + ((phiEnd - phiIn) * k) / NA;
       const [u, v] = arcPt(phi);
-      path.push({ u, v, y: yArc, r: r0 * (1 - 0.15 * (k / NA)) });
+      plan.push({ u, v, phi });
     }
+    // the twig lies along the shoulder first and lifts off it gently, reaching girdle level beside the stone's middle
+    const phiTop = Math.min(phiEnd, Math.PI / 2 + 0.1);
+    const pc: number[] = [0];
+    for (let i = 1; i < plan.length; i++)
+      pc.push(pc[i - 1] + Math.hypot(plan[i].u - plan[i - 1].u, plan[i].v - plan[i - 1].v));
+    let iTop = plan.length - 1;
+    for (let i = NB + 1; i < plan.length; i++)
+      if (plan[i].phi >= phiTop - 1e-9) {
+        iTop = i;
+        break;
+      }
+    const sTop = Math.max(1e-6, pc[iTop]);
+    const path: S[] = plan.map((q, i) => {
+      const x = Math.min(1, pc[i] / sTop);
+      const g = climb(x);
+      const st = shankTop(q.u) - r0 * 0.15;
+      // bark-like taper with faint swellings
+      const r =
+        r0 *
+        ((1.2 - 0.3 * Math.min(1, pc[i] / pc[pc.length - 1]) ** 0.8) * (1 + 0.04 * Math.sin(pc[i] * 3.1)));
+      return { u: q.u, v: q.v, y: st + (yArc - st) * g, r };
+    });
     // free tail beyond the stone, drifting slightly outward
     const [ue, ve] = arcPt(phiEnd);
     const te: [number, number] = [-Math.sin(phiEnd), Math.cos(phiEnd)];
@@ -410,6 +440,28 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
         branchMetal.push(...st.metal);
         branchStones.push(st.stone);
       }
+    }
+    // a short bare shoot forking off the climb, on the side away from the stone
+    {
+      const sS = total * 0.3;
+      const { s, t } = at(sS);
+      const out = -t[1] * s.u + t[0] * s.v > 0 ? 1 : -1;
+      const len = 1.3 + leafLen * 0.35;
+      const q = placeDir({ kind: 'leaf', s: sS, side: out, angle: 0.75 }, len);
+      const fall = droop(q.base.u, q.base.u + q.dir[0] * len);
+      const shoot: TwigPt[] = [];
+      for (let k = 0; k <= 5; k++) {
+        const f = k / 5;
+        // curls slightly back toward the branch direction as it grows
+        const bend = 0.25 * f * f;
+        const du = q.dir[0] * (1 - bend) + t[0] * bend;
+        const dv = q.dir[1] * (1 - bend) + t[1] * bend;
+        shoot.push({
+          p: world(q.base.u + du * len * f, q.base.v + dv * len * f, q.base.y + (fall * 0.5 + 0.35) * f),
+          r: Math.max(0.12, q.base.r * (0.6 - 0.4 * f)),
+        });
+      }
+      branchMetal.push(twig(shoot, 8));
     }
     const pts: TwigPt[] = [...lead, ...path].map((q) => ({ p: world(q.u, q.v, q.y), r: q.r }));
     branchMetal.push(twig(pts));

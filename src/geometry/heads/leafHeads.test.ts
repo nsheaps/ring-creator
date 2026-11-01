@@ -6,7 +6,7 @@ import type { Part } from '../types';
 import { heads } from '@/models/data/heads';
 import type { Params } from '@/models/types';
 import './index';
-import { signedVolume } from './common';
+import { ringDrop, signedVolume } from './common';
 import { detachedIslands } from '../shanks/connectivity';
 import { STUB_CUTS, stubCtx } from './testStub';
 
@@ -63,12 +63,14 @@ describe('leaf-vine-bypass head', () => {
           const metal = metalOf(parts);
           expect(metal.length).toBe(1);
           const all = parts.map((p) => p.geometry);
-          for (const g of all) {
-            const arr = g.getAttribute('position').array as ArrayLike<number>;
-            for (let k = 0; k < arr.length; k++) expect(Number.isFinite(arr[k])).toBe(true);
-            const n = g.getAttribute('normal').array as ArrayLike<number>;
-            for (let k = 0; k < n.length; k++) expect(Number.isFinite(n[k])).toBe(true);
-          }
+          // one plain scan per buffer (an expect per float made this file take minutes)
+          for (const g of all)
+            for (const name of ['position', 'normal']) {
+              const arr = g.getAttribute(name).array as ArrayLike<number>;
+              let bad = -1;
+              for (let k = 0; k < arr.length && bad < 0; k++) if (!Number.isFinite(arr[k])) bad = k;
+              expect(bad, `${name}[${bad}] is not finite`).toBe(-1);
+            }
           expect(tris(all)).toBeGreaterThan(500);
           expect(tris(all)).toBeLessThan(40000);
           expect(signedVolume(metal[0]), 'winds outward').toBeGreaterThan(0);
@@ -115,6 +117,18 @@ describe('leaf-vine-bypass head', () => {
     expect(shoulder(-1).length).toBeGreaterThan(20);
     // nothing but prong tips over the table
     expect(v.some((p) => p.y > 0.4 && Math.hypot(p.x / 4.48, p.z / 3.2) < 0.6)).toBe(false);
+  });
+
+  it('the twigs run low along the shoulders before rising to the stone', () => {
+    const ctx = stubCtx({ cut: 'oval', baseDrop: 3.2, params: {}, bandAxis: [1, 0] });
+    // highest metal over each shoulder strip, above the shank top there; bare twigs only so leaves do not count
+    const v = verts(metalOf(build({ budStones: 0, leafCount: 2, leafSize: 1.4 })));
+    for (const s of [1, -1]) {
+      const strip = v.filter((p) => s * p.x > 5.4 && s * p.x < 6 && Math.abs(p.z) < 1.2);
+      expect(strip.length).toBeGreaterThan(10);
+      const lift = Math.max(...strip.map((p) => p.y + 3.2 + ringDrop(ctx, p.x)));
+      expect(lift).toBeLessThan(1.6);
+    }
   });
 
   it('metal leaves add metal, stone leaves add marquise stones, bud stones add small stones', () => {
