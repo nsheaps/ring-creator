@@ -4215,7 +4215,7 @@ export const rings: ExampleDesign[] = [
         metal: 'yellow-gold-14k',
         params: {
           flankCount: 1,
-          flankRatio: 0.13,
+          flankRatio: 0.17,
           arrangement: 'fan',
           fanCut: 'round',
         },
@@ -4504,7 +4504,7 @@ export const rings: ExampleDesign[] = [
         id: 'three-stone',
         metal: 'rose-gold-14k',
         params: {
-          sideRatio: 0.5,
+          sideRatio: 0.42,
           sideGap: 0.25,
           sideProngs: 4,
         },
@@ -4519,7 +4519,7 @@ export const rings: ExampleDesign[] = [
       },
       placement: {
         orientation: 'north-south',
-        raise: 1.2,
+        raise: 0.6,
         tilt: 0,
         rotate: 0,
         offset: 0,

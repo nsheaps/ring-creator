@@ -1258,6 +1258,7 @@ export const heads: HeadModel[] = [
           { value: 'marquise', label: 'Marquise' },
           { value: 'pear', label: 'Pear' },
           { value: 'oval', label: 'Oval' },
+          { value: 'round', label: 'Round (a triangle of three at one stone per side)' },
           { value: 'accent', label: 'Accent stone cut' },
         ],
       },

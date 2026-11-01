@@ -135,16 +135,16 @@ function fanFlank(ctx: HeadCtx): Part[] {
   const tiltK = num(p, 'flankTilt', 1, 0.4, 1.6);
   const spread = (num(p, 'fanSpread', 80, 30, 120) * Math.PI) / 180;
   const style = str(p, 'prongStyle', PRONG_STYLES, 'round') as ProngStyle;
-  const cutKey = str(p, 'fanCut', ['marquise', 'pear', 'oval', 'accent'] as const, 'marquise');
-  const cutId = cutKey === 'accent' ? ctx.accent.cut.id : cutKey;
+  const cutKey = str(p, 'fanCut', ['marquise', 'pear', 'oval', 'round', 'accent'] as const, 'marquise');
+  const cutId = cutKey === 'accent' ? ctx.accent.cut.id : cutKey === 'round' ? 'round-brilliant' : cutKey;
   const centre = centreBasket(ctx, style);
   const metal: THREE.BufferGeometry[] = [...centre.geos];
   const stones: THREE.BufferGeometry[] = [];
   // extent of the centre stone across the band's perpendicular (the fan's span)
   const span = support(o, px, pz) + support(o, -px, -pz);
   const ml = Math.max(1.6, span * ratio * 1.7);
-  const mw = ml * 0.48;
-  const rd = Math.max(1, ml * 0.24);
+  const mw = cutKey === 'round' ? ml : ml * 0.48;
+  const rd = Math.max(1, ml * (cutKey === 'round' ? 0.62 : 0.24));
   const tilt = 0.22 * tiltK;
   const step = n > 1 ? Math.min((40 * Math.PI) / 180, spread / (n - 1)) : 0;
   const wireMm = num(p, 'prongWidth', 0, 0, 1.6) * 0.6 || 0.5;
