@@ -193,20 +193,40 @@ function split(ctx: ShankCtx): ShankResult {
   }
   const gap = num(p, 'gapMm', 0, 0, 5) || autoGap;
   const prong = (w: number) => w * 0.55; // each half band is a bit more than half as wide
-  const [a0, a1] = pv ? paveZone(ctx, pv, R + tp.tTop, splitAng - 0.05) : [0, 0];
-  const zone = pv ? zoneWeight(a0, a1) : () => 0;
+  const [a0, zoneEnd] = pv ? paveZone(ctx, pv, R + tp.tTop, splitAng - 0.05) : [0, 0];
   // the arms hold their pave width over the whole run and only then slim back, so there is no visible step
-  const wide = pv ? zoneWeight(a0 - 0.3, a1 + 0.3, 0.3) : () => 0;
+  // (computed from the zone as asked, so cutting the stones short below does not change the arms' shape)
+  const wide = pv ? zoneWeight(a0 - 0.3, zoneEnd + 0.3, 0.3) : () => 0;
   /** one arm at angle th: section width, thickness and axial centre */
   const arm = (th: number, side: number) => {
     const w = widthAt(tp, th);
-    const s = smooth(1 - fromTop(th) / splitAng);
+    const x = clamp(1 - fromTop(th) / splitAng, 0, 1);
+    const s = smooth(x);
     // each arm tapers a little as it climbs towards the head
     let hw = prong(w) * (1 - 0.14 * s);
     if (pv) hw = Math.max(hw, pv.need * wide(th));
-    const c = side * ((w - hw) / 2 + s * (gap / 2 + hw / 2 - (w - hw) / 2));
+    // with pave the arms are a full band wide each, so they part at an angle (ease out) instead of peeling off
+    // tangentially: that leaves room for stones on both arms closer to the split
+    const open = pv ? x * (2 - x) : s;
+    const c = side * ((w - hw) / 2 + open * (gap / 2 + hw / 2 - (w - hw) / 2));
     return { hw, t: thickAt(tp, th) * (1 - 0.1 * s), c };
   };
+  // the arms converge towards the split, so the stones of the two arms close in on each other: the last stone
+  // centre stays where the arms are still at least a stone width (plus spacing) apart, and the run ends half a
+  // stone beyond it
+  let a1 = zoneEnd;
+  if (pv && zoneEnd > a0) {
+    const apart = pv.dims.width + (pv.pitch - pv.dims.length) + 0.02;
+    const rOut = R + tp.tTop;
+    const step = 0.002;
+    let last = a0;
+    for (let a = a0; a <= zoneEnd; a += step) {
+      if (2 * Math.abs(arm(TOP + a, 1).c) < apart) break;
+      last = a;
+    }
+    a1 = Math.min(zoneEnd, last + pv.pitch / (2 * rOut));
+  }
+  const zone = pv ? zoneWeight(a0, a1) : () => 0;
   const lower = sweep({
     thetaStart: TOP + splitAng,
     thetaEnd: TOP + TAU - splitAng,
