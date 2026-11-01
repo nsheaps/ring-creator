@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
 import { gems } from '@/models/data/gems';
-import { DARK_GEM_MIN_LIGHTNESS, SPECKLED_MIN_LIGHTNESS, gemShade } from './materials';
+import { DARK_GEM_MIN_LIGHTNESS, SPECKLED_MIN_LIGHTNESS, gemMaterials, gemShade } from './materials';
 import { gemColorFlashes } from '@/models/data/gems';
 
 const gem = (id: string) => {
@@ -112,6 +112,50 @@ describe('salt-and-pepper diamond', () => {
     const s = gemShade(gem(g), hex(g, c));
     expect(s.speckle).toBe(0);
     expect(s.darkFloor).toBe(1);
+  });
+});
+
+describe('inclusion shader', () => {
+  /** run a material's onBeforeCompile against a minimal stand-in of three's shader chunks */
+  const compile = (m: THREE.Material) => {
+    const shader = {
+      uniforms: {},
+      vertexShader: '#include <common>\nvoid main() {\n#include <begin_vertex>\n}',
+      fragmentShader: '#include <common>\nvoid main() {\n#include <opaque_fragment>\n}',
+    } as unknown as THREE.WebGLProgramParametersWithUniforms;
+    m.onBeforeCompile(shader, {} as THREE.WebGLRenderer);
+    return shader;
+  };
+
+  it('evaluates clustered noise clouds in the stone frame in both passes', () => {
+    const [outer, inner] = gemMaterials(
+      gem('diamond'),
+      hex('diamond', 'salt-and-pepper'),
+      undefined,
+      undefined,
+      0,
+      true,
+      false,
+    );
+    for (const m of [outer, inner]) {
+      const s = compile(m);
+      // local (object-space) position and view ray: inclusions stay put while the camera or ring turns
+      expect(s.vertexShader).toContain('vGemLocal = position;');
+      expect(s.vertexShader).toContain('#include <begin_vertex>');
+      expect(s.fragmentShader).toContain('gemFbm');
+      expect(s.fragmentShader).toContain('gemCloud( q )');
+      expect(s.fragmentShader).toContain('gemSpeck(');
+      // deterministic: no time or random inputs
+      expect(s.fragmentShader).not.toMatch(/\btime\b|random\(/);
+      expect(s.uniforms).toHaveProperty('gemSpeckleAmt');
+    }
+  });
+
+  it('speckled stones keep depth: dimmer than a colourless stone, with a dark-leaning mosaic floor', () => {
+    const sp = gemShade(gem('diamond'), hex('diamond', 'salt-and-pepper'), undefined, undefined, 0, true);
+    const cl = gemShade(gem('diamond'), hex('diamond', 'colorless'), undefined, undefined, 0, true);
+    expect(sp.brightness).toBeLessThan(cl.brightness);
+    expect(sp.contrast).toBeGreaterThan(0);
   });
 });
 

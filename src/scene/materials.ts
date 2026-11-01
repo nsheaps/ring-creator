@@ -63,22 +63,66 @@ float gemFlatness( vec3 n ) {
  * (inclusion speckles, opal patches).
  */
 const GEM_FUNCS = /* glsl */ `
-// deterministic inclusion speckle (salt-and-pepper diamonds): in each cell of a 3D lattice, a dark disc of hashed
-// size; only some cells hold one. Returns 0 (clear) .. 1 (inside an inclusion).
+// Inclusions (salt-and-pepper diamonds), evaluated in the stone's local (object) frame so they stay put while the
+// camera or the ring turns. Value noise on a hashed lattice, smoothly interpolated: deterministic, no textures.
+float gemVNoise( vec3 p ) {
+  vec3 i = floor( p );
+  vec3 f = fract( p );
+  vec3 u = f * f * ( 3.0 - 2.0 * f );
+  float a = gemHash3( i ).x;
+  float b = gemHash3( i + vec3( 1.0, 0.0, 0.0 ) ).x;
+  float c = gemHash3( i + vec3( 0.0, 1.0, 0.0 ) ).x;
+  float d = gemHash3( i + vec3( 1.0, 1.0, 0.0 ) ).x;
+  float e = gemHash3( i + vec3( 0.0, 0.0, 1.0 ) ).x;
+  float g = gemHash3( i + vec3( 1.0, 0.0, 1.0 ) ).x;
+  float h = gemHash3( i + vec3( 0.0, 1.0, 1.0 ) ).x;
+  float k = gemHash3( i + vec3( 1.0, 1.0, 1.0 ) ).x;
+  return mix( mix( mix( a, b, u.x ), mix( c, d, u.x ), u.y ), mix( mix( e, g, u.x ), mix( h, k, u.x ), u.y ), u.z );
+}
+float gemFbm( vec3 p ) {
+  float s = 0.0;
+  float a = 0.5;
+  for ( int o = 0; o < 4; o++ ) {
+    s += a * gemVNoise( p );
+    p = p * 2.07 + vec3( 1.7, 9.2, 3.1 );
+    a *= 0.5;
+  }
+  return s / 0.9375;
+}
+// Cloudy inclusion density at local point p (mm): low-frequency, domain-warped fbm thresholded into a few clusters
+// (most of the stone stays clear), with fractal grain inside them so they read as smudges and wisps, not blobs.
+float gemCloud( vec3 p ) {
+  vec3 w = vec3( gemVNoise( p * 0.3 + 3.1 ), gemVNoise( p * 0.3 + 11.7 ), gemVNoise( p * 0.3 + 23.9 ) ) - 0.5;
+  float n = gemFbm( p * 0.42 + 2.2 * w + vec3( 5.3, 1.9, 7.7 ) );
+  float cloud = smoothstep( 0.5, 0.66, n );
+  return cloud * ( 0.35 + 0.65 * gemVNoise( p * 3.3 + 2.0 * w + 7.0 ) );
+}
+// A few crisp black specks: a sparse lattice of small sharp discs (only ~1 cell in 7 holds one).
 float gemSpeck( vec3 p ) {
   vec3 c = floor( p );
   vec3 h = gemHash3( c + vec3( 3.0, 71.0, 19.0 ) );
   vec3 at = c + 0.3 + 0.4 * h;
-  float r = mix( 0.08, 0.3, gemHash3( c + vec3( 41.0, 7.0, 53.0 ) ).x );
-  float on = step( 0.45, h.z );
-  return on * ( 1.0 - smoothstep( r * 0.55, r, length( p - at ) ) );
+  float r = mix( 0.07, 0.16, gemHash3( c + vec3( 41.0, 7.0, 53.0 ) ).x );
+  float on = step( 0.86, h.z );
+  return on * ( 1.0 - smoothstep( r * 0.7, r, length( p - at ) ) );
 }
-float gemSpeckle( vec3 wp ) {
-  // two scales: a few larger dark clouds and finer pepper
-  return clamp( gemSpeck( wp * 0.7 ) * 0.7 + gemSpeck( wp * 2.6 + 17.0 ) * 0.8 + gemSpeck( wp * 6.0 + 5.0 ) * 0.5, 0.0, 1.0 );
+// Light left after crossing the inclusions along the ray from lp in direction md (local frame, mm): a short
+// march through the volume, so the clouds sit at different depths and shift against each other (parallax) as the
+// stone turns. Absorbed light leaves a smoky brown-black tint (the wisps in real salt-and-pepper stones).
+vec3 gemInclusionTint( vec3 lp, vec3 md ) {
+  float t = 1.0;
+  float sp = 0.0;
+  for ( int i = 0; i < 5; i++ ) {
+    vec3 q = lp + md * ( 0.2 + 0.75 * float( i ) );
+    t *= 1.0 - 0.55 * gemCloud( q );
+    if ( i == 1 || i == 3 ) sp = max( sp, gemSpeck( q * 1.4 + float( i ) * 13.0 ) );
+  }
+  vec3 ink = mix( vec3( 0.03, 0.028, 0.026 ), vec3( 0.2, 0.16, 0.12 ), t );
+  vec3 tint = mix( ink, vec3( 1.0 ), t );
+  return tint * ( 1.0 - 0.92 * sp );
 }
 #if defined( USE_ENVMAP ) && defined( ENVMAP_TYPE_CUBE_UV )
-vec3 gemPavilionReturn( vec3 nW, vec3 IW, float facetFlat, vec3 wp ) {
+vec3 gemPavilionReturn( vec3 nW, vec3 IW, float facetFlat, vec3 wp, vec3 lp, vec3 md ) {
   vec3 r1 = reflect( IW, nW );
   // second internal bounce off the opposite pavilion facet (this facet mirrored about the stone's vertical axis, taken
   // as world up: settings hold the centre stone table-up): in a well cut stone light that hits one pavilion side
@@ -131,8 +175,12 @@ vec3 gemPavilionReturn( vec3 nW, vec3 IW, float facetFlat, vec3 wp ) {
   // a little body colour glow even in dark facets so coloured stones never go grey (and dark stones never go black)
   col += body * gemLift;
   col = mix( col, vec3( dot( col, vec3( 0.333 ) ) ) * 0.75 + 0.1, gemHaze * 0.6 );
-  // salt-and-pepper: dark mineral inclusions scattered through a translucent grey body
-  col *= 1.0 - 0.75 * gemSpeckleAmt * gemSpeckle( wp );
+  // salt-and-pepper: clouds of dark mineral inclusions and a few black specks in a translucent grey body
+  if ( gemSpeckleAmt > 0.0 ) {
+    // a translucent body: blazing returns are softened (a grey stone never goes white through the table)
+    col /= 1.0 + gemSpeckleAmt * 1.5 * max( dot( col, vec3( 0.2126, 0.7152, 0.0722 ) ) - 0.3, 0.0 );
+    col *= mix( vec3( 1.0 ), gemInclusionTint( lp, md ), gemSpeckleAmt );
+  }
   // translucent stones (opal): a milky glowing body with soft spectral patches (play of colour)
   if ( gemGlow > 0.0 ) {
     vec3 q = gemHash3( floor( wp * 0.9 + nW * 0.8 ) );
@@ -152,7 +200,8 @@ const PAVILION_MAIN = /* glsl */ `
   vec3 nW = inverseTransformDirection( nOut, viewMatrix );
   vec3 IW = inverseTransformDirection( normalize( -vViewPosition ), viewMatrix );
   vec3 wp = ( vec4( -vViewPosition, 0.0 ) * viewMatrix ).xyz + cameraPosition;
-  outgoingLight = gemPavilionReturn( nW, IW, gemFlatness( vNormal ), wp );
+  // inclusions: march from the back facet towards the viewer (local frame)
+  outgoingLight = gemPavilionReturn( nW, IW, gemFlatness( vNormal ), wp, vGemLocal, -normalize( vGemLocalView ) );
 }
 #endif
 #include <opaque_fragment>
@@ -182,9 +231,15 @@ const CROWN_MAIN = /* glsl */ `
   // curved (cabochon) surfaces: softer window reflections
   float lum = dot( outgoingLight, vec3( 0.2126, 0.7152, 0.0722 ) );
   vec3 refl = outgoingLight * mix( 0.55, smoothstep( 0.2, 0.8, lum ), facetFlat );
+  // translucent speckled stones: the face-on table is a window onto the inclusions, not a mirror of the softbox
+  refl *= 1.0 - 0.9 * gemSpeckleAmt * smoothstep( 0.8, 0.96, faceOn );
   vec3 wp = ( vec4( -vViewPosition, 0.0 ) * viewMatrix ).xyz + cameraPosition;
-  // salt-and-pepper: a second layer of inclusions just under the crown (depth against the speckles at the back)
-  mask *= 1.0 - 0.7 * gemSpeckleAmt * gemSpeckle( wp );
+  // salt-and-pepper: a thin layer of inclusions just under the crown, against the volume seen through the pavilion
+  // (self-lit stones march their own volume below)
+  if ( gemSpeckleAmt > 0.0 && gemSelf == 0.0 ) {
+    vec3 q = vGemLocal + 0.25 * normalize( vGemLocalView );
+    mask *= 1.0 - gemSpeckleAmt * ( 0.3 * gemCloud( q ) + 0.85 * gemSpeck( q * 1.4 + 29.0 ) );
+  }
   vec3 self = vec3( 0.0 );
 #if defined( USE_ENVMAP ) && defined( ENVMAP_TYPE_CUBE_UV )
   if ( gemSelf > 0.0 ) {
@@ -196,7 +251,7 @@ const CROWN_MAIN = /* glsl */ `
     float az = 6.2832 * hc.x;
     vec3 nP = normalize( vec3( nW.x, -abs( nW.y ) - 0.4, nW.z ) + ( 0.7 + 0.4 * hc.y ) * vec3( cos( az ), 0.0, sin( az ) ) );
     vec3 IW = inverseTransformDirection( normalize( -vViewPosition ), viewMatrix );
-    self = gemSelf * mask * gemPavilionReturn( nP, IW, facetFlat, wp );
+    self = gemSelf * mask * gemPavilionReturn( nP, IW, facetFlat, wp, vGemLocal, normalize( vGemLocalView ) );
   }
 #endif
   gl_FragColor = vec4( refl + self, mask * ( 1.0 - gemSelf ) );
@@ -332,7 +387,7 @@ export function gemShade(
       (colourless ? 1 : 0.3) *
       (stepCut ? 0 : 1) *
       (1 - 0.7 * darkness),
-    brightness: speckled ? 1.1 : colourless ? 1.5 + 0.4 * ri : 1.8,
+    brightness: speckled ? 1.05 : colourless ? 1.5 + 0.4 * ri : 1.8,
     haze: Math.min(1, haze + (translucent ? 0.55 : 0) + (speckled ? 0.12 : 0)),
     contrast: speckled ? 0.5 : colourless ? 0.9 : 0.55,
     // light travels the body twice: deeper colour for saturated gems, a gentle deepening for pastels and tints
@@ -351,6 +406,28 @@ export function gemShade(
   };
 }
 
+/** Varyings shared by both passes: the fragment's position and the camera-to-fragment vector in the stone's local frame. */
+const GEM_VARYINGS = /* glsl */ `
+varying vec3 vGemLocal;
+varying vec3 vGemLocalView;
+`;
+const GEM_VERTEX = /* glsl */ `
+#include <begin_vertex>
+vGemLocal = position;
+vGemLocalView = position - ( inverse( modelMatrix ) * vec4( cameraPosition, 1.0 ) ).xyz;
+`;
+
+function injectGem(shader: THREE.WebGLProgramParametersWithUniforms, u: GemUniforms, main: string): void {
+  Object.assign(shader.uniforms, u);
+  shader.vertexShader = shader.vertexShader
+    .replace('#include <common>', `#include <common>\n${GEM_VARYINGS}`)
+    .replace('#include <begin_vertex>', GEM_VERTEX);
+  shader.fragmentShader = shader.fragmentShader
+    .replace('#include <common>', `#include <common>\n${GEM_PARS}\n${GEM_VARYINGS}`)
+    .replace('void main() {', `${GEM_FUNCS}\nvoid main() {`)
+    .replace('#include <opaque_fragment>', main);
+}
+
 function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
   const mat = new THREE.MeshStandardMaterial({
     color: u.gemBody.value,
@@ -359,13 +436,9 @@ function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
     side: THREE.BackSide,
   });
   mat.onBeforeCompile = (shader) => {
-    Object.assign(shader.uniforms, u);
-    shader.fragmentShader = shader.fragmentShader
-      .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
-      .replace('void main() {', `${GEM_FUNCS}\nvoid main() {`)
-      .replace('#include <opaque_fragment>', PAVILION_MAIN);
+    injectGem(shader, u, PAVILION_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-pavilion-v7';
+  mat.customProgramCacheKey = () => 'gem-pavilion-v8';
   return mat;
 }
 
@@ -395,13 +468,9 @@ function crownMaterial(
     side: THREE.FrontSide,
   });
   mat.onBeforeCompile = (shader) => {
-    Object.assign(shader.uniforms, u);
-    shader.fragmentShader = shader.fragmentShader
-      .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
-      .replace('void main() {', `${GEM_FUNCS}\nvoid main() {`)
-      .replace('#include <opaque_fragment>', CROWN_MAIN);
+    injectGem(shader, u, CROWN_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-crown-v7';
+  mat.customProgramCacheKey = () => 'gem-crown-v8';
   return mat;
 }
 
