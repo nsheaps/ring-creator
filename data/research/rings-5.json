@@ -1015,7 +1015,8 @@
    "orientation": "east-west",
    "tune": {
     "head": {
-     "underGallery": true
+     "underGallery": true,
+     "underGalleryCups": true
     },
     "shank": {
      "widthMm": 3.8,
@@ -1025,7 +1026,8 @@
      "roundness": 0.85,
      "coverage": 1,
      "stoneSizeMm": 1.1,
-     "rows": 6
+     "rows": 6,
+     "rowRidges": true
     },
     "accent": {
      "sizeMm": 2.4

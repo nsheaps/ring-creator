@@ -957,7 +957,10 @@ export interface UnderGalleryResult {
  * Under-gallery: a thin metal rail on the prongs' ruled surface below the girdle with a row of tiny accent stones set
  * on its outer face, tables tilted outward, between the prongs. Seen from the side it is a sparkling ring under the
  * centre stone. Uses the same frame and prong geometry as prongSet(stone, opts); `frac` is how far down from the girdle
- * (0) to the seat (1) the rail runs. Returns null when the head is too shallow for a rail.
+ * (0) to the seat (1) the rail runs. With the `underGalleryCups` param each stone sits in its own little U-shaped
+ * basket instead of between shared beads: a wire round the lower half of its girdle whose arms rise up both sides to
+ * grip the crown, so in profile the row reads as a string of U cups. Returns null when the head is too
+ * shallow for a rail.
  */
 export function underGallery(
   ctx: HeadCtx,
@@ -1027,7 +1030,10 @@ export function underGallery(
   const tilt = (50 * Math.PI) / 180;
   const cosT = Math.cos(tilt);
   const sinT = Math.sin(tilt);
-  const gap = 0.08;
+  const cups = bool(ctx.params, 'underGalleryCups', false);
+  // cup wire: thin, and the stones spread a little so both arms fit between neighbours
+  const cupR = Math.min(0.14, Math.max(0.07, w * 0.09));
+  const gap = cups ? Math.max(0.08, cupR * 1.6) : 0.08;
   const pitch = size + gap;
   // stone spans between the prongs (prong sites in rail length; the prong wire plus clearance is kept free)
   const sites = (
@@ -1082,8 +1088,8 @@ export function underGallery(
       centres.push(c);
       mats.push(placeMatrix(c.x, c.y, c.z, -c.nz, c.nx, tilt, c.nx, c.nz));
     }
-    // shared beads between neighbours, on the outer crown edge
-    for (let k = 0; k + 1 < centres.length; k++) {
+    // shared beads between neighbours, on the outer crown edge (cups hold the stones themselves)
+    for (let k = 0; !cups && k + 1 < centres.length; k++) {
       const p = centres[k];
       const q = centres[k + 1];
       const nx = (p.nx + q.nx) / 2;
@@ -1099,6 +1105,27 @@ export function underGallery(
     }
   }
   if (mats.length === 0) return null;
+  if (cups) {
+    // One U cup per stone, in the stone's own frame (x along the rail, y out of the table, girdle at y = 0): a wire
+    // just under the girdle round the half of the stone that faces down and out (so the U shows from the side), whose
+    // arms carry on up both sides past the girdle's middle and lean in over the crown as little claw tips.
+    const ch = built.crownHeight;
+    // which way local z points: towards the ground (+1) or up (-1)
+    const zDown = new THREE.Vector3(0, 0, 1).transformDirection(mats[0]).y < 0 ? 1 : -1;
+    const rho = w / 2 + cupR * 0.35;
+    const yc = -cupR * 0.4;
+    const bowl: THREE.Vector3[] = [];
+    for (let k = 0; k <= 8; k++) {
+      const t = (k / 8) * Math.PI;
+      bowl.push(v3(rho * Math.cos(t), yc, zDown * rho * Math.sin(t)));
+    }
+    const arm = (sx: number) => [
+      v3(sx * rho * 0.86, ch * 0.55, -zDown * w * 0.3),
+      v3(sx * rho * 0.98, yc * 0.3, -zDown * w * 0.2),
+    ];
+    const path = [...arm(1), ...bowl, ...arm(-1).reverse()];
+    metal.push(instanceGeometry(mergeFlat(wire(path, cupR, 24, 6)), mats));
+  }
   if (beadMats.length > 0)
     metal.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR, 1)), beadMats));
   return { metal, stones: instanceGeometry(toFlat(built.geometry), mats), count: mats.length };

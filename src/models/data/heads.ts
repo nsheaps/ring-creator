@@ -57,6 +57,12 @@ const underGallery: Control = {
   label: 'Under-gallery stones',
   help: 'A thin rail under the girdle set with a row of tiny accent stones between the prongs, so the side view sparkles. Uses the accent stone cut.',
 };
+const underGalleryCups: Control = {
+  type: 'toggle',
+  key: 'underGalleryCups',
+  label: 'Under-gallery cups',
+  help: 'With under-gallery stones on: each tiny stone sits in its own U-shaped metal cup, a wire round its lower half whose arms rise up both sides to grip it, instead of between shared beads. From the side the row reads as a string of little baskets.',
+};
 const prongControls = (min: number, max: number): Control[] => [
   prongCount(min, max),
   prongStyle,
@@ -64,6 +70,7 @@ const prongControls = (min: number, max: number): Control[] => [
   galleryRails,
   baseScale,
   underGallery,
+  underGalleryCups,
 ];
 const prongDefaults = (count: number, style: string, rails: number): Params => ({
   prongCount: count,
@@ -72,6 +79,7 @@ const prongDefaults = (count: number, style: string, rails: number): Params => (
   galleryRails: rails,
   baseScale: 0,
   underGallery: false,
+  underGalleryCups: false,
 });
 
 const haloShape: Control = {
@@ -332,7 +340,7 @@ export const heads: HeadModel[] = [
     builder: 'solitaire-4-prong',
     summary: 'Four slim prongs lift a single stone high into the light.',
     description:
-      'The four-prong solitaire is the most familiar engagement setting: four wires rise from a small seat, hug the pavilion and fold over the girdle.\n\nBecause so little metal touches the stone, light enters from every side and the stone looks its largest. On a round it reads as a soft square from above; on a cushion or princess the prongs guard the corners.\n\nIt suits anyone who wants the stone to be the whole story. Check the prongs once a year, as a bent tip is the usual cause of a lost stone.\n\nAn optional under-gallery adds a rail of tiny stones beneath the girdle for side sparkle.',
+      'The four-prong solitaire is the most familiar engagement setting: four wires rise from a small seat, hug the pavilion and fold over the girdle.\n\nBecause so little metal touches the stone, light enters from every side and the stone looks its largest. On a round it reads as a soft square from above; on a cushion or princess the prongs guard the corners.\n\nIt suits anyone who wants the stone to be the whole story. Check the prongs once a year, as a bent tip is the usual cause of a lost stone.\n\nAn optional under-gallery rail of tiny stones, plain or in U cups, adds side sparkle.',
     tags: ['classic', 'solitaire', 'prong', 'minimal'],
     pros: ['Maximum light and visible stone', 'Easy to clean', 'Timeless and easy to re-tip'],
     cons: ['Prong tips can snag knits', 'Stone edges more exposed than in a bezel'],

@@ -10358,6 +10358,7 @@ export const rings: ExampleDesign[] = [
         metal: 'yellow-gold-14k',
         params: {
           underGallery: true,
+          underGalleryCups: true,
         },
       },
       shank: {
@@ -10372,6 +10373,7 @@ export const rings: ExampleDesign[] = [
           coverage: 1,
           stoneSizeMm: 1.1,
           rows: 6,
+          rowRidges: true,
         },
       },
       placement: {

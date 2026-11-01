@@ -12,7 +12,7 @@ import { computeSpec } from '@/export/spec';
 
 const TRI_BUDGET = 60000;
 
-function microPaveDesign(params: Record<string, number>): Design {
+function microPaveDesign(params: Record<string, number | boolean>): Design {
   const base = exampleDesigns.find((d) => d.id === 'r5-026');
   if (!base?.engagement) throw new Error('r5-026 missing');
   const d = JSON.parse(JSON.stringify(base)) as Design;
@@ -178,6 +178,37 @@ describe('micro-pave shank (r5-026)', () => {
     const dense = engagementParts(microPaveDesign({ rows: 8, stoneSizeMm: 0.8, coverage: 1 })).parts;
     const t = measure(dense, 'shank-metal').tris + measure(dense, 'accent-stone').tris;
     expect(t).toBeLessThan(TRI_BUDGET);
+  });
+
+  it('row ridges are off by default; on, they add finite metal between the rows inside the budget', () => {
+    expect(getModel('shank', 'pave').params.rowRidges).toBe(false);
+    // a design that does not mention rowRidges builds exactly like one that turns them off
+    const unset = microPaveDesign({});
+    if (!unset.engagement) throw new Error('no engagement');
+    delete unset.engagement.shank.params.rowRidges;
+    const off = engagementParts(microPaveDesign({ rowRidges: false })).parts;
+    expect(measure(engagementParts(unset).parts, 'shank-metal').tris).toBe(measure(off, 'shank-metal').tris);
+    const on = engagementParts(microPaveDesign({ rowRidges: true })).parts;
+    const m = measure(on, 'shank-metal');
+    const plain = measure(off, 'shank-metal');
+    // the ridges replace the beads between the rows: different metal, still well above the bare band
+    expect(m.tris).not.toBe(plain.tris);
+    const bare = measure(engagementParts(microPaveDesign({ coverage: 0.1 })).parts, 'shank-metal');
+    expect(m.tris).toBeGreaterThan(bare.tris + 1000);
+    // ridges lie on the band: no further out than the metal already reaches, give or take their height
+    expect(m.maxR).toBeLessThan(plain.maxR + 0.2);
+    expect(m.maxZ).toBeLessThan(plain.maxZ + 0.2);
+    expect(m.minR).toBeGreaterThan(plain.minR - 1e-6);
+    const dense = engagementParts(
+      microPaveDesign({ rows: 8, stoneSizeMm: 0.8, coverage: 1, rowRidges: true }),
+    ).parts;
+    expect(measure(dense, 'shank-metal').tris + measure(dense, 'accent-stone').tris).toBeLessThan(TRI_BUDGET);
+  });
+
+  it('row ridges leave a single-row pave untouched', () => {
+    const one = (r: boolean) =>
+      measure(engagementParts(microPaveDesign({ rows: 1, rowRidges: r })).parts, 'shank-metal').tris;
+    expect(one(true)).toBe(one(false));
   });
 });
 

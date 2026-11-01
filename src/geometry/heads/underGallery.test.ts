@@ -78,4 +78,58 @@ describe('under-gallery', () => {
     }
     expect(inside).toBe(0);
   });
+
+  it('cups are off by default and leave the default build unchanged', () => {
+    for (const h of PRONG_HEADS) expect(h.params.underGalleryCups).toBe(false);
+    const plain = build('solitaire-4-prong', { underGallery: true });
+    const off = build('solitaire-4-prong', { underGallery: true, underGalleryCups: false });
+    expect(tris(off.parts)).toBe(tris(plain.parts));
+    // cups without the under-gallery do nothing
+    expect(tris(build('solitaire-4-prong', { underGalleryCups: true }).parts)).toBe(
+      tris(build('solitaire-4-prong', {}).parts),
+    );
+  });
+
+  for (const h of PRONG_HEADS) {
+    it(`${h.id}: U cups are finite, deterministic, bounded and within budget`, () => {
+      const on = build(h.id, { underGallery: true, underGalleryCups: true });
+      const again = build(h.id, { underGallery: true, underGalleryCups: true });
+      const metal = on.parts.find((p) => p.slot === 'head-metal');
+      if (!metal) throw new Error('no metal');
+      const pos = metal.geometry.getAttribute('position');
+      for (let i = 0; i < pos.array.length; i++) expect(Number.isFinite(pos.array[i])).toBe(true);
+      expect(tris(on.parts)).toBe(tris(again.parts));
+      expect(tris(on.parts)).toBeLessThan(60000);
+      metal.geometry.computeBoundingBox();
+      const box = metal.geometry.boundingBox ?? new THREE.Box3();
+      const o = cleanOutline(on.ctx.center.built.outline);
+      expect(box.max.x).toBeLessThan(support(o, 1, 0) + 2);
+      expect(box.max.z).toBeLessThan(support(o, 0, 1) + 2);
+    });
+  }
+
+  it('cups add metal under every stone and keep the stones clear of the centre pavilion', () => {
+    const beads = build('solitaire-4-prong', { underGallery: true });
+    const { parts, ctx } = build('solitaire-4-prong', { underGallery: true, underGalleryCups: true });
+    const metalTris = (ps: Part[]) =>
+      ps
+        .filter((p) => p.slot === 'head-metal')
+        .reduce((n, p) => n + p.geometry.getAttribute('position').count / 3, 0);
+    expect(metalTris(parts)).toBeGreaterThan(metalTris(beads.parts) + 1000);
+    const stones = parts.find((p) => p.label === 'under-gallery stones');
+    if (!stones) throw new Error('no stones');
+    const pos = stones.geometry.getAttribute('position');
+    const single = ctx.stone('round-brilliant', { length: 1, width: 1, depth: 0.6 });
+    const per = single.geometry.toNonIndexed().getAttribute('position').count;
+    expect(pos.count / per).toBeGreaterThanOrEqual(8);
+    const cb = ctx.center.built;
+    let inside = 0;
+    for (let i = 0; i < pos.count; i++) {
+      const y = pos.getY(i);
+      if (y > 0) continue;
+      const sy = stoneSurfaceY(cb, pos.getX(i), pos.getZ(i), 'bottom');
+      if (sy !== null && sy < y - 0.02) inside++;
+    }
+    expect(inside).toBe(0);
+  });
 });

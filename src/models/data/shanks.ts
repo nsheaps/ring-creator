@@ -324,7 +324,7 @@ export const shanks: ShankModel[] = [
     builder: 'pave',
     summary: 'Tiny stones set in a row along the shoulders, held by little metal beads.',
     description:
-      'In a pave shank, small accent stones sit almost touching in a bright-cut groove along the top of the band, each held by tiny beads raised from the metal and shared with its neighbours. The effect is a line of continuous sparkle that leads the eye to the centre stone.\n\nCoverage can run from just the shoulders to most of the way round. Raise Rows to 2 to 8 for micro-pavé: a rounded band covered edge to edge with staggered rows of tiny stones. A single row can grade in size and colour, say white through grey to black. Melee can loosen; check it yearly.',
+      'In a pave shank, small accent stones sit almost touching in a bright-cut groove along the top of the band, each held by tiny beads raised from the metal and shared with its neighbours. The effect is a line of continuous sparkle that leads the eye to the centre stone.\n\nCoverage can run from just the shoulders to most of the way round. Raise Rows to 2 to 8 for micro-pavé: a rounded band covered edge to edge with staggered rows of tiny stones, optionally ridged between rows. A single row can grade in size and colour, say white through grey to black. Melee can loosen; check it yearly.',
     tags: ['pave', 'sparkle', 'accent-stones', 'melee'],
     pros: ['Lots of extra sparkle', 'Makes the ring look fuller', 'Works with any head'],
     cons: ['Harder to resize', 'Small stones can work loose'],
@@ -337,6 +337,7 @@ export const shanks: ShankModel[] = [
       stoneSizeMm: 0,
       stoneGapMm: 0.08,
       rows: 1,
+      rowRidges: false,
       grade: 'none',
       gradeTo: 0.8,
       gradeColor: 'black',
@@ -364,6 +365,12 @@ export const shanks: ShankModel[] = [
         '0 = the accent stone size from the design. With 2 or more rows the rows size the stones and this is only a minimum (0 = 0.6 mm).',
       ),
       n('stoneGapMm', 'Stone spacing', 0, 0.6, 0.01, 'mm', 'Metal between neighbouring stones.'),
+      {
+        type: 'toggle',
+        key: 'rowRidges',
+        label: 'Ridges between rows',
+        help: 'Micro-pavé only (2 or more rows). A fine, sharp ridge of metal runs between neighbouring rows, weaving through the gaps between the stones, so the rows read as separated by bright gold lines.',
+      },
       {
         type: 'select',
         key: 'grade',

@@ -9,6 +9,7 @@ import {
   accentSize,
   bandSection,
   beadGeometry,
+  bool,
   clamp,
   fromTop,
   headHalfAngle,
@@ -22,6 +23,7 @@ import {
   spacedAngles,
   sweep,
   thickAt,
+  tube,
   widthAt,
 } from './common';
 import { GEM_HEX, gradedScales, mixHex, paveGrade } from './pavePath';
@@ -127,7 +129,9 @@ interface DomeSection {
  * share the dome's arc evenly, and the stones are as large as that spacing allows, so neighbours nearly touch (the
  * gap is `stoneGapMm`, at most 4 % of the pitch). Stones are graduated very slightly where the band tapers or the
  * rows sit at a smaller radius. Tiny beads fill the three-stone interstices. There is no trough; the metal is a
- * smooth dome the stones are sunk into, and the pave climbs the shoulders up under the head's gallery.
+ * smooth dome the stones are sunk into, and the pave climbs the shoulders up under the head's gallery. With the
+ * `rowRidges` param a low, sharp metal ridge runs between each pair of neighbouring rows, zigzagging through the
+ * interstices instead of the beads there, so the rows read as separated by lines of bright metal.
  */
 function microPave(ctx: ShankCtx, rows: number): ShankResult {
   const p = ctx.params;
@@ -342,6 +346,9 @@ function microPave(ctx: ShankCtx, rows: number): ShankResult {
   const beadR = clamp(dims.width * 0.12, 0.07, 0.18);
   const beadSink = beadR * 0.35;
   const beadMs: THREE.Matrix4[] = [];
+  const ridges = bool(p, 'rowRidges', false);
+  /** ridge points per side and row gap: the interstice frames (on the surface), in grid order */
+  const ridgePts = new Map<string, THREE.Matrix4[]>();
   for (const side of [-1, 1])
     for (let k = 1; k <= K; k++) {
       const sec = secs[k];
@@ -356,7 +363,14 @@ function microPave(ctx: ShankCtx, rows: number): ShankResult {
         if (seam && side < 0) continue;
         if (!(lowPair || highPair || seam)) continue;
         const across = (sec.s[row + 1] - sec.s[row]) * (onRow(row, k) ? 2 : 1);
-        beadMs.push(onDome(th, sec, sec.s[row] + across / 3, beadSink));
+        // with ridges the ridge itself holds the stones there, so the interstice bead is left out
+        if (!ridges) beadMs.push(onDome(th, sec, sec.s[row] + across / 3, beadSink));
+        else {
+          const key = `${side}:${row}`;
+          const list = ridgePts.get(key) ?? [];
+          list.push(onDome(th, sec, sec.s[row] + across / 3, 0));
+          ridgePts.set(key, list);
+        }
       }
       for (const [row, dir] of [
         [0, -1],
@@ -371,6 +385,24 @@ function microPave(ctx: ShankCtx, rows: number): ShankResult {
   // a low dome is enough: the lower half of every bead is inside the metal (and hundreds of them must fit the budget)
   const dome = toFlat(new THREE.SphereGeometry(beadR, 6, 2, 0, Math.PI * 2, 0, Math.PI / 2));
   if (beadMs.length) geos.push(instances(dome, beadMs));
+  // Row ridges: a triangular section (base sunk a little into the metal, apex standing proud) swept through the
+  // interstices, with its base across the band and its apex along the surface normal.
+  const ridgeW = beadR * 0.7;
+  const ridgeH = beadR * 0.75;
+  for (const list of ridgePts.values()) {
+    if (list.length < 2) continue;
+    const path = list.map((m) => new THREE.Vector3().setFromMatrixPosition(m));
+    const frame = (i: number): [THREE.Vector3, THREE.Vector3] => {
+      const e = list[i].elements;
+      return [new THREE.Vector3(e[8], e[9], e[10]), new THREE.Vector3(e[4], e[5], e[6])];
+    };
+    const section = (): [number, number][] => [
+      [-ridgeW, -ridgeH * 0.5],
+      [ridgeW, -ridgeH * 0.5],
+      [0, ridgeH],
+    ];
+    geos.push(toFlat(tube(path, frame, section)));
+  }
   const parts: Part[] = [metal(geos, 'micro-pave shank')];
   if (stoneMs.length)
     parts.push({
