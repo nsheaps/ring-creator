@@ -1494,7 +1494,7 @@ export const heads: HeadModel[] = [
     builder: 'swept-blades',
     summary: 'Two low, swept ribbon blades wrap the stone from either side and pass like a bypass.',
     description:
-      'A tension bypass holds the stone between the ends of the band. Each end lifts off the shoulder in a low, smooth swoop and wraps one side of the stone like a ribbon, biting the girdle. The blades pass each other, so the stone seems to float.\n\nIt pairs naturally with a bypass shank: match the sweep offset and swirl direction to the shank.\n\nTune blade width and depth, the wrap and the swoop length; small pavé can line each blade. Like all tension settings it needs a hard stone and is hard to resize.',
+      'A tension bypass holds the stone between the ends of the band. Each end lifts off the shoulder in a low, smooth swoop and wraps one side of the stone like a ribbon, biting the girdle. The blades pass each other, so the stone seems to float.\n\nIt pairs naturally with a bypass shank: match the sweep offset and swirl direction to the shank.\n\nTune blade width, depth, wrap, swoop and face tilt; the tips taper to a point and small pavé can line each blade. Like all tension settings it needs a hard stone and is hard to resize.',
     tags: ['tension', 'bypass', 'modern', 'floating', 'swept'],
     pros: ['Floating stone with flowing lines', 'Light passes all round the stone', 'Very modern'],
     cons: ['Hard to resize', 'Only for hard stones', 'Exposed top and bottom'],
@@ -1507,6 +1507,7 @@ export const heads: HeadModel[] = [
       jawThickness: 1.6,
       wrap: 45,
       bite: 0.25,
+      bank: 0,
       hand: 'right',
       bladePave: false,
       paveSizeMm: 1.1,
@@ -1571,6 +1572,16 @@ export const heads: HeadModel[] = [
         step: 0.01,
         unit: 'mm',
         help: 'How far the blades reach over the girdle.',
+      },
+      {
+        type: 'number',
+        key: 'bank',
+        label: 'Face tilt',
+        min: 0,
+        max: 40,
+        step: 1,
+        unit: 'deg',
+        help: 'Tilts each ribbon so its flat face looks up and away from the stone.',
       },
       {
         type: 'select',

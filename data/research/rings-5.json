@@ -178,21 +178,22 @@
    "orientation": "north-south",
    "tune": {
     "shank": {
-     "widthMm": 2.6,
+     "widthMm": 2.2,
      "topWidthMm": 2.6,
      "thicknessMm": 2.0,
      "topThicknessMm": 2.0,
      "overlapDeg": 8,
      "gapMm": 0.3,
-     "tipTaper": 0.2,
+     "tipTaper": 0.6,
      "hand": "left"
     },
     "head": {
-     "bladeWidth": 2.2,
+     "bladeWidth": 3.2,
      "sweepOffset": 1.45,
      "sweepRun": 7,
-     "jawThickness": 1.6,
-     "wrap": 25,
+     "jawThickness": 1.3,
+     "wrap": 45,
+     "bank": 25,
      "hand": "left"
     },
     "placement": {
@@ -233,24 +234,25 @@
    "orientation": "north-south",
    "tune": {
     "shank": {
-     "widthMm": 2.4,
+     "widthMm": 2.2,
      "topWidthMm": 2.4,
      "thicknessMm": 2.0,
      "topThicknessMm": 2.0,
      "overlapDeg": 8,
      "gapMm": 0.3,
-     "tipTaper": 0.2,
+     "tipTaper": 0.6,
      "hand": "left",
      "pave": true,
      "coverage": 0.3,
      "stoneSizeMm": 1.2
     },
     "head": {
-     "bladeWidth": 2.4,
+     "bladeWidth": 3.0,
      "sweepOffset": 1.35,
      "sweepRun": 7,
-     "jawThickness": 1.5,
-     "wrap": 35,
+     "jawThickness": 1.3,
+     "wrap": 55,
+     "bank": 20,
      "hand": "left",
      "bladePave": true,
      "paveSizeMm": 1.2

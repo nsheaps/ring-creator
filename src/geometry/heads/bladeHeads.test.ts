@@ -116,6 +116,39 @@ describe('tension-bypass swept blades', () => {
     expect(tip(10) - tip(70)).toBeGreaterThan(2.5);
   });
 
+  it('bank tilts the ribbon face up and away from the stone, keeping the edge on the girdle', () => {
+    // across the stone (|x| < 0.5, +Z side): the outer edge drops, the stone-side edge stays put
+    const side = (bank: number) =>
+      verts(build({ bank, bladeWidth: 3 })).filter((p) => Math.abs(p.x) < 0.5 && p.z > 0);
+    const outerTop = (bank: number) =>
+      Math.max(
+        ...side(bank)
+          .filter((p) => p.z > 5)
+          .map((p) => p.y),
+      );
+    const innerTop = (bank: number) =>
+      Math.max(
+        ...side(bank)
+          .filter((p) => p.z < 3.6)
+          .map((p) => p.y),
+      );
+    expect(outerTop(0) - outerTop(30)).toBeGreaterThan(0.5);
+    expect(Math.abs(innerTop(30) - innerTop(0))).toBeLessThan(0.35);
+  });
+
+  it('each blade tapers to a point beside the stone', () => {
+    // the +X blade wraps the +Z side and ends past the middle (90 deg): measure its radial width by angle round the stone
+    const v = verts(build({ wrap: 60, bladeWidth: 3 })).filter((p) => p.z > 0 && p.y > -1);
+    const ang = (p: THREE.Vector3) => (Math.atan2(p.z, p.x) * 180) / Math.PI;
+    const end = Math.max(...v.map(ang));
+    const widthAt = (a: number) => {
+      const r = v.filter((p) => Math.abs(ang(p) - a) < 2).map((p) => Math.hypot(p.x, p.z));
+      return Math.max(...r) - Math.min(...r);
+    };
+    expect(end).toBeGreaterThan(140);
+    expect(widthAt(end - 4)).toBeLessThan(widthAt(90) * 0.4);
+  });
+
   it('hand: left mirrors the swirl (the +X blade wraps the -Z side)', () => {
     const mz = (hand: string) => {
       const s = verts(build({ hand })).filter((p) => p.x > 5 && p.y > -4);

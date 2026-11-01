@@ -39,6 +39,8 @@ interface BladeSample {
   bottom: number;
   /** half width of the ribbon */
   hw: number;
+  /** outward bank of the ribbon's face (radians): the edge away from the stone dips, the face looks up and out */
+  bank?: number;
 }
 
 /** Points of a rounded-rectangle (superellipse) section, counter-clockwise in (lateral, vertical). */
@@ -66,6 +68,13 @@ function bladeFrames(
   samples: BladeSample[],
   toStone: (u: number, v: number) => [number, number],
 ): BladeFrame[] {
+  // which side of the ribbon faces away from the stone, decided once where it hugs the girdle (its last sample) and
+  // kept along the whole blade so the bank never flips
+  const last = samples[samples.length - 1];
+  const prev = samples[Math.max(0, samples.length - 2)];
+  const [lx, lz] = toStone(last.u, last.v);
+  const [qx, qz] = toStone(prev.u, prev.v);
+  const outSign = (qx - lx) * lz - (qz - lz) * lx >= 0 ? -1 : 1;
   return samples.map((p, i) => {
     const a = samples[Math.max(0, i - 1)];
     const b = samples[Math.min(samples.length - 1, i + 1)];
@@ -77,11 +86,23 @@ function bladeFrames(
     const lat = v3(-t.z, 0, t.x);
     if (lat.lengthSq() < 1e-9) lat.set(1, 0, 0);
     lat.normalize();
-    const up = lat.clone().cross(t).normalize();
+    let up = lat.clone().cross(t).normalize();
     if (up.y < 0) up.negate();
     const [cx, cz] = toStone(p.u, p.v);
+    const c = v3(cx, (p.top + p.bottom) / 2, cz);
+    const bk = p.bank ?? 0;
+    if (bk > 1e-4) {
+      // tilt the section about the tangent so the face turns away from the stone; drop it so the inner (stone-side)
+      // edge keeps its height and the girdle stays gripped
+      const out = lat.clone().multiplyScalar(outSign);
+      const nUp = up.clone().multiplyScalar(Math.cos(bk)).addScaledVector(out, Math.sin(bk));
+      const nOut = out.clone().multiplyScalar(Math.cos(bk)).addScaledVector(up, -Math.sin(bk));
+      c.y -= p.hw * Math.sin(bk) * 0.85;
+      up = nUp.normalize();
+      lat.copy(nOut.multiplyScalar(outSign)).normalize();
+    }
     return {
-      c: v3(cx, (p.top + p.bottom) / 2, cz),
+      c,
       lat,
       up,
       tan: t,
@@ -126,7 +147,7 @@ function ribbon(frames: BladeFrame[]): THREE.BufferGeometry {
  * `jawThickness` (ribbon depth at the stone; it thins towards the tip), `sweepOffset` (how far off the centre line
  * each blade meets the shank, to line up with a bypass shank's ends), `sweepRun` (length of the swoop from the stone
  * down to the shank), `wrap` (degrees each blade wraps round the stone past its middle), `bite` (groove depth),
- * `hand` ('right': the +band blade wraps the +across side; 'left' mirrors the swirl, to match a left-hand bypass shank)
+ * `bank` (degrees the ribbon's face tilts up and away from the stone, so a wide flat ribbon catches the light), `hand` ('right': the +band blade wraps the +across side; 'left' mirrors the swirl, to match a left-hand bypass shank)
  * and `bladePave` / `paveSizeMm` (a single row of small accent stones along the top of each blade).
  */
 function sweptBlades(ctx: HeadCtx): Part[] {
@@ -141,6 +162,7 @@ function sweptBlades(ctx: HeadCtx): Part[] {
   const wrap = (num(p, 'wrap', 45, 0, 80) * Math.PI) / 180;
   const bite = num(p, 'bite', 0.25, 0.05, 0.6);
   const hand = str(p, 'hand', ['right', 'left'] as const, 'right') === 'left' ? -1 : 1;
+  const bank = (num(p, 'bank', 0, 0, 40) * Math.PI) / 180;
   const [ax, az] = ctx.bandAxis;
   const px = -az;
   const pz = ax;
@@ -179,8 +201,10 @@ function sweptBlades(ctx: HeadCtx): Part[] {
   const uL = Math.min(u3 + run, Math.max(uMax - 0.6, u3 + 1.5));
   const lead = Math.min(1.4, Math.max(0.3, uMax - uL));
   const P0: [number, number] = [uL, offset];
-  const k0 = run * 0.5;
-  const k3 = run * 0.35;
+  // handles scaled to the span actually covered, so a short span (a long stone, a small ring) never hooks back on itself
+  const span = Math.hypot(uL - u3, offset - v3_);
+  const k0 = Math.min(run * 0.5, span * 0.45);
+  const k3 = Math.min(run * 0.35, span * 0.4);
   const P1: [number, number] = [uL - k0, offset];
   const P2: [number, number] = [u3 - t3[0] * k3, v3_ - t3[1] * k3];
   const bez = (t: number): [number, number] => {
@@ -219,23 +243,33 @@ function sweptBlades(ctx: HeadCtx): Part[] {
     const st = shankTop(u);
     const top = st - 0.08 + (yTop - st + 0.08) * lift;
     const th = thShoulder + (T - thShoulder) * e;
-    samples.push({ u, v, top, bottom: top - th, hw: (wShoulder + (W - wShoulder) * e) / 2 });
+    samples.push({
+      u,
+      v,
+      top,
+      bottom: top - th,
+      hw: (wShoulder + (W - wShoulder) * e) / 2,
+      bank: bank * smooth((f - 0.35) / 0.65),
+    });
   }
-  // the wrap: hugs the girdle, thinning towards a rounded tip
+  // the wrap: hugs the girdle and tapers to a point beside the stone; the inner edge stays on the girdle while the
+  // outer edge closes in
   const NA = Math.max(10, Math.round(((phiEnd - phiIn) * 180) / Math.PI / 4));
   const arcLen = (phiEnd - phiIn) * cAt(Math.PI / 2);
-  const nose = Math.min(1.4, arcLen * 0.4, W * 0.6);
+  const nose = Math.min(arcLen * 0.6, Math.max(1.4, W * 1.2));
   for (let k = 1; k <= NA; k++) {
     const f = k / NA;
     const phi = phiIn + (phiEnd - phiIn) * f;
-    const [u, v] = arcPt(phi);
     const toEnd = (1 - f) * arcLen;
-    const x = Math.min(1, Math.max(0, 1 - toEnd / nose));
-    const nz = Math.max(0.14, Math.sqrt(1 - x * x));
+    const x = Math.min(1, Math.max(0, toEnd / nose));
+    // a long, slightly full taper to a fine point
+    const nz = Math.max(0.06, Math.sin((x * Math.PI) / 2));
     const thin = 1 - 0.3 * smooth(f);
-    const t = T * thin * (0.4 + 0.6 * nz);
+    const t = T * thin * (0.45 + 0.55 * nz);
+    const hw = (W / 2) * (0.9 + 0.1 * thin) * nz;
+    const r = girdleR(phi) - bite + hw;
     const top = yTop - (T - t) * 0.15;
-    samples.push({ u, v, top, bottom: top - t, hw: (W / 2) * (0.9 + 0.1 * thin) * nz });
+    samples.push({ u: r * Math.cos(phi), v: r * Math.sin(phi), top, bottom: top - t, hw, bank: bank * nz });
   }
 
   const geos: THREE.BufferGeometry[] = [];
