@@ -250,9 +250,9 @@ export function gemMaterials(
     const pastel = hsl.l > 0.72;
     if (pastel) body.lerp(new THREE.Color('#ffffff'), 0.2);
     else if (!colourless) {
-      // deepen and saturate coloured gems: light travels through the body twice
+      // deepen coloured gems: light travels through the body twice (capped so blues stay inky, not electric)
       body.getHSL(hsl);
-      body.setHSL(hsl.h, Math.min(1, hsl.s * 1.25 + 0.05), hsl.l);
+      body.setHSL(hsl.h, Math.min(0.78, hsl.s * 1.1 + 0.02), hsl.l);
     }
     const uniforms: GemUniforms = {
       gemBody: { value: body },
