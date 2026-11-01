@@ -86,6 +86,8 @@ A bezel wraps the stone's edge (girdle) in a thin metal rim.
 
 A full bezel gives the best protection of any head, and a smooth, snag-free profile. That makes it ideal for active hands, for nurses and chefs, and for soft stones like opal or emerald. The trade-off is that metal covers part of the stone. A half bezel leaves the two ends open (or the sides, depending on direction) for a little more light. A flush or gypsy setting sinks the stone into the metal with the table level, giving a modern, sleek line.
 
+The **polygon bezel** and **cushion bezel** keep the burnished rim against the girdle but give the outside a hexagon, octagon or cushion outline, with an optional stepped second tier and open posts or a solid skirt below. They suit Art Deco, Victorian and modern geometric looks.
+
 Bezels are one of the trends cited in 2026 industry coverage. See [Gallery and examples](#/docs/gallery-and-examples) for where the sources live.
 
 ## Halo family
@@ -104,7 +106,7 @@ A halo surrounds the centre stone with small accent stones. It makes the centre 
 ![Hidden halo]({{base}}screenshots/components/head/hidden-halo.png)
 ![Double halo]({{base}}screenshots/components/head/double-halo.png)
 
-Choose the halo outline that echoes your centre stone: round halo for round, cushion halo for cushion or princess, oval halo for oval or pear. The accent stones' size, material and colour are set on the **Accents** tab. A **hidden halo** puts the accent stones below the centre stone, visible from the side but not from above, so the top view stays a clean solitaire. A **double halo** repeats the ring of stones for maximum sparkle and size, and it is the most elaborate to clean and repair.
+The **hexagon halo** sets the stones along an elongated hexagon that stretches to the centre stone. Choose the halo outline that echoes your centre stone: round halo for round, cushion halo for cushion or princess, oval halo for oval or pear. The accent stones' size, material and colour are set on the **Accents** tab. A **hidden halo** puts the accent stones below the centre stone, visible from the side but not from above, so the top view stays a clean solitaire. A **double halo** repeats the ring of stones for maximum sparkle and size, and it is the most elaborate to clean and repair.
 
 ## Multi-stone heads
 
@@ -122,6 +124,8 @@ Choose the halo outline that echoes your centre stone: round halo for round, cus
 ![Toi et moi]({{base}}screenshots/components/head/toi-et-moi.png)
 ![Bypass head]({{base}}screenshots/components/head/bypass-head.png)
 
+The **cluster flank** head sets one to five small tilted stones on each side of the centre, in a column, a chevron or a graduated row.
+
 Side stones (round, baguette, trapezoid, pear) are set on the Accents tab. The retailer data we gathered specifies side stones by total weight, because buyers shop that way. Toi et moi works well with a pair of pear or oval stones, or two contrasting gems, and lab-grown pairs make it affordable. A bypass head often sits well with an east-west stone.
 
 ## Special heads
@@ -132,6 +136,8 @@ Side stones (round, baguette, trapezoid, pear) are set on the Accents tab. The r
 
 - **Tension.** The stone appears to float, held by pressure from the band ends. It is striking and minimal, but needs precise manufacturing, tends to be done in platinum or hard gold, and is hard to resize. Smaller, harder stones suit it best, and it is not the right choice for soft gems.
 - **Compass.** Metal details sit at the compass points (north, south, east and west) of the stone. See the component page for exactly how the app models it.
+- **Tension bypass.** Tension jaws swept across the finger so the two blades pass each other like a bypass band. It pairs with a bypass or spiral shank and has the same sizing limits as a plain tension setting.
+- **Art Deco plaque.** A domed octagonal plaque of pierced ribs, milgrain and rim diamonds round an old-cut stone.
 - **Vintage filigree.** Openwork, pierced and engraved metal lace beneath and around the stone. Art Deco and Edwardian inspired, often with milgrain edges. Lovely, but dirt collects in the openwork, so it wants a soft brush.
 
 ## Which head for which cut?

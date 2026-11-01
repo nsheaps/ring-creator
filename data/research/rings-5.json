@@ -17,7 +17,7 @@
     "colorName": null,
     "clarity": null
    },
-   "head": "tension",
+   "head": "tension-bypass",
    "shank": "bypass",
    "metals": [
     "platinum"
@@ -58,7 +58,7 @@
     "colorName": null,
     "clarity": null
    },
-   "head": "tension",
+   "head": "tension-bypass",
    "shank": "bypass",
    "metals": [
     "platinum"
@@ -137,7 +137,7 @@
     "colorName": null,
     "clarity": null
    },
-   "head": "tension",
+   "head": "tension-bypass",
    "shank": "bypass",
    "metals": [
     "platinum"
@@ -178,7 +178,7 @@
     "colorName": null,
     "clarity": null
    },
-   "head": "tension",
+   "head": "tension-bypass",
    "shank": "bypass",
    "metals": [
     "platinum"
@@ -706,14 +706,22 @@
     "colorName": "J",
     "clarity": "SI2"
    },
-   "head": "bezel-full",
+   "head": "bezel-polygon",
    "shank": "plain-round",
    "metals": [
     "yellow-gold-14k"
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "sides": 6,
+     "tiers": 1,
+     "gallery": "solid",
+     "frameGap": 0.9
+    }
+   }
   },
   "band": null,
   "notes": "A round brilliant sits inside a hexagon-shaped bezel, giving a geometric outline; sold, no price."
@@ -772,7 +780,7 @@
     "colorName": null,
     "clarity": null
    },
-   "head": "solitaire-6-prong",
+   "head": "bezel-polygon",
    "shank": "channel",
    "metals": [
     "yellow-gold-14k"
@@ -792,6 +800,11 @@
     "accent": {
      "cut": "baguette",
      "sizeMm": 2.0
+    },
+    "head": {
+     "sides": 6,
+     "tiers": 1,
+     "frameGap": 1.0
     }
    }
   },

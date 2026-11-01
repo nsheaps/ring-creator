@@ -17,7 +17,7 @@
     "colorName": "teal",
     "clarity": null
    },
-   "head": "three-stone",
+   "head": "cluster-flank",
    "shank": "plain-round",
    "metals": [
     "yellow-gold-14k"
@@ -35,10 +35,10 @@
      "topThicknessMm": 1.7
     },
     "head": {
-     "sideRatio": 0.42,
-     "sideGap": 0.08,
-     "sideCut": "marquise",
-     "sideProngs": 3
+     "flankCount": 3,
+     "flankRatio": 0.28,
+     "flankCut": "accent",
+     "arrangement": "column"
     },
     "accent": {
      "sizeMm": 2.4
@@ -169,7 +169,7 @@
     "colorName": "black salt and pepper",
     "clarity": null
    },
-   "head": "three-stone",
+   "head": "cluster-flank",
    "shank": "pave",
    "metals": [
     "yellow-gold-14k"
@@ -194,10 +194,9 @@
      "raise": 0.3
     },
     "head": {
-     "sideRatio": 0.28,
-     "sideGap": 0.06,
-     "sideCut": "round-brilliant",
-     "sideProngs": 3
+     "flankCount": 3,
+     "flankRatio": 0.24,
+     "arrangement": "column"
     },
     "accent": {
      "sizeMm": 1.8
@@ -386,7 +385,7 @@
     "colorName": "blue violet",
     "clarity": null
    },
-   "head": "three-stone",
+   "head": "cluster-flank",
    "shank": "pave",
    "metals": [
     "rose-gold-14k"
@@ -403,10 +402,9 @@
      "stoneSizeMm": 1.4
     },
     "head": {
-     "sideRatio": 0.4,
-     "sideGap": 0.1,
-     "sideCut": "round-brilliant",
-     "sideProngs": 3
+     "flankCount": 3,
+     "flankRatio": 0.24,
+     "arrangement": "chevron"
     },
     "accent": {
      "sizeMm": 2.6

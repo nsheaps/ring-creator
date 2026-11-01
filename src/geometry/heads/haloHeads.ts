@@ -26,6 +26,7 @@ import {
   prongSites,
   resample,
   str,
+  stoneSurfaceY,
   support,
   templateOutline,
   v3,
@@ -35,9 +36,10 @@ import {
   type ProngSetOpts,
   type V2,
 } from './common';
+import { polygonFrame } from './frameOutline';
 import { prongOpts } from './prongHeads';
 
-const HALO_SHAPES = ['follow', 'round', 'cushion', 'oval'] as const;
+const HALO_SHAPES = ['follow', 'round', 'cushion', 'oval', 'hexagon'] as const;
 type HaloShape = (typeof HALO_SHAPES)[number];
 
 function meleeSize(ctx: HeadCtx): number {
@@ -47,7 +49,10 @@ function meleeSize(ctx: HeadCtx): number {
 
 function haloPath(o: CleanOutline, shape: HaloShape, offset: number): CleanOutline {
   // a shaped template is grown radially, which is a little tighter than a true offset at sharp corners
-  return shape === 'follow' ? offsetOutline(o, offset) : templateOutline(o, shape, offset + 0.08, 1.25);
+  if (shape === 'follow') return offsetOutline(o, offset);
+  // an elongated hexagon (stretched to the stone) with softly rounded corners
+  if (shape === 'hexagon') return polygonFrame(o, { sides: 6, gap: offset, corner: 1.1, stretch: true });
+  return templateOutline(o, shape, offset + 0.08, 1.25);
 }
 
 /** Radial distance of an outline in direction (dx, dz) (good enough for convex-ish paths). */
@@ -333,12 +338,28 @@ function hiddenHalo(ctx: HeadCtx): Part[] {
   const yg = -(cb.girdleThickness * 0.5 + 0.08 + extra + (w / 2) * sinT + built.crownHeight * cosT);
   // push the ring out until the melee's inner girdle edge and culet both clear the pavilion
   // (the narrowest direction is the strictest: there the pavilion's slope reaches out furthest relative to its size)
-  const R = Math.min(support(o, 1, 0), support(o, 0, 1), support(o, -1, 0), support(o, 0, -1));
-  const cone = (y: number) => R * Math.max(0, 1 + y / pd); // pavilion radius at height y (< 0)
+  // (the pavilion reaches in least at its steepest point, so use the smallest inset round the outline)
+  const samples = Array.from({ length: 48 }, (_, i) => pointAt(o, ((i + 0.5) / 48) * o.perimeter));
+  const half = Math.min(support(o, 1, 0), support(o, 0, 1));
+  const minInset = (y: number): number => {
+    let best = Infinity;
+    for (const p of samples) {
+      let lo = 0;
+      let hi = half * 0.98;
+      for (let k = 0; k < 14; k++) {
+        const mid = (lo + hi) / 2;
+        const sy = stoneSurfaceY(cb, p.x - p.nx * mid, p.z - p.nz * mid, 'bottom');
+        if (sy !== null && sy > y) lo = mid;
+        else hi = mid;
+      }
+      best = Math.min(best, lo);
+    }
+    return best;
+  };
   const inner = { r: -(w / 2) * cosT, y: yg + (w / 2) * sinT };
   const culet = { r: -built.pavilionDepth * sinT, y: yg - built.pavilionDepth * cosT };
   let d = 0;
-  for (const q of [inner, culet]) d = Math.max(d, cone(q.y) - R + 0.12 - q.r);
+  for (const q of [inner, culet]) d = Math.max(d, -minInset(q.y) + 0.12 - q.r);
   const path = offsetOutline(o, d);
   const opts = prongOpts(ctx, { count: 4, style: 'round', rails: 0 });
   const metal: THREE.BufferGeometry[] = [...prongSet(cb, { ...opts, rails: [] })];
@@ -460,6 +481,7 @@ function cluster(ctx: HeadCtx): Part[] {
 registerHeadBuilder('halo-round', (ctx) => haloHead(ctx, 'follow', null));
 registerHeadBuilder('halo-cushion', (ctx) => haloHead(ctx, 'cushion', null));
 registerHeadBuilder('halo-oval', (ctx) => haloHead(ctx, 'oval', null));
+registerHeadBuilder('halo-hexagon', (ctx) => haloHead(ctx, 'hexagon', null));
 registerHeadBuilder('double-halo', doubleHalo);
 registerHeadBuilder('hidden-halo', hiddenHalo);
 registerHeadBuilder('cluster', cluster);

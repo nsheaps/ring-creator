@@ -25,7 +25,7 @@ import {
   type SectionPt,
 } from './common';
 
-interface CollarDims {
+export interface CollarDims {
   o: CleanOutline;
   bs: number;
   pd: number;
@@ -33,7 +33,7 @@ interface CollarDims {
   bd: number;
 }
 
-function collarDims(ctx: HeadCtx, frac = 0.5, footprint = 1): CollarDims {
+export function collarDims(ctx: HeadCtx, frac = 0.5, footprint = 1): CollarDims {
   const o = cleanOutline(ctx.center.built.outline);
   const bs = num(ctx.params, 'baseScale', 0, 0, 0.95) || baseScaleFor(o, ctx, frac * 0.7);
   const [ax, az] = ctx.bandAxis;
@@ -49,7 +49,7 @@ function collarDims(ctx: HeadCtx, frac = 0.5, footprint = 1): CollarDims {
 }
 
 /** Pavilion cross-section scale at height y (1 at the girdle, 0 at the culet), never below the seat scale. */
-function pavScale(d: CollarDims, y: number): number {
+export function pavScale(d: CollarDims, y: number): number {
   return Math.max(d.bs, 1 - Math.min(1, Math.max(0, -y - d.gt * 0.5) / d.pd));
 }
 
@@ -85,7 +85,7 @@ function resampleCache(o: CleanOutline): PathPt[] {
 }
 
 /** Outline scale that keeps metal at height y outside the real pavilion (never below the linear estimate or the seat). */
-function hugScale(ctx: HeadCtx, d: CollarDims, y: number): number {
+export function hugScale(ctx: HeadCtx, d: CollarDims, y: number): number {
   const exact = 1 - pavilionInset(ctx, d.o, y) / Math.max(0.1, meanRadius(d.o));
   return Math.min(1, Math.max(pavScale(d, y), exact, d.bs));
 }
@@ -97,7 +97,7 @@ function hugScale(ctx: HeadCtx, d: CollarDims, y: number): number {
  * shank, so the setting reads as a slim frame on a tapered cone rather than a deep cup.
  */
 /** Height of the collar's lower edge: a basket-carried collar is a little deeper than a skirted one. */
-function collarY(d: CollarDims, open: boolean): number {
+export function collarY(d: CollarDims, open: boolean): number {
   const g2 = d.gt * 0.5;
   return open
     ? -g2 - Math.min(0.75, d.pd * 0.3, Math.max(0.12, d.bd * 0.4))

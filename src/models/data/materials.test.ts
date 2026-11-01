@@ -102,6 +102,12 @@ const vocabOther = [
   'vintage-filigree',
   'toi-et-moi',
   'bypass-head',
+  'bezel-polygon',
+  'bezel-cushion',
+  'halo-hexagon',
+  'deco-plaque',
+  'cluster-flank',
+  'tension-bypass',
   // shanks
   'plain-round',
   'plain-flat',

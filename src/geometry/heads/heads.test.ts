@@ -8,7 +8,7 @@ import { cleanOutline, prongSites, signedVolume } from './common';
 import { STUB_CUTS, stubCtx, stubStone } from './testStub';
 
 const TRI_BUDGET = 60000;
-const MULTI = new Set(['three-stone', 'five-stone', 'toi-et-moi', 'bypass-head']);
+const MULTI = new Set(['three-stone', 'five-stone', 'toi-et-moi', 'bypass-head', 'cluster-flank']);
 
 function stats(parts: Part[]) {
   const box = new THREE.Box3();
@@ -59,6 +59,12 @@ const VOCAB = [
   'vintage-filigree',
   'toi-et-moi',
   'bypass-head',
+  'bezel-polygon',
+  'bezel-cushion',
+  'halo-hexagon',
+  'deco-plaque',
+  'cluster-flank',
+  'tension-bypass',
 ];
 
 describe('head models', () => {

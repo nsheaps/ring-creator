@@ -41,13 +41,13 @@ function shankY(ctx: HeadCtx, u: number): number {
   return -(ctx.baseDrop + ringDrop(ctx, u));
 }
 
-interface SideStone {
+export interface SideStone {
   built: BuiltStone;
   /** stone-frame (x, z) direction of the side stone's own +X axis */
   localX: [number, number];
 }
 
-interface Seated {
+export interface Seated {
   m: THREE.Matrix4;
   /** along-band extent of the girdle (signed u, head frame) */
   uMin: number;
@@ -64,7 +64,7 @@ interface Seated {
  * Its table is tilted by tiltK * phi (1 = fully follows the finger's curve), and the culet sits `clear` mm above the
  * shank top.
  */
-function seatAt(
+export function seatAt(
   ctx: HeadCtx,
   s: SideStone,
   sign: 1 | -1,
@@ -111,7 +111,7 @@ function seatAt(
 }
 
 /** Find the arc angle at which the stone's near girdle edge sits at `edge` (signed by side) along the band. */
-function seatBeside(
+export function seatBeside(
   ctx: HeadCtx,
   s: SideStone,
   sign: 1 | -1,
@@ -136,7 +136,7 @@ function seatBeside(
  * A prong basket for a seated stone, standing on the shank: the seat ring lies on the shank surface under the stone
  * (following its curve) and sinks 0.12 mm into it.
  */
-function basket(
+export function basket(
   ctx: HeadCtx,
   s: SideStone,
   q: Seated,
@@ -182,7 +182,7 @@ function basket(
 }
 
 /** Two bars lying on the shank top that join the seats of neighbouring baskets (the shared under-gallery). */
-function seatBars(
+export function seatBars(
   ctx: HeadCtx,
   a: number,
   b: number,
@@ -229,7 +229,7 @@ function railBridge(ctx: HeadCtx, a: THREE.Vector3, b: THREE.Vector3, r: number)
  * baguettes beside an emerald cut. Other elongated cuts (pear, marquise, oval): long axis along the band, the pear's
  * point facing away from the centre.
  */
-function sideStone(
+export function sideStone(
   ctx: HeadCtx,
   cut: CutModel,
   size: number,
@@ -260,7 +260,7 @@ function sideStone(
 }
 
 /** A smaller copy of the centre stone (same cut and orientation) whose extent across the band is `size`. */
-function matchStone(ctx: HeadCtx, size: number, mirror: boolean, detail: 'full' | 'low'): SideStone {
+export function matchStone(ctx: HeadCtx, size: number, mirror: boolean, detail: 'full' | 'low'): SideStone {
   const o = cleanOutline(ctx.center.built.outline);
   const [ax, az] = ctx.bandAxis;
   const across = support(o, -az, ax) + support(o, az, -ax);
@@ -276,14 +276,17 @@ function matchStone(ctx: HeadCtx, size: number, mirror: boolean, detail: 'full' 
   };
 }
 
-function centreAcross(ctx: HeadCtx): number {
+export function centreAcross(ctx: HeadCtx): number {
   const o = cleanOutline(ctx.center.built.outline);
   const [ax, az] = ctx.bandAxis;
   return support(o, -az, ax) + support(o, az, -ax);
 }
 
 /** Centre-stone prongs and gallery; returns the geometry and the y of its first rail (for rail bridges). */
-function centreBasket(ctx: HeadCtx, style: ProngStyle): { geos: THREE.BufferGeometry[]; wireMm: number } {
+export function centreBasket(
+  ctx: HeadCtx,
+  style: ProngStyle,
+): { geos: THREE.BufferGeometry[]; wireMm: number } {
   const opts = prongOpts(ctx, { count: 4, style, rails: 1, useCorners: true });
   return { geos: prongSet(ctx.center.built, opts), wireMm: opts.wireMm };
 }

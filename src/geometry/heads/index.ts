@@ -3,5 +3,7 @@ import './prongHeads';
 import './bezelHeads';
 import './haloHeads';
 import './multiStoneHeads';
+import './frameHeads';
+import './flankHeads';
 
 export { prongSites, cleanOutline } from './common';

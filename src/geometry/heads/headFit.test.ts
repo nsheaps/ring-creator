@@ -25,8 +25,8 @@ const CUTS = [
   'cushion',
   'heart',
 ] as const;
-const COLLARS = new Set(['bezel-full', 'flush-gypsy']);
-const OPEN = new Set(['bezel-half', 'tension']);
+const COLLARS = new Set(['bezel-full', 'flush-gypsy', 'bezel-polygon', 'bezel-cushion', 'deco-plaque']);
+const OPEN = new Set(['bezel-half', 'tension', 'tension-bypass']);
 
 const base = exampleDesigns.find((d) => d.id === 'r1-003');
 if (!base) throw new Error('example r1-003 missing');
@@ -149,14 +149,15 @@ describe('heads grip real stones (stone frame)', () => {
         const frac = held.filter(Boolean).length / SAMPLES;
         if (COLLARS.has(h.id)) expect(frac, 'collar hugs the whole girdle').toBeGreaterThan(0.97);
         else if (h.id === 'bezel-half') expect(frac).toBeGreaterThan(0.3);
-        else if (h.id === 'tension') expect(runs.length, 'two jaws').toBeGreaterThanOrEqual(2);
+        else if (h.id === 'tension' || h.id === 'tension-bypass')
+          expect(runs.length, 'two jaws').toBeGreaterThanOrEqual(2);
         else if (runs.length < 3 && h.id.includes('halo'))
           // a halo frame may run right along the girdle and join the prong grips into longer runs
           expect(frac, 'prongs and halo frame around the girdle').toBeGreaterThan(0.5);
         else expect(runs.length, 'prongs touching the girdle').toBeGreaterThanOrEqual(3);
 
         // Metal folds over the crown next to every grip (prong tips, bezel lip), and lies on it rather than floating.
-        if (h.id === 'tension') return;
+        if (h.id === 'tension' || h.id === 'tension-bypass') return;
         const crownMetal: THREE.Vector3[] = [];
         for (const p of metal) {
           const pos = p.geometry.getAttribute('position');
@@ -205,7 +206,15 @@ describe('heads join the shank (ring frame)', () => {
   const cases: [string, string, Partial<Design['engagement']['placement']>][] = [];
   for (const h of heads)
     for (const cut of ['round-brilliant', 'oval', 'pear', 'emerald-cut']) cases.push([h.id, cut, {}]);
-  for (const h of ['solitaire-4-prong', 'halo-round', 'bezel-full', 'three-stone', 'tension'])
+  for (const h of [
+    'solitaire-4-prong',
+    'halo-round',
+    'bezel-full',
+    'three-stone',
+    'tension',
+    'bezel-polygon',
+    'cluster-flank',
+  ])
     cases.push([h, 'oval', { orientation: 'east-west' }], [h, 'marquise', { tilt: 12 }]);
   for (const [head, cut, place] of cases) {
     it(`${head} / ${cut} ${JSON.stringify(place)}`, () => {
@@ -429,7 +438,7 @@ describe('pairs: both stones seated on the shank, centred on the finger', () => 
 });
 
 describe('halos ring the centre stone (stone frame)', () => {
-  for (const head of ['halo-round', 'halo-cushion', 'halo-oval', 'double-halo']) {
+  for (const head of ['halo-round', 'halo-cushion', 'halo-oval', 'halo-hexagon', 'double-halo']) {
     for (const cut of ['round-brilliant', 'oval', 'pear', 'emerald-cut']) {
       it(`${head} / ${cut}`, () => {
         const { ctx, parts } = stoneFrame(head, cut);
@@ -452,7 +461,11 @@ describe('halos ring the centre stone (stone frame)', () => {
           expect(near / melee.length, 'inner row touches the girdle').toBeGreaterThan(
             (cut === 'round-brilliant' ? 0.9 : 0.4) * share,
           );
-        else expect(near, 'halo touches the girdle somewhere').toBeGreaterThanOrEqual(2);
+        // (a hexagon round an emerald cut touches only at the corners, where the centre's prongs stand)
+        else
+          expect(near, 'halo touches the girdle somewhere').toBeGreaterThanOrEqual(
+            head === 'halo-hexagon' && cut === 'emerald-cut' ? 0 : 2,
+          );
         for (const m of melee) {
           // tables about level with the centre girdle
           const top = Math.max(...m.map((v) => v.y));
@@ -470,7 +483,16 @@ describe('halos ring the centre stone (stone frame)', () => {
   }
 
   it('hidden halo tucks under the girdle, hugging the pavilion', () => {
-    for (const cut of ['round-brilliant', 'oval', 'cushion']) {
+    for (const cut of [
+      'round-brilliant',
+      'oval',
+      'cushion',
+      'hexagon',
+      'marquise',
+      'heart',
+      'pear',
+      'emerald-cut',
+    ]) {
       const { ctx, parts } = stoneFrame('hidden-halo', cut);
       const stone = ctx.center.built;
       const o = cleanOutline(stone.outline);
@@ -484,7 +506,7 @@ describe('halos ring the centre stone (stone frame)', () => {
         // clear of the pavilion
         for (const v of m) {
           const s = stoneSurfaceY(stone, v.x, v.z, 'bottom');
-          if (s !== null) expect(v.y, 'melee outside the pavilion').toBeLessThan(s + 0.02);
+          if (s !== null) expect(v.y, `melee outside the pavilion (${cut})`).toBeLessThan(s + 0.02);
         }
       }
     }
