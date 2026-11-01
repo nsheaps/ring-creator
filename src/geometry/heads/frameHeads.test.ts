@@ -517,6 +517,99 @@ describe('deco plaque extras: sunburst, cartouche stones, stretch, rib milgrain,
     }
   });
 
+  it('lozengeRing: off by default (0 leaves every plaque unchanged)', () => {
+    for (const params of [{}, DECO, { ...DECO, endPanel: 'scroll', pierceDepth: 2 }] as Params[]) {
+      const plain = build('deco-plaque', 'old-european', params, [1, 0]);
+      expect(positions(build('deco-plaque', 'old-european', { ...params, lozengeRing: 0 }, [1, 0]))).toEqual(
+        positions(plain),
+      );
+    }
+  });
+
+  for (const bandAxis of [
+    [1, 0],
+    [0, 1],
+  ] as [number, number][])
+    for (const base of [
+      { label: 'web', params: {} },
+      { label: 'sunburst scroll', params: { ...DECO, endPanel: 'scroll', collarSides: 8 } },
+    ] as { label: string; params: Params }[])
+      it(`lozengeRing (${base.label}, band axis ${bandAxis.join(',')}): one stone per cell round the collar, clear of the rest`, () => {
+        const [ax, az] = bandAxis;
+        const r = (v: THREE.Vector3) => Math.hypot(v.x, v.z);
+        const n = 6;
+        const withRing = build(
+          'deco-plaque',
+          'round-brilliant',
+          { ...base.params, lozengeRing: n },
+          bandAxis,
+        );
+        const others = build(
+          'deco-plaque',
+          'round-brilliant',
+          { ...base.params, rimStones: false, lozengeRing: 0 },
+          bandAxis,
+        );
+        // deterministic, finite, in budget
+        expect(
+          positions(build('deco-plaque', 'round-brilliant', { ...base.params, lozengeRing: n }, bandAxis)),
+        ).toEqual(positions(withRing));
+        let tris = 0;
+        for (const p of withRing) {
+          const arr = p.geometry.getAttribute('position').array as ArrayLike<number>;
+          for (let i = 0; i < arr.length; i++) expect(Number.isFinite(arr[i])).toBe(true);
+          tris += arr.length / 9;
+        }
+        expect(tris).toBeLessThan(80000);
+        // the cells replace the rim stones: the extra stones are the lozenge stones only, n of them
+        const before = verts(others, 'accent-stone');
+        const all = verts(withRing, 'accent-stone');
+        const loz = all.slice(0, all.length - before.length);
+        expect(all.slice(loz.length)).toEqual(before);
+        const one = loz.length / n;
+        expect(Number.isInteger(one) && one > 0).toBe(true);
+        const centres = Array.from({ length: n }, (_, i) => {
+          const c = new THREE.Vector3();
+          for (const v of loz.slice(i * one, (i + 1) * one)) c.add(v);
+          return c.divideScalar(one);
+        });
+        // spread round the stone, outside the collar (incl. the polygon collar's corner beads) and inside the rim
+        const metal = verts(others, 'head-metal');
+        for (const c of centres) {
+          // the plaque's edge in this direction: the farthest metal within a few degrees of it
+          const a = Math.atan2(c.z, c.x);
+          const rim = Math.max(
+            ...metal
+              .filter(
+                (v) =>
+                  Math.abs(
+                    Math.atan2(Math.sin(Math.atan2(v.z, v.x) - a), Math.cos(Math.atan2(v.z, v.x) - a)),
+                  ) < 0.08,
+              )
+              .map(r),
+          );
+          expect(r(c)).toBeGreaterThan(4.2);
+          expect(r(c)).toBeLessThan(rim - 1);
+        }
+        for (let i = 0; i < n; i++)
+          for (let j = i + 1; j < n; j++) expect(centres[i].distanceTo(centres[j])).toBeGreaterThan(1.2);
+        // with the sunburst they stay on the fan sides, away from the cartouches and their stones
+        if (base.label !== 'web') {
+          const along = (v: THREE.Vector3) => v.x * ax + v.z * az;
+          const across = (v: THREE.Vector3) => -v.x * az + v.z * ax;
+          for (const c of centres) {
+            const ang = Math.atan2(Math.abs(across(c)), Math.abs(along(c)));
+            expect(ang, 'inside the fan, short of the 50 deg cartouche edge').toBeLessThan(
+              (45 * Math.PI) / 180,
+            );
+          }
+          for (const c of centres) for (const v of before) expect(c.distanceTo(v)).toBeGreaterThan(1.5);
+          expect(centres.filter((c) => along(c) > 0)).toHaveLength(n / 2);
+        }
+        // and the cells are raised metal: the plaque gains metal over the dome
+        expect(verts(withRing, 'head-metal').length).toBeGreaterThan(verts(others, 'head-metal').length);
+      });
+
   it('rib milgrain and the polygon collar add metal', () => {
     const n = (p: Params) => verts(build('deco-plaque', 'round-brilliant', p), 'head-metal').length;
     expect(n({ ribMilgrain: true })).toBeGreaterThan(n({}));

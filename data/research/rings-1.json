@@ -601,7 +601,8 @@
           "rimStoneCount": 6,
           "endPanel": "scroll",
           "pierceDepth": 2,
-          "recessFinish": "oxidised"
+          "recessFinish": "oxidised",
+        "lozengeRing": 6
         },
         "shank": {
           "widthMm": 1.8,

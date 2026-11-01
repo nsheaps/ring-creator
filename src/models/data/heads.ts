@@ -1251,7 +1251,7 @@ export const heads: HeadModel[] = [
     builder: 'deco-plaque',
     summary: 'A domed octagonal plaque of pierced openwork, milgrain and small diamonds round the stone.',
     description:
-      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: stretch the plaque along the band, fan the ribs into a sunburst with stone-set cartouches (or pierced scroll hearts) at the ends, bead the ribs, add an octagonal collar, and sink or blacken (oxidise) the plate so the piercing reads dark. The openwork collects dust.',
+      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: stretch the plaque, fan the ribs into a sunburst with stone-set cartouches (or scroll hearts) at the ends, bead the ribs, add an octagonal collar, ring it with stone-set milgrain lozenges, and sink or blacken the plate so the piercing reads dark. The openwork collects dust.',
     tags: ['art-deco', 'vintage', 'plaque', 'openwork', 'milgrain'],
     pros: ['Big vintage presence from a small stone', 'Rich detail from every angle', 'Protects the girdle'],
     cons: ['Openwork traps dirt', 'Tall, wide face', 'Delicate details wear over decades'],
@@ -1279,6 +1279,7 @@ export const heads: HeadModel[] = [
       endPanel: 'plain',
       pierceDepth: 0,
       recessFinish: 'none',
+      lozengeRing: 0,
     },
     controls: [
       {
@@ -1422,6 +1423,15 @@ export const heads: HeadModel[] = [
           { value: 'oxidised', label: 'Oxidised (blackened)' },
         ],
         help: 'Oxidised: the plate under the openwork is blackened, as on antique plaques, so the piercing reads dark. Same metal; the spec lists it as an oxidised recess.',
+      },
+      {
+        type: 'number',
+        key: 'lozengeRing',
+        label: 'Lozenge ring',
+        min: 0,
+        max: 12,
+        step: 1,
+        help: 'Raised milgrain lozenge cells round the collar, one small stone in each, in place of the rim diamonds. With the sunburst they share the two fan sides, clear of the cartouches. 0 = none.',
       },
     ],
     fitsCuts: ALL,

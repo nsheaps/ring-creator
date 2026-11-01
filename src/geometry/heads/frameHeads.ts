@@ -417,7 +417,9 @@ function domePatch(
  * (sunburst only) turns each cartouche into a raised heart of two lobes outlined in milgrain wire, over open piercing
  * with a scroll curl each side of its point, the cartouche stones one in each lobe; `pierceDepth` sinks the plate under
  * the openwork into a deep well of steep V grooves so the piercing reads dark; `recessFinish: 'oxidised'` lines the plate
- * under the openwork with a thin blackened skin (slot `head-recess`, the head's metal darkened), as antique plaques are.
+ * under the openwork with a thin blackened skin (slot `head-recess`, the head's metal darkened), as antique plaques are;
+ * `lozengeRing` rings the collar with that many raised milgrain lozenge cells, one small stone in each, in place of the
+ * rim stones (with the sunburst they share the two fan sides, clear of the cartouches).
  */
 function decoPlaque(ctx: HeadCtx): Part[] {
   const p = ctx.params;
@@ -544,6 +546,24 @@ function decoPlaque(ctx: HeadCtx): Part[] {
     return { kx, ky, toDome };
   };
   const panelBeads: THREE.Matrix4[] = [];
+  /** milgrain beads evenly along a raised wire path (closed: back to its start) */
+  const beadAlong = (path: THREE.Vector3[], closed: boolean) => {
+    let len = 0;
+    const seg: number[] = [];
+    for (let i = 0; i + (closed ? 0 : 1) < path.length; i++) {
+      const d = path[i].distanceTo(path[(i + 1) % path.length]);
+      seg.push(d);
+      len += d;
+    }
+    const nb = Math.max(6, Math.round(len / (beadR * 2.3)));
+    for (let k = 0; k < nb; k++) {
+      let sArc = (k / nb) * len;
+      let i = 0;
+      while (i < seg.length - 1 && sArc > seg[i]) sArc -= seg[i++];
+      const q = path[i].clone().lerp(path[(i + 1) % path.length], Math.min(1, sArc / Math.max(1e-6, seg[i])));
+      panelBeads.push(new THREE.Matrix4().makeTranslation(q.x, q.y + rr * 0.55, q.z));
+    }
+  };
   const scrollLobes: [number, number][] = [];
   let lobeMm = Infinity;
   if (!sunburst) {
@@ -585,26 +605,7 @@ function decoPlaque(ctx: HeadCtx): Part[] {
         return at(a, u, wl);
       });
       geos.push(...wire(mid, rr * 0.5, 16, 6));
-      for (const path of [edge, mid]) {
-        const closed = path === edge;
-        let len = 0;
-        const seg: number[] = [];
-        for (let i = 0; i + (closed ? 0 : 1) < path.length; i++) {
-          const d = path[i].distanceTo(path[(i + 1) % path.length]);
-          seg.push(d);
-          len += d;
-        }
-        const nb = Math.max(6, Math.round(len / (beadR * 2.3)));
-        for (let k = 0; k < nb; k++) {
-          let sArc = (k / nb) * len;
-          let i = 0;
-          while (i < seg.length - 1 && sArc > seg[i]) sArc -= seg[i++];
-          const q = path[i]
-            .clone()
-            .lerp(path[(i + 1) % path.length], Math.min(1, sArc / Math.max(1e-6, seg[i])));
-          panelBeads.push(new THREE.Matrix4().makeTranslation(q.x, q.y + rr * 0.55, q.z));
-        }
-      }
+      for (const path of [edge, mid]) beadAlong(path, path === edge);
       // a scroll curl in the open piercing each side of the heart's point
       for (const side of [-1, 1]) {
         const cx = side * 11.5 * kx;
@@ -633,6 +634,8 @@ function decoPlaque(ctx: HeadCtx): Part[] {
       ),
     );
   const collarSides = Math.round(num(p, 'collarSides', 0, 0, 12));
+  /** horizontal reach of the polygon collar's corner beads (0 = the round collar ring) */
+  let collarReach = 0;
   if (collarSides >= 3) {
     // polygon collar: straight milgrain edges round the stone with a bead at each corner, like an octagonal cup
     const c0 = aBand + Math.PI / collarSides;
@@ -651,10 +654,78 @@ function decoPlaque(ctx: HeadCtx): Part[] {
     }
     geos.push(loop(edge, rr * 1.1, collarSides * 12, 6));
     for (const v of vtx) geos.push(ball(v3(v.x, v.y + rr * 0.6, v.z), rr * 1.35, 1));
+    collarReach = Math.max(...vtx.map((v) => Math.hypot(v.x, v.z))) + rr * 1.35;
   } else ringAt(0.08, rr * 1.1);
   if (!sunburst) ringAt(0.4, rr * 0.8);
   ringAt(RIB_END, rr * 1.1);
   ringAt(1, rr * 1.25);
+  // lozenge ring: `lozengeRing` raised lozenge cells round the collar, each outlined in milgrain wire over a small floor
+  // with one stone; they take the rim stones' place, sit between the collar and the rim and, with the sunburst, share
+  // out over the two fan sides so they stay clear of the cartouches (and their hearts)
+  const nLoz = Math.round(num(p, 'lozengeRing', 0, 0, 12));
+  const lozSites: [number, number][] = [];
+  let lozSize = 0;
+  if (nLoz > 0) {
+    const cells: { c: number; room: number }[] = [];
+    if (sunburst) {
+      const fan = Math.PI - 2 * CART_HALF;
+      const counts = [Math.ceil(nLoz / 2), Math.floor(nLoz / 2)];
+      [0, Math.PI].forEach((side, s) => {
+        const k = counts[s];
+        for (let i = 0; i < k; i++)
+          cells.push({ c: aBand + side - fan / 2 + (fan * (i + 0.5)) / k, room: fan / (2 * k) });
+      });
+    } else
+      for (let i = 0; i < nLoz; i++)
+        cells.push({ c: aBand + ((i + 0.5) / nLoz) * Math.PI * 2, room: Math.PI / nLoz });
+    const wr = rr * 0.6; // outline wire radius
+    const base = Math.max(0.8, Math.min(2.2, num(p, 'stoneSize', 0, 0, 3) || ctx.accent.sizeMm || 1.4));
+    const hw0 = base / 2 + rr;
+    const hl0 = hw0 * 1.5;
+    // fit every cell between the collar and the rim (clear of the corner studs) and inside its angular room
+    const fits = cells.map(({ c, room }) => {
+      const ri = horiz(c, 0);
+      const ro = horiz(c, 1);
+      const rIn = (collarReach || horiz(c, 0.08) + rr * 1.1) + rr * 0.6 + wr;
+      const rOut = ro - rr * 2.8 - wr;
+      const rc = (rIn + rOut) / 2;
+      const hwMax = 0.85 * room * rc - wr;
+      return { c, ri, L: Math.max(0.5, ro - ri), rc, k: Math.min(1, (rOut - rIn) / 2 / hl0, hwMax / hw0) };
+    });
+    const k = Math.max(0.2, Math.min(...fits.map((f) => f.k)));
+    const hw = hw0 * k;
+    const hl = hl0 * k;
+    lozSize = Math.max(0.5, 2 * (hw - rr));
+    const N = 40;
+    const shape = Array.from({ length: N }, (_, i): [number, number] => {
+      const t = (i / N) * Math.PI * 2;
+      const s = Math.sin(t);
+      // pointed ends along the radius, the inner (collar) end a little sharper: a lozenge drawn toward a teardrop
+      return [hw * Math.sign(s) * Math.abs(s) ** 1.4 * (0.85 + 0.15 * Math.cos(t)), hl * Math.cos(t)];
+    });
+    for (const { c, ri, L, rc } of fits) {
+      const toDome = (x: number, y: number): [number, number] => {
+        const u = (rc + y - ri) / L;
+        return [c + x / Math.max(0.5, horiz(c, u)), u];
+      };
+      geos.push(
+        domeBlob(
+          at,
+          toDome(0, 0),
+          shape.map(([x, y]) => toDome(x, y)),
+          rr * 0.9,
+          pierce + 0.05,
+        ),
+      );
+      const edge = shape.map(([x, y]) => {
+        const [a, u] = toDome(x, y);
+        return at(a, u, rr * 0.9 + rr * 0.35);
+      });
+      geos.push(loop(edge, wr, N * 2, 6));
+      beadAlong(edge, true);
+      lozSites.push(toDome(0, 0));
+    }
+  }
   // milgrain: tiny beads along the rim and the inner collar
   const mats: THREE.Matrix4[] = [];
   const nb = Math.max(24, Math.round(frame.perimeter / (beadR * 2.6)));
@@ -700,7 +771,8 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   // small diamonds set in the rim, tables tilted outward with the dome
   const stones: THREE.BufferGeometry[] = [];
   const rimCount = Math.round(num(p, 'rimStoneCount', 0, 0, 40));
-  if (bool(p, 'rimStones', true)) {
+  if (nLoz > 0) stones.push(cupStones(lozSize, lozSites, rr * 0.6));
+  else if (bool(p, 'rimStones', true)) {
     const size = Math.max(0.8, Math.min(2.2, num(p, 'stoneSize', 0, 0, 3) || ctx.accent.sizeMm || 1.4));
     const dims = accentDims(ctx, size);
     const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
