@@ -22,6 +22,9 @@ import {
   support,
   v3,
   wire,
+  underGallery,
+  accentPart,
+  UNDER_GALLERY_FRAC,
   type ProngSetOpts,
   type ProngStyle,
 } from './common';
@@ -43,7 +46,11 @@ export function prongOpts(ctx: HeadCtx, d: ProngDefaults): ProngSetOpts {
   const o = cleanOutline(ctx.center.built.outline);
   const p = ctx.params;
   const railsN = Math.round(num(p, 'galleryRails', d.rails, 0, 3));
-  const rails = railsN === 0 ? [] : railsN === 1 ? [0.3] : railsN === 2 ? [0.25, 0.6] : [0.2, 0.45, 0.7];
+  const all = railsN === 0 ? [] : railsN === 1 ? [0.3] : railsN === 2 ? [0.25, 0.6] : [0.2, 0.45, 0.7];
+  // the under-gallery rail ties the prongs itself; drop plain rails that would crowd it
+  const rails = bool(p, 'underGallery', false)
+    ? all.filter((f) => Math.abs(f - UNDER_GALLERY_FRAC) > 0.22)
+    : all;
   return {
     count: Math.round(num(p, 'prongCount', d.count, 2, 12)),
     style: str(p, 'prongStyle', PRONG_STYLES, d.style),
@@ -60,10 +67,25 @@ export function prongOpts(ctx: HeadCtx, d: ProngDefaults): ProngSetOpts {
   };
 }
 
+/**
+ * Prong head parts: the prong set plus extra metal, and (when the `underGallery` param is on) a rail of tiny stones
+ * under the girdle.
+ */
+export function prongParts(
+  ctx: HeadCtx,
+  opts: ProngSetOpts,
+  metal: THREE.BufferGeometry[],
+  label: string,
+): Part[] {
+  const ug = bool(ctx.params, 'underGallery', false) ? underGallery(ctx, opts) : null;
+  if (!ug) return [metalPart(metal, label)];
+  return [metalPart([...metal, ...ug.metal], label), accentPart([ug.stones], 'under-gallery stones')];
+}
+
 /** Plain prong head around the centre stone. */
 export function prongHead(ctx: HeadCtx, d: ProngDefaults, extra: THREE.BufferGeometry[] = []): Part[] {
-  const geos = prongSet(ctx.center.built, prongOpts(ctx, d));
-  return [metalPart([...geos, ...extra], 'prong head')];
+  const opts = prongOpts(ctx, d);
+  return prongParts(ctx, opts, [...prongSet(ctx.center.built, opts), ...extra], 'prong head');
 }
 
 /** Two cathedral arches rising from the shank along the band axis up to the lower gallery. */
@@ -152,15 +174,15 @@ const builders: Record<string, (ctx: HeadCtx) => Part[]> = {
   basket: (ctx) => prongHead(ctx, { count: 4, style: 'round', rails: 2 }),
   'cathedral-head': (ctx) => {
     const opts = prongOpts(ctx, { count: 4, style: 'round', rails: 1 });
-    return [
-      metalPart(
-        [
-          ...prongSet(ctx.center.built, opts),
-          ...cathedralArches(ctx, opts, num(ctx.params, 'archWidth', 1.1, 0.6, 2)),
-        ],
-        'cathedral head',
-      ),
-    ];
+    return prongParts(
+      ctx,
+      opts,
+      [
+        ...prongSet(ctx.center.built, opts),
+        ...cathedralArches(ctx, opts, num(ctx.params, 'archWidth', 1.1, 0.6, 2)),
+      ],
+      'cathedral head',
+    );
   },
   'v-prong': (ctx) => prongHead(ctx, { count: 4, style: 'v', rails: 1 }),
   trellis: (ctx) => prongHead(ctx, { count: 4, style: 'round', rails: 0, trellis: true }),
@@ -175,9 +197,12 @@ const builders: Record<string, (ctx: HeadCtx) => Part[]> = {
     }),
   'vintage-filigree': (ctx) => {
     const opts = prongOpts(ctx, { count: 6, style: 'round', rails: 1 });
-    return [
-      metalPart([...prongSet(ctx.center.built, opts), ...filigree(ctx, opts, opts.wireMm)], 'filigree head'),
-    ];
+    return prongParts(
+      ctx,
+      opts,
+      [...prongSet(ctx.center.built, opts), ...filigree(ctx, opts, opts.wireMm)],
+      'filigree head',
+    );
   },
 };
 

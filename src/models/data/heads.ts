@@ -51,12 +51,19 @@ const baseScale: Control = {
   step: 0.05,
   help: 'Size of the seat as a fraction of the stone outline. 0 = automatic.',
 };
+const underGallery: Control = {
+  type: 'toggle',
+  key: 'underGallery',
+  label: 'Under-gallery stones',
+  help: 'A thin rail under the girdle set with a row of tiny accent stones between the prongs, so the side view sparkles. Uses the accent stone cut.',
+};
 const prongControls = (min: number, max: number): Control[] => [
   prongCount(min, max),
   prongStyle,
   prongWidth,
   galleryRails,
   baseScale,
+  underGallery,
 ];
 const prongDefaults = (count: number, style: string, rails: number): Params => ({
   prongCount: count,
@@ -64,6 +71,7 @@ const prongDefaults = (count: number, style: string, rails: number): Params => (
   prongWidth: 0,
   galleryRails: rails,
   baseScale: 0,
+  underGallery: false,
 });
 
 const haloShape: Control = {
@@ -235,7 +243,7 @@ export const heads: HeadModel[] = [
     builder: 'solitaire-4-prong',
     summary: 'Four slim prongs lift a single stone high into the light.',
     description:
-      'The four-prong solitaire is the most familiar engagement setting: four wires rise from a small seat, hug the pavilion and fold over the girdle.\n\nBecause so little metal touches the stone, light enters from every side and the stone looks its largest. On a round it reads as a soft square from above; on a cushion or princess the prongs guard the corners.\n\nIt suits anyone who wants the stone to be the whole story. Check the prongs once a year, as a bent tip is the usual cause of a lost stone.',
+      'The four-prong solitaire is the most familiar engagement setting: four wires rise from a small seat, hug the pavilion and fold over the girdle.\n\nBecause so little metal touches the stone, light enters from every side and the stone looks its largest. On a round it reads as a soft square from above; on a cushion or princess the prongs guard the corners.\n\nIt suits anyone who wants the stone to be the whole story. Check the prongs once a year, as a bent tip is the usual cause of a lost stone.\n\nAn optional under-gallery adds a rail of tiny stones beneath the girdle for side sparkle.',
     tags: ['classic', 'solitaire', 'prong', 'minimal'],
     pros: ['Maximum light and visible stone', 'Easy to clean', 'Timeless and easy to re-tip'],
     cons: ['Prong tips can snag knits', 'Stone edges more exposed than in a bezel'],

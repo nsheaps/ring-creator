@@ -10246,16 +10246,19 @@ export const rings: ExampleDesign[] = [
       head: {
         id: 'solitaire-4-prong',
         metal: 'yellow-gold-14k',
-        params: {},
+        params: {
+          underGallery: true,
+        },
       },
       shank: {
         id: 'pave',
         metal: 'yellow-gold-14k',
         params: {
-          widthMm: 3.4,
-          topWidthMm: 3.6,
-          thicknessMm: 2.2,
-          topThicknessMm: 2.3,
+          widthMm: 3.8,
+          topWidthMm: 4,
+          thicknessMm: 2.4,
+          topThicknessMm: 2.6,
+          roundness: 0.85,
           coverage: 1,
           stoneSizeMm: 1.1,
           rows: 6,

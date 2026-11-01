@@ -944,6 +944,166 @@ export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeo
   return out;
 }
 
+/** Default height of the under-gallery rail: this fraction of the way from the girdle down to the seat. */
+export const UNDER_GALLERY_FRAC = 0.4;
+
+export interface UnderGalleryResult {
+  metal: THREE.BufferGeometry[];
+  stones: THREE.BufferGeometry;
+  count: number;
+}
+
+/**
+ * Under-gallery: a thin metal rail on the prongs' ruled surface below the girdle with a row of tiny accent stones set
+ * on its outer face, tables tilted outward, between the prongs. Seen from the side it is a sparkling ring under the
+ * centre stone. Uses the same frame and prong geometry as prongSet(stone, opts); `frac` is how far down from the girdle
+ * (0) to the seat (1) the rail runs. Returns null when the head is too shallow for a rail.
+ */
+export function underGallery(
+  ctx: HeadCtx,
+  opts: ProngSetOpts,
+  frac = UNDER_GALLERY_FRAC,
+): UnderGalleryResult | null {
+  const cb = ctx.center.built;
+  const o = cleanOutline(cb.outline);
+  const wireMm = opts.wireMm > 0 ? opts.wireMm : autoWireMm(cb);
+  const r = Math.max(0.15, wireMm / 2);
+  const gt = Math.max(0, cb.girdleThickness);
+  const baseY = Math.min(-0.05, opts.baseY);
+  const yG = -gt * 0.5 - Math.min(0.12, r * 0.3);
+  const ySeat = baseY + r * 0.9;
+  if (yG - ySeat < r * 2.2) return null;
+  const bs = Math.min(0.95, Math.max(0.12, opts.baseScale));
+  const drop = opts.seatDrop ?? (() => 0);
+  const avgOff = prongSeatOffset(r, Math.PI / 2);
+  const f = Math.min(0.8, Math.max(0.15, frac));
+  const y0 = yG + (ySeat - yG) * f;
+  // rail centre line, sampled uniformly in the outline's arc length so prong sites map straight onto it
+  const N = 120;
+  const path = resample(o, N, 3);
+  const rail = path.map((q) => {
+    const [x, z] = galleryXZ(q, y0, { y: yG, off: avgOff }, { y: ySeat, scale: bs });
+    return { x, z, y: y0 - drop(x, z) * f, nx: q.nx, nz: q.nz };
+  });
+  const cum: number[] = [0];
+  for (let i = 1; i <= N; i++) {
+    const a = rail[i - 1];
+    const b = rail[i % N];
+    cum.push(cum[i - 1] + Math.hypot(b.x - a.x, b.z - a.z, b.y - a.y));
+  }
+  const L = cum[N];
+  /** Rail point (with smoothed outward normal) at rail length t. */
+  const at = (t: number) => {
+    const u = ((t % L) + L) % L;
+    let i = 0;
+    while (i < N - 1 && cum[i + 1] <= u) i++;
+    const seg = cum[i + 1] - cum[i];
+    const k = seg > 1e-9 ? (u - cum[i]) / seg : 0;
+    const a = rail[i];
+    const b = rail[(i + 1) % N];
+    const n = norm2([a.nx + (b.nx - a.nx) * k, a.nz + (b.nz - a.nz) * k]);
+    return {
+      x: a.x + (b.x - a.x) * k,
+      z: a.z + (b.z - a.z) * k,
+      y: a.y + (b.y - a.y) * k,
+      nx: n[0],
+      nz: n[1],
+    };
+  };
+  const railR = Math.max(0.12, r * 0.6);
+  const metal: THREE.BufferGeometry[] = [
+    loop(
+      rail.map((p) => v3(p.x, p.y, p.z)),
+      railR,
+      144,
+      7,
+    ),
+  ];
+  // tiny stones: ~1 mm, smaller on small heads
+  const size = Math.min(1.3, Math.max(0.7, L / 21));
+  const dims = accentDims(ctx, size);
+  const w = dims.width;
+  const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
+  const tilt = (50 * Math.PI) / 180;
+  const cosT = Math.cos(tilt);
+  const sinT = Math.sin(tilt);
+  const gap = 0.08;
+  const pitch = size + gap;
+  // stone spans between the prongs (prong sites in rail length; the prong wire plus clearance is kept free)
+  const sites = (
+    opts.sites ?? prongSites(o, { count: opts.count, phase: opts.phase, useCorners: opts.useCorners })
+  )
+    .map((s) => ((((s % o.perimeter) + o.perimeter) % o.perimeter) / o.perimeter) * N)
+    .map((x) => {
+      const i = Math.min(N - 1, Math.floor(x));
+      return cum[i] + (cum[i + 1] - cum[i]) * (x - i);
+    })
+    .sort((a, b) => a - b);
+  const clear = r * (opts.double || opts.split ? 2.4 : 1.05) + size * 0.42;
+  const spans: [number, number][] = [];
+  if (sites.length === 0) spans.push([0, L]);
+  else
+    sites.forEach((a, i) => {
+      const b = i + 1 < sites.length ? sites[i + 1] : sites[0] + L;
+      if (b - a > 2 * clear) spans.push([a + clear, b - clear]);
+    });
+  const mats: THREE.Matrix4[] = [];
+  const beadMats: THREE.Matrix4[] = [];
+  const beadR = Math.max(0.09, size * 0.15);
+  /** Is (x, y, z) inside the centre stone (under its crown, above its pavilion)? */
+  const inside = (x: number, yy: number, z: number): boolean => {
+    if (yy > 0) return false;
+    const sy = stoneSurfaceY(cb, x, z, 'bottom');
+    return sy !== null && sy < yy + 0.06;
+  };
+  for (const [a, b] of spans) {
+    const n = Math.max(1, Math.floor((b - a + gap) / pitch));
+    const used = n * pitch - gap;
+    const start = a + (b - a - used) / 2 + size / 2;
+    const centres: { x: number; y: number; z: number; nx: number; nz: number }[] = [];
+    for (let k = 0; k < n; k++) {
+      const p = at(start + k * pitch);
+      // sit on the outer top of the rail, tables tilted outward
+      let off = railR * 0.55 + (w / 2) * cosT * 0.35;
+      const lift = railR * 0.65 + (w / 2) * sinT * 0.35;
+      const cy = p.y + lift;
+      // inner girdle edge and culet must clear the centre's pavilion
+      for (let it = 0; it < 24; it++) {
+        const ix = p.x + p.nx * (off - (w / 2) * cosT);
+        const iz = p.z + p.nz * (off - (w / 2) * cosT);
+        const iy = cy + (w / 2) * sinT + built.crownHeight * cosT;
+        const ux = p.x + p.nx * (off - built.pavilionDepth * sinT);
+        const uz = p.z + p.nz * (off - built.pavilionDepth * sinT);
+        const uy = cy - built.pavilionDepth * cosT;
+        if (!inside(ix, iy, iz) && !inside(ux, uy, uz)) break;
+        off += 0.05;
+      }
+      const c = { x: p.x + p.nx * off, y: cy, z: p.z + p.nz * off, nx: p.nx, nz: p.nz };
+      centres.push(c);
+      mats.push(placeMatrix(c.x, c.y, c.z, -c.nz, c.nx, tilt, c.nx, c.nz));
+    }
+    // shared beads between neighbours, on the outer crown edge
+    for (let k = 0; k + 1 < centres.length; k++) {
+      const p = centres[k];
+      const q = centres[k + 1];
+      const nx = (p.nx + q.nx) / 2;
+      const nz = (p.nz + q.nz) / 2;
+      const ox = (w / 2) * cosT * 0.6;
+      beadMats.push(
+        new THREE.Matrix4().makeTranslation(
+          (p.x + q.x) / 2 + nx * ox,
+          (p.y + q.y) / 2 + built.crownHeight * 0.3 - (w / 2) * sinT * 0.6 + beadR * 0.6,
+          (p.z + q.z) / 2 + nz * ox,
+        ),
+      );
+    }
+  }
+  if (mats.length === 0) return null;
+  if (beadMats.length > 0)
+    metal.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR, 1)), beadMats));
+  return { metal, stones: instanceGeometry(toFlat(built.geometry), mats), count: mats.length };
+}
+
 // ---------------------------------------------------------------------------------------------
 // Placement helpers
 // ---------------------------------------------------------------------------------------------
