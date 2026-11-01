@@ -177,9 +177,9 @@ function basketWires(ctx: HeadCtx, d: CollarDims): THREE.BufferGeometry[] {
   for (const s of sites) {
     const p = pointAt(d.o, s);
     const top = v3(
-      p.x * kTop + p.nx * (t * 0.5 + r * 0.6),
+      p.x * kTop + p.nx * (t * 0.4 + r * 0.3),
       yColl + 0.12,
-      p.z * kTop + p.nz * (t * 0.5 + r * 0.6),
+      p.z * kTop + p.nz * (t * 0.4 + r * 0.3),
     );
     const bx = p.x * bs;
     const bz = p.z * bs;
