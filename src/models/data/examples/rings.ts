@@ -9076,7 +9076,7 @@ export const rings: ExampleDesign[] = [
         params: {
           bladeWidth: 3.2,
           sweepOffset: 1.45,
-          sweepRun: 7,
+          sweepRun: 9,
           jawThickness: 1.3,
           wrap: 45,
           bank: 25,
@@ -9095,6 +9095,8 @@ export const rings: ExampleDesign[] = [
           gapMm: 0.3,
           tipTaper: 0.6,
           hand: 'left',
+          ends: 'blade',
+          endDeg: 46,
         },
       },
       placement: {
@@ -9114,7 +9116,7 @@ export const rings: ExampleDesign[] = [
     tags: ['tension', 'engagement'],
     category: 'tension',
     blurb:
-      'Swirled platinum tension setting, 1.5 mm at top tapering to 2.2 mm; setting only, any center stone shape. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). Compared with the photo: the band ends lift off the shoulders in low swept ribbons that wrap the stone; the front blade comes from the left shoulder, so head and shank use the left-hand swirl.',
+      'Swirled platinum tension setting, 1.5 mm at top tapering to 2.2 mm; setting only, any center stone shape. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). Compared with the photo: the band ends lift off the shoulders in low swept ribbons that wrap the stone; the front blade comes from the left shoulder, so head and shank use the left-hand swirl. Each band end runs on into its blade as one unbroken strip (shank ends hand over to the blades).',
     priceUsd: 2138,
     designFamily: 'tension-bypass / bypass / round-brilliant',
     view: 'ring',
@@ -9147,7 +9149,7 @@ export const rings: ExampleDesign[] = [
         params: {
           bladeWidth: 3,
           sweepOffset: 1.35,
-          sweepRun: 7,
+          sweepRun: 9,
           jawThickness: 1.3,
           wrap: 55,
           bank: 20,
@@ -9169,8 +9171,10 @@ export const rings: ExampleDesign[] = [
           tipTaper: 0.6,
           hand: 'left',
           pave: true,
-          coverage: 0.3,
+          coverage: 0.42,
           stoneSizeMm: 1.2,
+          ends: 'blade',
+          endDeg: 46,
         },
       },
       placement: {
@@ -9190,7 +9194,7 @@ export const rings: ExampleDesign[] = [
     tags: ['tension', 'engagement'],
     category: 'tension',
     blurb:
-      'Twisted swirl tension setting with pave on the band, 2.1 mm wide; center stone sold separately. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). Compared with the photo: low swept ribbon blades wrap the stone; a row of pave runs along the top of each blade and on down the shoulders, and the front blade comes from the left shoulder (left-hand swirl).',
+      'Twisted swirl tension setting with pave on the band, 2.1 mm wide; center stone sold separately. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). Compared with the photo: low swept ribbon blades wrap the stone; a row of pave runs along the top of each blade and on down the shoulders, and the front blade comes from the left shoulder (left-hand swirl). Each band end runs on into its blade as one unbroken strip (shank ends hand over to the blades).',
     priceUsd: 2989,
     designFamily: 'tension-bypass / bypass / round-brilliant',
     view: 'ring',

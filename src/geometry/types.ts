@@ -87,6 +87,8 @@ export interface HeadCtx {
   innerRadius: number;
   /** Radius of the shank's top surface at the seat (the shank's seatY), mm. Optional: heads fall back to innerRadius + 1.8. */
   seatRadius?: number;
+  /** Set when the shank's ends stop on the shoulders for the head to grow out of (bypass shank, `ends: 'blade'`). */
+  shankEnds?: ShankEnds;
 }
 
 export interface ShankCtx {
@@ -106,6 +108,21 @@ export interface ShankResult {
   seatY: number;
   /** axial width (Z) at the top */
   topWidth: number;
+  /** Open ends that stop on the shoulders so a head (the swept blades) can continue them seamlessly. */
+  ends?: ShankEnds;
+}
+
+/**
+ * Where a shank's two open ends stop, in the ring frame. The end on the +X shoulder is described; the other end is
+ * its point reflection through the finger axis (at -X, -z).
+ */
+export interface ShankEnds {
+  /** angle (radians) from the top of the ring at which the +X end stops */
+  angle: number;
+  /** z of the +X end's centre line */
+  z: number;
+  /** closed cross section of the end as (z offset from the centre line, radius) pairs */
+  profile: [number, number][];
 }
 
 export interface BandCtx {

@@ -52,7 +52,7 @@ A **tapered** shank is wider at the shoulders near the stone and slims toward th
 ![Crossover]({{base}}screenshots/components/shank/crossover.png)
 ![Bypass]({{base}}screenshots/components/shank/bypass.png)
 
-A **split** shank divides into two strands near the head, widening the visual base and often carrying pave stones. **Crossover** strands cross like an X below the stone. **Bypass** strands pass each other and curl to either side of the stone instead of meeting. Bypass shanks pair with kite, floral or east-west heads. The offset slider (Head tab) can slide the stone along the band to make the asymmetry more pronounced.
+A **split** shank divides into two strands near the head, widening the visual base and often carrying pave stones. **Crossover** strands cross like an X below the stone. **Bypass** strands pass each other and curl to either side of the stone instead of meeting. Bypass shanks pair with kite, floral or east-west heads. The offset slider (Head tab) can slide the stone along the band to make the asymmetry more pronounced. With a tension-bypass head, set the bypass shank's **Ends** to _Hand over to tension blades_: each end then stops on its shoulder and the blade grows straight out of it, so band and blade read as one unbroken strip (**Blade start** sets where).
 
 ### Stone-set shanks
 

@@ -1502,7 +1502,7 @@ export const heads: HeadModel[] = [
     builder: 'swept-blades',
     summary: 'Two low, swept ribbon blades wrap the stone from either side and pass like a bypass.',
     description:
-      'A tension bypass holds the stone between the ends of the band. Each end lifts off the shoulder in a low, smooth swoop and wraps one side of the stone like a ribbon, biting the girdle. The blades pass each other, so the stone seems to float.\n\nIt pairs naturally with a bypass shank: match the sweep offset and swirl direction to the shank.\n\nTune blade width, depth, wrap, swoop and face tilt; the tips taper to a point and small pavé can line each blade. Like all tension settings it needs a hard stone and is hard to resize.',
+      'A tension bypass holds the stone between the ends of the band. Each end lifts off the shoulder in a low, smooth swoop and wraps one side of the stone like a ribbon, biting the girdle. The blades pass each other, so the stone seems to float.\n\nPair it with a same-swirl bypass shank whose ends hand over to the blades, for one unbroken strip.\n\nTune blade width, depth, wrap, swoop and face tilt; the tips taper to a point and small pavé can line each blade. Like all tension settings it needs a hard stone and is hard to resize.',
     tags: ['tension', 'bypass', 'modern', 'floating', 'swept'],
     pros: ['Floating stone with flowing lines', 'Light passes all round the stone', 'Very modern'],
     cons: ['Hard to resize', 'Only for hard stones', 'Exposed top and bottom'],
@@ -1549,7 +1549,7 @@ export const heads: HeadModel[] = [
         max: 2.5,
         step: 0.1,
         unit: 'mm',
-        help: "How far off the centre line each blade meets the shank (match a bypass shank's ends).",
+        help: "How far off the centre line each blade meets the shank (match a bypass shank's ends; not used when the shank's ends hand over to the blades).",
       },
       {
         type: 'number',

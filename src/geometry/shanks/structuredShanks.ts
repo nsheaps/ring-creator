@@ -277,7 +277,9 @@ function split(ctx: ShankCtx): ShankResult {
 registerShankBuilder('split', split);
 
 // ---------------------------------------------------------------------------------------------
-// Bypass: one band whose two ends sweep past each other at the top, offset along the finger.
+// Bypass: one band whose two ends sweep past each other at the top, offset along the finger. With `ends: 'blade'`
+// the ends instead stop on the shoulders, `endDeg` from the top, at full width with a flat cut, and report where
+// (ShankResult.ends) so a swept-blade head grows out of them as one continuous strip.
 // ---------------------------------------------------------------------------------------------
 function bypass(ctx: ShankCtx): ShankResult {
   const p = ctx.params;
@@ -286,24 +288,29 @@ function bypass(ctx: ShankCtx): ShankResult {
   const outerExp = outerExpFromRoundness(num(p, 'roundness', 0.8, 0, 1));
   const overlap = deg(num(p, 'overlapDeg', 28, 5, 60));
   const gap = num(p, 'gapMm', 0.5, 0, 3);
+  const blade = str(p, 'ends', ['overlap', 'blade'] as const, 'overlap') === 'blade';
+  const endAng = deg(num(p, 'endDeg', 35, 10, 70));
   const pv = paveOn(ctx) ? paveSpec(ctx, { max: 1.6, rim: 0.12 }) : null;
   if (pv) {
     tp.wBottom = Math.max(tp.wBottom, pv.need);
     tp.wTop = Math.max(tp.wTop, pv.need);
   }
   const off = tp.wTop / 2 + gap / 2;
-  const t0 = TOP - overlap;
-  const t1 = TOP + TAU + overlap;
+  const t0 = blade ? TOP + endAng : TOP - overlap;
+  const t1 = blade ? TOP + TAU - endAng : TOP + TAU + overlap;
   const span = t1 - t0;
   const tipTaper = num(p, 'tipTaper', 0.35, 0, 0.7);
   const noseMm = Math.min(1.2, tp.wTop * 0.6);
-  const [a0, a1] = pv ? paveZone(ctx, pv, R + tp.tTop) : [0, 0];
+  const [z0, a1] = pv ? paveZone(ctx, pv, R + tp.tTop) : [0, 0];
+  // blade ends: the pave trough fades out before the end, so the end keeps the plain section the blade continues
+  const a0 = blade ? Math.max(z0, endAng + 0.1) : z0;
   const zone = pv ? zoneWeight(a0, a1) : () => 0;
   // right hand (default): the end rising from the +X shoulder sits on the +Z side at the top; left hand mirrors it
   const hand = str(p, 'hand', ['right', 'left'] as const, 'right') === 'left' ? -1 : 1;
   const zOf = (th: number) => -hand * off * Math.cos((Math.PI * (th - t0)) / span);
   /** width and thickness of the band at angle th, including the slimming and rounded nose of the ends */
   const sec = (th: number) => {
+    if (blade) return { w: widthAt(tp, th), t: thickAt(tp, th) };
     const endD = Math.min(th - t0, t1 - th);
     const tipF = 1 - tipTaper * (1 - smooth(endD / (overlap * 1.4)));
     // rounded nose: the last ~1.2 mm closes like a quarter circle instead of ending in a flat cut
@@ -314,22 +321,23 @@ function bypass(ctx: ShankCtx): ShankResult {
       t: thickAt(tp, th) * (0.85 + 0.15 * tipF) * (0.35 + 0.65 * nose),
     };
   };
+  const profile = (th: number): [number, number][] => {
+    const { w, t } = sec(th);
+    if (pv) return paveSection(pv, R, w, t, outerExp, zone(th));
+    return bandSection({ w, t, R, outerExp, innerExp: 3, split: 0.6 });
+  };
   const g = sweep({
     thetaStart: t0,
     thetaEnd: t1,
     segments: pv ? 280 : 200,
     zOffset: zOf,
-    profile: (th) => {
-      const { w, t } = sec(th);
-      if (pv) return paveSection(pv, R, w, t, outerExp, zone(th));
-      return bandSection({ w, t, R, outerExp, innerExp: 3, split: 0.6 });
-    },
+    profile,
   });
   let parts: Part[];
   if (pv && a1 > a0) {
     // the strand passes the top twice (once as each end): stones run down both shoulders of both passes,
     // clear of the rounded tips
-    const margin = noseMm / R + 0.04;
+    const margin = blade ? 0.05 : noseMm / R + 0.04;
     const runs: PaveRun[] = [];
     for (const k of [0, TAU])
       for (const dir of [1, -1]) {
@@ -347,7 +355,8 @@ function bypass(ctx: ShankCtx): ShankResult {
       }
     parts = paveParts('bypass shank', [g], pv, runs);
   } else parts = [metal([g], 'bypass shank')];
-  return { parts, seatY: R + tp.tTop, topWidth: 2 * off + tp.wTop };
+  const ends = blade ? { angle: endAng, z: zOf(t1), profile: profile(t1) } : undefined;
+  return { parts, seatY: R + tp.tTop, topWidth: 2 * off + tp.wTop, ...(ends ? { ends } : {}) };
 }
 registerShankBuilder('bypass', bypass);
 

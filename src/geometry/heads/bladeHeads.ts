@@ -6,7 +6,7 @@
  */
 import * as THREE from 'three';
 import { registerHeadBuilder } from '../builders';
-import type { BuiltStone, HeadCtx, Part } from '../types';
+import type { BuiltStone, HeadCtx, Part, ShankEnds } from '../types';
 import { instanceGeometry, loftRows, toFlat } from '../helpers';
 import { stoneMatrix, strandFrom } from '../shanks/pavePath';
 import {
@@ -41,6 +41,10 @@ interface BladeSample {
   hw: number;
   /** outward bank of the ribbon's face (radians): the edge away from the stone dips, the face looks up and out */
   bank?: number;
+  /** 0..1: how much the section takes the shank end's own profile (1 where the blade grows out of the shank) */
+  root?: number;
+  /** exact centre-line direction (u, y, v) where neighbours would only give a chord (the joined root) */
+  dir?: [number, number, number];
 }
 
 /** Points of a rounded-rectangle (superellipse) section, counter-clockwise in (lateral, vertical). */
@@ -61,6 +65,7 @@ interface BladeFrame {
   tan: THREE.Vector3;
   hh: number;
   hw: number;
+  root: number;
 }
 
 /** Frames along the centre line; each section is square to the 3D tangent so a steep swoop keeps its full depth. */
@@ -81,6 +86,10 @@ function bladeFrames(
     const [ax, az] = toStone(a.u, a.v);
     const [bx, bz] = toStone(b.u, b.v);
     const t = v3(bx - ax, (b.top + b.bottom - a.top - a.bottom) / 2, bz - az);
+    if (p.dir) {
+      const [dx, dz] = toStone(p.dir[0], p.dir[2]);
+      t.set(dx, p.dir[1], dz);
+    }
     if (t.lengthSq() < 1e-12) t.set(1, 0, 0);
     t.normalize();
     const lat = v3(-t.z, 0, t.x);
@@ -108,24 +117,70 @@ function bladeFrames(
       tan: t,
       hh: Math.max(0.02, (p.top - p.bottom) / 2),
       hw: p.hw,
+      root: p.root ?? 0,
     };
   });
 }
 
-/** Closed smooth-shaded solid from blade frames (indexed loft, outward winding, smooth normals). */
-function ribbon(frames: BladeFrame[]): THREE.BufferGeometry {
-  const shape = sectionShape(22, 2.8);
+/**
+ * Where a ray from (0, 0) along (dx, dy) leaves a closed polygon (the first crossing), as a multiple of the ray's
+ * length; null when it misses.
+ */
+function rayHit(poly: [number, number][], dx: number, dy: number): number | null {
+  let best: number | null = null;
+  for (let i = 0; i < poly.length; i++) {
+    const [ax, ay] = poly[i];
+    const [bx, by] = poly[(i + 1) % poly.length];
+    const ex = bx - ax;
+    const ey = by - ay;
+    const den = dx * ey - dy * ex;
+    if (Math.abs(den) < 1e-12) continue;
+    const t = (ax * ey - ay * ex) / den;
+    const u = (ax * dy - ay * dx) / den;
+    if (t > 1e-9 && u >= -1e-9 && u <= 1 + 1e-9 && (best === null || t < best)) best = t;
+  }
+  return best;
+}
+
+/**
+ * Closed smooth-shaded solid from blade frames (indexed loft, outward winding, smooth normals). With `rootProfile`
+ * (the shank end's section, centred on its middle, in (lateral, up)) a frame's `root` weight morphs its section from
+ * that profile into the ribbon's, so the first section is exactly the shank's end.
+ */
+function ribbon(frames: BladeFrame[], rootProfile?: [number, number][]): THREE.BufferGeometry {
+  const shape = sectionShape(rootProfile ? 32 : 22, 2.8);
   const rows: THREE.Vector3[][] = frames.map((f) =>
     shape.map(([sx, sy]) => {
       // a slightly domed top: the upper half is fuller than the lower one
-      const k = sy * f.hh * (sy > 0 ? 1 : 0.92);
-      return f.c
-        .clone()
-        .addScaledVector(f.lat, sx * f.hw)
-        .addScaledVector(f.up, k);
+      let lx = sx * f.hw;
+      let ly = sy * f.hh * (sy > 0 ? 1 : 0.92);
+      if (rootProfile && f.root > 0) {
+        const t = rayHit(rootProfile, lx, ly);
+        if (t !== null) {
+          lx += (lx * t - lx) * f.root;
+          ly += (ly * t - ly) * f.root;
+        }
+      }
+      return f.c.clone().addScaledVector(f.lat, lx).addScaledVector(f.up, ly);
     }),
   );
-  const g = loftRows(rows);
+  const m = shape.length;
+  // joined root: the end cap gets its own copy of the first row, so the rim's normals follow the side faces only and
+  // match the shank's (whose cap has its own vertices too); the zero-length quads between the copies are dropped
+  const g = loftRows(rootProfile ? [rows[0].map((q) => q.clone()), ...rows] : rows);
+  if (rootProfile) {
+    const idx = g.getIndex();
+    if (idx) {
+      const keep: number[] = [];
+      for (let k = 0; k + 2 < idx.count; k += 3) {
+        const tri = [idx.getX(k), idx.getX(k + 1), idx.getX(k + 2)];
+        const inFirst = tri.some((q) => q < m);
+        const inSecond = tri.some((q) => q >= m && q < 2 * m);
+        if (!(inFirst && inSecond)) keep.push(...tri);
+      }
+      g.setIndex(keep);
+    }
+  }
   if (signedVolume(g) < 0) {
     const idx = g.getIndex();
     if (idx) {
@@ -185,7 +240,13 @@ function sweptBlades(ctx: HeadCtx): Part[] {
   // where the blade meets the shank it takes the width of the strand it rises from: with an offset (a bypass shank)
   // that is the shank's top width less the offset of both strands, otherwise most of a plain shank's width
   const strand = ctx.shankWidth - 2 * offset;
-  const wShoulder = Math.min(4, strand >= 1 ? strand : Math.max(1, ctx.shankWidth * 0.85));
+  let wShoulder = Math.min(4, strand >= 1 ? strand : Math.max(1, ctx.shankWidth * 0.85));
+  // a shank whose ends stop on the shoulders (bypass, ends: 'blade'): the blade starts exactly at the +band end, with
+  // its section, and continues it
+  const join = ctx.shankEnds ? endRoot(ctx.shankEnds) : null;
+  if (join) wShoulder = join.w;
+  // ring-frame y of the girdle plane: stone-frame y = ring y - gY
+  const gY = shankTopRadius(ctx) + bd;
 
   // the blade from the +u side wrapping the +v side of the stone; the other is its point reflection
   const phiIn = Math.PI / 2 - Math.min(0.9, 0.35 + wrap * 0.5);
@@ -198,14 +259,16 @@ function sweptBlades(ctx: HeadCtx): Part[] {
   // within its bounds even for long stones lying along the band)
   const Rs = shankTopRadius(ctx);
   const uMax = Math.sqrt(Math.max(0, Rs * Rs - (Rs - 3) ** 2));
-  const uL = Math.min(u3 + run, Math.max(uMax - 0.6, u3 + 1.5));
+  const uL = join ? join.rc * Math.sin(join.angle) : Math.min(u3 + run, Math.max(uMax - 0.6, u3 + 1.5));
   const lead = Math.min(1.4, Math.max(0.3, uMax - uL));
-  const P0: [number, number] = [uL, offset];
+  // with a joined shank the root sits on the end's own centre line (the hand sign cancels when the blade is mirrored)
+  const v0 = join ? hand * join.z : offset;
+  const P0: [number, number] = [uL, v0];
   // handles scaled to the span actually covered, so a short span (a long stone, a small ring) never hooks back on itself
-  const span = Math.hypot(uL - u3, offset - v3_);
+  const span = Math.hypot(uL - u3, v0 - v3_);
   const k0 = Math.min(run * 0.5, span * 0.45);
   const k3 = Math.min(run * 0.35, span * 0.4);
-  const P1: [number, number] = [uL - k0, offset];
+  const P1: [number, number] = [uL - k0, v0];
   const P2: [number, number] = [u3 - t3[0] * k3, v3_ - t3[1] * k3];
   const bez = (t: number): [number, number] => {
     const m = 1 - t;
@@ -218,9 +281,9 @@ function sweptBlades(ctx: HeadCtx): Part[] {
 
   const samples: BladeSample[] = [];
   // where it leaves the shank the blade's top is flush with the shank's top surface and its foot is buried in it
-  const thShoulder = Math.min(1, Math.max(0.8, (Rs - ctx.innerRadius) * 0.55));
-  // buried lead-in: the ribbon emerges from the shank's top surface
-  for (let k = 0; k < 4; k++) {
+  const thShoulder = join ? join.t : Math.min(1, Math.max(0.8, (Rs - ctx.innerRadius) * 0.55));
+  // buried lead-in: the ribbon emerges from the shank's top surface (a joined shank needs none)
+  for (let k = 0; !join && k < 4; k++) {
     const u = uL + lead * (1 - k / 4);
     const f = k / 4;
     const top = shankTop(u) - 0.3 + 0.22 * f;
@@ -240,9 +303,16 @@ function sweptBlades(ctx: HeadCtx): Part[] {
     const [u, v] = bez(f);
     const e = smooth(f);
     const lift = smooth(Math.min(1, f * 1.08)) ** 1.15;
-    const st = shankTop(u);
-    const top = st - 0.08 + (yTop - st + 0.08) * lift;
     const th = thShoulder + (T - thShoulder) * e;
+    let top: number;
+    if (join) {
+      // the centre leaves the shank end's centre circle and rises to the blade's
+      const cy0 = Math.sqrt(Math.max(0, join.rc * join.rc - u * u)) - gY;
+      top = cy0 + (yTop - T / 2 - cy0) * lift + th / 2;
+    } else {
+      const st = shankTop(u);
+      top = st - 0.08 + (yTop - st + 0.08) * lift;
+    }
     samples.push({
       u,
       v,
@@ -250,6 +320,11 @@ function sweptBlades(ctx: HeadCtx): Part[] {
       bottom: top - th,
       hw: (wShoulder + (W - wShoulder) * e) / 2,
       bank: bank * smooth((f - 0.35) / 0.65),
+      ...(join ? { root: 1 - smooth(f / 0.5) } : {}),
+      // the root section lies exactly in the shank end's radial plane
+      ...(join && k === 0
+        ? { dir: [-Math.cos(join.angle), Math.sin(join.angle), 0] as [number, number, number] }
+        : {}),
     });
   }
   // the wrap: hugs the girdle and tapers to a point beside the stone; the inner edge stays on the girdle while the
@@ -277,11 +352,16 @@ function sweptBlades(ctx: HeadCtx): Part[] {
   const beads: THREE.Matrix4[] = [];
   const pave = bool(p, 'bladePave', false) ? bladePaveSpec(ctx, num(p, 'paveSizeMm', 1.1, 0.7, 1.8)) : null;
   for (const s of [1, -1]) {
-    const pts = samples.map((q) => ({ ...q, u: s * q.u, v: s * hand * q.v }));
+    const pts = samples.map((q) => ({
+      ...q,
+      u: s * q.u,
+      v: s * hand * q.v,
+      ...(q.dir ? { dir: [s * q.dir[0], q.dir[1], s * hand * q.dir[2]] as [number, number, number] } : {}),
+    }));
     const frames = bladeFrames(pts, toStone);
-    geos.push(ribbon(frames));
+    geos.push(ribbon(frames, join?.profile));
     // the stones start where the blade leaves the shank (after the buried lead-in)
-    if (pave) layBladePave(frames.slice(4), pave, stones, beads);
+    if (pave) layBladePave(join ? frames : frames.slice(4), pave, stones, beads);
   }
   if (!pave) return [metalPart(geos, 'tension-bypass blades')];
   if (beads.length) geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(pave.beadR, 1)), beads));
@@ -289,6 +369,37 @@ function sweptBlades(ctx: HeadCtx): Part[] {
   if (stones.length)
     parts.push(accentPart([instanceGeometry(toFlat(pave.built.geometry), stones)], 'blade pave stones'));
   return parts;
+}
+
+/** The shank end as the blade's root: centre radius, width, thickness and the section about its middle. */
+function endRoot(e: ShankEnds): {
+  angle: number;
+  z: number;
+  rc: number;
+  w: number;
+  t: number;
+  profile: [number, number][];
+} {
+  let zMin = Infinity;
+  let zMax = -Infinity;
+  let rMin = Infinity;
+  let rMax = -Infinity;
+  for (const [z, r] of e.profile) {
+    zMin = Math.min(zMin, z);
+    zMax = Math.max(zMax, z);
+    rMin = Math.min(rMin, r);
+    rMax = Math.max(rMax, r);
+  }
+  const zc = (zMin + zMax) / 2;
+  const rc = (rMin + rMax) / 2;
+  return {
+    angle: e.angle,
+    z: e.z + zc,
+    rc,
+    w: zMax - zMin,
+    t: rMax - rMin,
+    profile: e.profile.map(([z, r]): [number, number] => [z - zc, r - rc]),
+  };
 }
 
 interface BladePave {

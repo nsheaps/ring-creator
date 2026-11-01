@@ -491,7 +491,7 @@ export const shanks: ShankModel[] = [
     builder: 'bypass',
     summary: 'The band ends slide past each other at the top, one on each side of the stone.',
     description:
-      'In a bypass shank the two ends of the band do not meet; they sweep past one another, offset along the finger, with the centre stone held between them. The result is a flowing, asymmetric line full of movement. The swirl can turn either way.\n\nIt suits toi-et-moi and bypass heads, and looks striking with a single oval or pear. Pavé can line both ends.',
+      'In a bypass shank the two ends of the band do not meet; they sweep past one another, offset along the finger, with the centre stone held between them. The result is a flowing, asymmetric line full of movement. The swirl can turn either way.\n\nWith blade ends the band stops on the shoulders and a tension-bypass head carries each end on up round the stone as one unbroken ribbon.\n\nIt suits toi-et-moi and bypass heads, and looks striking with a single oval or pear. Pavé can line both ends.',
     tags: ['bypass', 'asymmetric', 'flowing', 'modern'],
     pros: ['Graceful sense of movement', 'Distinctive silhouette', 'Hugs the stone from two sides'],
     cons: ['Needs a contoured wedding band', 'Wider top'],
@@ -504,6 +504,8 @@ export const shanks: ShankModel[] = [
       gapMm: 0.5,
       tipTaper: 0.35,
       hand: 'right',
+      ends: 'overlap',
+      endDeg: 35,
       ...paveParams,
     },
     controls: [
@@ -522,6 +524,25 @@ export const shanks: ShankModel[] = [
         ],
         help: 'Which way the ends sweep past each other. Set a tension-bypass head to the same direction.',
       },
+      {
+        type: 'select',
+        key: 'ends',
+        label: 'Ends',
+        options: [
+          { value: 'overlap', label: 'Pass over the top' },
+          { value: 'blade', label: 'Hand over to tension blades' },
+        ],
+        help: 'Blade: the ends stop on the shoulders at full width and a tension-bypass head grows out of them, so band and blade read as one strip. Use only with the tension-bypass head.',
+      },
+      n(
+        'endDeg',
+        'Blade start',
+        10,
+        70,
+        1,
+        '°',
+        'With blade ends: how far from the top each end stops and its blade begins.',
+      ),
       ...paveControls,
     ],
     hasStones: false,

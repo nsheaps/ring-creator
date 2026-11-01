@@ -85,3 +85,79 @@ describe('pavé on path shanks', () => {
     expect(all.length).toBeGreaterThanOrEqual(8);
   });
 });
+
+describe('bypass shank blade ends', () => {
+  const build = (extra: Params) => {
+    const fn = shankBuilders.get('bypass');
+    if (!fn) throw new Error('bypass');
+    return fn(ctx({ ...getModel('shank', 'bypass').params, ...extra }, 1.2));
+  };
+  /** angle (degrees) from the top of every shank vertex in the upper half */
+  const topAngles = (parts: Part[]) => {
+    const out: number[] = [];
+    for (const p of parts.filter((q) => q.slot === 'shank-metal')) {
+      const a = p.geometry.getAttribute('position');
+      for (let i = 0; i < a.count; i++)
+        if (a.getY(i) > 0) out.push((Math.abs(Math.atan2(a.getX(i), a.getY(i))) * 180) / Math.PI);
+    }
+    return out;
+  };
+
+  it('by default the ends pass over the top and no ends are reported', () => {
+    const res = build({});
+    expect(res.ends).toBeUndefined();
+    expect(Math.min(...topAngles(res.parts))).toBeLessThan(1);
+  });
+
+  it("with ends 'blade' both ends stop endDeg from the top at full width and report where", () => {
+    for (const hand of ['right', 'left'])
+      for (const endDeg of [25, 40, 55]) {
+        const res = build({ ends: 'blade', endDeg, hand, widthMm: 2.4, topWidthMm: 2.4 });
+        expect(Math.min(...topAngles(res.parts))).toBeGreaterThan(endDeg - 0.01);
+        const e = res.ends;
+        if (!e) throw new Error('no ends');
+        expect((e.angle * 180) / Math.PI).toBeCloseTo(endDeg, 6);
+        const zs = e.profile.map(([z]) => z);
+        const rs = e.profile.map(([, r]) => r);
+        // no tip taper or rounded nose: the end keeps the band's section
+        expect(Math.max(...zs) - Math.min(...zs)).toBeGreaterThan(2.35);
+        expect(Math.min(...rs)).toBeCloseTo(8.5, 3);
+        // the +X end sits on +Z for a right-hand swirl, -Z for a left-hand one
+        expect(Math.sign(e.z)).toBe(hand === 'right' ? 1 : -1);
+        // the reported end is where the metal really ends: a vertex of the shank sits on its outer edge
+        const outer = Math.max(...rs);
+        const end = res.parts
+          .filter((q) => q.slot === 'shank-metal')
+          .some((q) => {
+            const a = q.geometry.getAttribute('position');
+            for (let i = 0; i < a.count; i++) {
+              const x = a.getX(i);
+              const y = a.getY(i);
+              if (
+                x > 0 &&
+                Math.abs(Math.atan2(x, y) - e.angle) < 1e-4 &&
+                Math.abs(Math.hypot(x, y) - outer) < 1e-3
+              )
+                return true;
+            }
+            return false;
+          });
+        expect(end).toBe(true);
+      }
+  });
+
+  it('blade ends with pavé keep a plain section at the end and no stones beyond it', () => {
+    const res = build({ ends: 'blade', endDeg: 30, pave: true, coverage: 0.6 });
+    const all = stones(res.parts);
+    expect(all.length).toBeGreaterThan(4);
+    for (const s of all) expect((Math.abs(Math.atan2(s.c.x, s.c.y)) * 180) / Math.PI).toBeGreaterThan(30);
+    const e = res.ends;
+    if (!e) throw new Error('no ends');
+    const plain = build({ ends: 'blade', endDeg: 30 }).ends;
+    if (!plain) throw new Error('no ends');
+    // same section as without pavé (no trough cut into the end)
+    const top = (pr: [number, number][]) =>
+      Math.max(...pr.filter(([z]) => Math.abs(z) < 0.2).map(([, r]) => r));
+    expect(top(e.profile)).toBeGreaterThan(top(plain.profile) - 0.05);
+  });
+});

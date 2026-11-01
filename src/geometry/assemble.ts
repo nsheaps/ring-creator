@@ -188,6 +188,7 @@ function buildEngagement(design: Design, center: ResolvedStone): Engagement {
     stone: stoneFactory(),
     innerRadius,
     seatRadius: shank.seatY,
+    shankEnds: shank.ends,
   };
   const headParts = headFn(headCtx);
 

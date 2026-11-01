@@ -4,7 +4,11 @@ import * as THREE from 'three';
 import { headBuilders } from '../builders';
 import type { Part } from '../types';
 import { heads } from '@/models/data/heads';
-import type { Params } from '@/models/types';
+import type { Design, Params } from '@/models/types';
+import { rings } from '@/models/data/examples/rings';
+import { engagementParts } from '../assemble';
+import '@/models/data';
+import '@/geometry';
 import './index';
 import { signedVolume } from './common';
 import { STUB_CUTS, stubCtx } from './testStub';
@@ -189,5 +193,75 @@ describe('tension-bypass swept blades', () => {
         .find((p) => p.slot === 'accent-stone')
         ?.geometry.getAttribute('position').count ?? 0;
     expect(count(0.8)).toBeGreaterThan(count(1.5));
+  });
+});
+
+describe('tension-bypass blades grown from a bypass shank with blade ends', () => {
+  const base = rings.find((r) => r.id === 'r5-004');
+  if (!base) throw new Error('r5-004 missing');
+  const design = (shank: Params, headExtra: Params = {}): Design => ({
+    ...base,
+    engagement: {
+      ...base.engagement,
+      head: { ...base.engagement.head, params: { ...base.engagement.head.params, ...headExtra } },
+      shank: { ...base.engagement.shank, params: { ...base.engagement.shank.params, ...shank } },
+    },
+  });
+  const pts = (parts: Part[], slot: string): THREE.Vector3[] => {
+    const out: THREE.Vector3[] = [];
+    for (const p of parts.filter((q) => q.slot === slot)) {
+      const a = p.geometry.getAttribute('position');
+      for (let i = 0; i < a.count; i++) out.push(new THREE.Vector3().fromBufferAttribute(a, i));
+    }
+    return out;
+  };
+  /** (z, radius) extents of the vertices lying in the radial plane `deg` from the top, on the +X or -X side */
+  const at = (v: THREE.Vector3[], deg: number, side: 1 | -1) => {
+    const a = (deg * Math.PI) / 180;
+    const sel = v.filter((p) => side * p.x > 0 && Math.abs(Math.atan2(side * p.x, p.y) - a) < 2e-4);
+    const zs = sel.map((p) => p.z);
+    const rs = sel.map((p) => Math.hypot(p.x, p.y));
+    return {
+      n: sel.length,
+      z0: Math.min(...zs),
+      z1: Math.max(...zs),
+      r0: Math.min(...rs),
+      r1: Math.max(...rs),
+    };
+  };
+
+  for (const endDeg of [34, 46])
+    for (const hand of ['left', 'right'])
+      it(`each blade's first section is the shank end's (endDeg ${endDeg}, ${hand} hand)`, () => {
+        const { parts } = engagementParts(design({ ends: 'blade', endDeg, hand }, { hand }));
+        const sh = pts(parts, 'shank-metal');
+        const hd = pts(parts, 'head-metal');
+        for (const side of [1, -1] as const) {
+          const s = at(sh, endDeg, side);
+          const h = at(hd, endDeg, side);
+          expect(s.n).toBeGreaterThan(10);
+          expect(h.n).toBeGreaterThan(10);
+          expect(Math.abs(h.r0 - s.r0)).toBeLessThan(0.01);
+          expect(Math.abs(h.r1 - s.r1)).toBeLessThan(0.01);
+          expect(Math.abs(h.z0 - s.z0)).toBeLessThan(0.03);
+          expect(Math.abs(h.z1 - s.z1)).toBeLessThan(0.03);
+          // the blade only carries on towards the top: no head metal further down the shoulder than the end
+          const beyond = hd.filter(
+            (p) => side * p.x > 0 && Math.atan2(side * p.x, p.y) > (endDeg * Math.PI) / 180 + 1e-3,
+          );
+          expect(beyond.length).toBe(0);
+        }
+      });
+
+  it('an overlapping shank passes over the top; with blade ends the top is left to the blades', () => {
+    const plain = engagementParts(design({ ends: 'overlap' }));
+    const joined = engagementParts(design({ ends: 'blade', endDeg: 40 }));
+    const hd = (e: { parts: Part[] }) => pts(e.parts, 'head-metal');
+    // the overlapping shank passes over the top, the joined one leaves it to the blades
+    const topShank = (e: { parts: Part[] }) =>
+      pts(e.parts, 'shank-metal').some((p) => p.y > 0 && Math.abs(Math.atan2(p.x, p.y)) < 0.05);
+    expect(topShank(plain)).toBe(true);
+    expect(topShank(joined)).toBe(false);
+    expect(hd(plain).length).not.toBe(hd(joined).length);
   });
 });
