@@ -360,7 +360,8 @@
         "shank": {
           "strands": 2,
           "twists": 8,
-          "widthMm": 2.8
+          "widthMm": 2.8,
+          "pave": true
         },
         "placement": {
           "raise": 1.0
@@ -368,7 +369,7 @@
       }
     },
     "band": null,
-    "notes": "Setting price only. Round centre listed although URL slug says oval; 2.50 mm twisted diamond-set band under a classic halo."
+    "notes": "Setting price only. Round centre listed although URL slug says oval; 2.50 mm twisted diamond-set band under a classic halo. Shank audit: pave stones now follow the twisted wires."
   },
   {
     "id": "r2-009",
@@ -547,11 +548,15 @@
       "tune": {
         "placement": {
           "raise": 1.0
+        },
+        "shank": {
+          "pave": true,
+          "coverage": 0.6
         }
       }
     },
     "band": null,
-    "notes": "8x6 mm oval sapphire in a claw basket with no halo; 1.4 mm split band lined with pave. Carat not stated on page."
+    "notes": "8x6 mm oval sapphire in a claw basket with no halo; 1.4 mm split band lined with pave. Carat not stated on page. Shank audit: pave now lines the split arms."
   },
   {
     "id": "r2-013",
@@ -728,10 +733,16 @@
       "accents": [
         "diamond-lined split shank"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "pave": true,
+          "coverage": 0.6
+        }
+      }
     },
     "band": null,
-    "notes": "Setting price only; halo outline not stated. Page text mentions platinum in one line, conflicting with the 14K white gold metal field."
+    "notes": "Setting price only; halo outline not stated. Page text mentions platinum in one line, conflicting with the 14K white gold metal field. Shank audit: pave now lines the split arms."
   },
   {
     "id": "r2-018",
@@ -764,7 +775,8 @@
       "orientation": "north-south",
       "tune": {
         "shank": {
-          "spreadMm": 2.5
+          "spreadMm": 2.5,
+          "pave": true
         },
         "placement": {
           "raise": 1.0
@@ -772,7 +784,7 @@
       }
     },
     "band": null,
-    "notes": "Setting-only. Shank is a split that crosses in an X under the centre; crossover is the nearest id (split also fits)."
+    "notes": "Setting-only. Shank is a split that crosses in an X under the centre; crossover is the nearest id (split also fits). Shank audit: pave now lines the crossing strands."
   },
   {
     "id": "r2-019",
@@ -937,10 +949,15 @@
       "accents": [
         "floral bypass shank"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "pave": true
+        }
+      }
     },
     "band": null,
-    "notes": "Setting price; round, oval, marquise or pear centres 0.50-8.00 ct (oval chosen as example, not a stated default). Head approximated as solitaire-6-prong."
+    "notes": "Setting price; round, oval, marquise or pear centres 0.50-8.00 ct (oval chosen as example, not a stated default). Head approximated as solitaire-6-prong. Shank audit: pave now lines the bypass ends."
   },
   {
     "id": "r2-023",
@@ -977,11 +994,15 @@
         },
         "placement": {
           "raise": 1.0
+        },
+        "shank": {
+          "pave": true,
+          "coverage": 0.6
         }
       }
     },
     "band": null,
-    "notes": "Page says the style is sold out and shows no price (a search snippet quoted $1,800 list / $1,350 sale, unverified on page). Kite-set prongs align with the pave on the airy bypass shank."
+    "notes": "Page says the style is sold out and shows no price (a search snippet quoted $1,800 list / $1,350 sale, unverified on page). Kite-set prongs align with the pave on the airy bypass shank. Shank audit: pave now lines the bypass ends."
   },
   {
     "id": "r2-024",

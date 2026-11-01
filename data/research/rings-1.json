@@ -711,7 +711,9 @@
           "widthMm": 1.6,
           "topWidthMm": 1.6,
           "thicknessMm": 1.5,
-          "topThicknessMm": 1.5
+          "topThicknessMm": 1.5,
+          "shoulderStones": true,
+          "stoneSizeMm": 0.9
         },
         "head": {
           "prongCount": 4
@@ -722,7 +724,7 @@
       }
     },
     "band": null,
-    "notes": "Split-prong wire basket with milgrain surround and cathedral shoulders. 1.83 ctw. Sold out; no price."
+    "notes": "Split-prong wire basket with milgrain surround and cathedral shoulders. 1.83 ctw. Sold out; no price. Shank audit: shoulder diamonds now set on the cathedral arches."
   },
   {
     "id": "r1-017",
@@ -997,10 +999,16 @@
       "accents": [
         "pierced diamond motifs on shoulders"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "shoulderStones": true,
+          "stoneSizeMm": 0.9
+        }
+      }
     },
     "band": null,
-    "notes": "Crown-like basket with tri-split talon prongs and pierced geometric cathedral shoulders. Sold out; no price."
+    "notes": "Crown-like basket with tri-split talon prongs and pierced geometric cathedral shoulders. Sold out; no price. Shank audit: pierced shoulder motifs approximated with stones set on the cathedral arches."
   },
   {
     "id": "r1-024",

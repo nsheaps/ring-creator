@@ -946,6 +946,8 @@ export const rings: ExampleDesign[] = [
           topWidthMm: 1.6,
           thicknessMm: 1.5,
           topThicknessMm: 1.5,
+          shoulderStones: true,
+          stoneSizeMm: 0.9,
         },
       },
       placement: {
@@ -965,7 +967,7 @@ export const rings: ExampleDesign[] = [
     tags: ['art-deco', 'engagement'],
     category: 'art-deco',
     blurb:
-      'Split-prong wire basket with milgrain surround and cathedral shoulders. 1.83 ctw. Sold out; no price.',
+      'Split-prong wire basket with milgrain surround and cathedral shoulders. 1.83 ctw. Sold out; no price. Shank audit: shoulder diamonds now set on the cathedral arches.',
     priceUsd: null,
     designFamily: 'split-prong / cathedral / old-european',
     view: 'ring',
@@ -1344,7 +1346,10 @@ export const rings: ExampleDesign[] = [
       shank: {
         id: 'cathedral',
         metal: 'platinum',
-        params: {},
+        params: {
+          shoulderStones: true,
+          stoneSizeMm: 0.9,
+        },
       },
       placement: {
         orientation: 'north-south',
@@ -1363,7 +1368,7 @@ export const rings: ExampleDesign[] = [
     tags: ['mid-century', 'engagement'],
     category: 'mid-century',
     blurb:
-      'Crown-like basket with tri-split talon prongs and pierced geometric cathedral shoulders. Sold out; no price.',
+      'Crown-like basket with tri-split talon prongs and pierced geometric cathedral shoulders. Sold out; no price. Shank audit: pierced shoulder motifs approximated with stones set on the cathedral arches.',
     priceUsd: null,
     designFamily: 'split-prong / cathedral / old-european',
     view: 'ring',
@@ -2392,6 +2397,7 @@ export const rings: ExampleDesign[] = [
           strands: 2,
           twists: 8,
           widthMm: 2.8,
+          pave: true,
         },
       },
       placement: {
@@ -2411,7 +2417,7 @@ export const rings: ExampleDesign[] = [
     tags: ['halo', 'engagement'],
     category: 'halo',
     blurb:
-      'Setting price only. Round centre listed although URL slug says oval; 2.50 mm twisted diamond-set band under a classic halo. (Not stated by the source, so the model uses a default carat.)',
+      'Setting price only. Round centre listed although URL slug says oval; 2.50 mm twisted diamond-set band under a classic halo. Shank audit: pave stones now follow the twisted wires. (Not stated by the source, so the model uses a default carat.)',
     priceUsd: 2820,
     designFamily: 'halo-round / twisted / round-brilliant',
     view: 'ring',
@@ -2628,7 +2634,10 @@ export const rings: ExampleDesign[] = [
       shank: {
         id: 'split',
         metal: 'white-gold-14k',
-        params: {},
+        params: {
+          pave: true,
+          coverage: 0.6,
+        },
       },
       placement: {
         orientation: 'north-south',
@@ -2647,7 +2656,7 @@ export const rings: ExampleDesign[] = [
     tags: ['split-shank', 'engagement'],
     category: 'split-shank',
     blurb:
-      '8x6 mm oval sapphire in a claw basket with no halo; 1.4 mm split band lined with pave. Carat not stated on page. (Not stated by the source, so the model uses a default carat.)',
+      '8x6 mm oval sapphire in a claw basket with no halo; 1.4 mm split band lined with pave. Carat not stated on page. Shank audit: pave now lines the split arms. (Not stated by the source, so the model uses a default carat.)',
     priceUsd: 4440,
     designFamily: 'basket / split / oval',
     view: 'ring',
@@ -2929,7 +2938,10 @@ export const rings: ExampleDesign[] = [
       shank: {
         id: 'split',
         metal: 'white-gold-14k',
-        params: {},
+        params: {
+          pave: true,
+          coverage: 0.6,
+        },
       },
       placement: {
         orientation: 'north-south',
@@ -2948,7 +2960,7 @@ export const rings: ExampleDesign[] = [
     tags: ['split-shank', 'engagement'],
     category: 'split-shank',
     blurb:
-      'Setting price only; halo outline not stated. Page text mentions platinum in one line, conflicting with the 14K white gold metal field. (Not stated by the source, so the model uses a default carat.)',
+      'Setting price only; halo outline not stated. Page text mentions platinum in one line, conflicting with the 14K white gold metal field. Shank audit: pave now lines the split arms. (Not stated by the source, so the model uses a default carat.)',
     priceUsd: 2780,
     designFamily: 'halo-round / split / round-brilliant',
     view: 'ring',
@@ -2985,6 +2997,7 @@ export const rings: ExampleDesign[] = [
         metal: 'yellow-gold-14k',
         params: {
           spreadMm: 2.5,
+          pave: true,
         },
       },
       placement: {
@@ -3004,7 +3017,7 @@ export const rings: ExampleDesign[] = [
     tags: ['split-shank', 'engagement'],
     category: 'split-shank',
     blurb:
-      'Setting-only. Shank is a split that crosses in an X under the centre; crossover is the nearest id (split also fits). (Not stated by the source, so the model uses a default carat.)',
+      'Setting-only. Shank is a split that crosses in an X under the centre; crossover is the nearest id (split also fits). Shank audit: pave now lines the crossing strands. (Not stated by the source, so the model uses a default carat.)',
     priceUsd: 3040,
     designFamily: 'hidden-halo / crossover / round-brilliant',
     view: 'ring',
@@ -3215,7 +3228,9 @@ export const rings: ExampleDesign[] = [
       shank: {
         id: 'bypass',
         metal: 'white-gold-14k',
-        params: {},
+        params: {
+          pave: true,
+        },
       },
       placement: {
         orientation: 'north-south',
@@ -3234,7 +3249,7 @@ export const rings: ExampleDesign[] = [
     tags: ['bypass', 'engagement'],
     category: 'bypass',
     blurb:
-      'Setting price; round, oval, marquise or pear centres 0.50-8.00 ct (oval chosen as example, not a stated default). Head approximated as solitaire-6-prong. (Not stated by the source, so the model uses a default carat.)',
+      'Setting price; round, oval, marquise or pear centres 0.50-8.00 ct (oval chosen as example, not a stated default). Head approximated as solitaire-6-prong. Shank audit: pave now lines the bypass ends. (Not stated by the source, so the model uses a default carat.)',
     priceUsd: 2470,
     designFamily: 'solitaire-6-prong / bypass / oval',
     view: 'ring',
@@ -3271,7 +3286,10 @@ export const rings: ExampleDesign[] = [
       shank: {
         id: 'bypass',
         metal: 'platinum',
-        params: {},
+        params: {
+          pave: true,
+          coverage: 0.6,
+        },
       },
       placement: {
         orientation: 'north-south',
@@ -3290,7 +3308,7 @@ export const rings: ExampleDesign[] = [
     tags: ['bypass', 'engagement'],
     category: 'bypass',
     blurb:
-      'Page says the style is sold out and shows no price (a search snippet quoted $1,800 list / $1,350 sale, unverified on page). Kite-set prongs align with the pave on the airy bypass shank.',
+      'Page says the style is sold out and shows no price (a search snippet quoted $1,800 list / $1,350 sale, unverified on page). Kite-set prongs align with the pave on the airy bypass shank. Shank audit: pave now lines the bypass ends.',
     priceUsd: null,
     designFamily: 'solitaire-4-prong / bypass / round-brilliant',
     view: 'ring',
@@ -9260,13 +9278,11 @@ export const rings: ExampleDesign[] = [
         params: {},
       },
       shank: {
-        id: 'plain-round',
+        id: 'beaded',
         metal: 'yellow-gold-14k',
         params: {
-          widthMm: 1.6,
-          topWidthMm: 1.6,
-          thicknessMm: 1.6,
-          topThicknessMm: 1.6,
+          beadMm: 1.6,
+          rows: 1,
         },
       },
       placement: {
@@ -9286,9 +9302,9 @@ export const rings: ExampleDesign[] = [
     tags: ['east-west', 'engagement'],
     category: 'east-west',
     blurb:
-      'Small horizontal oval in bezel with beaded edge detail. $815 is from a search result; the page is sold out. Photo audit: beaded shank not buildable.',
+      'Small horizontal oval in bezel with beaded edge detail. $815 is from a search result; the page is sold out. Photo audit: beaded shank rope, now built with the beaded shank.',
     priceUsd: 815,
-    designFamily: 'bezel-full / plain-round / oval',
+    designFamily: 'bezel-full / beaded / oval',
     view: 'ring',
   },
   {

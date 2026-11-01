@@ -327,7 +327,7 @@
     "clarity": null
    },
    "head": "bezel-full",
-   "shank": "plain-round",
+   "shank": "beaded",
    "metals": [
     "yellow-gold-14k"
    ],
@@ -338,15 +338,13 @@
    "orientation": "east-west",
    "tune": {
     "shank": {
-     "widthMm": 1.6,
-     "topWidthMm": 1.6,
-     "thicknessMm": 1.6,
-     "topThicknessMm": 1.6
+     "beadMm": 1.6,
+     "rows": 1
     }
    }
   },
   "band": null,
-  "notes": "Small horizontal oval in bezel with beaded edge detail. $815 is from a search result; the page is sold out. Photo audit: beaded shank not buildable."
+  "notes": "Small horizontal oval in bezel with beaded edge detail. $815 is from a search result; the page is sold out. Photo audit: beaded shank rope, now built with the beaded shank."
  },
  {
   "id": "r5-010",
