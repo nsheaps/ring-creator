@@ -302,3 +302,103 @@ describe('polygon frame extras: corner beads and side stones in their own bezels
     expect(inner).toBeGreaterThan(-outer);
   });
 });
+
+describe('deco plaque extras: sunburst, cartouche stones, stretch, rib milgrain, polygon collar', () => {
+  const DECO = {
+    pattern: 'sunburst',
+    elongation: 1.3,
+    collarSides: 8,
+    ribMilgrain: true,
+    cartoucheStones: 2,
+    rimStoneCount: 6,
+  };
+  const positions = (parts: Part[]) =>
+    parts.map((p) => Array.from(p.geometry.getAttribute('position').array as ArrayLike<number>));
+  const verts = (parts: Part[], slot: Part['slot']) => {
+    const out: THREE.Vector3[] = [];
+    for (const p of parts.filter((q) => q.slot === slot)) {
+      const a = p.geometry.getAttribute('position');
+      for (let i = 0; i < a.count; i++) out.push(new THREE.Vector3().fromBufferAttribute(a, i));
+    }
+    return out;
+  };
+
+  it('are off by default (existing plaques unchanged)', () => {
+    const a = build('deco-plaque', 'old-european');
+    const b = build('deco-plaque', 'old-european', {
+      pattern: 'web',
+      elongation: 1,
+      collarSides: 0,
+      ribMilgrain: false,
+      cartoucheStones: 3,
+      cartoucheSize: 2,
+      rimStoneCount: 0,
+    });
+    expect(positions(b)).toEqual(positions(a));
+  });
+
+  for (const bandAxis of [
+    [1, 0],
+    [0, 1],
+  ] as [number, number][])
+    it(`is finite, bounded, within budget and deterministic (band axis ${bandAxis.join(',')})`, () => {
+      const parts = build('deco-plaque', 'old-european', DECO, bandAxis);
+      let tris = 0;
+      const b = new THREE.Box3();
+      for (const p of parts) {
+        const arr = p.geometry.getAttribute('position').array as ArrayLike<number>;
+        expect(arr.length).toBeGreaterThan(0);
+        for (let i = 0; i < arr.length; i++) expect(Number.isFinite(arr[i])).toBe(true);
+        tris += arr.length / 9;
+        p.geometry.computeBoundingBox();
+        if (p.geometry.boundingBox) b.union(p.geometry.boundingBox);
+      }
+      expect(tris).toBeLessThan(80000);
+      expect(b.max.y).toBeLessThan(3);
+      expect(b.min.y).toBeGreaterThan(-12);
+      expect(Math.max(b.max.x, -b.min.x, b.max.z, -b.min.z)).toBeLessThan(14);
+      expect(positions(build('deco-plaque', 'old-european', DECO, bandAxis))).toEqual(positions(parts));
+    });
+
+  it('elongation stretches the plaque along the band', () => {
+    const extent = (e: number) => {
+      const b = box(build('deco-plaque', 'round-brilliant', { elongation: e }, [1, 0]), 'head-metal');
+      return (b.max.x - b.min.x) / (b.max.z - b.min.z);
+    };
+    expect(extent(1)).toBeLessThan(1.1);
+    expect(extent(1.3)).toBeGreaterThan(1.2);
+  });
+
+  it('cartouche stones sit on the ends across the band, as many per end as asked', () => {
+    const only = { ...DECO, rimStones: false };
+    const count = (n: number) =>
+      verts(build('deco-plaque', 'round-brilliant', { ...only, cartoucheStones: n }, [1, 0]), 'accent-stone');
+    const one = count(1).length;
+    expect(one).toBeGreaterThan(0);
+    expect(count(3).length).toBe(3 * one);
+    expect(count(0).length).toBe(0);
+    for (const v of count(2)) expect(Math.abs(v.z), 'across the band').toBeGreaterThan(Math.abs(v.x));
+    // and only with the sunburst
+    expect(
+      verts(build('deco-plaque', 'round-brilliant', { ...only, pattern: 'web' }, [1, 0]), 'accent-stone')
+        .length,
+    ).toBe(0);
+  });
+
+  it('sunburst rim stones fill the fan sides along the band', () => {
+    const v = verts(
+      build('deco-plaque', 'round-brilliant', { ...DECO, cartoucheStones: 0 }, [1, 0]),
+      'accent-stone',
+    );
+    expect(v.length).toBeGreaterThan(0);
+    expect(v.some((q) => q.x > 3)).toBe(true);
+    expect(v.some((q) => q.x < -3)).toBe(true);
+    for (const q of v) expect(Math.abs(q.x)).toBeGreaterThan(Math.abs(q.z) * 0.3);
+  });
+
+  it('rib milgrain and the polygon collar add metal', () => {
+    const n = (p: Params) => verts(build('deco-plaque', 'round-brilliant', p), 'head-metal').length;
+    expect(n({ ribMilgrain: true })).toBeGreaterThan(n({}));
+    expect(n({ collarSides: 8 })).toBeGreaterThan(n({}));
+  });
+});

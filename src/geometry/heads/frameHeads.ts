@@ -230,17 +230,102 @@ function sideBezels(
 // Art Deco plaque
 // ---------------------------------------------------------------------------------------------
 
+const PLAQUE_PATTERNS = ['web', 'sunburst'] as const;
+
+/** The frame stretched by `e` along the band axis (ax, az); its corner angles follow the stretch. */
+function stretchAlongBand(
+  frame: CleanOutline,
+  corners: number[],
+  ax: number,
+  az: number,
+  e: number,
+): { frame: CleanOutline; corners: number[] } {
+  if (e === 1) return { frame, corners };
+  const st = (x: number, z: number): [number, number] => {
+    const t = (x * ax + z * az) * (e - 1);
+    return [x + t * ax, z + t * az];
+  };
+  return {
+    frame: cleanOutline({ points: frame.pts.map(([x, z]) => st(x, z)), corners: frame.corners }),
+    corners: corners.map((a) => {
+      const [x, z] = st(Math.cos(a), Math.sin(a));
+      return Math.atan2(z, x);
+    }),
+  };
+}
+
+/** Smallest absolute difference between two angles, radians. */
+function angleDiff(a: number, b: number): number {
+  const d = (((a - b) % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2);
+  return Math.abs(d - Math.PI);
+}
+
+/**
+ * A solid patch lying on the dome between angles a0..a1 and dome positions u0..u1: the top `top` mm above the dome
+ * surface, the bottom `bottom` mm below it, closed by side walls.
+ */
+function domePatch(
+  at: (a: number, u: number, lift: number) => THREE.Vector3,
+  a0: number,
+  a1: number,
+  u0: number,
+  u1: number,
+  top: number,
+  bottom: number,
+): THREE.BufferGeometry {
+  const na = 16;
+  const nu = 8;
+  const pos: number[] = [];
+  const quad = (p: THREE.Vector3, q: THREE.Vector3, r: THREE.Vector3, s: THREE.Vector3) =>
+    pos.push(p.x, p.y, p.z, q.x, q.y, q.z, r.x, r.y, r.z, p.x, p.y, p.z, r.x, r.y, r.z, s.x, s.y, s.z);
+  const A = (i: number) => a0 + ((a1 - a0) * i) / na;
+  const U = (j: number) => u0 + ((u1 - u0) * j) / nu;
+  for (let i = 0; i < na; i++)
+    for (let j = 0; j < nu; j++) {
+      quad(
+        at(A(i), U(j), top),
+        at(A(i), U(j + 1), top),
+        at(A(i + 1), U(j + 1), top),
+        at(A(i + 1), U(j), top),
+      );
+      quad(
+        at(A(i), U(j), -bottom),
+        at(A(i + 1), U(j), -bottom),
+        at(A(i + 1), U(j + 1), -bottom),
+        at(A(i), U(j + 1), -bottom),
+      );
+    }
+  for (let i = 0; i < na; i++) {
+    quad(at(A(i), u0, -bottom), at(A(i), u0, top), at(A(i + 1), u0, top), at(A(i + 1), u0, -bottom));
+    quad(at(A(i), u1, -bottom), at(A(i + 1), u1, -bottom), at(A(i + 1), u1, top), at(A(i), u1, top));
+  }
+  for (let j = 0; j < nu; j++) {
+    quad(at(a0, U(j), -bottom), at(a0, U(j + 1), -bottom), at(a0, U(j + 1), top), at(a0, U(j), top));
+    quad(at(a1, U(j), -bottom), at(a1, U(j), top), at(a1, U(j + 1), top), at(a1, U(j + 1), -bottom));
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.computeVertexNormals();
+  return g;
+}
+
 /**
  * Art Deco domed plaque: a bombe dome rising from a pierced polygon rim to a collar round the stone. The dome is a
  * lattice (radial ribs, a mid ring and the rim) over a deeper solid plate, so the openings read as pierced scrollwork;
  * milgrain beads run round the rim and small diamonds sit in it.
+ *
+ * Optional extras, all off by default: `elongation` stretches the plaque along the band; `pattern: 'sunburst'` fans the
+ * ribs out along the band only, over deep piercings, and leaves a solid cartouche at each end across the band holding
+ * `cartoucheStones` small stones in milgrain cups; `ribMilgrain` beads every rib; `collarSides` frames the stone in a
+ * polygon collar with a bead at each corner; `rimStoneCount` fixes the number of rim diamonds.
  */
 function decoPlaque(ctx: HeadCtx): Part[] {
   const p = ctx.params;
   const d0 = collarDims(ctx);
   const gap = num(p, 'plaqueGap', 2.2, 0.8, 6);
-  const { frame, corners } = frameFor(ctx, d0.o, gap, 'polygon');
   const [ax, az] = ctx.bandAxis;
+  const f0 = frameFor(ctx, d0.o, gap, 'polygon');
+  const { frame, corners } = stretchAlongBand(f0.frame, f0.corners, ax, az, num(p, 'elongation', 1, 1, 1.8));
   const reach = Math.max(support(frame, ax, az), support(frame, -ax, -az)) * d0.bs + 0.5;
   const d: CollarDims = { ...d0, bd: ctx.baseDrop + ringDrop(ctx, reach) };
   const crown = ctx.center.built.crownHeight;
@@ -252,15 +337,17 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   const yRim = Math.min(g2 - 0.1, yTop - dome);
   const ribs = Math.round(num(p, 'ribCount', 12, 6, 24));
   const rr = Math.max(0.18, num(p, 'ribWidth', 0.5, 0.25, 1) / 2);
+  const sunburst = str(p, 'pattern', PLAQUE_PATTERNS, 'web') === 'sunburst';
   const geos: THREE.BufferGeometry[] = [];
   const domeY = (u: number) => yTop - (yTop - yRim) * u ** 2;
-  // the plate under the lattice, one rib-radius deeper
+  // the plate under the lattice, one rib-radius deeper (deeper still under a sunburst, so its slots read dark)
+  const pierce = sunburst ? rr * 3 : rr * 1.3;
   const kIn = Math.max(0.5, 1 - inset / R);
   const k03 = 1 - 0.03 / R;
   const yCup = -Math.min(d.pd * 0.55, d.bd * 0.7);
   const RIB_END = 0.7; // inside this the dome is pierced; outside it a solid jewelled band
   const plate: MixPt[] = [[0, yTop - 0.1, kIn]];
-  for (const u of [0.15, 0.35, 0.55, RIB_END - 0.02]) plate.push([u, domeY(u) - rr * 1.3]);
+  for (const u of [0.15, 0.35, 0.55, RIB_END - 0.02]) plate.push([u, domeY(u) - pierce]);
   for (const u of [RIB_END, 0.8, 0.9, 0.97]) plate.push([u, domeY(u) - 0.04]);
   const yWall = Math.min(yRim - rr * 1.6, -g2 - 0.4);
   plate.push([1, yRim - rr * 0.6], [1, yWall]);
@@ -272,23 +359,49 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   plate.push([0.88, -d.bd, d.bs], [0, -d.bd, d.bs], [0, yCup, Math.max(d.bs, 0.6)]);
   plate.push([0, -g2 - 0.08, 0.95], [0, -g2 - 0.02, k03], [0, g2, k03]);
   geos.push(mixLoft(d.o, frame, plate, 120));
-  // lattice: radial ribs from the collar to the rim, following the dome
+  // a point on the dome: angle a round the stone, u from the collar (0) to the rim (1), `lift` above the surface
   const at = (a: number, u: number, lift = 0) => {
     const [ix, iz] = radialPoint(d.o, Math.cos(a), Math.sin(a));
     const [ox, oz] = radialPoint(frame, Math.cos(a), Math.sin(a));
     return v3(ix + (ox - ix) * u, domeY(u) + lift, iz + (oz - iz) * u);
   };
   const lift = rr * 0.4;
-  for (let i = 0; i < ribs; i++) {
-    const a = ((i + 0.5) / ribs) * Math.PI * 2;
-    geos.push(
-      ...wire(
-        [0.04, 0.25, 0.45, 0.6, RIB_END].map((u) => at(a, u, lift)),
-        rr,
-        14,
-        6,
-      ),
-    );
+  const beadR = Math.max(0.1, rr * 0.42);
+  const U_COLLAR = 0.04;
+  const ribBeads: THREE.Matrix4[] = [];
+  const ribMilgrain = bool(p, 'ribMilgrain', false);
+  const RIB_US = [U_COLLAR, 0.25, 0.45, 0.6, RIB_END];
+  const rib = (a: number) => {
+    const pts = RIB_US.map((u) => at(a, u, lift));
+    geos.push(...wire(pts, rr, 14, 6));
+    if (!ribMilgrain) return;
+    const n = pts.length;
+    const [u0, u1] = [U_COLLAR, RIB_END];
+    // a row of milgrain beads along the crest of the rib
+    const len = pts[0].distanceTo(pts[n - 1]);
+    const nb = Math.max(3, Math.round(len / (beadR * 2.4)));
+    for (let i = 0; i <= nb; i++) {
+      const q = at(a, u0 + ((u1 - u0) * i) / nb, lift + rr * 0.85);
+      ribBeads.push(new THREE.Matrix4().makeTranslation(q.x, q.y, q.z));
+    }
+  };
+  // cartouches: the solid ends across the band (sunburst only)
+  const aBand = Math.atan2(az, ax);
+  const CART_HALF = (40 * Math.PI) / 180;
+  const cartCentres = sunburst ? [aBand + Math.PI / 2, aBand - Math.PI / 2] : [];
+  const inCartouche = (a: number, margin = 0) =>
+    cartCentres.some((c) => angleDiff(a, c) < CART_HALF + margin);
+  if (!sunburst) {
+    // lattice: radial ribs from the collar to the rim, following the dome
+    for (let i = 0; i < ribs; i++) rib(((i + 0.5) / ribs) * Math.PI * 2);
+  } else {
+    // sunburst: ribs fan out along the band on each side, between the two cartouches
+    const perSide = Math.max(3, Math.round(ribs / 2));
+    const fan = Math.PI - 2 * CART_HALF;
+    for (const side of [0, Math.PI])
+      for (let i = 0; i <= perSide; i++) rib(aBand + side - fan / 2 + (fan * i) / perSide);
+    for (const c of cartCentres)
+      geos.push(domePatch(at, c - CART_HALF, c + CART_HALF, 0.05, RIB_END, rr * 0.9, pierce));
   }
   const ringAt = (u: number, r: number) =>
     geos.push(
@@ -299,12 +412,30 @@ function decoPlaque(ctx: HeadCtx): Part[] {
         6,
       ),
     );
-  ringAt(0.08, rr * 1.1);
-  ringAt(0.4, rr * 0.8);
+  const collarSides = Math.round(num(p, 'collarSides', 0, 0, 12));
+  if (collarSides >= 3) {
+    // polygon collar: straight milgrain edges round the stone with a bead at each corner, like an octagonal cup
+    const c0 = aBand + Math.PI / collarSides;
+    const cr = 1 / Math.cos(Math.PI / collarSides);
+    const vtx = Array.from({ length: collarSides }, (_, i) => {
+      const a = c0 + (i / collarSides) * Math.PI * 2;
+      const [x, z] = radialPoint(d.o, Math.cos(a), Math.sin(a));
+      const k = cr + (rr * 0.8) / Math.max(0.5, Math.hypot(x, z));
+      return v3(x * k, domeY(U_COLLAR) + lift + rr * 0.3, z * k);
+    });
+    const edge: THREE.Vector3[] = [];
+    for (let i = 0; i < collarSides; i++) {
+      const a = vtx[i];
+      const b = vtx[(i + 1) % collarSides];
+      for (let k = 0; k < 6; k++) edge.push(a.clone().lerp(b, k / 6));
+    }
+    geos.push(loop(edge, rr * 1.1, collarSides * 12, 6));
+    for (const v of vtx) geos.push(ball(v3(v.x, v.y + rr * 0.6, v.z), rr * 1.35, 1));
+  } else ringAt(0.08, rr * 1.1);
+  if (!sunburst) ringAt(0.4, rr * 0.8);
   ringAt(RIB_END, rr * 1.1);
   ringAt(1, rr * 1.25);
   // milgrain: tiny beads along the rim and the inner collar
-  const beadR = Math.max(0.1, rr * 0.42);
   const mats: THREE.Matrix4[] = [];
   const nb = Math.max(24, Math.round(frame.perimeter / (beadR * 2.6)));
   for (let i = 0; i < nb; i++) {
@@ -316,8 +447,37 @@ function decoPlaque(ctx: HeadCtx): Part[] {
     );
   }
   geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR, 1)), mats));
+  if (ribBeads.length)
+    geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR * 0.9, 0)), ribBeads));
+  // small accent stones in milgrain cups lying on the dome at (angle, u) sites, tables tilted with the slope
+  const cupStones = (size: number, sites: [number, number][]): THREE.BufferGeometry => {
+    const dims = accentDims(ctx, size);
+    const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
+    const rc = Math.max(dims.length, dims.width) / 2 + rr * 0.35;
+    const sm: THREE.Matrix4[] = [];
+    for (const [a, u] of sites) {
+      const q = at(a, u, rr * 0.9);
+      const qo = at(a, Math.min(1, u + 0.05), rr * 0.9);
+      const qi = at(a, u - 0.05, rr * 0.9);
+      const run = Math.max(1e-3, Math.hypot(qo.x - qi.x, qo.z - qi.z));
+      const tilt = Math.min(0.45, Math.atan2(qi.y - qo.y, run)); // set a little flatter than a steep slope
+      const nx = (qo.x - qi.x) / run;
+      const nz = (qo.z - qi.z) / run;
+      const m = placeMatrix(q.x, q.y - built.crownHeight * 0.35, q.z, -nz, nx, tilt, nx, nz);
+      sm.push(m);
+      // the cup: a milgrain wire collar round the girdle
+      const ring = (r: number, y: number) =>
+        Array.from({ length: 24 }, (_, k) => {
+          const t = (k / 24) * Math.PI * 2;
+          return v3(Math.cos(t) * r, y, Math.sin(t) * r).applyMatrix4(m);
+        });
+      geos.push(loop(ring(rc, built.crownHeight * 0.15), rr * 0.45, 32, 6));
+    }
+    return instanceGeometry(toFlat(built.geometry), sm);
+  };
   // small diamonds set in the rim, tables tilted outward with the dome
   const stones: THREE.BufferGeometry[] = [];
+  const rimCount = Math.round(num(p, 'rimStoneCount', 0, 0, 40));
   if (bool(p, 'rimStones', true)) {
     const size = Math.max(0.8, Math.min(2.2, num(p, 'stoneSize', 0, 0, 3) || ctx.accent.sizeMm || 1.4));
     const dims = accentDims(ctx, size);
@@ -332,17 +492,38 @@ function decoPlaque(ctx: HeadCtx): Part[] {
       }),
       corners: [],
     });
-    const n = Math.max(8, Math.floor(ringPath.perimeter / (dims.length + 0.3)));
+    const y = domeY(U) - built.pavilionDepth * 0.25;
     const sm: THREE.Matrix4[] = [];
-    for (let i = 0; i < n; i++) {
-      const q = pointAt(ringPath, (i / n) * ringPath.perimeter);
-      const y = domeY(U) - built.pavilionDepth * 0.25;
-      sm.push(placeMatrix(q.x, y, q.z, q.tx, q.tz, 0.3, q.nx, q.nz));
+    if (sunburst) {
+      // the rim stones are set in cups on the dome along the two fan sides, clear of the cartouches
+      const perSide = Math.max(1, Math.round((rimCount || 6) / 2));
+      const fan = Math.PI - 2 * CART_HALF;
+      const sites: [number, number][] = [];
+      for (const side of [0, Math.PI])
+        for (let i = 0; i < perSide; i++)
+          sites.push([aBand + side - fan / 2 + (fan * (i + 0.5)) / perSide, 0.82]);
+      stones.push(cupStones(size, sites));
+    } else {
+      const n = rimCount || Math.max(8, Math.floor(ringPath.perimeter / (dims.length + 0.3)));
+      for (let i = 0; i < n; i++) {
+        const q = pointAt(ringPath, (i / n) * ringPath.perimeter);
+        sm.push(placeMatrix(q.x, y, q.z, q.tx, q.tz, 0.3, q.nx, q.nz));
+      }
     }
-    stones.push(instanceGeometry(toFlat(built.geometry), sm));
+    if (sm.length) stones.push(instanceGeometry(toFlat(built.geometry), sm));
+  }
+  // cartouche stones: small stones in milgrain cups on each cartouche, out towards the rim
+  const nCart = sunburst ? Math.round(num(p, 'cartoucheStones', 0, 0, 3)) : 0;
+  if (nCart > 0) {
+    const size = Math.max(0.8, Math.min(2.4, num(p, 'cartoucheSize', 0, 0, 3) || ctx.accent.sizeMm || 1.4));
+    const sites: [number, number][] = [];
+    for (const c of cartCentres)
+      for (let i = 0; i < nCart; i++)
+        sites.push([c + (nCart === 1 ? 0 : CART_HALF * 0.5 * ((2 * i) / (nCart - 1) - 1)), 0.55]);
+    stones.push(cupStones(size, sites));
   }
   // corner studs: a larger bead at each polygon corner
-  for (const a of corners) geos.push(ball(at(a, 1, rr * 1.6), rr * 1.5, 1));
+  for (const a of corners) if (!inCartouche(a, -0.2)) geos.push(ball(at(a, 1, rr * 1.6), rr * 1.5, 1));
   const out: Part[] = [metalPart(geos, 'Art Deco plaque')];
   if (stones.length) out.push(accentPart(stones, 'plaque diamonds'));
   return out;
