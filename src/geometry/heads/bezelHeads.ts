@@ -8,6 +8,7 @@ import {
   crownInset,
   ensureOutward,
   loft,
+  ball,
   loop,
   meanRadius,
   metalPart,
@@ -100,17 +101,17 @@ export function hugScale(ctx: HeadCtx, d: CollarDims, y: number): number {
 export function collarY(d: CollarDims, open: boolean): number {
   const g2 = d.gt * 0.5;
   return open
-    ? -g2 - Math.min(0.75, d.pd * 0.3, Math.max(0.12, d.bd * 0.4))
+    ? -g2 - Math.min(0.3, d.pd * 0.12, Math.max(0.1, d.bd * 0.2))
     : -g2 - Math.min(0.4, d.pd * 0.18, Math.max(0.12, d.bd * 0.25));
 }
 
 function bezelSection(ctx: HeadCtx, d: CollarDims, open = false): SectionPt[] {
-  const t = num(ctx.params, 'bezelThickness', 0.5, 0.35, 1.5);
+  const t = num(ctx.params, 'bezelThickness', 0.45, 0.3, 1.5);
   const crown = ctx.center.built.crownHeight;
   const lip = num(ctx.params, 'bezelHeight', Math.min(0.2, crown * 0.2), 0.1, 1.5);
   const g2 = d.gt * 0.5;
-  const yTop = g2 + Math.min(lip, Math.max(0.1, crown * 0.4));
-  const inset = Math.min(crownInset(ctx.center.built, yTop), 0.4); // the lip overlaps the crown only slightly
+  const yTop = g2 + Math.min(lip, Math.max(0.1, crown * 0.2)); // barely above the girdle
+  const inset = Math.min(crownInset(ctx.center.built, yTop), 0.25); // the lip overlaps the crown only slightly
   // collar: a thin wall from the lip to just under the girdle
   const yColl = collarY(d, open);
   const skin = Math.max(0.3, t * 0.7); // tulip wall thickness
@@ -164,9 +165,9 @@ function bezelSection(ctx: HeadCtx, d: CollarDims, open = false): SectionPt[] {
  * leaving open space between them (the stone's pavilion shows through).
  */
 function basketWires(ctx: HeadCtx, d: CollarDims): THREE.BufferGeometry[] {
-  const t = num(ctx.params, 'bezelThickness', 0.5, 0.35, 1.5);
+  const t = num(ctx.params, 'bezelThickness', 0.45, 0.3, 1.5);
   const yColl = collarY(d, true);
-  const r = Math.max(0.3, t * 0.7);
+  const r = Math.max(0.22, t * 0.5);
   const bs = Math.min(d.bs, 0.35);
   const kTop = hugScale(ctx, d, yColl); // under the collar's lower edge, which follows the pavilion
   const drop = (x: number, z: number) => ringDrop(ctx, x * ctx.bandAxis[0] + z * ctx.bandAxis[1]);
@@ -176,11 +177,7 @@ function basketWires(ctx: HeadCtx, d: CollarDims): THREE.BufferGeometry[] {
   const ring: THREE.Vector3[] = [];
   for (const s of sites) {
     const p = pointAt(d.o, s);
-    const top = v3(
-      p.x * kTop + p.nx * (t * 0.4 + r * 0.3),
-      yColl + 0.12,
-      p.z * kTop + p.nz * (t * 0.4 + r * 0.3),
-    );
+    const top = v3(p.x * kTop + p.nx * t * 0.35, yColl + 0.12, p.z * kTop + p.nz * t * 0.35);
     const bx = p.x * bs;
     const bz = p.z * bs;
     const seat = v3(bx, ySeat - drop(bx, bz), bz);
@@ -188,7 +185,8 @@ function basketWires(ctx: HeadCtx, d: CollarDims): THREE.BufferGeometry[] {
       const e = f * f * (3 - 2 * f);
       return v3(top.x + (seat.x - top.x) * e, top.y + (seat.y - top.y) * f, top.z + (seat.z - top.z) * e);
     };
-    out.push(...wire([seat, at(0.7), at(0.4), at(0.15), top], r, 18, 8));
+    // no cap on the upper end: it is buried in the collar wall, so nothing shows through the stone
+    out.push(...wire([seat, at(0.7), at(0.4), at(0.15), top], r, 18, 8, false), ball(seat, r, 1));
     ring.push(seat);
   }
   out.push(loop(ring, r * 0.95, 48, 8));

@@ -246,7 +246,7 @@ describe('specific invariants', () => {
     expect(sideMetal(build('bezel-full'))).toBeGreaterThan(0);
   });
 
-  it('full bezel is a thin, low collar: lip just above the girdle, wall no thicker than ~0.9 mm', () => {
+  it('full bezel is a thin, low collar: lip just above the girdle, wall no thicker than ~0.5 mm', () => {
     const ctx = stubCtx();
     const stone = ctx.center.built;
     const o = cleanOutline(stone.outline);
@@ -254,9 +254,9 @@ describe('specific invariants', () => {
       ...[0, Math.PI / 2].map((a) => Math.max(...o.pts.map(([x, z]) => x * Math.cos(a) + z * Math.sin(a)))),
     );
     const box = stats(build('bezel-full')).box;
-    expect(box.max.y).toBeLessThan(stone.girdleThickness / 2 + stone.crownHeight * 0.6 + 0.15);
+    expect(box.max.y).toBeLessThan(stone.girdleThickness / 2 + stone.crownHeight * 0.3 + 0.15);
     // across the band (z), the collar sticks out past the girdle by at most the wall thickness
-    expect(box.max.z - halfW).toBeLessThan(0.95);
+    expect(box.max.z - halfW).toBeLessThan(0.6);
     // below the collar the metal tapers in with the pavilion instead of dropping straight down like a bucket
     const yLow = -stone.girdleThickness / 2 - stone.pavilionDepth * 0.5;
     let zLow = 0;
