@@ -97,15 +97,22 @@ function clusterFlank(ctx: HeadCtx): Part[] {
   return [metalPart(metal, 'cluster-flank head'), accentPart(stones, 'flank stones')];
 }
 
-/** Distance from the origin along unit (du, dv) (band axis, across axis) to the outline's boundary. */
-function rayHit(o: CleanOutline, ctx: HeadCtx, du: number, dv: number): number {
+/**
+ * Distance along unit (du, dv) (band axis, across axis) from the point (u0, v0) to the outline's boundary (0 when the
+ * ray misses it).
+ */
+function rayHit(o: CleanOutline, ctx: HeadCtx, du: number, dv: number, u0 = 0, v0 = 0): number {
   const [ax, az] = ctx.bandAxis;
   const dx = ax * du - az * dv;
   const dz = az * du + ax * dv;
+  const sx = ax * u0 - az * v0;
+  const sz = az * u0 + ax * v0;
   let best = 0;
   for (let i = 0; i < o.pts.length; i++) {
-    const [x0, z0] = o.pts[i];
-    const [x1, z1] = o.pts[(i + 1) % o.pts.length];
+    const x0 = o.pts[i][0] - sx;
+    const z0 = o.pts[i][1] - sz;
+    const x1 = o.pts[(i + 1) % o.pts.length][0] - sx;
+    const z1 = o.pts[(i + 1) % o.pts.length][1] - sz;
     const ex = x1 - x0;
     const ez = z1 - z0;
     const den = dx * ez - dz * ex;
@@ -118,10 +125,12 @@ function rayHit(o: CleanOutline, ctx: HeadCtx, du: number, dv: number): number {
 }
 
 /**
- * Fan flank: on each side of the centre a fan of marquises (pointing away from the stone, the middle one along the
- * band) with small rounds in the wedges between them and beside the end prongs. The stones lie in (almost) the centre
- * stone's own plane, hard against its girdle, so the whole head reads as one low, wide cluster crown. A shared gallery
- * of rods carries them down to the shank.
+ * Fan flank: on each side of the centre a compact fan of marquises (the middle one along the band, the others angled
+ * towards the centre's ends), each with its inner tip against the centre stone's girdle, plus small rounds in the
+ * wedges between them and tucked against the centre beyond the end marquises. The fan starts from a short column beside
+ * the stone rather than from its middle, so it hugs the centre like butterfly wings instead of a sunburst. The stones'
+ * girdles sit level with the centre's girdle, below its crown, so the centre stays on top; a shared gallery of rods
+ * carries them down to the shank.
  */
 function fanFlank(ctx: HeadCtx): Part[] {
   const o = cleanOutline(ctx.center.built.outline);
@@ -137,44 +146,66 @@ function fanFlank(ctx: HeadCtx): Part[] {
   const style = str(p, 'prongStyle', PRONG_STYLES, 'round') as ProngStyle;
   const cutKey = str(p, 'fanCut', ['marquise', 'pear', 'oval', 'round', 'accent'] as const, 'marquise');
   const cutId = cutKey === 'accent' ? ctx.accent.cut.id : cutKey === 'round' ? 'round-brilliant' : cutKey;
+  const round = cutKey === 'round';
   const centre = centreBasket(ctx, style);
   const metal: THREE.BufferGeometry[] = [...centre.geos];
   const stones: THREE.BufferGeometry[] = [];
-  // extent of the centre stone across the band's perpendicular (the fan's span)
-  const span = support(o, px, pz) + support(o, -px, -pz);
-  const ml = Math.max(1.6, span * ratio * 1.7);
-  const mw = cutKey === 'round' ? ml : ml * 0.48;
-  const rd = Math.max(1, ml * (cutKey === 'round' ? 0.62 : 0.24));
-  const tilt = 0.22 * tiltK;
-  const step = n > 1 ? Math.min((40 * Math.PI) / 180, spread / (n - 1)) : 0;
+  // half the centre stone's extent across the band (the fan's column beside it stays inside this)
+  const half = Math.min(support(o, px, pz), support(o, -px, -pz));
+  const ml = Math.max(1.4, 2 * half * ratio * 1.45);
+  const mw = round ? ml : ml * 0.46;
+  const rd = Math.max(0.9, ml * (round ? 0.62 : 0.26));
+  const tilt = 0.12 * tiltK;
+  const step = n > 1 ? Math.min((38 * Math.PI) / 180, spread / (n - 1)) : 0;
+  // the marquises' inner tips stand in a short column beside the centre, inside its middle part
+  const pitch = n > 1 ? Math.min((1.5 * half) / (n - 1), Math.max(mw * 0.95, half / (n - 1))) : 0;
   const wireMm = num(p, 'prongWidth', 0, 0, 1.6) * 0.6 || 0.5;
   const rr = Math.max(0.25, wireMm * 0.55);
-  // every stone's table sits just under the centre's girdle plane
-  const yTab = -0.15;
+  /** A stone whose inner end is at (u0 + sign * inset, v0) and whose length points along angle theta, outwards. */
   const place = (
     sign: 1 | -1,
+    v0: number,
     theta: number,
     len: number,
     wid: number,
     cut: string,
     inset: number,
     rod = true,
-  ): { u: number; v: number; c: THREE.Vector3 } => {
+  ): void => {
     const du = sign * Math.cos(theta);
     const dv = Math.sin(theta);
-    const hit = rayHit(o, ctx, du, dv);
-    const r = hit + gap + inset + len / 2;
-    const cu = du * r;
-    const cv = dv * r;
+    const edge = rayHit(o, ctx, sign, 0, 0, v0);
+    // push the stone out until its girdle (an ellipse len x wid) clears the centre's girdle where the outline curves
+    const clears = (u: number, v: number): boolean => {
+      for (let i = 0; i < 16; i++) {
+        const a = (i / 16) * Math.PI * 2;
+        const lu = (Math.cos(a) * len) / 2;
+        const lv = (Math.sin(a) * wid) / 2;
+        const qu = u + du * lu - dv * lv;
+        const qv = v + dv * lu + du * lv;
+        const r = Math.hypot(qu, qv);
+        if (r > 1e-6 && r < rayHit(o, ctx, qu / r, qv / r) + gap * 0.5) return false;
+      }
+      return true;
+    };
+    let push = inset;
+    let cu = 0;
+    let cv = 0;
+    for (let k = 0; k < 40; k++, push += 0.05) {
+      cu = sign * (edge + gap + push) + du * (len / 2);
+      cv = v0 + dv * (len / 2);
+      if (clears(cu, cv)) break;
+    }
     const dx = ax * du - az * dv;
     const dz = az * du + ax * dv;
     const built = ctx.stone(cut, { length: len, width: wid, depth: wid * 0.62 }, { detail: 'low' });
     const cx = ax * cu - az * cv;
     const cz = az * cu + ax * cv;
-    const m = placeMatrix(cx, yTab - Math.abs(cu) * Math.tan(tilt) * 0.0, cz, dx, dz, tilt, dx, dz);
+    // tilted outwards about its middle; dropped so the inner end's girdle meets the centre's girdle plane
+    const y = -(len / 2) * Math.sin(tilt) - 0.05;
+    const m = placeMatrix(cx, y, cz, dx, dz, tilt, dx, dz);
     stones.push(built.geometry.clone().applyMatrix4(m));
-    const seat = -(built.pavilionDepth + 0.35);
-    const baseY = Math.min(-0.2, seat);
+    const baseY = Math.min(-0.2, -(built.pavilionDepth + 0.35));
     metal.push(
       ...transformAll(
         prongSet(built, {
@@ -189,58 +220,57 @@ function fanFlank(ctx: HeadCtx): Part[] {
         m,
       ),
     );
+    if (!rod) return;
     // a rod from the stone's underside to under the centre stone's seat, joining the shared gallery
     const foot = new THREE.Vector3(0, baseY, 0).applyMatrix4(m);
-    const root = new THREE.Vector3(
-      ax * du * 0.5 * hit - az * dv * 0.5 * hit,
-      -ctx.baseDrop + 0.15,
-      az * du * 0.5 * hit + ax * dv * 0.5 * hit,
+    const ru = sign * edge * 0.5;
+    const rv = v0 * 0.5;
+    const root = new THREE.Vector3(ax * ru - az * rv, -ctx.baseDrop + 0.15, az * ru + ax * rv);
+    metal.push(
+      ...wire(
+        [
+          foot,
+          foot
+            .clone()
+            .lerp(root, 0.5)
+            .setY(Math.min(foot.y, root.y) * 0.6 + Math.max(foot.y, root.y) * 0.4),
+          root,
+        ],
+        rr,
+        12,
+        6,
+      ),
     );
-    if (rod)
-      metal.push(
-        ...wire(
-          [
-            foot,
-            foot
-              .clone()
-              .lerp(root, 0.5)
-              .setY(Math.min(foot.y, root.y) * 0.6 + Math.max(foot.y, root.y) * 0.4),
-            root,
-          ],
-          rr,
-          12,
-          6,
-        ),
-      );
-    return { u: cu, v: cv, c: foot };
   };
   for (const sign of [-1, 1] as const) {
-    const angles: number[] = [];
-    for (let i = 0; i < n; i++) angles.push((i - (n - 1) / 2) * step);
-    for (const th of angles) {
-      const k = 1 - 0.18 * (Math.abs(th) / Math.max(0.01, spread / 2));
-      place(sign, th, ml * k, mw * k, cutId, 0);
+    const rows: { v: number; th: number; len: number; wid: number }[] = [];
+    for (let i = 0; i < n; i++) {
+      const t = i - (n - 1) / 2;
+      const k = 1 - 0.15 * (Math.abs(t) / Math.max(1, (n - 1) / 2));
+      rows.push({ v: t * pitch, th: t * step, len: ml * k, wid: mw * k });
     }
-    // rounds in the wedges between marquises, and at both ends beside the end prongs
-    const mids: number[] = [];
-    for (let i = 0; i + 1 < angles.length; i++) mids.push((angles[i] + angles[i + 1]) / 2);
-    const endTh = Math.min(
-      (78 * Math.PI) / 180,
-      (angles.length ? angles[angles.length - 1] : 0) + step * 0.9 + 0.55,
-    );
-    mids.push(-endTh, endTh);
-    for (const th of mids) {
-      const end = Math.abs(th) >= endTh - 1e-6;
+    for (const r of rows) place(sign, r.v, r.th, r.len, r.wid, cutId, 0);
+    // rounds in the wedges between neighbouring marquises, part way out
+    for (let i = 0; i + 1 < rows.length; i++) {
+      const a = rows[i];
+      const b = rows[i + 1];
+      const th = (a.th + b.th) / 2;
+      const out = Math.min(a.len, b.len) * 0.55;
       place(
         sign,
+        (a.v + b.v) / 2 + Math.sin(th) * out,
         th,
-        rd * (end ? 1.05 : 1),
-        rd * (end ? 1.05 : 1),
+        rd,
+        rd,
         'round-brilliant',
-        end ? 0.05 : ml * 0.2,
+        Math.cos(th) * out - rd / 2,
         false,
       );
     }
+    // and one tucked against the centre beyond each end marquise
+    const last = rows[rows.length - 1];
+    const ve = Math.min(half * 0.85, Math.abs(last.v) + last.wid / 2 + rd * 0.6);
+    for (const s of [-1, 1]) place(sign, s * ve, s * step * 0.5, rd, rd, 'round-brilliant', 0, false);
   }
   return [metalPart(metal, 'cluster-flank head'), accentPart(stones, 'flank stones')];
 }

@@ -36,9 +36,9 @@
     },
     "head": {
      "flankCount": 3,
-     "flankRatio": 0.28,
-     "flankCut": "accent",
-     "arrangement": "column"
+     "flankRatio": 0.3,
+     "arrangement": "fan",
+     "prongStyle": "claw"
     },
     "accent": {
      "sizeMm": 2.4
