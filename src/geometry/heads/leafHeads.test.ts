@@ -142,6 +142,18 @@ describe('leaf-vine-bypass head', () => {
     expect(buds(3)).toBeCloseTo(buds(1) * 3, 0);
   });
 
+  it('sprigs carry leaves out along both shoulders, and a bud moves onto the root sprig', () => {
+    // stone leaves sit on both sprigs too, so the foliage spreads past the branch roots towards the band ends
+    const stones = verts(stonesOf(build({ leafStyle: 'stone', leafCount: 2, budStones: 0 })));
+    expect(stones.some((p) => p.x > 7)).toBe(true);
+    expect(stones.some((p) => p.x < -7)).toBe(true);
+    // budStones stays the total per branch: with 2 or more, one sits on the root sprig instead of the main twig
+    const budTris = (n: number) =>
+      tris(stonesOf(build({ budStones: n }))) - tris(stonesOf(build({ budStones: 0 })));
+    expect(budTris(2)).toBeCloseTo(budTris(1) * 2, 0);
+    expect(budTris(4)).toBeCloseTo(budTris(1) * 4, 0);
+  });
+
   it('leaf count and leaf size grow the foliage', () => {
     const area = (params: Params) => {
       const b = new THREE.Box3().setFromPoints(verts(metalOf(build({ budStones: 0, ...params }))));

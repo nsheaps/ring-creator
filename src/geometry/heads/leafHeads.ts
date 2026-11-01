@@ -2,8 +2,10 @@
  * Leaf-vine bypass head: the centre stone sits in claw prongs while two twig-like branches rise out of the shank from
  * either end of the band, sweep past opposite sides of the stone like a bypass and run on beyond it. Free-standing
  * leaves (flat metal blades with a raised midrib, or marquise stones in a thin leaf seat) sprout off each branch, with
- * optional small round "bud" stones on short stalks. The branches are point symmetric: the one rising from the +band
- * end wraps the +across side of the stone, the other the opposite side.
+ * optional small round "bud" stones of varied sizes on short stalks. Two short sprigs fork off each branch, one off the
+ * climb and one near the root that runs back down the shoulder, each ending in a smaller leaf, so the foliage spreads
+ * along the band. The branches are point symmetric: the one rising from the +band end wraps the +across side of the
+ * stone, the other the opposite side.
  */
 import * as THREE from 'three';
 import { registerHeadBuilder } from '../builders';
@@ -185,7 +187,7 @@ function seatedStone(
 
 /**
  * Params: `leafCount` (leaves per branch, the last one at its tip), `leafSize` (leaf length), `branchThickness`,
- * `budStones` (small round stones on stalks per branch), `wrap` (degrees each branch runs round the stone past its
+ * `budStones` (small round stones on stalks per branch; with two or more, one sits on the root sprig), `wrap` (degrees each branch runs round the stone past its
  * middle), `leafStyle` ('metal' blades or 'stone' marquise leaves), `hand` ('right': the +band branch wraps the +across
  * side; 'left' mirrors the swirl), plus the centre prongs (`prongCount`, `prongStyle`).
  */
@@ -342,10 +344,13 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
     };
 
     // ---- features along the branch: side leaves and buds interleaved, then the tip leaf ------------------------
-    type Feature = { kind: 'leaf' | 'bud'; s: number; side: 1 | -1; angle: number };
+    // with two or more buds, the last one moves onto the side shoot (below), so the total stays `budStones`
+    const shootBud = nBuds >= 2;
+    const mainBuds = nBuds - (shootBud ? 1 : 0);
+    type Feature = { kind: 'leaf' | 'bud'; s: number; side: 1 | -1; angle: number; scale: number };
     const kinds: ('leaf' | 'bud')[] = [];
     let li = nLeaves - 1;
-    let bi = nBuds;
+    let bi = mainBuds;
     while (li > 0 || bi > 0) {
       if (li > 0 && (li >= bi || bi === 0)) {
         kinds.push('leaf');
@@ -356,49 +361,72 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
         bi--;
       }
     }
+    // buds vary in size (some are tiny), side leaves shrink a little towards the tip like a real shoot
+    const BUD_SCALES = [1, 0.72, 0.88, 0.66];
+    let nb = 0;
+    let nl = 0;
     const feats: Feature[] = kinds.map((kind, i) => ({
       kind,
       s: total * (0.1 + (0.72 * (i + 0.5)) / Math.max(1, kinds.length)),
       side: i % 2 === 0 ? 1 : -1,
       angle: kind === 'leaf' ? 0.95 : 1.2,
+      scale: kind === 'bud' ? BUD_SCALES[nb++ % BUD_SCALES.length] : 1 - 0.07 * nl++,
     }));
     // the tip leaf carries on from the twig, turned a little away from the stone
     const tipT = at(total - 0.05);
     const tipOut = -tipT.t[1] * tipT.s.u + tipT.t[0] * tipT.s.v > 0 ? 1 : -1;
-    feats.push({ kind: 'leaf', s: total - 0.05, side: tipOut, angle: 0.45 });
+    feats.push({ kind: 'leaf', s: total - 0.05, side: tipOut, angle: 0.45, scale: 1 });
 
     const leafW = leafLen * (stoneLeaves ? 0.48 : 0.42);
-    const leafStone = stoneLeaves
-      ? ctx.stone('marquise', { length: leafLen, width: leafW, depth: leafW * 0.62 }, { detail: 'low' })
-      : null;
+    const leafStones = new Map<number, BuiltStone>();
+    const leafStoneAt = (scale: number): BuiltStone => {
+      const key = Math.round(scale * 100);
+      let st = leafStones.get(key);
+      if (!st) {
+        const l = leafLen * scale;
+        const w = leafW * scale;
+        st = ctx.stone('marquise', { length: l, width: w, depth: w * 0.62 }, { detail: 'low' });
+        leafStones.set(key, st);
+      }
+      return st;
+    };
     const budMm = Math.min(2.4, Math.max(1, ctx.accent.sizeMm));
-    const bud = ctx.stone(
-      ctx.accent.cut.id,
-      { length: budMm, width: budMm, depth: budMm * 0.62 },
-      { detail: 'low' },
-    );
+    const buds = new Map<number, BuiltStone>();
+    const budAt = (scale: number): BuiltStone => {
+      const key = Math.round(scale * 100);
+      let st = buds.get(key);
+      if (!st) {
+        const d = Math.max(0.8, budMm * scale);
+        st = ctx.stone(ctx.accent.cut.id, { length: d, width: d, depth: d * 0.62 }, { detail: 'low' });
+        buds.set(key, st);
+      }
+      return st;
+    };
     const wireR = 0.13;
 
     type Placed = { base: S; dir: [number, number]; reach: number };
     const branchMetal: THREE.BufferGeometry[] = [];
     const branchStones: THREE.BufferGeometry[] = [];
-    const placeDir = (f: Feature, reach: number): Placed => {
-      const { s, t } = at(f.s);
-      const tryDir = (side: number, ang: number): [number, number] => {
-        const nx = -t[1] * side;
-        const nv = t[0] * side;
-        return [t[0] * Math.cos(ang) + nx * Math.sin(ang), t[1] * Math.cos(ang) + nv * Math.sin(ang)];
-      };
-      const clear = (d: [number, number]) => {
-        for (const k of [0.35, 0.65, 1])
-          if (overStone(s.u + d[0] * reach * k, s.v + d[1] * reach * k, 0.25)) return false;
-        return true;
-      };
-      let d = tryDir(f.side, f.angle);
-      if (!clear(d)) d = tryDir(-f.side, f.angle);
-      if (!clear(d)) d = tryDir(f.side, 0.2);
-      if (!clear(d)) d = tryDir(-f.side, 0.2);
+    const tryDirAt = (t: [number, number], side: number, ang: number): [number, number] => {
+      const nx = -t[1] * side;
+      const nv = t[0] * side;
+      return [t[0] * Math.cos(ang) + nx * Math.sin(ang), t[1] * Math.cos(ang) + nv * Math.sin(ang)];
+    };
+    const clearOf = (s: S, d: [number, number], reach: number) => {
+      for (const k of [0.35, 0.65, 1])
+        if (overStone(s.u + d[0] * reach * k, s.v + d[1] * reach * k, 0.25)) return false;
+      return true;
+    };
+    const pickDir = (s: S, t: [number, number], side: number, angle: number, reach: number): Placed => {
+      let d = tryDirAt(t, side, angle);
+      if (!clearOf(s, d, reach)) d = tryDirAt(t, -side, angle);
+      if (!clearOf(s, d, reach)) d = tryDirAt(t, side, 0.2);
+      if (!clearOf(s, d, reach)) d = tryDirAt(t, -side, 0.2);
       return { base: s, dir: d, reach };
+    };
+    const placeDir = (f: { s: number; side: number; angle: number }, reach: number): Placed => {
+      const { s, t } = at(f.s);
+      return pickDir(s, t, f.side, f.angle, reach);
     };
     // leaves and buds lean with the shoulder they sprout over, but never sink more than ~1 mm
     const droop = (u0: number, u1: number) => Math.max(-1, (shankTop(u1) - shankTop(u0)) * 0.85);
@@ -406,62 +434,113 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
       const [x, z] = toStone(sgn * u, sgn * hand * v);
       return v3(x, y, z);
     };
-    for (const f of feats) {
-      if (f.kind === 'leaf') {
-        const reach = leafLen + r0;
-        const q = placeDir(f, reach);
-        const ue2 = q.base.u + q.dir[0] * reach;
-        const ve2 = q.base.v + q.dir[1] * reach;
-        const fall = droop(q.base.u, ue2);
-        const base = world(q.base.u, q.base.v, q.base.y);
-        const end = world(ue2, ve2, q.base.y + fall + 0.15);
-        const dir = end.clone().sub(base).normalize();
-        if (leafStone) {
-          const stalk = q.base.r + 0.2;
-          const c = base
-            .clone()
-            .addScaledVector(dir, stalk + leafLen / 2)
-            .addScaledVector(v3(0, 1, 0), q.base.r * 0.5 + leafStone.pavilionDepth * 0.4);
-          const st = seatedStone(leafStone, basisAt(c, dir), base, wireR);
-          branchMetal.push(...st.metal);
-          branchStones.push(st.stone);
-        } else branchMetal.push(metalLeaf(base, dir, reach, leafW));
-      } else {
-        const reach = r0 + budMm * 0.5 + 0.15;
-        const q = placeDir(f, reach);
-        const base = world(q.base.u, q.base.v, q.base.y);
-        const ue2 = q.base.u + q.dir[0] * reach;
-        const ve2 = q.base.v + q.dir[1] * reach;
-        const fall = droop(q.base.u, ue2);
-        const c = world(ue2, ve2, q.base.y + fall * 0.5 + q.base.r * 0.6 + bud.pavilionDepth * 0.5);
-        const dir = v3(c.x - base.x, 0, c.z - base.z);
-        if (dir.lengthSq() < 1e-9) dir.set(1, 0, 0);
-        const st = seatedStone(bud, basisAt(c, dir.normalize()), base, wireR);
+    const addLeaf = (q: Placed, scale: number) => {
+      const len = leafLen * scale;
+      const reach = q.reach;
+      const ue2 = q.base.u + q.dir[0] * reach;
+      const ve2 = q.base.v + q.dir[1] * reach;
+      const fall = droop(q.base.u, ue2);
+      const base = world(q.base.u, q.base.v, q.base.y);
+      const end = world(ue2, ve2, q.base.y + fall + 0.15);
+      const dir = end.clone().sub(base).normalize();
+      if (stoneLeaves) {
+        const ls = leafStoneAt(scale);
+        const stalk = q.base.r + 0.2;
+        const c = base
+          .clone()
+          .addScaledVector(dir, stalk + len / 2)
+          .addScaledVector(v3(0, 1, 0), q.base.r * 0.5 + ls.pavilionDepth * 0.4);
+        const st = seatedStone(ls, basisAt(c, dir), base, wireR);
         branchMetal.push(...st.metal);
         branchStones.push(st.stone);
+      } else branchMetal.push(metalLeaf(base, dir, reach, leafW * scale));
+    };
+    const addBud = (q: Placed, bud: BuiltStone) => {
+      const reach = q.reach;
+      const base = world(q.base.u, q.base.v, q.base.y);
+      const ue2 = q.base.u + q.dir[0] * reach;
+      const ve2 = q.base.v + q.dir[1] * reach;
+      const fall = droop(q.base.u, ue2);
+      const c = world(ue2, ve2, q.base.y + fall * 0.5 + q.base.r * 0.6 + bud.pavilionDepth * 0.5);
+      const dir = v3(c.x - base.x, 0, c.z - base.z);
+      if (dir.lengthSq() < 1e-9) dir.set(1, 0, 0);
+      const st = seatedStone(bud, basisAt(c, dir.normalize()), base, wireR);
+      branchMetal.push(...st.metal);
+      branchStones.push(st.stone);
+    };
+    const budReach = (scale: number, r: number) => r + Math.max(0.8, budMm * scale) * 0.5 + 0.15;
+    for (const f of feats) {
+      if (f.kind === 'leaf') addLeaf(placeDir(f, leafLen * f.scale + r0), f.scale);
+      else {
+        const bud = budAt(f.scale);
+        addBud(placeDir(f, budReach(f.scale, r0)), bud);
       }
     }
-    // a short bare shoot forking off the climb, on the side away from the stone
-    {
-      const sS = total * 0.3;
-      const { s, t } = at(sS);
-      const out = -t[1] * s.u + t[0] * s.v > 0 ? 1 : -1;
-      const len = 1.3 + leafLen * 0.35;
-      const q = placeDir({ kind: 'leaf', s: sS, side: out, angle: 0.75 }, len);
+    /**
+     * A short sprig forking off the branch at arc length `sS` towards `side` at `angle` from the branch direction,
+     * ending in a small leaf; `hug` (0..1) pulls it down onto the shoulder it runs over; `bud` adds a tiny bud stone
+     * part way along.
+     */
+    const sprig = (
+      sS: number,
+      side: number,
+      angle: number,
+      len: number,
+      hug: number,
+      leaf: number,
+      bud: boolean,
+    ) => {
+      const { t } = at(sS);
+      const q = placeDir({ s: sS, side, angle }, len);
       const fall = droop(q.base.u, q.base.u + q.dir[0] * len);
       const shoot: TwigPt[] = [];
+      const shootS: S[] = [];
       for (let k = 0; k <= 5; k++) {
         const f = k / 5;
         // curls slightly back toward the branch direction as it grows
         const bend = 0.25 * f * f;
-        const du = q.dir[0] * (1 - bend) + t[0] * bend;
-        const dv = q.dir[1] * (1 - bend) + t[1] * bend;
-        shoot.push({
-          p: world(q.base.u + du * len * f, q.base.v + dv * len * f, q.base.y + (fall * 0.5 + 0.35) * f),
-          r: Math.max(0.12, q.base.r * (0.6 - 0.4 * f)),
+        const du = q.dir[0] * (1 - bend) + t[0] * bend * Math.sign(Math.cos(angle));
+        const dv = q.dir[1] * (1 - bend) + t[1] * bend * Math.sign(Math.cos(angle));
+        const u = q.base.u + du * len * f;
+        const r = Math.max(0.12, q.base.r * (0.6 - 0.4 * f));
+        const free = q.base.y + (fall * 0.5 + 0.35) * f;
+        const onShank = shankTop(u) + r * 0.3;
+        shootS.push({
+          u,
+          v: q.base.v + dv * len * f,
+          y: free + (Math.min(free, onShank) - free) * hug * f,
+          r,
         });
       }
+      for (const sp of shootS) shoot.push({ p: world(sp.u, sp.v, sp.y), r: sp.r });
       branchMetal.push(twig(shoot, 8));
+      const tangent = (i: number): [number, number] => {
+        const a = shootS[Math.max(0, i - 1)];
+        const b = shootS[Math.min(shootS.length - 1, i + 1)];
+        const l = Math.hypot(b.u - a.u, b.v - a.v) || 1;
+        return [(b.u - a.u) / l, (b.v - a.v) / l];
+      };
+      const tipS = { ...shootS[5], r: Math.max(0.2, shootS[5].r) };
+      addLeaf(pickDir(tipS, tangent(5), side, 0.35, leafLen * leaf + 0.2), leaf);
+      if (bud) {
+        const midS = { ...shootS[3], r: Math.max(0.2, shootS[3].r) };
+        addBud(pickDir(midS, tangent(3), -side, 1.3, budReach(0.62, midS.r)), budAt(0.62));
+      }
+    };
+    // a side shoot off the climb, away from the stone
+    {
+      const sS = total * 0.3;
+      const { s, t } = at(sS);
+      const out = -t[1] * s.u + t[0] * s.v > 0 ? 1 : -1;
+      sprig(sS, out, 0.75, 1.3 + leafLen * 0.35, 0, 0.8, false);
+    }
+    // a sprig near the root turning back down the shoulder towards the band end, carrying a bud when there are two
+    // or more (the foliage spreads along the band like the twig it grew from)
+    {
+      const sS = Math.min(total * 0.12, 1.6);
+      const { s, t } = at(sS);
+      const out = -t[1] * s.u + t[0] * s.v > 0 ? 1 : -1;
+      sprig(sS, out, Math.PI - 1.25, 0.9 + leafLen * 0.25, 1, 0.7, shootBud);
     }
     const pts: TwigPt[] = [...lead, ...path].map((q) => ({ p: world(q.u, q.v, q.y), r: q.r }));
     branchMetal.push(twig(pts));

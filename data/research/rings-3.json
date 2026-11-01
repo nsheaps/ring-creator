@@ -485,11 +485,11 @@
    "tune": {
     "head": {
      "leafStyle": "stone",
-     "leafCount": 3,
-     "leafSize": 2.6,
-     "budStones": 2,
-     "branchThickness": 1.1,
-     "wrap": 5,
+     "leafCount": 4,
+     "leafSize": 2.4,
+     "budStones": 3,
+     "branchThickness": 0.9,
+     "wrap": 8,
      "hand": "left"
     },
     "placement": {
