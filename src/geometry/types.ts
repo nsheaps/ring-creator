@@ -20,7 +20,8 @@ export type PartSlot =
   | 'shank-metal'
   | 'band-metal'
   | 'band-metal2'
-  | 'band-stone';
+  | 'band-stone'
+  | 'band-stone2'; // every other stone of an alternating band (param `alternate` names its gem)
 
 export interface Part {
   slot: PartSlot;

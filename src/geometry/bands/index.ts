@@ -22,6 +22,7 @@ export const BAND_BUILDER_KEYS = [
   'twisted-band',
   'braided-band',
   'vine-band',
+  'bamboo-band',
   'art-deco-band',
   'mixed-metal-band',
   'mens-classic',

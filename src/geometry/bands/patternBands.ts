@@ -30,7 +30,9 @@ import {
   part,
   parts,
   ringFrame,
+  segs,
   slicePoly,
+  smoothstep,
   str,
   sweep,
   sweepSection,
@@ -282,4 +284,62 @@ registerBandBuilder('mens-inlay', (ctx: BandCtx) => {
     ),
     part('band-metal2', [sliceSweep(inlaySec, -a, a, z, 8)], 'inlay'),
   );
+});
+
+// ---------------------------------------------------------------------------------------------
+// Bamboo: a half-round band with raised nodes, optionally each node carrying a bezel-set stone
+// ---------------------------------------------------------------------------------------------
+
+registerBandBuilder('bamboo-band', (ctx: BandCtx) => {
+  const { W, T, R } = dims(ctx);
+  const z = contourZ(ctx);
+  const kind = str(ctx.params, 'profile', ['half-round', 'comfort-dome'] as const, 'half-round');
+  const nodes = Math.round(num(ctx.params, 'nodes', 9, 4, 18));
+  const slim = num(ctx.params, 'slim', 0.18, 0, 0.4);
+  const withStones = bool(ctx.params, 'stones', false);
+  const rMid = R + T / 2;
+  const ws = clamp(num(ctx.params, 'stoneSize', 0, 0, 6) || ctx.accent.sizeMm, 0.8, W * 0.8);
+  const pitch = (TAU * rMid) / nodes;
+  const nodeW = clamp(withStones ? ws + 0.7 : num(ctx.params, 'nodeWidth', 1.4, 0.6, 4), 0.6, pitch * 0.7);
+  const ramp = Math.min(0.9, (pitch - nodeW) * 0.3);
+  const nodeAngle = (k: number) => TOP + (k * TAU) / nodes;
+  // 1 on a node, 0 between nodes; the ramp is the little shoulder of the knuckle
+  const q = (theta: number): number => {
+    const step = TAU / nodes;
+    const x = (((theta - TOP) % step) + step) % step;
+    const d = Math.min(x, step - x) * rMid;
+    return 1 - smoothstep(nodeW / 2, nodeW / 2 + ramp, d);
+  };
+  const secAt = (theta: number): Section => {
+    const f = 1 - slim * (1 - q(theta));
+    return profileSection(kind, W * f, T * (1 - slim * 0.5 * (1 - q(theta))), R, true);
+  };
+  const body = sweep({
+    segments: segs(Math.min(520, Math.max(220, nodes * 30)), z),
+    zOffset: z,
+    smoothProfile: true,
+    profile: (theta) => {
+      const s = secAt(theta);
+      return slicePoly(s, -s.W / 2, s.W / 2, 12);
+    },
+  });
+  const metal: THREE.BufferGeometry[] = [body];
+  const stones: THREE.BufferGeometry[] = [];
+  if (withStones) {
+    const cov = str(ctx.params, 'coverage', ['half', 'three-quarter', 'full'] as const, 'half');
+    const limit =
+      cov === 'full' ? Math.PI + 1e-6 : cov === 'half' ? Math.PI / 2 + 1e-6 : Math.PI * 0.75 + 1e-6;
+    const st = accentStone(ctx, ws);
+    const rTop = R + T;
+    const rg = rTop - st.built.crownHeight * 0.08;
+    const collar = cup(Math.max(0.1, ws / 2 - 0.08), ws / 2 + 0.26, -0.3, st.built.crownHeight * 0.3, 16);
+    for (let k = 0; k < nodes; k++) {
+      const t = nodeAngle(k);
+      if (Math.abs(fromTop(t)) > limit) continue;
+      const m = ringFrame(t, 0, rg, z);
+      metal.push(...instances(collar, [m]));
+      stones.push(...instances(st.built.geometry, [m]));
+    }
+  }
+  return parts(part('band-metal', metal, 'bamboo'), part('band-stone', stones, 'node stones'));
 });

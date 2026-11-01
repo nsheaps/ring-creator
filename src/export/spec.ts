@@ -297,7 +297,7 @@ function stoneGroups(design: Design, parts: ExportPart[]): StoneGroupSpec[] {
     }
     const spec = p.role === 'band-stone' ? design.band?.accentStone : design.engagement.accentStone;
     if (!spec) continue;
-    const gem = getModel('gem', spec.material);
+    const gem = getModel('gem', p.role === 'band-stone' ? p.materialId : spec.material);
     const cut = getModel('cut', spec.cut);
     const groups = new Map<string, { count: number; vol: number }>();
     for (const comp of components(p.positions)) {
@@ -317,7 +317,7 @@ function stoneGroups(design: Design, parts: ExportPart[]): StoneGroupSpec[] {
         role: p.role === 'band-stone' ? 'band-stone' : 'accent',
         gemId: gem.id,
         gemName: gem.name,
-        colorName: colorName(spec.material, spec.color),
+        colorName: colorName(gem.id, gem.id === spec.material ? spec.color : gem.defaultColor),
         cutId: cut.id,
         cutName: cut.name,
         count: g.count,

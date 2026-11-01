@@ -32,6 +32,7 @@ const VOCAB = [
   'twisted-band',
   'braided-band',
   'vine-band',
+  'bamboo-band',
   'art-deco-band',
   'mixed-metal-band',
   'mens-classic',
@@ -199,8 +200,9 @@ describe('band builders', () => {
           expect(s.box.min.y).toBeLessThan(-R);
           expect(s.box.max.y).toBeGreaterThan(R);
           expect(s.slots.has('band-metal')).toBe(true);
-          for (const slot of s.slots) expect(['band-metal', 'band-metal2', 'band-stone']).toContain(slot);
-          if (model?.hasStones && id !== 'vine-band')
+          for (const slot of s.slots)
+            expect(['band-metal', 'band-metal2', 'band-stone', 'band-stone2']).toContain(slot);
+          if (model?.hasStones && !['vine-band', 'bamboo-band', 'contour-curved', 'chevron'].includes(id))
             expect(s.slots.has('band-stone'), 'stones present').toBe(true);
           if (!model?.hasStones) expect(s.slots.has('band-stone')).toBe(false);
           // every piece of metal is fused to the band (a stacker set is three separate rings by design)
@@ -374,6 +376,126 @@ describe('band invariants', () => {
     expect(build('art-deco-band', { stones: false }).some((p) => p.slot === 'band-stone')).toBe(false);
   });
 });
+
+describe('graduated, raised, bent and alternating stone bands', () => {
+  const build = (id: string, over: BandCtx['params'] = {}, o: Parameters<typeof ctxFor>[1] = {}) => {
+    const m = byId.get(id);
+    const fn = bandBuilders.get(id);
+    if (!m || !fn) throw new Error(id);
+    return fn(ctxFor({ ...m.params, ...over }, o));
+  };
+  const slot = (parts: Part[], s: string) => parts.filter((p) => p.slot === s);
+  const stoneZ = (parts: Part[]) => {
+    const b = stats(slot(parts, 'band-stone')).box;
+    return b.max.z - b.min.z;
+  };
+
+  it('a raised setting lets the stones be wider than the band; a flat one does not', () => {
+    const over = { stoneSize: 3.4, coverage: 'half' };
+    const flat = stoneZ(build('half-eternity', over, { width: 2 }));
+    const raised = stoneZ(build('half-eternity', { ...over, raise: 0.8 }, { width: 2 }));
+    expect(flat).toBeLessThan(2.1);
+    expect(raised).toBeGreaterThan(3);
+    const parts = build('half-eternity', { ...over, raise: 0.8 }, { width: 2 });
+    expect(detachedIslands(slot(parts, 'band-metal').map((p) => p.geometry))).toEqual([]);
+  });
+
+  it('graduated rows put the biggest stone in the middle and honour the stone count', () => {
+    const parts = build(
+      'half-eternity',
+      { stoneSize: 3.2, sizeProfile: 'graduated', endScale: 0.6, stoneCount: 5, raise: 0.5 },
+      { width: 2 },
+    );
+    const g = slot(parts, 'band-stone')[0].geometry;
+    const tris = g.getAttribute('position').count / 3;
+    expect(tris).toBeGreaterThan(0);
+    const widths = stoneWidths(g);
+    expect(widths.length).toBe(5);
+    const mid = widths[2];
+    expect(mid).toBeGreaterThan(widths[0] * 1.2);
+    expect(mid).toBeGreaterThan(widths[4] * 1.2);
+    expect(widths[0]).toBeCloseTo(widths[4], 1);
+  });
+
+  it('contour and chevron bands can carry stones that follow the bend, largest at the point', () => {
+    for (const id of ['contour-curved', 'chevron']) {
+      const bare = build(id, { stones: false });
+      expect(slot(bare, 'band-stone')).toHaveLength(0);
+      const set = build(id, { stones: true, stoneSize: 2.4, endScale: 0.6 });
+      const st = slot(set, 'band-stone');
+      expect(st, id).toHaveLength(1);
+      const b = stats(st).box;
+      // the stones sit over the bend, at the top of the ring
+      expect(b.min.y, id).toBeGreaterThan(R * 0.4);
+      const widths = stoneWidths(st[0].geometry);
+      expect(widths.length, id).toBeGreaterThanOrEqual(3);
+      expect(Math.max(...widths), id).toBeGreaterThan(Math.min(...widths) * 1.1);
+      const metal = slot(set, 'band-metal').map((p) => p.geometry);
+      expect(detachedIslands(metal), id).toEqual([]);
+    }
+  });
+
+  it('an alternating eternity puts every other stone in the second stone slot', () => {
+    const parts = build('full-eternity', { alternate: 'sapphire' }, { accentSize: 1.4 });
+    const a = slot(parts, 'band-stone');
+    const b = slot(parts, 'band-stone2');
+    expect(a).toHaveLength(1);
+    expect(b).toHaveLength(1);
+    const na = stoneWidths(a[0].geometry).length;
+    const nb = stoneWidths(b[0].geometry).length;
+    expect(na).toBe(nb);
+    expect(slot(build('full-eternity'), 'band-stone2')).toHaveLength(0);
+    const ch = build('channel-band', { alternate: 'ruby', coverage: 'full' });
+    expect(slot(ch, 'band-stone2')).toHaveLength(1);
+  });
+
+  it('bamboo band has raised nodes, optional node stones, and stays on the finger', () => {
+    const plain = build('bamboo-band');
+    const s = stats(plain);
+    expect(s.minR).toBeGreaterThan(R - 0.03);
+    expect(slot(plain, 'band-stone')).toHaveLength(0);
+    // nodes: the thickest cross-section is more than a plain half-round of the same size
+    const slim = stats(build('bamboo-band', { slim: 0.4 }));
+    const fat = stats(build('bamboo-band', { slim: 0 }));
+    expect(fat.tris).toBeGreaterThan(0);
+    expect(slim.box.max.z).toBeLessThanOrEqual(fat.box.max.z + 1e-6);
+    const set = build('bamboo-band', { stones: true, nodes: 9, coverage: 'half' });
+    const widths = stoneWidths(slot(set, 'band-stone')[0].geometry);
+    expect(widths.length).toBeGreaterThanOrEqual(4);
+    expect(widths.length).toBeLessThanOrEqual(6);
+    expect(detachedIslands(slot(set, 'band-metal').map((p) => p.geometry))).toEqual([]);
+    expect(stats(set).tris).toBeLessThan(TRI_BUDGET);
+  });
+});
+
+/** Widths (mm, across the band = z extent) of each separate stone in a merged geometry, ordered along the band. */
+function stoneWidths(g: THREE.BufferGeometry): number[] {
+  const pos = g.getAttribute('position');
+  const parent = new Map<string, string>();
+  const find = (k: string): string => {
+    let r = k;
+    while ((parent.get(r) ?? r) !== r) r = parent.get(r) ?? r;
+    parent.set(k, r);
+    return r;
+  };
+  const key = (i: number) => `${pos.getX(i).toFixed(3)},${pos.getY(i).toFixed(3)},${pos.getZ(i).toFixed(3)}`;
+  for (let i = 0; i < pos.count; i++) if (!parent.has(key(i))) parent.set(key(i), key(i));
+  for (let i = 0; i < pos.count; i += 3) {
+    const a = find(key(i));
+    for (let k = 1; k < 3; k++) parent.set(find(key(i + k)), a);
+  }
+  const comps = new Map<string, { zmin: number; zmax: number; th: number; n: number }>();
+  for (let i = 0; i < pos.count; i++) {
+    const r = find(key(i));
+    const c = comps.get(r) ?? { zmin: Infinity, zmax: -Infinity, th: 0, n: 0 };
+    c.zmin = Math.min(c.zmin, pos.getZ(i));
+    c.zmax = Math.max(c.zmax, pos.getZ(i));
+    c.th += Math.atan2(pos.getY(i), pos.getX(i));
+    c.n++;
+    comps.set(r, c);
+  }
+  return [...comps.values()].sort((a, b) => b.th / b.n - a.th / a.n).map((c) => c.zmax - c.zmin);
+}
 
 describe('band triangle report', () => {
   it('prints triangle counts (informational)', () => {

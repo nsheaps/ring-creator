@@ -53,6 +53,8 @@ The app offers 23 styles. The Band cards also tell you who each style is for, wh
 - **Shared prong:** each prong holds two stones. Airy and bright.
 - **Bezel band:** each stone wrapped in a tiny rim. Very secure and modern.
 
+**Bigger and mixed stones.** Eternity and shared-prong bands can grade their stones from the largest at the top down to smaller ones at the ends (Stone sizes: Graduated), and can fix the number of stones for a five- or seven-stone band. Raise the setting (Raised setting above 0) to let the stones be wider than the band itself. Curved (contour) and chevron bands can carry stones that follow the bend, largest at the point. **Alternate with** turns every other stone into another gem, such as sapphire between diamonds. The **Bamboo** band has raised nodes like a cane of bamboo and can hold a small stone in each.
+
 Retailer data shows slim shared-prong or pave bands at about 2.0 to 2.6 mm, bezel, channel and larger shared-prong around 3 to 3.7 mm. Stone and accent choices (material, cut, size) are on the **Accents** tab.
 
 ### Curved and notched bands

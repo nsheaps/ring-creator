@@ -13,7 +13,7 @@ import type {
   ShankCtx,
   StoneBuildOptions,
 } from './types';
-import { getModel } from '@/models/registry';
+import { findModel, getModel } from '@/models/registry';
 import { dimsFromCarat, innerDiameterMm, type StoneDims } from '@/models/stoneMath';
 import type { AccentStoneSpec, BandSpec, CutModel, Design, Id, Params, StoneSpec } from '@/models/types';
 import { gemMaterials, metalMaterial } from '@/scene/materials';
@@ -329,18 +329,23 @@ function meshesFor(
   center: ResolvedStone,
 ): THREE.Object3D[] {
   const out: THREE.Object3D[] = [];
-  if (slot === 'center-stone' || slot === 'accent-stone' || slot === 'band-stone') {
+  if (slot === 'center-stone' || slot === 'accent-stone' || slot === 'band-stone' || slot === 'band-stone2') {
     const spec =
       slot === 'center-stone'
         ? null
         : slot === 'accent-stone'
           ? design.engagement.accentStone
           : (design.band?.accentStone ?? design.engagement.accentStone);
-    const gem = slot === 'center-stone' ? center.gem : getModel('gem', spec!.material);
+    // alternating bands: the second stone is another gem named by the band param `alternate`
+    const altId = slot === 'band-stone2' ? String(design.band?.params.alternate ?? '') : '';
+    const altGem = altId ? findModel('gem', altId) : undefined;
+    const gem = slot === 'center-stone' ? center.gem : (altGem ?? getModel('gem', spec!.material));
     const colorHex =
       slot === 'center-stone'
         ? center.colorHex
-        : (gem.colors.find((c) => c.id === spec!.color) ?? gem.colors[0]).hex;
+        : altGem
+          ? (altGem.colors.find((c) => c.id === altGem.defaultColor) ?? altGem.colors[0]).hex
+          : (gem.colors.find((c) => c.id === spec!.color) ?? gem.colors[0]).hex;
     const clarity =
       slot === 'center-stone' ? getModel('clarity', design.engagement.center.clarity) : undefined;
     const grade =

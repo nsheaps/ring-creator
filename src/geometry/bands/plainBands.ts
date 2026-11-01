@@ -13,6 +13,7 @@ import {
   type SurfaceTexture,
 } from '../helpers';
 import { registerBandBuilder } from '../builders';
+import { bentRow } from './stoneBands';
 import type { BandCtx, Part } from '../types';
 import {
   bool,
@@ -200,7 +201,13 @@ registerBandBuilder('contour-curved', (ctx) => {
     contourZ(ctx) ??
     ((t) =>
       num(ctx.params, 'curveRetreat', 2, 0.5, 6) * bump(t, num(ctx.params, 'curveHalfAngle', 0.6, 0.2, 1.4)));
-  return parts(part('band-metal', [sweepSection(s, { z, segments: 220 })], 'curved band'));
+  const half = ctx.contour
+    ? clamp(ctx.contour.halfAngle, 0.1, 1.4)
+    : num(ctx.params, 'curveHalfAngle', 0.6, 0.2, 1.4);
+  return parts(
+    part('band-metal', [sweepSection(s, { z, segments: 220 })], 'curved band'),
+    ...(bool(ctx.params, 'stones', false) ? bentRow(ctx, z, half * 0.85) : []),
+  );
 });
 
 /** Smoothed V: 1 at the top falling linearly to 0 at halfAngle, apex rounded by `round` radians. */
@@ -222,7 +229,10 @@ registerBandBuilder('chevron', (ctx) => {
   const dir = ctx.contour ? ctx.contour.direction : 1;
   const round = num(ctx.params, 'apexRound', 0.05, 0.01, 0.3);
   const z: ZFn = (t) => dir * depth * Math.max(0, vShape(t, half, round));
-  return parts(part('band-metal', [sweepSection(s, { z, segments: 320 })], 'chevron band'));
+  return parts(
+    part('band-metal', [sweepSection(s, { z, segments: 320 })], 'chevron band'),
+    ...(bool(ctx.params, 'stones', false) ? bentRow(ctx, z, half * 0.9) : []),
+  );
 });
 
 registerBandBuilder('notched', (ctx) => {

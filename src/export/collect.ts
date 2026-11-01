@@ -147,10 +147,20 @@ function classifyBand(design: Design, meshes: THREE.Mesh[]): Classified[] {
   if (!b) return [];
   const out: Classified[] = [];
   let metalSeen = 0;
+  let gemSeen = 0;
   for (const { mesh, gem } of slotsOf(meshes)) {
     const mat = mesh.material as THREE.Material;
     if (gem) {
-      out.push({ role: 'band-stone', kind: 'stone', materialId: b.accentStone.material, mesh });
+      // alternating bands emit the second gem after the first (slot band-stone2)
+      const alt = String(b.params.alternate ?? 'none');
+      const second = gemSeen > 0 && alt !== 'none' && !!findModel('gem', alt);
+      gemSeen++;
+      out.push({
+        role: 'band-stone',
+        kind: 'stone',
+        materialId: second ? alt : b.accentStone.material,
+        mesh,
+      });
       continue;
     }
     const metal = metalOf(mat, [

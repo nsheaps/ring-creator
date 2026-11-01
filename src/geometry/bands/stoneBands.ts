@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import { registerBandBuilder } from '../builders';
 import { fitStones, type ProfilePoint } from '../helpers';
-import type { BandCtx, Part } from '../types';
+import type { BandCtx, BuiltStone, Part } from '../types';
 import {
   accentStone,
   arcMask,
@@ -23,7 +23,6 @@ import {
   part,
   parts,
   ringFrame,
-  ringPt,
   rod,
   segs,
   slicePoly,
@@ -32,6 +31,8 @@ import {
   sweep,
   sweepSection,
   type Coverage,
+  TAU,
+  TOP,
   type Section,
   type ZFn,
 } from './common';
@@ -62,70 +63,289 @@ function seatSection(W: number, T: number, R: number): Section {
 // Shared-prong eternity
 // ---------------------------------------------------------------------------------------------
 
-function sharedProngRow(ctx: BandCtx, cov: Coverage, z: ZFn | undefined, scallop: boolean): Part[] {
+export const SIZE_PROFILES = ['uniform', 'graduated'] as const;
+
+/** True when every other stone is another gem (param `alternate` = a gem id). */
+function alternating(ctx: BandCtx): boolean {
+  const a = ctx.params.alternate;
+  return typeof a === 'string' && a !== '' && a !== 'none';
+}
+
+/** One stone of a graduated or pathed row. */
+interface Slot {
+  t: number;
+  /** across the band */
+  w: number;
+  /** along the band */
+  len: number;
+}
+
+/** Cumulative path length (mm) along the band's centre line over [a0, a1]; the path bends sideways with `z`. */
+function pathTable(a0: number, a1: number, r: number, z: ZFn | undefined, n = 1200) {
+  const ts: number[] = [];
+  const ss: number[] = [0];
+  const step = (a1 - a0) / n;
+  for (let i = 0; i <= n; i++) ts.push(a0 + step * i);
+  for (let i = 1; i <= n; i++) {
+    const dz = z ? z(ts[i]) - z(ts[i - 1]) : 0;
+    ss.push(ss[i - 1] + Math.hypot(r * Math.abs(step), dz));
+  }
+  const total = ss[n];
+  const toT = (s: number): number => {
+    const c = clamp(s, 0, total);
+    let lo = 0;
+    let hi = n;
+    while (hi - lo > 1) {
+      const m = (lo + hi) >> 1;
+      if (ss[m] <= c) lo = m;
+      else hi = m;
+    }
+    const f = (c - ss[lo]) / Math.max(1e-9, ss[hi] - ss[lo]);
+    return ts[lo] + (ts[hi] - ts[lo]) * f;
+  };
+  const toS = (t: number): number => {
+    const f = clamp((t - a0) / (a1 - a0), 0, 1) * n;
+    const i = Math.min(n - 1, Math.floor(f));
+    return ss[i] + (ss[i + 1] - ss[i]) * (f - i);
+  };
+  return { total, toT, toS };
+}
+
+/**
+ * Stones laid from the middle of the arc outwards: a stone sits at the middle (the apex of a V, the top of the ring)
+ * and each next one is smaller by `sizeAt(d)`, d = 0 in the middle and 1 at the ends. Open arcs keep the exact gap
+ * and are centred; a full circle stretches the gaps a little so the row closes.
+ */
+function graduatedSlots(
+  ctx: BandCtx,
+  arc: [number, number],
+  r: number,
+  z: ZFn | undefined,
+  sizeAt: (d: number) => number,
+  gap: number,
+  maxCount = 0,
+): Slot[] {
+  const aspect = clamp(ctx.accent.cut.defaultAspect, 1, 3);
+  const tab = pathTable(arc[0], arc[1], r, z);
+  const S = tab.total;
+  const full = Math.abs(arc[1] - arc[0] - TAU) < 1e-6;
+  const q = (w: number) => Math.round(w * 20) / 20;
+  const sideMax = maxCount > 0 ? Math.max(0, Math.floor((maxCount - 1) / 2)) : 80;
+  let half = S / 2;
+  let offs: { o: number; w: number; len: number }[] = [];
+  // with a fixed count the sizes shrink to the end stone at the last one, so the span is found by iterating
+  for (let pass = 0; pass < (maxCount > 0 ? 4 : 1); pass++) {
+    const lenOf = (d: number) => q(sizeAt(clamp(d, 0, 1))) * aspect;
+    const w0 = q(sizeAt(0));
+    offs = [{ o: 0, w: w0, len: w0 * aspect }];
+    let prev = offs[0];
+    for (let k = 0; k < sideMax; k++) {
+      let len = prev.len;
+      let o = prev.o + prev.len / 2 + gap + len / 2;
+      for (let i = 0; i < 3; i++) {
+        len = lenOf(o / half);
+        o = prev.o + prev.len / 2 + gap + len / 2;
+      }
+      if (o + len / 2 > S / 2 + 1e-6 || len < 0.5) break;
+      prev = { o, w: q(sizeAt(clamp(o / half, 0, 1))), len };
+      offs.push(prev);
+    }
+    if (maxCount <= 0) break;
+    half = prev.o || half;
+  }
+  if (full && offs.length > 1 && maxCount <= 0) {
+    const last = offs[offs.length - 1];
+    const k = (S / 2 - gap / 2 - last.len / 2) / last.o;
+    for (const e of offs) e.o *= k;
+  }
+  const out: Slot[] = [];
+  const mid = S / 2;
+  for (const e of offs) {
+    if (e.o > 0) out.unshift({ t: tab.toT(mid - e.o), w: e.w, len: e.len });
+    if (e.o === 0) out.push({ t: tab.toT(mid), w: e.w, len: e.len });
+  }
+  for (const e of offs) if (e.o > 0) out.push({ t: tab.toT(mid + e.o), w: e.w, len: e.len });
+  return out;
+}
+
+/** Arc over which a bodyless row of stones follows a bent (contour / chevron) band. */
+export function bendArc(half: number): [number, number] {
+  return [TOP - half, TOP + half];
+}
+
+export interface RowOpts {
+  /** Stones only: the metal is supplied by the caller (contour and chevron bands). */
+  bodyless?: boolean;
+  /** Override the arc (default: the coverage arc). */
+  arc?: [number, number];
+}
+
+function sharedProngRow(
+  ctx: BandCtx,
+  cov: Coverage,
+  z: ZFn | undefined,
+  scallop: boolean,
+  o: RowOpts = {},
+): Part[] {
   const { W, T, R } = dims(ctx);
-  // widest stone whose prongs stay inside the band width
-  let w = stoneWidth(ctx, W);
-  for (let i = 0; i < 20 && w / 2 + prongR(w) * 0.6 > W / 2 - 0.02; i++) w *= 0.95;
+  const raise = num(ctx.params, 'raise', 0, 0, 3);
+  const graduated = str(ctx.params, 'sizeProfile', SIZE_PROFILES, 'uniform') === 'graduated' || !!o.bodyless;
+  const endScale = num(ctx.params, 'endScale', 0.6, 0.3, 1);
+  // widest stone whose prongs stay inside the band width, unless the setting is raised (then stones may overhang)
+  let w = stoneWidth(ctx, raise > 0 ? 8 : W);
+  if (raise <= 0 && !o.bodyless)
+    for (let i = 0; i < 20 && w / 2 + prongR(w) * 0.6 > W / 2 - 0.02; i++) w *= 0.95;
   const gap = num(ctx.params, 'gapMm', 0.12, 0.05, 1.5);
   const rTop = R + T;
+  const arc = o.arc ?? coverageArc(cov);
   const probe = accentStone(ctx, w);
-  // girdle a little above the metal; keep the culet inside the metal
-  const rg = Math.max(rTop + probe.built.crownHeight * 0.1, R + probe.built.pavilionDepth + 0.25);
-  const arc = coverageArc(cov);
-  // stone count math: a full circle shrinks the stones a touch so the row closes with even gaps
-  const fit = fitStones(arc[0], arc[1], rg, probe.length, gap);
-  const st = fit.size < probe.length - 1e-6 ? accentStone(ctx, (w * fit.size) / probe.length) : probe;
-  const angles = fit.angles;
-  const sw = st.width;
-  const pr = prongR(sw);
-  // the body is only as wide as the row needs: stones sit proud with prongs on the body edge
-  const Wb = Math.min(W, sw + pr * 1.2);
-  const body = seatSection(Wb, T, R);
-  const full = cov === 'full';
-  const dA = angles.length > 1 ? angles[1] - angles[0] : fit.pitch / rg;
-  const prongAngles: number[] = angles.map((t) => t - dA / 2);
-  if (!full && angles.length) prongAngles.push(angles[angles.length - 1] + dA / 2);
-  const metal: THREE.BufferGeometry[] = [];
-  if (scallop && angles.length) {
-    // shared-prong look: the side walls dip in a U under every stone, showing its pavilion from the side
-    const dip = Math.min(T * 0.45, st.built.pavilionDepth * 0.7);
-    const first = prongAngles[0];
-    const last = prongAngles[prongAngles.length - 1];
-    const n = 16;
-    metal.push(
-      sweep({
-        segments: segs(Math.min(900, Math.max(160, angles.length * 14)), z),
-        zOffset: z,
-        smoothProfile: true,
-        profile: (theta) => {
-          let phase = (theta - first) / dA;
-          if (full) phase = ((phase % 1) + 1) % 1;
-          const inside = full || (theta >= first && theta <= last);
-          const f = inside ? Math.sin(Math.PI * clamp(phase - Math.floor(phase), 0, 1)) ** 0.7 : 0;
-          const sec: Section = { W: Wb, bot: body.bot, top: (u) => body.top(u) - dip * f };
-          return slicePoly(sec, -Wb / 2, Wb / 2, n);
-        },
-      }),
+  const rgOf = (st: { built: BuiltStone }) =>
+    Math.max(rTop + st.built.crownHeight * 0.1, R + st.built.pavilionDepth + 0.25) + raise;
+  const rg0 = rgOf(probe);
+  const full = cov === 'full' && !o.arc;
+  interface Placed {
+    t: number;
+    st: ReturnType<typeof accentStone>;
+    rg: number;
+  }
+  let placed: Placed[];
+  let prongAt: number[];
+  let prongW: number[];
+  if (graduated) {
+    const slots = graduatedSlots(
+      ctx,
+      arc,
+      rg0,
+      z,
+      (d) => w * (endScale + (1 - endScale) * (1 - d)),
+      gap,
+      Math.round(num(ctx.params, 'stoneCount', 0, 0, 40)),
     );
-  } else metal.push(sweepSection(body, { z }));
-  const stones = instances(
-    st.built.geometry,
-    angles.map((t) => ringFrame(t, 0, rg, z)),
+    placed = slots.map((s) => {
+      const st = accentStone(ctx, s.w);
+      return { t: s.t, st, rg: rgOf(st) };
+    });
+    const tab = pathTable(arc[0], arc[1], rg0, z);
+    prongAt = [];
+    prongW = [];
+    for (let i = 0; i + 1 < slots.length; i++) {
+      const a = tab.toS(slots[i].t) + slots[i].len / 2;
+      const b = tab.toS(slots[i + 1].t) - slots[i + 1].len / 2;
+      prongAt.push(tab.toT((a + b) / 2));
+      prongW.push(Math.min(slots[i].w, slots[i + 1].w));
+    }
+    if (full && slots.length > 1) {
+      const a = tab.toS(slots[slots.length - 1].t) + slots[slots.length - 1].len / 2;
+      const b = tab.toS(slots[0].t) - slots[0].len / 2 + tab.total;
+      prongAt.push(tab.toT(((a + b) / 2) % tab.total));
+      prongW.push(Math.min(slots[0].w, slots[slots.length - 1].w));
+    } else if (!full && slots.length) {
+      for (const [sl, sign] of [
+        [slots[0], -1],
+        [slots[slots.length - 1], 1],
+      ] as const) {
+        const sS = tab.toS(sl.t) + (sign * (sl.len + gap)) / 2;
+        prongAt.push(tab.toT(sS));
+        prongW.push(sl.w);
+      }
+    }
+  } else {
+    // stone count math: a full circle shrinks the stones a touch so the row closes with even gaps
+    let fit = fitStones(arc[0], arc[1], rg0, probe.length, gap);
+    // alternating stones need an even count to close a full circle
+    if (full && alternating(ctx) && fit.count % 2 === 1)
+      fit = fitStones(arc[0], arc[1], rg0, (TAU * rg0) / (fit.count + 1) - gap + 1e-3, gap);
+    const st = fit.size < probe.length - 1e-6 ? accentStone(ctx, (w * fit.size) / probe.length) : probe;
+    const dA = fit.angles.length > 1 ? fit.angles[1] - fit.angles[0] : fit.pitch / rg0;
+    let angles = fit.angles;
+    const want = Math.round(num(ctx.params, 'stoneCount', 0, 0, 40));
+    if (want > 0 && !full && want < angles.length) {
+      const drop = Math.floor((angles.length - want) / 2);
+      angles = angles.slice(drop, drop + want);
+    }
+    placed = angles.map((t) => ({ t, st, rg: rg0 }));
+    prongAt = angles.map((t) => t - dA / 2);
+    if (!full && angles.length) prongAt.push(angles[angles.length - 1] + dA / 2);
+    prongW = prongAt.map(() => st.width);
+  }
+  prongAt.sort((a, b) => a - b);
+  const maxW = placed.reduce((m, p) => Math.max(m, p.st.width), 0.8);
+  const pr = prongR(maxW);
+  // the body is only as wide as the row needs: stones sit proud with prongs on the body edge
+  const Wb = Math.min(W, maxW + pr * 1.2);
+  const body = seatSection(Wb, T, R);
+  const metal: THREE.BufferGeometry[] = [];
+  if (!o.bodyless) {
+    if (scallop && placed.length && !graduated) {
+      // shared-prong look: the side walls dip in a U under every stone, showing its pavilion from the side
+      const st0 = placed[0].st;
+      const dA = placed.length > 1 ? placed[1].t - placed[0].t : st0.length / rg0;
+      const dip = Math.min(T * 0.45, st0.built.pavilionDepth * 0.7);
+      const first = prongAt[0];
+      const last = prongAt[prongAt.length - 1];
+      const n = 16;
+      metal.push(
+        sweep({
+          segments: segs(Math.min(900, Math.max(160, placed.length * 14)), z),
+          zOffset: z,
+          smoothProfile: true,
+          profile: (theta) => {
+            let phase = (theta - first) / dA;
+            if (full) phase = ((phase % 1) + 1) % 1;
+            const inside = full || (theta >= first && theta <= last);
+            const f = inside ? Math.sin(Math.PI * clamp(phase - Math.floor(phase), 0, 1)) ** 0.7 : 0;
+            const sec: Section = { W: Wb, bot: body.bot, top: (u) => body.top(u) - dip * f };
+            return slicePoly(sec, -Wb / 2, Wb / 2, n);
+          },
+        }),
+      );
+    } else metal.push(sweepSection(body, { z }));
+  }
+  const dz = (t: number, rg: number) => (z ? (z(t + 1e-3) - z(t - 1e-3)) / 2e-3 / rg : 0);
+  const spinAt = (t: number, rg: number) => Math.atan(dz(t, rg));
+  const stones: THREE.BufferGeometry[] = [];
+  const stones2: THREE.BufferGeometry[] = [];
+  const alt = alternating(ctx);
+  placed.forEach((p, i) =>
+    (alt && i % 2 === 1 ? stones2 : stones).push(
+      ...instances(p.st.built.geometry, [ringFrame(p.t, 0, p.rg, z, spinAt(p.t, p.rg))]),
+    ),
   );
   // each prong sits in the V between two round girdles and leans over both of them
-  const zp = Math.min(Wb / 2 - pr * 0.6, (sw / 2) * 0.74);
-  const tipR = rg + st.built.crownHeight * 0.45;
-  for (const t of prongAngles)
-    for (const u of [-zp, zp]) {
-      const a = ringPt(t, u, rTop - 0.35, z);
-      const b = ringPt(t, u * 0.93, tipR, z);
-      metal.push(...rod(a, b, pr, pr * 0.85));
-    }
+  prongAt.forEach((t, i) => {
+    const sw = prongW[i] ?? maxW;
+    const prad = prongR(sw);
+    const near = placed.reduce((b, p) => (Math.abs(p.t - t) < Math.abs(b.t - t) ? p : b), placed[0]);
+    const rgm = near.rg;
+    const m = ringFrame(t, 0, rgm, z, spinAt(t, rgm));
+    const baseU = Math.min(Wb / 2 - prad * 0.6, (sw / 2) * 0.74);
+    const tipU = (sw / 2) * 0.74;
+    const baseY = rTop - 0.35 - rgm;
+    const tipY = near.st.built.crownHeight * 0.45;
+    for (const sg of [-1, 1])
+      metal.push(
+        ...rod(
+          new THREE.Vector3(0, baseY, sg * baseU).applyMatrix4(m),
+          new THREE.Vector3(0, tipY, sg * tipU * 0.93).applyMatrix4(m),
+          prad,
+          prad * 0.85,
+        ),
+      );
+  });
   return parts(
     part('band-metal', metal, `${scallop ? 'shared-prong' : 'prong'} ${cov}`),
     part('band-stone', stones, 'eternity stones'),
+    alt ? part('band-stone2', stones2, 'alternate stones') : null,
   );
+}
+
+/** Bodyless prong stones that follow a contour or chevron band over the bend. */
+export function bentRow(ctx: BandCtx, z: ZFn, half: number): Part[] {
+  const spread = num(ctx.params, 'stoneSpread', 1, 0.4, 3);
+  return sharedProngRow(ctx, 'half', z, false, {
+    bodyless: true,
+    arc: bendArc(clamp(half * spread, 0.1, 1.5)),
+  });
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -177,14 +397,28 @@ function channelRow(ctx: BandCtx, cov: Coverage, z: ZFn | undefined): Part[] {
     },
   });
   const gap = num(ctx.params, 'gapMm', 0.08, 0, 1);
-  const fit = fitStones(arc[0], arc[1], rg, st.length, gap);
+  let fit = fitStones(arc[0], arc[1], rg, st.length, gap);
+  if (cov === 'full' && alternating(ctx) && fit.count % 2 === 1)
+    fit = fitStones(arc[0], arc[1], rg, (TAU * rg) / (fit.count + 1) - gap + 1e-3, gap);
   if (fit.size < st.length - 1e-6) st = accentStone(ctx, (w * fit.size) / st.length);
   const angles = fit.angles;
+  const alt = alternating(ctx);
+  const mats = angles.map((t) => ringFrame(t, 0, rg, z));
   const stones = instances(
     st.built.geometry,
-    angles.map((t) => ringFrame(t, 0, rg, z)),
+    mats.filter((_, i) => !alt || i % 2 === 0),
   );
-  return parts(part('band-metal', [g], `channel ${cov}`), part('band-stone', stones, 'channel stones'));
+  const stones2 = alt
+    ? instances(
+        st.built.geometry,
+        mats.filter((_, i) => i % 2 === 1),
+      )
+    : [];
+  return parts(
+    part('band-metal', [g], `channel ${cov}`),
+    part('band-stone', stones, 'channel stones'),
+    alt ? part('band-stone2', stones2, 'alternate stones') : null,
+  );
 }
 
 // ---------------------------------------------------------------------------------------------
