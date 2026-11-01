@@ -146,7 +146,7 @@ function filigree(ctx: HeadCtx, opts: ProngSetOpts, wireMm: number): THREE.Buffe
 
 const builders: Record<string, (ctx: HeadCtx) => Part[]> = {
   'solitaire-4-prong': (ctx) => prongHead(ctx, { count: 4, style: 'round', rails: 1 }),
-  'solitaire-6-prong': (ctx) => prongHead(ctx, { count: 6, style: 'claw', rails: 1, baseFrac: 0.4 }),
+  'solitaire-6-prong': (ctx) => prongHead(ctx, { count: 6, style: 'claw', rails: 1, baseFrac: 0.26 }),
   '3-prong': (ctx) => prongHead(ctx, { count: 3, style: 'round', rails: 1, phase: 0 }),
   'double-claw': (ctx) => prongHead(ctx, { count: 4, style: 'claw', rails: 1, double: true }),
   basket: (ctx) => prongHead(ctx, { count: 4, style: 'round', rails: 2 }),

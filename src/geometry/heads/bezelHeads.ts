@@ -12,11 +12,14 @@ import {
   meanRadius,
   metalPart,
   num,
+  pointAt,
+  prongSites,
   resample,
   ringDrop,
   stoneSurfaceY,
   support,
   v3,
+  wire,
   type CleanOutline,
   type PathPt,
   type SectionPt,
@@ -93,7 +96,15 @@ function hugScale(ctx: HeadCtx, d: CollarDims, y: number): number {
  * Just under the girdle a small undercut ends the collar, and a thin skirt follows the pavilion down to the seat on the
  * shank, so the setting reads as a slim frame on a tapered cone rather than a deep cup.
  */
-function bezelSection(ctx: HeadCtx, d: CollarDims): SectionPt[] {
+/** Height of the collar's lower edge: a basket-carried collar is a little deeper than a skirted one. */
+function collarY(d: CollarDims, open: boolean): number {
+  const g2 = d.gt * 0.5;
+  return open
+    ? -g2 - Math.min(0.75, d.pd * 0.3, Math.max(0.12, d.bd * 0.4))
+    : -g2 - Math.min(0.4, d.pd * 0.18, Math.max(0.12, d.bd * 0.25));
+}
+
+function bezelSection(ctx: HeadCtx, d: CollarDims, open = false): SectionPt[] {
   const t = num(ctx.params, 'bezelThickness', 0.5, 0.35, 1.5);
   const crown = ctx.center.built.crownHeight;
   const lip = num(ctx.params, 'bezelHeight', Math.min(0.2, crown * 0.2), 0.1, 1.5);
@@ -101,7 +112,7 @@ function bezelSection(ctx: HeadCtx, d: CollarDims): SectionPt[] {
   const yTop = g2 + Math.min(lip, Math.max(0.1, crown * 0.4));
   const inset = Math.min(crownInset(ctx.center.built, yTop), 0.4); // the lip overlaps the crown only slightly
   // collar: a thin wall from the lip to just under the girdle
-  const yColl = -g2 - Math.min(0.4, d.pd * 0.18, Math.max(0.12, d.bd * 0.25));
+  const yColl = collarY(d, open);
   const skin = Math.max(0.3, t * 0.7); // tulip wall thickness
   const span = d.bd + yColl; // from the collar down to the seat
   const skirt: SectionPt[] = [];
@@ -114,6 +125,22 @@ function bezelSection(ctx: HeadCtx, d: CollarDims): SectionPt[] {
     skirt.push([skin * (1 - 0.3 * f), y, k]);
   }
   const yCup = -Math.min(d.pd * 0.55, d.bd * 0.7);
+  if (open) {
+    // a thin collar only: its lower edge follows the pavilion; a wire basket carries it (see basketWires)
+    return [
+      [-inset, yTop, 1],
+      [-inset * 0.5 + 0.02, yTop + 0.04, 1],
+      [t * 0.3, yTop + 0.045, 1],
+      [t * 0.75, yTop - 0.03, 1],
+      [t, yTop - 0.16, 1],
+      [t, yColl + 0.1, 1],
+      [t * 0.85, yColl - 0.04, 1],
+      [t * 0.4, yColl - 0.07, Math.min(1, k0 + 0.02)],
+      [0.05, yColl - 0.02, k0],
+      [-0.03, -g2 - 0.02, 1],
+      [-0.03, g2, 1],
+    ];
+  }
   return [
     [-inset, yTop, 1],
     [-inset * 0.5 + 0.02, yTop + 0.04, 1],
@@ -132,9 +159,50 @@ function bezelSection(ctx: HeadCtx, d: CollarDims): SectionPt[] {
   ];
 }
 
+/**
+ * Four slim wires rise from the shank shoulders, sweep outward in a tulip curve and meet the underside of the collar,
+ * leaving open space between them (the stone's pavilion shows through).
+ */
+function basketWires(ctx: HeadCtx, d: CollarDims): THREE.BufferGeometry[] {
+  const t = num(ctx.params, 'bezelThickness', 0.5, 0.35, 1.5);
+  const yColl = collarY(d, true);
+  const r = Math.max(0.3, t * 0.7);
+  const bs = Math.min(d.bs, 0.35);
+  const kTop = hugScale(ctx, d, yColl); // under the collar's lower edge, which follows the pavilion
+  const drop = (x: number, z: number) => ringDrop(ctx, x * ctx.bandAxis[0] + z * ctx.bandAxis[1]);
+  const ySeat = -d.bd + r * 0.9;
+  const out: THREE.BufferGeometry[] = [];
+  const sites = prongSites(d.o, { count: 4, phase: 0 });
+  const ring: THREE.Vector3[] = [];
+  for (const s of sites) {
+    const p = pointAt(d.o, s);
+    const top = v3(
+      p.x * kTop + p.nx * (t * 0.5 + r * 0.6),
+      yColl + 0.12,
+      p.z * kTop + p.nz * (t * 0.5 + r * 0.6),
+    );
+    const bx = p.x * bs;
+    const bz = p.z * bs;
+    const seat = v3(bx, ySeat - drop(bx, bz), bz);
+    const at = (f: number) => {
+      const e = f * f * (3 - 2 * f);
+      return v3(top.x + (seat.x - top.x) * e, top.y + (seat.y - top.y) * f, top.z + (seat.z - top.z) * e);
+    };
+    out.push(...wire([seat, at(0.7), at(0.4), at(0.15), top], r, 18, 8));
+    ring.push(seat);
+  }
+  out.push(loop(ring, r * 0.95, 48, 8));
+  return out;
+}
+
 function bezelFull(ctx: HeadCtx): Part[] {
   const d = collarDims(ctx);
-  return [metalPart([loft(resample(d.o, 120, 1), bezelSection(ctx, d), true)], 'bezel')];
+  return [
+    metalPart(
+      [loft(resample(d.o, 120, 1), bezelSection(ctx, d, true), true), ...basketWires(ctx, d)],
+      'bezel',
+    ),
+  ];
 }
 
 /** Half bezel: two collar arcs on the sides facing along the band; the other two sides stay open. */

@@ -17,7 +17,7 @@
     "colorName": "teal",
     "clarity": null
    },
-   "head": "basket",
+   "head": "three-stone",
    "shank": "plain-round",
    "metals": [
     "yellow-gold-14k"
@@ -29,15 +29,24 @@
    "orientation": "north-south",
    "tune": {
     "shank": {
-     "thicknessMm": 1.7,
-     "topThicknessMm": 1.7,
      "widthMm": 1.7,
-     "topWidthMm": 1.7
+     "topWidthMm": 1.7,
+     "thicknessMm": 1.7,
+     "topThicknessMm": 1.7
+    },
+    "head": {
+     "sideRatio": 0.42,
+     "sideGap": 0.08,
+     "sideCut": "marquise",
+     "sideProngs": 3
+    },
+    "accent": {
+     "sizeMm": 2.4
     }
    }
   },
   "band": null,
-  "notes": "Raised basket head with marquise and round diamonds arranged like butterfly wings around a heat-treated Australian teal sapphire; 1.7 mm round shank."
+  "notes": "Raised basket head with marquise and round diamonds arranged like butterfly wings around a heat-treated Australian teal sapphire; 1.7 mm round shank. Photo audit: oval sapphire flanked by a marquise-and-round diamond cluster on each side; modelled as a three-stone with marquise sides."
  },
  {
   "id": "r3-002",
@@ -57,10 +66,10 @@
     "colorName": "salt and pepper",
     "clarity": null
    },
-   "head": "solitaire-4-prong",
-   "shank": "plain-round",
+   "head": "five-stone",
+   "shank": "dainty",
    "metals": [
-    "yellow-gold-14k"
+    "white-gold-14k"
    ],
    "finish": "polished",
    "accents": [
@@ -70,21 +79,25 @@
    "orientation": "north-south",
    "tune": {
     "shank": {
-     "thicknessMm": 1.7,
-     "topThicknessMm": 1.7,
-     "widthMm": 1.7,
-     "topWidthMm": 1.7
+     "widthMm": 1.6,
+     "topWidthMm": 1.6,
+     "thicknessMm": 1.5,
+     "topThicknessMm": 1.5
     },
     "placement": {
      "raise": 0.3
     },
     "head": {
-     "prongCount": 4
+     "sideRatio": 0.42,
+     "outerRatio": 0.4,
+     "sideGap": 0.12,
+     "sideCut": "baguette",
+     "sideProngs": 3
     }
    }
   },
   "band": null,
-  "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here."
+  "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side, modelled with baguette sides on both."
  },
  {
   "id": "r3-003",
@@ -104,7 +117,7 @@
     "colorName": "black salt and pepper",
     "clarity": null
    },
-   "head": "solitaire-4-prong",
+   "head": "three-stone",
    "shank": "pave",
    "metals": [
     "yellow-gold-14k"
@@ -126,11 +139,17 @@
     },
     "placement": {
      "raise": 0.3
+    },
+    "head": {
+     "sideRatio": 0.4,
+     "sideGap": 0.1,
+     "sideCut": "trillion",
+     "sideProngs": 3
     }
    }
   },
   "band": null,
-  "notes": "Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered."
+  "notes": "Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band."
  },
  {
   "id": "r3-004",
@@ -150,7 +169,7 @@
     "colorName": "black salt and pepper",
     "clarity": null
    },
-   "head": "solitaire-4-prong",
+   "head": "three-stone",
    "shank": "pave",
    "metals": [
     "yellow-gold-14k"
@@ -161,7 +180,7 @@
     "ombre diamonds in band 0.16 tcw",
     "rose-cut emerald shape 7.97x5.58 mm"
    ],
-   "orientation": "east-west",
+   "orientation": "north-south",
    "tune": {
     "shank": {
      "thicknessMm": 1.7,
@@ -173,11 +192,20 @@
     },
     "placement": {
      "raise": 0.3
+    },
+    "head": {
+     "sideRatio": 0.28,
+     "sideGap": 0.06,
+     "sideCut": "round-brilliant",
+     "sideProngs": 3
+    },
+    "accent": {
+     "sizeMm": 1.8
     }
    }
   },
   "band": null,
-  "notes": "Hand-faceted rose-cut emerald-shaped salt-and-pepper diamond with round white clusters and an ombre band. Nearest cut id emerald-cut."
+  "notes": "Hand-faceted rose-cut emerald-shaped salt-and-pepper diamond with round white clusters and an ombre band. Nearest cut id emerald-cut. Photo audit: emerald shape stands north-south with a small round cluster each side and a half-pave band."
  },
  {
   "id": "r3-005",
@@ -210,10 +238,10 @@
    "orientation": "north-south",
    "tune": {
     "shank": {
-     "thicknessMm": 1.7,
-     "topThicknessMm": 1.7,
-     "widthMm": 1.7,
-     "topWidthMm": 1.7
+     "widthMm": 1.3,
+     "topWidthMm": 1.3,
+     "thicknessMm": 1.3,
+     "topThicknessMm": 1.3
     },
     "placement": {
      "raise": 0.8
@@ -221,7 +249,7 @@
    }
   },
   "band": null,
-  "notes": "Step-cut kite aquamarine in a raised bezel with cut-away sides, a diamond half-halo and a small moonstone accent."
+  "notes": "Step-cut kite aquamarine in a raised bezel with cut-away sides, a diamond half-halo and a small moonstone accent. Photo audit: photo: slim band; kite with cut-away bezel, baguette fan and a moonstone drop."
  },
  {
   "id": "r3-006",
@@ -244,7 +272,7 @@
    "head": "basket",
    "shank": "pave",
    "metals": [
-    "yellow-gold-14k"
+    "white-gold-14k"
    ],
    "finish": "polished",
    "accents": [
@@ -256,12 +284,10 @@
    "orientation": "north-south",
    "tune": {
     "shank": {
-     "thicknessMm": 1.7,
-     "topThicknessMm": 1.7,
      "widthMm": 1.7,
      "topWidthMm": 1.7,
-     "stoneSizeMm": 1.2,
-     "coverage": 0.5
+     "stoneSizeMm": 1.3,
+     "coverage": 0.55
     },
     "head": {
      "prongCount": 3
@@ -269,7 +295,7 @@
    }
   },
   "band": null,
-  "notes": "Step-cut kite moissanite (center sizes 12x6 to 14x8 mm) above a half-halo mixing rubies, black and white diamonds. Carat varies by size so null."
+  "notes": "Step-cut kite moissanite (center sizes 12x6 to 14x8 mm) above a half-halo mixing rubies, black and white diamonds. Carat varies by size so null. Photo audit: white metal; the photo shows a baguette fan and ruby/black accents under a kite that we cannot build."
  },
  {
   "id": "r3-007",
@@ -318,7 +344,7 @@
    "stone": {
     "material": "morganite",
     "cut": "round-brilliant",
-    "carat": null,
+    "carat": 0.5,
     "colorName": "peach",
     "clarity": null
    },
@@ -332,10 +358,15 @@
     "two-leaf head",
     "5 mm round stone"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "placement": {
+     "raise": 0.2
+    }
+   }
   },
   "band": null,
-  "notes": "A two-leaf solitaire head holding a 5 mm round peach morganite on a twig-style band; matching band sold separately. Head id is nearest fit."
+  "notes": "A two-leaf solitaire head holding a 5 mm round peach morganite on a twig-style band; matching band sold separately. Head id is nearest fit. Photo audit: low, leaf-wrapped setting for a small round stone."
  },
  {
   "id": "r3-009",
@@ -352,10 +383,10 @@
     "material": "alexandrite",
     "cut": "oval",
     "carat": 2.0,
-    "colorName": "deep blue-purple (lab-grown per search listing)",
+    "colorName": "purplish-red",
     "clarity": null
    },
-   "head": "solitaire-4-prong",
+   "head": "three-stone",
    "shank": "pave",
    "metals": [
     "rose-gold-14k"
@@ -370,11 +401,20 @@
     "shank": {
      "coverage": 0.7,
      "stoneSizeMm": 1.4
+    },
+    "head": {
+     "sideRatio": 0.4,
+     "sideGap": 0.1,
+     "sideCut": "round-brilliant",
+     "sideProngs": 3
+    },
+    "accent": {
+     "sizeMm": 2.6
     }
    }
   },
   "band": null,
-  "notes": "Oval lab-grown alexandrite on a pave rose-gold band; head and carat not stated on page (search snippet says approx. 2 ct, 7x9 mm). Head style not stated on page; prong head assumed."
+  "notes": "Oval lab-grown alexandrite on a pave rose-gold band; head and carat not stated on page (search snippet says approx. 2 ct, 7x9 mm). Head style not stated on page; prong head assumed. Photo audit: oval centre with two round side stones over a pave band; the blue-violet colour-change is not in the alexandrite colour list."
  },
  {
   "id": "r3-010",
@@ -389,7 +429,7 @@
   "engagement": {
    "stone": {
     "material": "moissanite",
-    "cut": "round-brilliant",
+    "cut": "oval",
     "carat": 1.0,
     "colorName": null,
     "clarity": null
@@ -397,16 +437,17 @@
    "head": "solitaire-4-prong",
    "shank": "leaf-vine",
    "metals": [
-    "rose-gold-14k"
+    "yellow-gold-14k"
    ],
    "finish": "polished",
    "accents": [
     "leaf-shaped accents"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": null
   },
   "band": null,
-  "notes": "Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence."
+  "notes": "Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents."
  },
  {
   "id": "r3-011",
@@ -556,7 +597,7 @@
     "colorName": null,
     "clarity": null
    },
-   "head": "basket",
+   "head": "solitaire-4-prong",
    "shank": "plain-round",
    "metals": [
     "white-gold-14k",
@@ -564,10 +605,18 @@
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 1.4,
+     "topWidthMm": 1.4,
+     "thicknessMm": 1.3,
+     "topThicknessMm": 1.3
+    }
+   }
   },
   "band": null,
-  "notes": "White-gold basket over a yellow-gold shank per search description; gold karats not seen so 14k is a guess at nearest id."
+  "notes": "White-gold basket over a yellow-gold shank per search description; gold karats not seen so 14k is a guess at nearest id. Photo audit: four-prong white-gold head on a thin yellow shank."
  },
  {
   "id": "r3-016",
@@ -615,22 +664,33 @@
   "engagement": {
    "stone": {
     "material": "sapphire",
-    "cut": null,
+    "cut": "oval",
     "carat": 1.7,
     "colorName": "teal",
     "clarity": null
    },
    "head": "solitaire-4-prong",
-   "shank": "plain-round",
+   "shank": "split",
    "metals": [
     "yellow-gold-14k"
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "prongCount": 4
+    },
+    "shank": {
+     "splitAngleDeg": 40,
+     "widthMm": 1.6,
+     "topWidthMm": 1.6,
+     "gapMm": 0
+    }
+   }
   },
   "band": null,
-  "notes": "Teal solitaire in 14k yellow gold; sold out; cut and head not confirmed (head is a guess from the word solitaire)."
+  "notes": "Teal solitaire in 14k yellow gold; sold out; cut and head not confirmed (head is a guess from the word solitaire). Photo audit: shank splits into two wires near the stone with engraved shoulders."
  },
  {
   "id": "r3-018",
@@ -650,8 +710,8 @@
     "colorName": "teal",
     "clarity": null
    },
-   "head": "vintage-filigree",
-   "shank": "vintage-filigree",
+   "head": "three-stone",
+   "shank": "plain-round",
    "metals": [
     "yellow-gold-14k"
    ],
@@ -659,10 +719,27 @@
    "accents": [
     "diamond accents"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "sideRatio": 0.3,
+     "sideGap": 0.08,
+     "sideCut": "round-brilliant",
+     "sideProngs": 3
+    },
+    "shank": {
+     "widthMm": 1.4,
+     "topWidthMm": 1.4,
+     "thicknessMm": 1.3,
+     "topThicknessMm": 1.3
+    },
+    "accent": {
+     "sizeMm": 2.0
+    }
+   }
   },
   "band": null,
-  "notes": "Art deco styled teal oval sapphire with diamonds in 14k yellow gold; vintage ids are nearest fit."
+  "notes": "Art deco styled teal oval sapphire with diamonds in 14k yellow gold; vintage ids are nearest fit. Photo audit: photo shows a plain thin band with a small round diamond each side, not filigree."
  },
  {
   "id": "r3-019",
@@ -747,7 +824,7 @@
     "clarity": null
    },
    "head": "double-halo",
-   "shank": "plain-round",
+   "shank": "pave",
    "metals": [
     "rose-gold-14k"
    ],
@@ -755,10 +832,18 @@
    "accents": [
     "pear-shaped diamond accents 0.72 tcw"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 3.0,
+     "topWidthMm": 3.4,
+     "coverage": 0.8,
+     "stoneSizeMm": 1.2
+    }
+   }
   },
   "band": null,
-  "notes": "1.10 ct cabochon opal in double halo with pear diamonds in 14k rose gold; listed sold out."
+  "notes": "1.10 ct cabochon opal in double halo with pear diamonds in 14k rose gold; listed sold out. Photo audit: pear side stones and pave split shoulders (pears not buildable here)."
  },
  {
   "id": "r3-022",
@@ -773,13 +858,13 @@
   "engagement": {
    "stone": {
     "material": "lab-diamond",
-    "cut": null,
-    "carat": null,
+    "cut": "cushion",
+    "carat": 2.5,
     "colorName": "fancy intense pink",
     "clarity": null
    },
-   "head": null,
-   "shank": null,
+   "head": "halo-cushion",
+   "shank": "pave",
    "metals": [
     "rose-gold-14k"
    ],
@@ -787,10 +872,22 @@
    "accents": [
     "4.18 ctw total"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "haloShape": "cushion",
+     "meleeSize": 1.5
+    },
+    "shank": {
+     "widthMm": 3.6,
+     "topWidthMm": 4.0,
+     "coverage": 1,
+     "stoneSizeMm": 1.3
+    }
+   }
   },
   "band": null,
-  "notes": "Pink lab-grown diamond ring, 4.18 ctw total (center weight not seen); sale price from $4,950."
+  "notes": "Pink lab-grown diamond ring, 4.18 ctw total (center weight not seen); sale price from $4,950. Photo audit: cushion pink centre in a pave cushion halo over a fully pave wide band."
  },
  {
   "id": "r3-023",
@@ -811,16 +908,29 @@
     "clarity": null
    },
    "head": "bezel-half",
-   "shank": null,
+   "shank": "plain-round",
    "metals": [
     "yellow-gold-14k"
    ],
    "finish": "polished",
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "head": {
+     "bezelThickness": 0.4,
+     "bezelHeight": 0.3,
+     "coverAngle": 60
+    },
+    "shank": {
+     "widthMm": 1.8,
+     "topWidthMm": 1.8,
+     "thicknessMm": 1.6,
+     "topThicknessMm": 1.6
+    }
+   }
   },
   "band": null,
-  "notes": "7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting."
+  "notes": "7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south."
  },
  {
   "id": "r3-024",
@@ -956,11 +1066,15 @@
    "tune": {
     "center": {
      "carat": 12
+    },
+    "head": {
+     "meleeSize": 2.6,
+     "haloGap": 0.1
     }
    }
   },
   "band": null,
-  "notes": "Garrard catalogue ring chosen by Diana in 1981; Kate wore it from 16 Nov 2010. Price accounts conflict (GBP 28,500 vs 47,000), so null."
+  "notes": "Garrard catalogue ring chosen by Diana in 1981; Kate wore it from 16 Nov 2010. Price accounts conflict (GBP 28,500 vs 47,000), so null. Photo audit: Diana ring: a halo of 14 large brilliant diamonds."
  },
  {
   "id": "r3-028",
@@ -1050,8 +1164,8 @@
     "colorName": "red",
     "clarity": null
    },
-   "head": null,
-   "shank": null,
+   "head": "solitaire-4-prong",
+   "shank": "pave",
    "metals": [
     "platinum"
    ],
@@ -1059,10 +1173,18 @@
    "accents": [
     "accent diamonds 0.13 tcw"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 1.6,
+     "topWidthMm": 1.6,
+     "coverage": 0.45,
+     "stoneSizeMm": 1.1
+    }
+   }
   },
   "band": null,
-  "notes": "Brilliant-cut kite ruby with diamond accents; carat and accents from search snippet; price not seen."
+  "notes": "Brilliant-cut kite ruby with diamond accents; carat and accents from search snippet; price not seen. Photo audit: thin band with melee on the shoulders; kite with a small diamond fan below."
  },
  {
   "id": "r3-031",

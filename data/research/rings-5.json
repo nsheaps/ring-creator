@@ -18,16 +18,27 @@
     "clarity": null
    },
    "head": "tension",
-   "shank": "twisted",
+   "shank": "bypass",
    "metals": [
     "platinum"
    ],
    "finish": null,
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 3.6,
+     "topWidthMm": 3.6,
+     "thicknessMm": 2.0,
+     "topThicknessMm": 2.0,
+     "overlapDeg": 40,
+     "gapMm": 0.3,
+     "tipTaper": 0.2
+    }
+   }
   },
   "band": null,
-  "notes": "Spiralling tension-set solitaire; page shows a round stone and is marked sold out so no price. Search snippet listed a $3,958 setting price earlier."
+  "notes": "Spiralling tension-set solitaire; page shows a round stone and is marked sold out so no price. Search snippet listed a $3,958 setting price earlier. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated)."
  },
  {
   "id": "r5-002",
@@ -48,16 +59,27 @@
     "clarity": null
    },
    "head": "tension",
-   "shank": "twisted",
+   "shank": "bypass",
    "metals": [
     "platinum"
    ],
    "finish": null,
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 3.6,
+     "topWidthMm": 3.6,
+     "thicknessMm": 2.0,
+     "topThicknessMm": 2.0,
+     "overlapDeg": 40,
+     "gapMm": 0.3,
+     "tipTaper": 0.2
+    }
+   }
   },
   "band": null,
-  "notes": "Chunky twisted tension band shown with a 1 ct round; sold out so price unknown."
+  "notes": "Chunky twisted tension band shown with a 1 ct round; sold out so price unknown. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated)."
  },
  {
   "id": "r5-003",
@@ -72,22 +94,30 @@
   "engagement": {
    "stone": {
     "material": null,
-    "cut": "oval",
+    "cut": "pear",
     "carat": null,
     "colorName": null,
     "clarity": null
    },
    "head": "bezel-half",
-   "shank": "comfort-fit",
+   "shank": "plain-round",
    "metals": [
     "yellow-gold-18k"
    ],
    "finish": null,
    "accents": [],
-   "orientation": "east-west"
+   "orientation": "east-west",
+   "tune": {
+    "shank": {
+     "widthMm": 1.6,
+     "topWidthMm": 1.6,
+     "thicknessMm": 1.4,
+     "topThicknessMm": 1.4
+    }
+   }
   },
   "band": null,
-  "notes": "Comfort-fit shank rises into a half bezel holding a horizontal stone. $672 is the setting price seen in a search result; the page itself is sold out. Cut not stated."
+  "notes": "Comfort-fit shank rises into a half bezel holding a horizontal stone. $672 is the setting price seen in a search result; the page itself is sold out. Cut not stated. Photo audit: photo shows a pear lying east-west in a half bezel on a thin band."
  },
  {
   "id": "r5-004",
@@ -108,7 +138,7 @@
     "clarity": null
    },
    "head": "tension",
-   "shank": "twisted",
+   "shank": "bypass",
    "metals": [
     "platinum"
    ],
@@ -117,13 +147,18 @@
    "orientation": "north-south",
    "tune": {
     "shank": {
-     "widthMm": 1.5,
-     "topWidthMm": 1.5
+     "widthMm": 2.6,
+     "topWidthMm": 2.6,
+     "thicknessMm": 2.0,
+     "topThicknessMm": 2.0,
+     "overlapDeg": 40,
+     "gapMm": 0.3,
+     "tipTaper": 0.2
     }
    }
   },
   "band": null,
-  "notes": "Swirled platinum tension setting, 1.5 mm at top tapering to 2.2 mm; setting only, any center stone shape."
+  "notes": "Swirled platinum tension setting, 1.5 mm at top tapering to 2.2 mm; setting only, any center stone shape. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated)."
  },
  {
   "id": "r5-005",
@@ -144,7 +179,7 @@
     "clarity": null
    },
    "head": "tension",
-   "shank": "twisted",
+   "shank": "bypass",
    "metals": [
     "platinum"
    ],
@@ -152,10 +187,21 @@
    "accents": [
     "22 round diamonds 0.17 ctw G-H SI1-SI2 pave"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 3.6,
+     "topWidthMm": 3.6,
+     "thicknessMm": 2.0,
+     "topThicknessMm": 2.0,
+     "overlapDeg": 40,
+     "gapMm": 0.3,
+     "tipTaper": 0.2
+    }
+   }
   },
   "band": null,
-  "notes": "Twisted swirl tension setting with pave on the band, 2.1 mm wide; center stone sold separately."
+  "notes": "Twisted swirl tension setting with pave on the band, 2.1 mm wide; center stone sold separately. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated)."
  },
  {
   "id": "r5-006",
@@ -208,20 +254,28 @@
     "material": "diamond",
     "cut": "oval",
     "carat": 1.0,
-    "colorName": "I-J",
+    "colorName": "faint-yellow",
     "clarity": "SI2-SI3"
    },
    "head": "bezel-full",
-   "shank": null,
+   "shank": "tapered",
    "metals": [
     "yellow-gold-14k"
    ],
    "finish": null,
    "accents": [],
-   "orientation": "east-west"
+   "orientation": "east-west",
+   "tune": {
+    "shank": {
+     "widthMm": 1.8,
+     "topWidthMm": 4.0,
+     "thicknessMm": 1.7,
+     "topThicknessMm": 1.9
+    }
+   }
   },
   "band": null,
-  "notes": "Natural 1 ct oval set sideways in a full gold bezel; listing sold out and carat quoted as both 1.00 and 0.96."
+  "notes": "Natural 1 ct oval set sideways in a full gold bezel; listing sold out and carat quoted as both 1.00 and 0.96. Photo audit: oval in a bezel, pale yellow, shoulders swell toward the stone."
  },
  {
   "id": "r5-008",
@@ -244,17 +298,15 @@
    "head": "bezel-full",
    "shank": "tapered",
    "metals": [
-    "platinum",
-    "yellow-gold-18k",
-    "white-gold-18k",
-    "rose-gold-18k"
+    "yellow-gold-18k"
    ],
    "finish": null,
    "accents": [],
-   "orientation": "east-west"
+   "orientation": "east-west",
+   "tune": null
   },
   "band": null,
-  "notes": "Custom design with softly tapered band and open architectural gallery; price is 'from' $6,500 up to $30,000 depending on stone. Head mapped to bezel-full as nearest."
+  "notes": "Custom design with softly tapered band and open architectural gallery; price is 'from' $6,500 up to $30,000 depending on stone. Head mapped to bezel-full as nearest. Photo audit: photo shows a single yellow-gold build."
  },
  {
   "id": "r5-009",
@@ -275,7 +327,7 @@
     "clarity": null
    },
    "head": "bezel-full",
-   "shank": null,
+   "shank": "plain-round",
    "metals": [
     "yellow-gold-14k"
    ],
@@ -283,10 +335,18 @@
    "accents": [
     "beaded bezel edge"
    ],
-   "orientation": "east-west"
+   "orientation": "east-west",
+   "tune": {
+    "shank": {
+     "widthMm": 1.6,
+     "topWidthMm": 1.6,
+     "thicknessMm": 1.6,
+     "topThicknessMm": 1.6
+    }
+   }
   },
   "band": null,
-  "notes": "Small horizontal oval in bezel with beaded edge detail. $815 is from a search result; the page is sold out."
+  "notes": "Small horizontal oval in bezel with beaded edge detail. $815 is from a search result; the page is sold out. Photo audit: beaded shank not buildable."
  },
  {
   "id": "r5-010",
@@ -390,11 +450,9 @@
     "clarity": null
    },
    "head": "toi-et-moi",
-   "shank": null,
+   "shank": "plain-round",
    "metals": [
-    "yellow-gold-14k",
-    "white-gold-14k",
-    "rose-gold-14k"
+    "yellow-gold-14k"
    ],
    "finish": null,
    "accents": [
@@ -711,26 +769,36 @@
   "engagement": {
    "stone": {
     "material": null,
-    "cut": "emerald-cut",
+    "cut": "round-brilliant",
     "carat": 1.0,
     "colorName": null,
     "clarity": null
    },
    "head": "solitaire-6-prong",
-   "shank": null,
+   "shank": "channel",
    "metals": [
-    "yellow-gold-14k",
-    "white-gold-14k",
-    "rose-gold-14k"
+    "yellow-gold-14k"
    ],
    "finish": null,
    "accents": [
     "1/5 ctw baguette side diamonds G SI1"
    ],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 2.2,
+     "topWidthMm": 2.2,
+     "coverage": 0.6,
+     "stoneSizeMm": 1.4
+    },
+    "accent": {
+     "cut": "baguette",
+     "sizeMm": 2.0
+    }
+   }
   },
   "band": null,
-  "notes": "Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested."
+  "notes": "Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested. Photo audit: photo: round centre in a hexagonal frame with baguettes each side on the shank."
  },
  {
   "id": "r5-023",
@@ -753,7 +821,8 @@
    "head": "toi-et-moi",
    "shank": "plain-round",
    "metals": [
-    "yellow-gold-14k"
+    "rose-gold-14k",
+    "white-gold-14k"
    ],
    "finish": null,
    "accents": [
@@ -772,7 +841,7 @@
    }
   },
   "band": null,
-  "notes": "Pre-owned mixed-shape pair: prong-set emerald cut plus a bezel-set kite; 2.2 mm band. Title says 2-tone but second metal is not stated."
+  "notes": "Pre-owned mixed-shape pair: prong-set emerald cut plus a bezel-set kite; 2.2 mm band. Title says 2-tone but second metal is not stated. Photo audit: rose-gold prongs on the emerald cut, white-gold bezel and shank."
  },
  {
   "id": "r5-024",
@@ -852,8 +921,8 @@
     "colorName": "F-G",
     "clarity": "VS"
    },
-   "head": "three-stone",
-   "shank": "plain-round",
+   "head": "solitaire-4-prong",
+   "shank": "pave",
    "metals": [
     "yellow-gold-14k"
    ],
@@ -864,8 +933,10 @@
    "orientation": "east-west",
    "tune": {
     "shank": {
-     "widthMm": 2.3,
-     "topWidthMm": 2.3
+     "widthMm": 3.6,
+     "topWidthMm": 4.0,
+     "coverage": 1,
+     "stoneSizeMm": 1.1
     },
     "accent": {
      "sizeMm": 2.4
@@ -873,7 +944,7 @@
    }
   },
   "band": null,
-  "notes": "Horizontal 2 ct emerald cut with round pave side stones, 2.3 mm width. Head id is nearest; construction not spelled out."
+  "notes": "Horizontal 2 ct emerald cut with round pave side stones, 2.3 mm width. Head id is nearest; construction not spelled out. Photo audit: no separate side stones: the 0.90 ct is a pave band."
  },
  {
   "id": "r5-027",
@@ -889,22 +960,28 @@
    "stone": {
     "material": "diamond",
     "cut": "oval",
-    "carat": 0.5,
+    "carat": 0.33,
     "colorName": null,
     "clarity": null
    },
-   "head": "bypass-head",
-   "shank": "bypass",
+   "head": "solitaire-4-prong",
+   "shank": "split",
    "metals": [
-    "yellow-gold-14k",
     "white-gold-14k"
    ],
    "finish": null,
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "splitAngleDeg": 35,
+     "widthMm": 1.8,
+     "topWidthMm": 2.0
+    }
+   }
   },
   "band": null,
-  "notes": "Oval with a bypass shank in two gold colours; 0.5 is total weight; out of stock. Seen in search results only."
+  "notes": "Oval with a bypass shank in two gold colours; 0.5 is total weight; out of stock. Seen in search results only. Photo audit: oval solitaire above a double-ribbon bypass-look shank with a pave edge; rose ribbons cannot be two-toned."
  },
  {
   "id": "r5-028",
@@ -1007,11 +1084,14 @@
     "shank": {
      "widthMm": 5.0,
      "topWidthMm": 5.0
+    },
+    "placement": {
+     "raise": 0.3
     }
    }
   },
   "band": null,
-  "notes": "DOUBTFUL URL match: bold 5 mm flat band solitaire setting; price from a search summary and may belong to a sibling listing."
+  "notes": "DOUBTFUL URL match: bold 5 mm flat band solitaire setting; price from a search summary and may belong to a sibling listing. Photo audit: stone sits low between the wide band shoulders."
  },
  {
   "id": "r5-031",
@@ -1067,17 +1147,25 @@
     "colorName": null,
     "clarity": null
    },
-   "head": "solitaire-4-prong",
+   "head": "flush-gypsy",
    "shank": "wide",
    "metals": [
     "yellow-gold-14k"
    ],
    "finish": null,
    "accents": [],
-   "orientation": "north-south"
+   "orientation": "north-south",
+   "tune": {
+    "shank": {
+     "widthMm": 5.5,
+     "topWidthMm": 7.0,
+     "thicknessMm": 2.4,
+     "topThicknessMm": 2.6
+    }
+   }
   },
   "band": null,
-  "notes": "Cigar-band shank with a 1 ct lab diamond as cited in a JCK trend feature; head and cut not stated."
+  "notes": "Cigar-band shank with a 1 ct lab diamond as cited in a JCK trend feature; head and cut not stated. Photo audit: photo: flush-set round in a wide domed cigar band."
  },
  {
   "id": "r5-033",
@@ -1120,17 +1208,19 @@
   "kind": "band",
   "engagement": null,
   "band": {
-   "style": "plain-flat",
+   "style": "stacker-trio",
    "metals": [
     "yellow-gold-18k"
    ],
    "stones": "rose-cut",
    "widthMm": 1.2,
    "tune": {
-    "finish": "hammered",
+    "params": {
+     "middle": "plain"
+    },
     "thicknessMm": 1.2
    }
   },
-  "notes": "Stacking ring with rough hammered 1.2 mm square shank and rose-cut diamonds; search snippet only, style id nearest."
+  "notes": "Stacking ring with rough hammered 1.2 mm square shank and rose-cut diamonds; search snippet only, style id nearest. Photo audit: four thin hammered rings stacked with a three-stone rose-cut cluster; cluster not buildable."
  }
 ]

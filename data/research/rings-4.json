@@ -138,7 +138,7 @@
   "kind": "band",
   "engagement": null,
   "band": {
-   "style": "full-eternity",
+   "style": "pave-band",
    "metals": [
     "white-gold-14k"
    ],
@@ -147,10 +147,15 @@
    "tune": {
     "accent": {
      "sizeMm": 1.2
+    },
+    "params": {
+     "coverage": "full",
+     "rows": 1,
+     "milgrainEdges": false
     }
    }
   },
-  "notes": "Fully pave-set eternity: 38 diamonds at size 7, count varies by size. Cannot be resized."
+  "notes": "Fully pave-set eternity: 38 diamonds at size 7, count varies by size. Cannot be resized. Photo audit: pave-set flat top rather than prongs."
  },
  {
   "id": "r4-008",
@@ -226,10 +231,13 @@
     "accent": {
      "cut": "emerald-cut",
      "sizeMm": 3.0
+    },
+    "params": {
+     "coverage": "full"
     }
    }
   },
-  "notes": "Emerald-cut stones each in its own bezel and laid sideways around the finger."
+  "notes": "Emerald-cut stones each in its own bezel and laid sideways around the finger. Photo audit: photo: bezel stones go all the way round and are larger than set."
  },
  {
   "id": "r4-011",
@@ -355,10 +363,16 @@
    "tune": {
     "accent": {
      "sizeMm": 1.2
+    },
+    "params": {
+     "profile": "comfort-dome",
+     "vDepth": 3.2,
+     "vHalfAngle": 0.75,
+     "apexRound": 0.08
     }
    }
   },
-  "notes": "V-shaped diamond band labelled Chevron by the retailer's curved collection."
+  "notes": "V-shaped diamond band labelled Chevron by the retailer's curved collection. Photo audit: shallow wide V; stones in the V (marquise cluster) not buildable."
  },
  {
   "id": "r4-016",
@@ -377,9 +391,17 @@
     "yellow-gold-14k"
    ],
    "stones": "none",
-   "widthMm": 1.4
+   "widthMm": 1.4,
+   "tune": {
+    "params": {
+     "profile": "comfort-dome",
+     "vDepth": 3.2,
+     "vHalfAngle": 0.75,
+     "apexRound": 0.08
+    }
+   }
   },
-  "notes": "Plain metal V-shaped band, no stones."
+  "notes": "Plain metal V-shaped band, no stones. Photo audit: shallow wide V; stones in the V (marquise cluster) not buildable."
  },
  {
   "id": "r4-017",
@@ -402,10 +424,15 @@
    "tune": {
     "accent": {
      "sizeMm": 1.4
+    },
+    "params": {
+     "profile": "comfort-dome",
+     "curveRetreat": 2.6,
+     "curveHalfAngle": 0.75
     }
    }
   },
-  "notes": "Contoured band with diamonds, made to nest against the curve of an engagement ring."
+  "notes": "Contoured band with diamonds, made to nest against the curve of an engagement ring. Photo audit: stones (pear and round cluster) not rendered on a contour band."
  },
  {
   "id": "r4-018",
@@ -428,6 +455,11 @@
    "tune": {
     "accent": {
      "sizeMm": 1.3
+    },
+    "params": {
+     "profile": "comfort-dome",
+     "curveRetreat": 2.2,
+     "curveHalfAngle": 0.7
     }
    }
   },
@@ -487,7 +519,7 @@
   "kind": "band",
   "engagement": null,
   "band": {
-   "style": "milgrain-band",
+   "style": "full-eternity",
    "metals": [
     "yellow-gold-18k"
    ],
@@ -496,11 +528,15 @@
    "tune": {
     "accent": {
      "cut": "marquise",
-     "sizeMm": 2.2
+     "sizeMm": 2.4
+    },
+    "params": {
+     "coverage": "full",
+     "setting": "shared-prong"
     }
    }
   },
-  "notes": "Marquise diamonds with milgrain edging in a vintage-leaning band."
+  "notes": "Marquise diamonds with milgrain edging in a vintage-leaning band. Photo audit: marquise stones set alternately around the band; milgrain bezel edging not buildable."
  },
  {
   "id": "r4-022",
@@ -514,15 +550,16 @@
   "kind": "band",
   "engagement": null,
   "band": {
-   "style": "braided-band",
+   "style": "twisted-band",
    "metals": [
     "white-gold-14k",
     "platinum"
    ],
    "stones": "none",
-   "widthMm": 3
+   "widthMm": 3,
+   "tune": {}
   },
-  "notes": "3mm by 1.6mm braided strand band. Price is the bottom of a $649 to $799 range; the karat comes from a search snippet and the page lists platinum, rose, white and yellow gold plus palladium."
+  "notes": "3mm by 1.6mm braided strand band. Price is the bottom of a $649 to $799 range; the karat comes from a search snippet and the page lists platinum, rose, white and yellow gold plus palladium. Photo audit: open infinity weave of loose strands; neither braided nor twisted band matches exactly."
  },
  {
   "id": "r4-023",
@@ -652,9 +689,10 @@
     "tungsten"
    ],
    "stones": "none",
-   "widthMm": 8
+   "widthMm": 8,
+   "tune": {}
   },
-  "notes": "Hammered black-plated tungsten with an offset Hawaiian koa wood inlay. $175 was a 30 percent off price (regular $250)."
+  "notes": "Hammered black-plated tungsten with an offset Hawaiian koa wood inlay. $175 was a 30 percent off price (regular $250). Photo audit: hammered black band, koa inlay offset to one side."
  },
  {
   "id": "r4-029",
@@ -710,15 +748,20 @@
   "kind": "band",
   "engagement": null,
   "band": {
-   "style": "mens-classic",
+   "style": "mens-inlay",
    "metals": [
     "titanium",
     "tantalum"
    ],
    "stones": "none",
-   "widthMm": 8
+   "widthMm": 8,
+   "tune": {
+    "params": {
+     "profile": "beveled"
+    }
+   }
   },
-  "notes": "Black titanium with grey tantalum, polished drop-bevel edges and an etched script pattern; no gemstones. Listed sold out."
+  "notes": "Black titanium with grey tantalum, polished drop-bevel edges and an etched script pattern; no gemstones. Listed sold out. Photo audit: black beveled band with an engraved grey scroll inlay (scroll pattern not buildable)."
  },
  {
   "id": "r4-032",
@@ -732,14 +775,19 @@
   "kind": "band",
   "engagement": null,
   "band": {
-   "style": "mens-classic",
+   "style": "plain-flat",
    "metals": [
     "palladium"
    ],
    "stones": "none",
-   "widthMm": 6
+   "widthMm": 6,
+   "tune": {
+    "params": {
+     "profile": "flat"
+    }
+   }
   },
-  "notes": "Square-edge 6mm palladium band; finish not stated."
+  "notes": "Square-edge 6mm palladium band; finish not stated. Photo audit: square-edge flat profile."
  },
  {
   "id": "r4-033",
@@ -917,7 +965,7 @@
     "clarity": null
    },
    "head": "basket",
-   "shank": "twisted",
+   "shank": "crossover",
    "metals": [
     "white-gold-18k"
    ],
@@ -932,8 +980,9 @@
      "prongCount": 4
     },
     "shank": {
-     "widthMm": 2.5,
-     "topWidthMm": 2.5
+     "widthMm": 1.4,
+     "topWidthMm": 1.4,
+     "spreadMm": 1.4
     }
    }
   },
@@ -945,7 +994,7 @@
    "stones": "melee",
    "widthMm": 1.7
   },
-  "notes": "Four-prong basket with 8 shared-prong accent diamonds and a 2.5mm ribbon-like shank; matching 1.7mm contoured band with 11 diamonds. Shown with 3/4 ct round."
+  "notes": "Four-prong basket with 8 shared-prong accent diamonds and a 2.5mm ribbon-like shank; matching 1.7mm contoured band with 11 diamonds. Shown with 3/4 ct round. Photo audit: ribbon shoulders wrap the basket."
  },
  {
   "id": "r4-037",

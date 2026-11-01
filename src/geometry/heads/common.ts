@@ -808,13 +808,14 @@ export function prongSet(stone: BuiltStone, opts: ProngSetOpts): THREE.BufferGeo
     const bz = b.z * bs;
     const seat = v3(bx, ySeat - drop(bx, bz), bz);
     if (lowSeat) return [seat, g];
-    // gentle S: leave the seat fairly upright, straighten out, arrive at the girdle almost vertical
-    const lerp = (t: number) => seat.clone().lerp(g, t);
-    const m1 = lerp(0.35);
-    const m2 = lerp(0.72);
+    // tulip: the prong leaves the girdle almost vertical, then sweeps in (smoothstep) and meets its neighbours low down
+    const at = (t: number) => {
+      const e = t * t * (3 - 2 * t);
+      return v3(g.x + (seat.x - g.x) * e, g.y + (seat.y - g.y) * t, g.z + (seat.z - g.z) * e);
+    };
     const radial = v3(p.nx, 0, p.nz);
-    m1.addScaledVector(radial, -0.06 + bow);
-    m2.addScaledVector(radial, 0.04 + bow * 0.6);
+    const m1 = at(0.68).addScaledVector(radial, bow * 0.6);
+    const m2 = at(0.3).addScaledVector(radial, bow);
     return [seat, m1, m2, g];
   };
 
