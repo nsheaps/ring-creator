@@ -225,9 +225,10 @@ function railBridge(ctx: HeadCtx, a: THREE.Vector3, b: THREE.Vector3, r: number)
 
 /**
  * A side stone whose extent ACROSS the band is about `size` mm.
- * Round-ish cuts: as they are. Elongated step cuts (baguettes, emerald cuts): long axis across the band, like tapered
- * baguettes beside an emerald cut. Other elongated cuts (pear, marquise, oval): long axis along the band, the pear's
- * point facing away from the centre.
+ * Round-ish cuts: as they are. Triangles (trillions): one flat side faces the centre and the point faces away from it,
+ * so the flat side (the stone's length) runs across the band. Elongated step cuts (baguettes, emerald cuts): long axis
+ * across the band, i.e. along the finger, parallel to the side of the centre stone. Other elongated cuts (pear,
+ * marquise, oval, tapered baguettes): long axis along the band, the pear's point facing away from the centre.
  */
 export function sideStone(
   ctx: HeadCtx,
@@ -243,7 +244,11 @@ export function sideStone(
   const depthPct = cut.defaultDepthPct || 0.6;
   let dims: StoneDims;
   let localX: [number, number];
-  if (aspect < 1.25) {
+  if (isTriangle(cut)) {
+    // the triangle builder puts the flat side along +X at +z and the apex at -z: turn -z to face away from the centre
+    dims = { length: size, width: size / aspect, depth: (size / aspect) * depthPct };
+    localX = [sign * px, sign * pz];
+  } else if (aspect < 1.25) {
     dims = { length: size * aspect, width: size, depth: size * depthPct };
     localX = [sign * ax, sign * az];
   } else if (cut.builder === 'step') {
@@ -257,6 +262,21 @@ export function sideStone(
     localX = [sign * ax, sign * az];
   }
   return { built: ctx.stone(cut.id, dims, { detail }), localX };
+}
+
+/** Triangular cuts (trillions): set with their flat side to the centre and three prongs, one per corner. */
+export function isTriangle(cut: CutModel): boolean {
+  return cut.params.shape === 'triangle';
+}
+
+/**
+ * The cut of one side position. 'accent' is the accent stone's cut, 'match' a smaller copy of the centre, any other
+ * value a cut id (unknown ids fall back to the accent cut).
+ */
+export function sideCutFor(ctx: HeadCtx, key: string): CutModel | 'match' {
+  if (key === 'match') return 'match';
+  if (key === 'accent' || !key) return ctx.accent.cut;
+  return findModel('cut', key) ?? ctx.accent.cut;
 }
 
 /** A smaller copy of the centre stone (same cut and orientation) whose extent across the band is `size`. */
@@ -314,16 +334,26 @@ function railPoint(
 // Three-stone and five-stone
 // ---------------------------------------------------------------------------------------------
 
-function multiStone(ctx: HeadCtx, perSide: 1 | 2): Part[] {
+/**
+ * Three-stone (one side stone per side) and five-stone (two per side). `sideCut` picks the cut next to the centre,
+ * `outerCut` the cut of the outer stones: on a five-stone 'same' repeats the side cut; on a three-stone anything but
+ * 'none' adds a smaller outer stone per side, e.g. a baguette then a trillion pointing away from the centre.
+ */
+function multiStone(ctx: HeadCtx, five: boolean): Part[] {
   const o = cleanOutline(ctx.center.built.outline);
   const p = ctx.params;
   const [ax, az] = ctx.bandAxis;
   const across = centreAcross(ctx);
-  const ratio = num(p, 'sideRatio', perSide === 1 ? 0.62 : 0.55, 0.25, 1);
+  const ratio = num(p, 'sideRatio', five ? 0.55 : 0.62, 0.25, 1);
   const ratio2 = num(p, 'outerRatio', 0.78, 0.4, 1);
   const gap = num(p, 'sideGap', 0.3, 0, 2);
-  const match = str(p, 'sideCut', ['accent', 'match'] as const, 'accent') === 'match';
+  const sideKey = typeof p.sideCut === 'string' ? p.sideCut : 'accent';
+  const outerRaw = typeof p.outerCut === 'string' && p.outerCut ? p.outerCut : five ? 'same' : 'none';
+  const outerKey = outerRaw === 'same' ? sideKey : outerRaw;
+  const perSide = five || outerRaw !== 'none' ? 2 : 1;
+  const cuts = [sideCutFor(ctx, sideKey), sideCutFor(ctx, outerKey)];
   const style = str(p, 'prongStyle', PRONG_STYLES, 'round');
+  const sideProngs = Math.round(num(p, 'sideProngs', 4, 3, 6));
   const centre = centreBasket(ctx, style);
   const metal: THREE.BufferGeometry[] = [...centre.geos];
   const stones: THREE.BufferGeometry[] = [];
@@ -335,16 +365,16 @@ function multiStone(ctx: HeadCtx, perSide: 1 | 2): Part[] {
     let size = across * ratio;
     let lastU = 0;
     for (let k = 0; k < perSide; k++) {
-      const detail = perSide === 2 && k === 1 ? 'low' : 'full';
-      const s = match
-        ? matchStone(ctx, size, false, detail)
-        : sideStone(ctx, ctx.accent.cut, size, sign, detail);
+      const detail = five && k === 1 ? 'low' : 'full';
+      const cut = cuts[k];
+      const s =
+        cut === 'match' ? matchStone(ctx, size, false, detail) : sideStone(ctx, cut, size, sign, detail);
       const q = seatBeside(ctx, s, sign, edge, 0, clear, 1);
       stones.push(s.built.geometry.clone().applyMatrix4(q.m));
       const wireMm = num(p, 'prongWidth', 0, 0, 1.6) * 0.8 || autoWireMm(s.built);
       metal.push(
         ...basket(ctx, s, q, {
-          count: Math.round(num(p, 'sideProngs', 4, 3, 6)),
+          count: cut !== 'match' && isTriangle(cut) ? 3 : sideProngs,
           style,
           wireMm,
           rails: [0.4],
@@ -357,10 +387,7 @@ function multiStone(ctx: HeadCtx, perSide: 1 | 2): Part[] {
       size *= ratio2;
     }
   }
-  return [
-    metalPart(metal, perSide === 1 ? 'three-stone head' : 'five-stone head'),
-    accentPart(stones, 'side stones'),
-  ];
+  return [metalPart(metal, five ? 'five-stone head' : 'three-stone head'), accentPart(stones, 'side stones')];
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -537,7 +564,7 @@ function bypassHead(ctx: HeadCtx): Part[] {
   ];
 }
 
-registerHeadBuilder('three-stone', (ctx) => multiStone(ctx, 1));
-registerHeadBuilder('five-stone', (ctx) => multiStone(ctx, 2));
+registerHeadBuilder('three-stone', (ctx) => multiStone(ctx, false));
+registerHeadBuilder('five-stone', (ctx) => multiStone(ctx, true));
 registerHeadBuilder('toi-et-moi', toiEtMoi);
 registerHeadBuilder('bypass-head', bypassHead);

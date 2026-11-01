@@ -132,6 +132,7 @@ const haloDefaults = (shape: string): Params => ({
   prongWidth: 0,
 });
 
+const sideCutOptions = cuts.map((c) => ({ value: c.id, label: c.name }));
 const sideControls = (five: boolean): Control[] => [
   {
     type: 'number',
@@ -142,19 +143,17 @@ const sideControls = (five: boolean): Control[] => [
     step: 0.01,
     help: 'Side stone width as a fraction of the centre stone.',
   },
-  ...(five
-    ? [
-        {
-          type: 'number',
-          key: 'outerRatio',
-          label: 'Outer stone size',
-          min: 0.4,
-          max: 1,
-          step: 0.01,
-          help: 'Each outer pair relative to the inner pair.',
-        } as Control,
-      ]
-    : []),
+  {
+    type: 'number',
+    key: 'outerRatio',
+    label: 'Outer stone size',
+    min: 0.4,
+    max: 1,
+    step: 0.01,
+    help: five
+      ? 'Each outer pair relative to the inner pair.'
+      : 'Size of the optional outer stones relative to the side stones (only with an outer stone cut).',
+  },
   { type: 'number', key: 'sideGap', label: 'Gap between stones', min: 0, max: 2, step: 0.05, unit: 'mm' },
   {
     type: 'select',
@@ -163,9 +162,35 @@ const sideControls = (five: boolean): Control[] => [
     options: [
       { value: 'accent', label: 'Accent stone cut' },
       { value: 'match', label: 'Match the centre' },
+      ...sideCutOptions,
     ],
+    help: 'Cut of the stones next to the centre. Baguettes and other step cuts stand along the finger; trillions point away from the centre.',
   },
-  { type: 'number', key: 'sideProngs', label: 'Prongs per side stone', min: 3, max: 6, step: 1 },
+  {
+    type: 'select',
+    key: 'outerCut',
+    label: 'Outer stone cut',
+    options: [
+      five
+        ? { value: 'same', label: 'Same as the side stones' }
+        : { value: 'none', label: 'No outer stones' },
+      { value: 'accent', label: 'Accent stone cut' },
+      { value: 'match', label: 'Match the centre' },
+      ...sideCutOptions,
+    ],
+    help: five
+      ? 'Cut of the outer pair, e.g. trillions beyond baguettes.'
+      : 'Add a smaller stone beyond each side stone, e.g. a trillion beyond a baguette.',
+  },
+  {
+    type: 'number',
+    key: 'sideProngs',
+    label: 'Prongs per side stone',
+    min: 3,
+    max: 6,
+    step: 1,
+    help: 'Trillions always get three prongs, one per corner.',
+  },
   prongStyle,
   prongWidth,
 ];
@@ -633,7 +658,7 @@ export const heads: HeadModel[] = [
     builder: 'three-stone',
     summary: 'A centre stone flanked by two smaller stones: past, present and future.',
     description:
-      'The three-stone ring sets a smaller stone on each side of the centre, lower on the shoulders and tilted to follow the curve of the finger, each in its own prongs. The trio is often said to stand for past, present and future.\n\nSide stones add width and sparkle and let you mix shapes, such as pears or tapered baguettes beside a round, or coloured gems beside a diamond.\n\nAdjust the side-stone size and the gap to change the balance. Suits anyone who wants more presence than a solitaire with a meaningful story.',
+      'The three-stone ring sets a smaller stone on each side of the centre, lower on the shoulders and tilted to follow the curve of the finger, each in its own prongs. The trio is often said to stand for past, present and future.\n\nSide stones add width and sparkle and let you mix shapes, such as baguettes standing along the finger beside a hexagon, or coloured gems beside a diamond.\n\nAdjust the size and the gap to change the balance, or add a smaller outer stone per side, such as a trillion beyond each baguette. Suits anyone who wants more presence than a solitaire with a meaningful story.',
     tags: ['three-stone', 'side-stones', 'symbolic', 'classic'],
     pros: ['Meaningful symbolism', 'More sparkle and width', 'Mix shapes and colours'],
     cons: ['Wider head', 'More prongs to maintain'],
@@ -641,8 +666,10 @@ export const heads: HeadModel[] = [
     related: ['five-stone', 'toi-et-moi', 'cluster'],
     params: {
       sideRatio: 0.62,
+      outerRatio: 0.85,
       sideGap: 0.3,
       sideCut: 'accent',
+      outerCut: 'none',
       sideProngs: 4,
       prongStyle: 'round',
       prongWidth: 0,
@@ -661,7 +688,7 @@ export const heads: HeadModel[] = [
     builder: 'five-stone',
     summary: 'A graduated row of five stones that tapers out from the centre.',
     description:
-      'A five-stone head lines up two graduated stones on each side of the centre, each pair smaller and lower than the last so the row follows the curve of the finger.\n\nThe tapered row is generous on the finger and has an Edwardian, heirloom feel, especially with old European cuts or coloured stones.\n\nUse the outer ratio to steepen or soften the taper. The row is wide, so the wedding band should be checked for fit.',
+      'A five-stone head lines up two graduated stones on each side of the centre, each pair smaller and lower than the last so the row follows the curve of the finger.\n\nThe tapered row is generous on the finger and has an Edwardian, heirloom feel, especially with old European cuts or coloured stones.\n\nUse the outer ratio to steepen or soften the taper, and pick a separate cut for the outer pair, such as trillions beyond baguettes. The row is wide, so the wedding band should be checked for fit.',
     tags: ['five-stone', 'side-stones', 'vintage', 'statement'],
     pros: ['Wide, generous look', 'Heirloom character', 'Lots of sparkle'],
     cons: ['Many prongs to check', 'Wide head can feel stiff'],
@@ -672,6 +699,7 @@ export const heads: HeadModel[] = [
       outerRatio: 0.78,
       sideGap: 0.3,
       sideCut: 'accent',
+      outerCut: 'same',
       sideProngs: 4,
       prongStyle: 'round',
       prongWidth: 0,
@@ -1331,18 +1359,37 @@ export const heads: HeadModel[] = [
     kind: 'head',
     id: 'tension-bypass',
     name: 'Tension bypass',
-    builder: 'tension-bypass',
-    summary: 'Two swept metal blades pinch the stone from opposite ends, passing each other like a bypass.',
+    builder: 'swept-blades',
+    summary: 'Two low, swept ribbon blades wrap the stone from either side and pass like a bypass.',
     description:
-      'A tension bypass holds the stone between two blades that rise from the band, sweep across the finger in opposite directions and grip the girdle at each end. They pass either side of the centre line, so the stone seems to float between them.\n\nIt combines the tension look with the movement of a bypass shank, and pairs naturally with a bypass or spiral shank.\n\nTune the blade width and the sweep offset. Like all tension settings it needs a hard stone and cannot easily be resized.',
+      "A tension bypass holds the stone between the ends of the band. Each end lifts off the shoulder in a low, smooth swoop and wraps one side of the stone like a ribbon, biting the girdle. The blades pass each other, so the stone seems to float.\n\nIt pairs naturally with a bypass shank: set the sweep offset to where the shank's ends sit.\n\nTune blade width and depth, the wrap and the swoop length. Like all tension settings it needs a hard stone and is hard to resize.",
     tags: ['tension', 'bypass', 'modern', 'floating', 'swept'],
     pros: ['Floating stone with flowing lines', 'Light passes all round the stone', 'Very modern'],
     cons: ['Hard to resize', 'Only for hard stones', 'Exposed top and bottom'],
     bestFor: ['Diamond, sapphire, moissanite', 'Modern designs with a bypass band'],
     related: ['tension', 'bypass-head', 'bezel-half'],
-    params: { bladeWidth: 2.6, sweepOffset: 1, sweepRun: 4.5, jawThickness: 2.4, bite: 0.25 },
+    params: { bladeWidth: 2.2, sweepOffset: 1, sweepRun: 4.5, jawThickness: 1.6, wrap: 45, bite: 0.25 },
     controls: [
-      { type: 'number', key: 'bladeWidth', label: 'Blade width', min: 1.2, max: 5, step: 0.1, unit: 'mm' },
+      {
+        type: 'number',
+        key: 'bladeWidth',
+        label: 'Blade width',
+        min: 1.2,
+        max: 5,
+        step: 0.1,
+        unit: 'mm',
+        help: 'Width of each ribbon where it holds the stone.',
+      },
+      {
+        type: 'number',
+        key: 'jawThickness',
+        label: 'Blade depth',
+        min: 1,
+        max: 4,
+        step: 0.1,
+        unit: 'mm',
+        help: 'Depth of each ribbon at the stone; it thins towards the tip.',
+      },
       {
         type: 'number',
         key: 'sweepOffset',
@@ -1351,7 +1398,7 @@ export const heads: HeadModel[] = [
         max: 2.5,
         step: 0.1,
         unit: 'mm',
-        help: 'How far each blade sits off the centre line at the stone.',
+        help: "How far off the centre line each blade meets the shank (match a bypass shank's ends).",
       },
       {
         type: 'number',
@@ -1361,9 +1408,18 @@ export const heads: HeadModel[] = [
         max: 9,
         step: 0.5,
         unit: 'mm',
-        help: 'How far along the band the blade takes to return to the centre line.',
+        help: 'Length of the swoop from the stone down to the shank.',
       },
-      { type: 'number', key: 'jawThickness', label: 'Blade length', min: 1, max: 4, step: 0.1, unit: 'mm' },
+      {
+        type: 'number',
+        key: 'wrap',
+        label: 'Wrap',
+        min: 0,
+        max: 80,
+        step: 1,
+        unit: 'deg',
+        help: 'How far each blade wraps round the stone past its middle.',
+      },
       {
         type: 'number',
         key: 'bite',
@@ -1372,7 +1428,7 @@ export const heads: HeadModel[] = [
         max: 0.6,
         step: 0.01,
         unit: 'mm',
-        help: 'How far the grooves reach over the girdle.',
+        help: 'How far the blades reach over the girdle.',
       },
     ],
     fitsCuts: ALL,

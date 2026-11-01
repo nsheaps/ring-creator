@@ -4096,7 +4096,10 @@ export const rings: ExampleDesign[] = [
         params: {
           sideRatio: 0.5,
           sideGap: 0.12,
-          sideProngs: 3,
+          sideCut: 'baguette',
+          outerCut: 'trillion',
+          outerRatio: 1,
+          sideProngs: 4,
         },
       },
       shank: {
@@ -4126,7 +4129,7 @@ export const rings: ExampleDesign[] = [
     tags: ['nature', 'engagement'],
     category: 'nature',
     blurb:
-      'Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side, modelled with baguette sides on both. Compared with the photo: elongated hexagon, baguette flanks (the triangle outer stones cannot be added).',
+      'Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side. Compared with the photo: elongated hexagon, a baguette standing along the finger then a trillion pointing away from the centre on each side (three-stone with an outer stone cut).',
     priceUsd: 5605,
     designFamily: 'three-stone / dainty / hexagon',
     view: 'ring',
@@ -9028,10 +9031,11 @@ export const rings: ExampleDesign[] = [
         id: 'tension-bypass',
         metal: 'platinum',
         params: {
-          bladeWidth: 2,
-          sweepOffset: 1.6,
+          bladeWidth: 2.2,
+          sweepOffset: 1.45,
           sweepRun: 7,
           jawThickness: 1.6,
+          wrap: 45,
         },
       },
       shank: {
@@ -9042,14 +9046,14 @@ export const rings: ExampleDesign[] = [
           topWidthMm: 2.6,
           thicknessMm: 2,
           topThicknessMm: 2,
-          overlapDeg: 40,
+          overlapDeg: 8,
           gapMm: 0.3,
           tipTaper: 0.2,
         },
       },
       placement: {
         orientation: 'north-south',
-        raise: 1.2,
+        raise: 0.3,
         tilt: 0,
         rotate: 0,
         offset: 0,

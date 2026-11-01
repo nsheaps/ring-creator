@@ -93,7 +93,10 @@
     "head": {
      "sideRatio": 0.5,
      "sideGap": 0.12,
-     "sideProngs": 3
+     "sideCut": "baguette",
+     "outerCut": "trillion",
+     "outerRatio": 1,
+     "sideProngs": 4
     },
     "center": {
      "aspect": 1.6
@@ -105,7 +108,7 @@
    }
   },
   "band": null,
-  "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side, modelled with baguette sides on both. Compared with the photo: elongated hexagon, baguette flanks (the triangle outer stones cannot be added)."
+  "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side. Compared with the photo: elongated hexagon, a baguette standing along the finger then a trillion pointing away from the centre on each side (three-stone with an outer stone cut)."
  },
  {
   "id": "r3-003",
