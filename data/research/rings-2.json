@@ -389,7 +389,7 @@
         "clarity": null
       },
       "head": "halo-round",
-      "shank": null,
+      "shank": "pave",
       "metals": [
         "platinum"
       ],
@@ -397,7 +397,21 @@
       "accents": [
         "single micro-pave halo of round brilliants"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "haloGap": 0.1
+        },
+        "shank": {
+          "coverage": 0.5,
+          "stoneSizeMm": 1.1,
+          "widthMm": 1.8,
+          "topWidthMm": 1.8
+        },
+        "placement": {
+          "raise": 1.0
+        }
+      }
     },
     "band": null,
     "notes": "Page text mentions an oval centre while the shape field says round, so cut is ambiguous; halo-oval could also fit. Setting price only."
@@ -421,7 +435,7 @@
         "clarity": null
       },
       "head": "three-stone",
-      "shank": null,
+      "shank": "tapered",
       "metals": [
         "platinum"
       ],
@@ -429,7 +443,25 @@
       "accents": [
         "two trapezoid side stones, 1 ct tw"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "sideRatio": 0.6,
+          "sideGap": 0,
+          "sideCut": "accent"
+        },
+        "accent": {
+          "cut": "emerald-cut",
+          "sizeMm": 4.0
+        },
+        "shank": {
+          "widthMm": 2.0,
+          "topWidthMm": 3.0
+        },
+        "placement": {
+          "raise": 0.8
+        }
+      }
     },
     "band": null,
     "notes": "Setting price for the 1 ct tw sidestone version (a 1/2 ct tw version was seen at $6,890 in search results). Sized for 2-8 ct centres, 2.00 mm band."
@@ -453,7 +485,7 @@
         "clarity": null
       },
       "head": "three-stone",
-      "shank": null,
+      "shank": "tapered",
       "metals": [
         "platinum"
       ],
@@ -461,7 +493,25 @@
       "accents": [
         "two step-cut tapered baguettes, 5/8 ct tw"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "sideRatio": 0.7,
+          "sideGap": 0,
+          "sideCut": "accent"
+        },
+        "accent": {
+          "cut": "baguette",
+          "sizeMm": 4.5
+        },
+        "shank": {
+          "widthMm": 2.0,
+          "topWidthMm": 3.0
+        },
+        "placement": {
+          "raise": 0.8
+        }
+      }
     },
     "band": null,
     "notes": "Setting price only; designed for 2-8 ct centres, 2.00 mm band, architectural silhouette."
@@ -493,7 +543,12 @@
       "accents": [
         "34 pave round diamonds on shank, min 0.15 ct tw"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "placement": {
+          "raise": 1.0
+        }
+      }
     },
     "band": null,
     "notes": "8x6 mm oval sapphire in a claw basket with no halo; 1.4 mm split band lined with pave. Carat not stated on page."
@@ -516,7 +571,7 @@
         "colorName": null,
         "clarity": null
       },
-      "head": "cluster",
+      "head": "solitaire-6-prong",
       "shank": "dainty",
       "metals": [
         "rose-gold-14k"
@@ -525,7 +580,22 @@
       "accents": [
         "6 round accent diamonds in shared prongs, min 0.11 ct tw"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "petalRatio": 0.25,
+          "petalGap": 0.3,
+          "petalDrop": 0.8,
+          "prongCount": 6,
+          "galleryRails": 0
+        },
+        "accent": {
+          "sizeMm": 1.5
+        },
+        "placement": {
+          "raise": 1.8
+        }
+      }
     },
     "band": null,
     "notes": "Setting-only price; centre accent diamonds radiate around the centre stone. 1.5 mm band (dainty chosen from width, profile not stated)."
@@ -547,7 +617,13 @@
         "yellow-gold-18k"
       ],
       "stones": "melee",
-      "widthMm": 2
+      "widthMm": 2,
+      "tune": {
+        "params": {
+          "coverage": "half",
+          "stoneSize": 3.2
+        }
+      }
     },
     "notes": "Five round brilliants (min 0.46 ct tw) in shared prongs, sold as anniversary or wedding band; page says no longer available so no price."
   },
@@ -572,10 +648,7 @@
       "head": "toi-et-moi",
       "shank": "plain-round",
       "metals": [
-        "platinum",
-        "yellow-gold-18k",
-        "white-gold-18k",
-        "rose-gold-14k"
+        "platinum"
       ],
       "finish": null,
       "accents": [
@@ -683,7 +756,15 @@
         "diamonds cross over band and meet at the centre",
         "1/2 ct tw"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "spreadMm": 2.5
+        },
+        "placement": {
+          "raise": 1.0
+        }
+      }
     },
     "band": null,
     "notes": "Setting-only. Shank is a split that crosses in an X under the centre; crossover is the nearest id (split also fits)."
@@ -740,14 +821,9 @@
         "clarity": null
       },
       "head": "three-stone",
-      "shank": "plain-flat",
+      "shank": "tapered",
       "metals": [
-        "platinum",
-        "white-gold-14k",
-        "yellow-gold-14k",
-        "rose-gold-14k",
-        "white-gold-18k",
-        "yellow-gold-18k"
+        "platinum"
       ],
       "finish": null,
       "accents": [
@@ -755,7 +831,25 @@
         "16 small round diamonds 1/20 ct tw",
         "two bezel round diamonds"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "sideRatio": 0.55,
+          "sideGap": 0,
+          "sideCut": "accent"
+        },
+        "accent": {
+          "cut": "emerald-cut",
+          "sizeMm": 3.8
+        },
+        "shank": {
+          "widthMm": 2.1,
+          "topWidthMm": 3.0
+        },
+        "placement": {
+          "raise": 0.8
+        }
+      }
     },
     "band": null,
     "notes": "Setting price for platinum; centres 0.80-5.00 ct. Euro-shank, 2.10 mm; plain-flat is the nearest shank id. Side-to-centre ratio is small (1/3 ct tw on a 0.8+ ct centre)."
@@ -788,7 +882,25 @@
         "two straight baguettes 1/3 ct tw",
         "all three stones bezel-set"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "sideRatio": 0.55,
+          "sideGap": 0,
+          "sideCut": "accent"
+        },
+        "accent": {
+          "cut": "baguette",
+          "sizeMm": 4.0
+        },
+        "shank": {
+          "widthMm": 2.0,
+          "topWidthMm": 2.0
+        },
+        "placement": {
+          "raise": 0.6
+        }
+      }
     },
     "band": null,
     "notes": "Setting price; centres 0.50-6.00 ct. Unusual in having a bezel around every stone, so it reads modern rather than classic prong trilogy."
@@ -843,7 +955,7 @@
         "colorName": null,
         "clarity": null
       },
-      "head": null,
+      "head": "solitaire-4-prong",
       "shank": "bypass",
       "metals": [
         "platinum"
@@ -853,7 +965,15 @@
         "pave diamonds on bypass shank",
         "north and south prongs meet the pave"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "prongCount": 4
+        },
+        "placement": {
+          "raise": 1.0
+        }
+      }
     },
     "band": null,
     "notes": "Page says the style is sold out and shows no price (a search snippet quoted $1,800 list / $1,350 sale, unverified on page). Kite-set prongs align with the pave on the airy bypass shank."
@@ -879,16 +999,27 @@
       "head": "five-stone",
       "shank": "plain-round",
       "metals": [
-        "platinum",
-        "yellow-gold-18k",
-        "white-gold-18k",
-        "rose-gold-14k"
+        "platinum"
       ],
       "finish": null,
       "accents": [
         "four baguette side stones: two 0.25 ct and two 0.10 ct, 0.70 ctw"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "sideRatio": 0.55,
+          "outerRatio": 0.5,
+          "sideCut": "accent"
+        },
+        "accent": {
+          "cut": "baguette",
+          "sizeMm": 3.5
+        },
+        "placement": {
+          "raise": 0.8
+        }
+      }
     },
     "band": null,
     "notes": "Starting price; 1.7 mm band. Baguettes graduate in size down each side. Lab-grown assumed because VRAI sells created diamonds (stated on its toi et moi page, not this one)."
@@ -911,8 +1042,8 @@
         "colorName": "blue",
         "clarity": null
       },
-      "head": "cluster",
-      "shank": null,
+      "head": "halo-oval",
+      "shank": "plain-round",
       "metals": [
         "white-gold-18k"
       ],
@@ -920,7 +1051,20 @@
       "accents": [
         "14 diamonds around the sapphire"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "haloGap": 0.15,
+          "meleeSize": 2.2,
+          "haloDrop": 0.2
+        },
+        "accent": {
+          "sizeMm": 2.2
+        },
+        "placement": {
+          "raise": 0.4
+        }
+      }
     },
     "band": null,
     "notes": "Garrard, 1981, said to echo Queen Victoria's 1840 brooch. Note: the URL I fetched (a redirect target for Kate's ring article) displayed Diana's jewellery table, so check the citation."
@@ -944,7 +1088,7 @@
         "clarity": null
       },
       "head": "toi-et-moi",
-      "shank": null,
+      "shank": "plain-round",
       "metals": [
         "platinum"
       ],
@@ -953,7 +1097,15 @@
         "second stone diamond 2.88 ct",
         "baguette diamonds flank the pair (per other outlets)"
       ],
-      "orientation": "east-west"
+      "orientation": "east-west",
+      "tune": {
+        "head": {
+          "secondCut": "emerald-cut"
+        },
+        "placement": {
+          "raise": 0.8
+        }
+      }
     },
     "band": null,
     "notes": "Emerald 2.84 ct beside diamond 2.88 ct. Cut, platinum and baguettes come from other search-result outlets, not the cited page; reset in 1962 per the Kennedy Library, which added round and marquise diamonds."
@@ -977,7 +1129,7 @@
         "clarity": null
       },
       "head": "three-stone",
-      "shank": "plain-round",
+      "shank": "pave",
       "metals": [
         "yellow-gold-18k"
       ],
@@ -986,7 +1138,18 @@
         "two side diamonds from Diana's collection",
         "pave diamond band added 2018-19 (per search results)"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "coverage": 1,
+          "stoneSizeMm": 1.2,
+          "widthMm": 2.4,
+          "topWidthMm": 2.4
+        },
+        "placement": {
+          "raise": 0.6
+        }
+      }
     },
     "band": null,
     "notes": "Botswana centre, about 2.5 ct is a media estimate. Cushion cut and 18k are not in the cited page (other outlets say cushion); the original band was yellow gold, karat unconfirmed."
@@ -1009,7 +1172,7 @@
         "colorName": "G",
         "clarity": "VVS2"
       },
-      "head": "halo-round",
+      "head": "halo-cushion",
       "shank": "pave",
       "metals": [
         "platinum"
@@ -1018,7 +1181,19 @@
       "accents": [
         "1.48 ct total weight"
       ],
-      "orientation": "north-south"
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "coverage": 0.6,
+          "stoneSizeMm": 1.2
+        },
+        "head": {
+          "haloGap": 0.1
+        },
+        "placement": {
+          "raise": 1.0
+        }
+      }
     },
     "band": null,
     "notes": "Taken from a search-result summary; the page now returns HTTP 410, and the URL says oval while the summary says round. Halo outline and shank not verified; pave shank is an assumption."
@@ -1045,7 +1220,7 @@
         "fit": "contour",
         "params": {
           "coverage": "half",
-          "stoneSize": 1.4
+          "stoneSize": 3.0
         }
       }
     },
@@ -1073,7 +1248,7 @@
         "fit": "contour",
         "params": {
           "coverage": "half",
-          "stoneSize": 1.4
+          "stoneSize": 3.0
         }
       }
     },
@@ -1101,7 +1276,7 @@
         "fit": "contour",
         "params": {
           "coverage": "half",
-          "stoneSize": 1.4
+          "stoneSize": 2.6
         }
       }
     },
@@ -1124,7 +1299,14 @@
         "platinum"
       ],
       "stones": "melee",
-      "widthMm": null
+      "widthMm": null,
+      "tune": {
+        "params": {
+          "coverage": "full",
+          "rows": 1,
+          "stoneSize": 1.4
+        }
+      }
     },
     "notes": "37 round brilliants, about 0.61 ct total, in micropave; price is size-dependent."
   },
@@ -1145,7 +1327,13 @@
         "white-gold-18k"
       ],
       "stones": "melee",
-      "widthMm": 2
+      "widthMm": 2,
+      "tune": {
+        "params": {
+          "coverage": "half",
+          "stoneSize": 2.8
+        }
+      }
     },
     "notes": "Eleven shared-prong round diamonds on the top half, marketed as a stacker; the half-eternity id is the nearest fit."
   }
