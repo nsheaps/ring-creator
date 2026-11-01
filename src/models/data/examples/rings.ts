@@ -4017,9 +4017,9 @@ export const rings: ExampleDesign[] = [
         metal: 'yellow-gold-14k',
         params: {
           flankCount: 3,
-          flankRatio: 0.28,
-          flankCut: 'accent',
-          arrangement: 'column',
+          flankRatio: 0.3,
+          arrangement: 'fan',
+          prongStyle: 'claw',
         },
       },
       shank: {
@@ -4034,7 +4034,7 @@ export const rings: ExampleDesign[] = [
       },
       placement: {
         orientation: 'north-south',
-        raise: 1.2,
+        raise: 0.4,
         tilt: 0,
         rotate: 0,
         offset: 0,
@@ -10248,10 +10248,13 @@ export const rings: ExampleDesign[] = [
         id: 'pave',
         metal: 'yellow-gold-14k',
         params: {
-          widthMm: 3.6,
-          topWidthMm: 4,
+          widthMm: 3.4,
+          topWidthMm: 3.6,
+          thicknessMm: 2.0,
+          topThicknessMm: 2.1,
           coverage: 1,
           stoneSizeMm: 1.1,
+          rows: 6,
         },
       },
       placement: {

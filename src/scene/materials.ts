@@ -38,6 +38,7 @@ uniform float gemPath;
 uniform float gemCrownLo;
 uniform float gemGlow;
 uniform float gemMosaic;
+uniform float gemStep;
 vec3 gemHash3(vec3 p) {
   p = fract(p * vec3(0.1031, 0.1030, 0.0973));
   p += dot(p, p.yxz + 33.33);
@@ -97,8 +98,12 @@ const PAVILION_MAIN = /* glsl */ `
   float tone = gemHash3( floor( nW * 53.0 + 0.5 ) + vec3( 23.0, 5.0, 9.0 ) ).y;
   tone = 0.7 * tone + 0.3 * ( 0.5 + 0.5 * sin( 7.0 * dot( d, vec3( 1.0, 1.7, 1.3 ) ) + 6.0 * tone ) );
   float flash = smoothstep( 0.3, 0.7, tone * 0.8 + min( lum, 1.0 ) * 0.2 );
-  vec3 darkTone = env * 0.2;
-  vec3 flashTone = max( env * 1.6, vec3( 0.8 * gemBrightness ) );
+  // step cuts: facets of one row share a slope (|nW.y|), so alternate whole rows bright / dark: crisp parallel bands
+  float rowKey = floor( abs( nW.y ) * 14.0 + 0.5 );
+  float rowBand = mod( rowKey, 2.0 );
+  flash = mix( flash, rowBand, gemStep * facetFlat );
+  vec3 darkTone = env * mix( 0.2, 0.16, gemStep );
+  vec3 flashTone = max( env * 1.6, vec3( mix( 0.8, 1.0, gemStep ) * gemBrightness ) );
   env = mix( env, mix( darkTone, flashTone, flash ), gemMosaic * facetFlat );
   vec3 body = pow( max( gemBody, vec3( 1e-3 ) ), vec3( gemPath ) );
   vec3 col = env * body;
@@ -130,6 +135,9 @@ const CROWN_MAIN = /* glsl */ `
   float m = gemHash3( floor( nW * 97.0 + 0.5 ) + vec3( 5.0, 29.0, 11.0 ) ).x;
   // dark-leaning distribution: most facets pass the light, some go dim (the black accents of a well cut stone)
   float mask = mix( 1.0, mix( gemCrownLo, 1.0, smoothstep( 0.0, 0.7, m ) ), facetFlat );
+  // step cuts: crown rows alternate clear / dim instead of random per facet
+  float crownBand = mod( floor( abs( nW.y ) * 14.0 + 0.5 ), 2.0 );
+  mask = mix( mask, mix( gemCrownLo, 1.0, crownBand ), gemStep * facetFlat );
   // a facet seen nearly face-on (the table of a face-up stone) refracts straight through: it never goes dim
   float faceOn = abs( dot( normalize( vNormal ), normalize( vViewPosition ) ) );
   mask = mix( mask, 1.0, smoothstep( 0.8, 0.96, faceOn ) );
@@ -154,6 +162,7 @@ interface GemUniforms {
   gemCrownLo: { value: number };
   gemGlow: { value: number };
   gemMosaic: { value: number };
+  gemStep: { value: number };
 }
 
 function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
@@ -169,7 +178,7 @@ function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
       .replace('#include <opaque_fragment>', PAVILION_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-pavilion-v4';
+  mat.customProgramCacheKey = () => 'gem-pavilion-v5';
   return mat;
 }
 
@@ -199,7 +208,7 @@ function crownMaterial(gem: GemModel, haze: number, u: GemUniforms): THREE.MeshP
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
       .replace('#include <opaque_fragment>', CROWN_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-crown-v4';
+  mat.customProgramCacheKey = () => 'gem-crown-v5';
   return mat;
 }
 
@@ -216,8 +225,9 @@ export function gemMaterials(
   clarity?: ClarityModel,
   tintHex?: string,
   tintStrength = 0,
+  stepCut = false,
 ): [THREE.MeshPhysicalMaterial, THREE.MeshStandardMaterial] {
-  const key = `g:${gem.id}:${colorHex}:${clarity?.id ?? ''}:${tintHex ?? ''}:${tintStrength}`;
+  const key = `g:${gem.id}:${colorHex}:${clarity?.id ?? ''}:${tintHex ?? ''}:${tintStrength}:${stepCut ? 's' : ''}`;
   const hit = cache.get(key) as THREE.MeshPhysicalMaterial | undefined;
   const hit2 = cache.get(key + ':in') as THREE.MeshStandardMaterial | undefined;
   if (hit && hit2) return [hit, hit2];
@@ -260,7 +270,7 @@ export function gemMaterials(
       gemBody: { value: body },
       gemScatter: { value: 0.75 + 0.55 * ri + (translucent ? 0.5 : 0) },
       // coloured stones: their body colour masks fire, and split channels would tint facets off-hue
-      gemDispersion: { value: Math.min(0.07, gem.dispersion * 0.6) * (colourless ? 1 : 0.3) },
+      gemDispersion: { value: Math.min(0.07, gem.dispersion * 0.6) * (colourless ? 1 : 0.3) * (stepCut ? 0.25 : 1) },
       gemBrightness: { value: colourless ? 1.5 + 0.4 * ri : 1.8 },
       gemHaze: { value: Math.min(1, haze + (translucent ? 0.55 : 0)) },
       gemContrast: { value: colourless ? 0.9 : 0.55 },
@@ -268,7 +278,8 @@ export function gemMaterials(
       gemPath: { value: colourless ? 1.4 : pastel ? 1.1 : 1.6 },
       gemCrownLo: { value: colourless ? 0.45 : 0.6 },
       gemGlow: { value: translucent ? 0.75 : 0 },
-      gemMosaic: { value: translucent ? 0 : colourless ? 0.9 : 0.6 },
+      gemMosaic: { value: translucent ? 0 : stepCut ? 1 : colourless ? 0.9 : 0.6 },
+      gemStep: { value: stepCut ? 1 : 0 },
     };
     inner = pavilionMaterial(uniforms);
     outer = crownMaterial(gem, haze, uniforms);

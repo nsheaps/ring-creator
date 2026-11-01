@@ -155,16 +155,25 @@ describe('new framed and flank heads', () => {
 
   it('cluster-flank makes flankCount stones each side, tilted and level with the shoulders', () => {
     for (const n of [1, 3, 5]) {
-      const parts = build('cluster-flank', 'oval', { flankCount: n }, [0, 1]);
+      const parts = build('cluster-flank', 'oval', { flankCount: n, arrangement: 'column' }, [0, 1]);
       const acc = parts.filter((p) => p.slot === 'accent-stone');
       const count = acc.reduce((s, p) => s + p.geometry.getAttribute('position').count, 0);
-      const one = build('cluster-flank', 'oval', { flankCount: 1 }, [0, 1]).filter(
+      const one = build('cluster-flank', 'oval', { flankCount: 1, arrangement: 'column' }, [0, 1]).filter(
         (p) => p.slot === 'accent-stone',
       );
       const perStone = one.reduce((s, p) => s + p.geometry.getAttribute('position').count, 0) / 2;
       expect(count / perStone, `stones for flankCount ${n}`).toBeGreaterThan(2 * n * 0.9);
       expect(count / perStone).toBeLessThan(2 * n * 1.1);
     }
+  });
+
+  it('cluster-flank fan keeps its stones level with the centre, flush against it, on both sides', () => {
+    const parts = build('cluster-flank', 'oval', { flankCount: 3 }, [1, 0]);
+    const b = box(parts, 'accent-stone');
+    expect(b.max.y).toBeLessThan(0.5);
+    expect(b.min.y).toBeGreaterThan(-3.2);
+    expect(b.min.x).toBeLessThan(-6);
+    expect(b.max.x).toBeGreaterThan(6);
   });
 
   it('tension-bypass blades sit on opposite sides of the centre line at the stone', () => {

@@ -359,6 +359,7 @@ function meshesFor(
       clarity,
       isDiamondLike && /^(near-)?colorless$/.test(design.engagement.center.color) ? grade?.tint : undefined,
       grade?.tintStrength ?? 0,
+      slot === 'center-stone' && center.cut.builder === 'step',
     );
     const innerMesh = new THREE.Mesh(geo, inner);
     const outerMesh = new THREE.Mesh(geo, outer);

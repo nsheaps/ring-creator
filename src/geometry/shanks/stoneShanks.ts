@@ -7,6 +7,7 @@ import {
   TOP,
   accentDims,
   accentSize,
+  bandSection,
   beadGeometry,
   clamp,
   fromTop,
@@ -86,9 +87,120 @@ export function troughSection(
   return out;
 }
 
+/** Upper (outer) half of a two-half superellipse section as a dense polyline from the left edge over the top to the right edge. */
+function outerArc(hw: number, hTop: number, e: number, n = 120): { u: number; v: number; s: number }[] {
+  const pts: { u: number; v: number; s: number }[] = [];
+  for (let i = 0; i <= n; i++) {
+    const a = Math.PI - (i / n) * Math.PI;
+    const c = Math.cos(a);
+    const sn = Math.sin(a);
+    const u = hw * Math.sign(c) * Math.abs(c) ** (2 / e);
+    const v = hTop * Math.abs(sn) ** (2 / e);
+    const prev = pts[i - 1];
+    pts.push({ u, v, s: prev ? prev.s + Math.hypot(u - prev.u, v - prev.v) : 0 });
+  }
+  return pts;
+}
+
+/**
+ * Micro-pave: the whole upper surface of a rounded band is covered with `rows` staggered rows of tiny stones spread over the
+ * whole dome, over the top and down both faces, nearly touching, all the way round (coverage 1) or from the head
+ * to `coverage` of each half. There is no trough; the metal is a smooth dome the stones are sunk into.
+ */
+function microPave(ctx: ShankCtx, rows: number): ShankResult {
+  const p = ctx.params;
+  const R = ctx.innerRadius;
+  const tp = readTaper(p, { w: 3.2, wTop: 3.4, t: 2.0, tTop: 2.1, taperDeg: 60 });
+  const outerExp = outerExpFromRoundness(num(p, 'roundness', 0.85, 0, 1));
+  const coverage = num(p, 'coverage', 1, 0.1, 1);
+  const size = accentSize(ctx, p, 0.8, 1.6);
+  const dims = accentDims(ctx, size);
+  const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
+  const gap = num(p, 'stoneGapMm', 0.03, 0, 0.4);
+  const ch = built.crownHeight;
+  const split = 0.76;
+  const across = dims.width * 0.9 + gap;
+  const need = (rows - 1) * across + dims.width + 0.5;
+  // widen the band until the dome's upper arc is long enough for every row
+  const arcLen = (w: number, t: number) => {
+    const a = outerArc(w / 2, t * split, outerExp, 60);
+    return a[a.length - 1].s;
+  };
+  for (let k = 0; k < 8 && arcLen(tp.wTop, tp.tTop) < need; k++) {
+    tp.wTop *= 1.06;
+    tp.wBottom *= 1.06;
+    tp.tTop *= 1.02;
+    tp.tBottom *= 1.02;
+  }
+  const rOut = R + tp.tBottom;
+  const a0 = headHalfAngle(ctx, rOut) + 0.02;
+  const a1 = Math.max(a0 + 0.05, coverage * Math.PI);
+  const band = sweep({
+    segments: 200,
+    smoothProfile: true,
+    profile: (th) =>
+      bandSection({
+        w: widthAt(tp, th),
+        t: thickAt(tp, th),
+        R,
+        outerExp,
+        innerExp: 2.6,
+        split,
+        n: 32,
+      }),
+  });
+  const pitch = dims.length + gap;
+  const stoneMs: THREE.Matrix4[] = [];
+  const nAlong = Math.max(0, Math.floor(((a1 - a0) * rOut) / pitch));
+  for (let row = 0; row < rows; row++) {
+    for (const side of [-1, 1])
+      for (let i = 0; i < nAlong; i++) {
+        const th = TOP + side * (a0 + ((i + 0.5 + (row % 2 ? 0.5 : 0)) * pitch) / rOut);
+        const w = widthAt(tp, th);
+        const t = thickAt(tp, th);
+        const arc = outerArc(w / 2, t * split, outerExp);
+        const total = arc[arc.length - 1].s;
+        const lim = Math.max(0, total / 2 - dims.width * 0.5 - 0.12);
+        const target = total / 2 + (rows > 1 ? ((row - (rows - 1) / 2) / ((rows - 1) / 2)) * lim : 0);
+        let j = 1;
+        while (j < arc.length - 1 && arc[j].s < target) j++;
+        const A = arc[j - 1];
+        const B = arc[j];
+        const k = (target - A.s) / Math.max(1e-6, B.s - A.s);
+        const u = A.u + (B.u - A.u) * k;
+        const v = A.v + (B.v - A.v) * k;
+        const len = Math.hypot(B.u - A.u, B.v - A.v) || 1;
+        // outward normal of the section (u right, v up); the polyline runs left to right over the top
+        const nu = (B.v - A.v) / len;
+        const nv = -(B.u - A.u) / len;
+        const rMid = R + t - t * split;
+        const rr = rMid + v - nv * ch * 0.8;
+        const uu = u - nu * ch * 0.8;
+        const c = Math.cos(th);
+        const sn = Math.sin(th);
+        const X = new THREE.Vector3(-sn, c, 0);
+        const Y = new THREE.Vector3(c * nv, sn * nv, nu).normalize();
+        const Z = new THREE.Vector3().crossVectors(X, Y).normalize();
+        const m = new THREE.Matrix4().makeBasis(X, Y, Z);
+        m.setPosition(rr * c, rr * sn, uu);
+        stoneMs.push(m);
+      }
+  }
+  const parts: Part[] = [metal([band], 'micro-pave shank')];
+  if (stoneMs.length)
+    parts.push({
+      slot: 'accent-stone',
+      geometry: instances(built.geometry, stoneMs),
+      label: 'micro-pave stones',
+    });
+  return { parts, seatY: R + tp.tTop, topWidth: tp.wTop };
+}
+
 function pave(ctx: ShankCtx): ShankResult {
   const p = ctx.params;
   const R = ctx.innerRadius;
+  const rowCount = Math.round(num(p, 'rows', 1, 1, 8));
+  if (rowCount >= 2) return microPave(ctx, rowCount);
   const tp = readTaper(p, { w: 2.2, wTop: 2.4, t: 1.8, tTop: 1.9, taperDeg: 60 });
   const outerExp = outerExpFromRoundness(num(p, 'roundness', 0.3, 0, 1));
   const coverage = num(p, 'coverage', 0.5, 0.1, 1);

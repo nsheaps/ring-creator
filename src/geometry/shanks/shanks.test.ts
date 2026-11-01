@@ -449,6 +449,29 @@ describe('model-specific invariants', () => {
     expect(stats(stones).maxRadial).toBeGreaterThan(8.5 + 1.8);
     expect(stats(metal).tris).toBeGreaterThan(stats(build('plain-flat').parts).tris * 1.5);
   });
+  it('micro-pave covers the dome with several rows over both faces, denser than a single row', () => {
+    const perStone = stubStone({ length: 1, width: 1, depth: 0.6 }).geometry.getAttribute('position').count;
+    const count = (extra: Record<string, number>) =>
+      (build('pave', { coverage: 1, stoneSizeMm: 1.1, ...extra })
+        .parts.find((q) => q.slot === 'accent-stone')
+        ?.geometry.getAttribute('position').count ?? 0) / perStone;
+    const one = count({ rows: 1 });
+    const six = count({ rows: 6 });
+    expect(six).toBeGreaterThan(one * 4);
+    const res = build('pave', { coverage: 1, stoneSizeMm: 1.1, rows: 6 });
+    const a = res.parts.find((q) => q.slot === 'accent-stone')?.geometry.getAttribute('position')
+      .array as ArrayLike<number>;
+    // stones on both sides of the band (axial z) and over the top
+    let neg = 0;
+    let pos = 0;
+    for (let i = 0; i < a.length; i += 3) {
+      if (a[i + 2] < -1) neg++;
+      if (a[i + 2] > 1) pos++;
+    }
+    expect(neg).toBeGreaterThan(0);
+    expect(pos).toBeGreaterThan(0);
+    expect(res.topWidth).toBeGreaterThan(3);
+  });
   it('twisted and braided wires are round tubes (more strands, more wires)', () => {
     const two = stats(build('twisted', { strands: 2 }).parts);
     const four = stats(build('twisted', { strands: 4 }).parts);
