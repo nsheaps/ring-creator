@@ -59,7 +59,7 @@ function clusterFlank(ctx: HeadCtx): Part[] {
   const clear = Math.min(0.85, Math.max(0.65, ctx.baseDrop - ctx.center.built.pavilionDepth) * 0.7);
   const r = centre.wireMm * 0.35;
   const mk = (size: number, sign: 1 | -1): SideStone =>
-    match ? matchStone(ctx, size, false, 'low') : sideStone(ctx, ctx.accent.cut, size, sign, 'low');
+    match ? matchStone(ctx, size, false, 'full') : sideStone(ctx, ctx.accent.cut, size, sign, 'full');
   const prongsPer = Math.round(num(p, 'sideProngs', 3, 3, 6));
   for (const sign of [-1, 1] as const) {
     const base = support(o, sign * ax, sign * az) + gap;
@@ -153,8 +153,13 @@ function fanFlank(ctx: HeadCtx): Part[] {
   // half the centre stone's extent across the band (the fan's column beside it stays inside this)
   const half = Math.min(support(o, px, pz), support(o, -px, -pz));
   const ml = Math.max(1.4, 2 * half * ratio * 1.45);
-  const mw = round ? ml : ml * 0.46;
+  // real side-stone proportions: marquise 2:1, pear 1.6:1, oval 1.4:1 (length : width)
+  const accentAspect = Math.max(1, ctx.accent.cut.defaultAspect || 1);
+  const aspect = round ? 1 : (FAN_ASPECT[cutKey] ?? accentAspect);
+  const mw = ml / aspect;
   const rd = Math.max(0.9, ml * (round ? 0.62 : 0.26));
+  /** Footprints already placed on this side (centre u, v; unit direction; half length, half width). */
+  let placed: { u: number; v: number; du: number; dv: number; a: number; b: number }[] = [];
   const tilt = 0.12 * tiltK;
   const step = n > 1 ? Math.min((38 * Math.PI) / 180, spread / (n - 1)) : 0;
   // the marquises' inner tips stand in a short column beside the centre, inside its middle part
@@ -186,19 +191,27 @@ function fanFlank(ctx: HeadCtx): Part[] {
         const r = Math.hypot(qu, qv);
         if (r > 1e-6 && r < rayHit(o, ctx, qu / r, qv / r) + gap * 0.5) return false;
       }
-      return true;
+      // and never overlaps a neighbour already placed (ellipses inflated by half the gap each)
+      const me = { u, v, du, dv, a: len / 2, b: wid / 2 };
+      return placed.every((q) => !ellipsesOverlap(me, q, gap * 0.5 + 0.04));
     };
     let push = inset;
     let cu = 0;
     let cv = 0;
-    for (let k = 0; k < 40; k++, push += 0.05) {
+    let ok = false;
+    for (let k = 0; k < 80 && !ok; k++, push += 0.05) {
       cu = sign * (edge + gap + push) + du * (len / 2);
       cv = v0 + dv * (len / 2);
-      if (clears(cu, cv)) break;
+      ok = clears(cu, cv);
     }
+    // no room within 4 mm (a filler round squeezed out by big neighbours): leave it out rather than overlap
+    if (!ok) return;
+    placed.push({ u: cu, v: cv, du, dv, a: len / 2, b: wid / 2 });
     const dx = ax * du - az * dv;
     const dz = az * du + ax * dv;
-    const built = ctx.stone(cut, { length: len, width: wid, depth: wid * 0.62 }, { detail: 'low' });
+    // full detail: a fan has a dozen or so stones, each large enough that its star and bezel facets show; depth is
+    // 60% of the width like a well-cut brilliant
+    const built = ctx.stone(cut, { length: len, width: wid, depth: wid * 0.6 }, { detail: 'full' });
     const cx = ax * cu - az * cv;
     const cz = az * cu + ax * cv;
     // tilted outwards about its middle; dropped so the inner end's girdle meets the centre's girdle plane
@@ -243,13 +256,24 @@ function fanFlank(ctx: HeadCtx): Part[] {
     );
   };
   for (const sign of [-1, 1] as const) {
+    placed = [];
+    if (round && n === 1) {
+      // a tidy trio of equal rounds: two side by side against the centre, the third nested outside between them
+      const rt = ml * 0.8;
+      const vt = rt / 2 + gap * 0.5 + 0.06;
+      for (const s of [-1, 1]) place(sign, s * vt, 0, rt, rt, cutId, 0);
+      place(sign, 0, 0, rt, rt, cutId, 0);
+      continue;
+    }
     const rows: { v: number; th: number; len: number; wid: number }[] = [];
     for (let i = 0; i < n; i++) {
       const t = i - (n - 1) / 2;
       const k = 1 - 0.15 * (Math.abs(t) / Math.max(1, (n - 1) / 2));
       rows.push({ v: t * pitch, th: t * step, len: ml * k, wid: mw * k });
     }
-    for (const r of rows) place(sign, r.v, r.th, r.len, r.wid, cutId, 0);
+    // middle stone first, then outwards, so the outer ones step aside for it rather than the other way round
+    const order = rows.map((_, i) => i).sort((x, y) => Math.abs(x - (n - 1) / 2) - Math.abs(y - (n - 1) / 2));
+    for (const i of order) place(sign, rows[i].v, rows[i].th, rows[i].len, rows[i].wid, cutId, 0);
     // rounds in the wedges between neighbouring marquises, part way out
     for (let i = 0; i + 1 < rows.length; i++) {
       const a = rows[i];
@@ -273,6 +297,37 @@ function fanFlank(ctx: HeadCtx): Part[] {
     for (const s of [-1, 1]) place(sign, s * ve, s * step * 0.5, rd, rd, 'round-brilliant', 0, false);
   }
   return [metalPart(metal, 'cluster-flank head'), accentPart(stones, 'flank stones')];
+}
+
+/** Length : width of the fan's elongated stones (GIA-typical side-stone ratios). */
+const FAN_ASPECT: Record<string, number> = { marquise: 2, pear: 1.6, oval: 1.4 };
+
+interface Footprint {
+  u: number;
+  v: number;
+  du: number;
+  dv: number;
+  a: number;
+  b: number;
+}
+
+/** Whether two girdle ellipses (each grown by `pad`) overlap, by sampling each one's rim against the other. */
+export function ellipsesOverlap(p: Footprint, q: Footprint, pad: number): boolean {
+  const inside = (e: Footprint, u: number, v: number): boolean => {
+    const x = (u - e.u) * e.du + (v - e.v) * e.dv;
+    const y = -(u - e.u) * e.dv + (v - e.v) * e.du;
+    return (x / (e.a + pad)) ** 2 + (y / (e.b + pad)) ** 2 < 1;
+  };
+  const rimHits = (e: Footprint, f: Footprint): boolean => {
+    for (let i = 0; i < 32; i++) {
+      const t = (i / 32) * Math.PI * 2;
+      const lx = Math.cos(t) * (e.a + pad);
+      const ly = Math.sin(t) * (e.b + pad);
+      if (inside(f, e.u + e.du * lx - e.dv * ly, e.v + e.dv * lx + e.du * ly)) return true;
+    }
+    return inside(f, e.u, e.v);
+  };
+  return rimHits(p, q) || rimHits(q, p);
 }
 
 /** Smooth 0..1 ramp. */

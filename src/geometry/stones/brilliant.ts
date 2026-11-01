@@ -26,7 +26,8 @@ import { makeShape, outlineCentroid } from './shapes';
  */
 export const buildBrilliant: StoneBuilder = (dims, params, opts): BuiltStone => {
   const { L, W, D } = safeDims(dims);
-  const shape = makeShape(pStr(params, 'shape', 'round'), params, L / W);
+  const shapeName = pStr(params, 'shape', 'round');
+  const shape = makeShape(shapeName, params, L / W);
   const P = (t: number): [number, number] => {
     const [x, z] = shape.at(t);
     return [(x * L) / 2, (z * W) / 2];
@@ -61,7 +62,10 @@ export const buildBrilliant: StoneBuilder = (dims, params, opts): BuiltStone => 
       tableCenter,
       T.map((q) => q.p),
     );
-    joinRings(mesh, T, G);
+    // Rounds keep the cheapest crown (pave uses hundreds of them). Fancy shapes (marquise, pear, oval, heart ...) get
+    // real star and kite-bezel facets, so a small side stone still reads as a domed brilliant, not a flat plate.
+    if (shapeName === 'round') joinRings(mesh, T, G);
+    else lowStarCrown(mesh, T, G, kl, tr, yT, at);
     mesh.fan(
       culetCenter,
       G.map((q) => q.p),
@@ -213,6 +217,49 @@ function buildChevronPavilion(
     rows[rows.length - 1],
     Gl.map((p, j) => ({ t: tj(j), p })),
   );
+}
+
+/**
+ * Low-detail crown with stars: table ring T (kl points at i/kl), star points between them half way to the girdle,
+ * kite bezels down to the girdle main points (t = i/kl, always present in G) and upper-girdle fans over the girdle
+ * points of each sector. Watertight against the table fan and the girdle ring G.
+ */
+function lowStarCrown(
+  mesh: FacetMesh,
+  T: RingPt[],
+  G: RingPt[],
+  kl: number,
+  tr: number,
+  yT: number,
+  at: (t: number, r: number, y: number) => V3,
+): void {
+  const sr = tr + 0.5 * (1 - tr);
+  const yCone = (yT * (1 - sr)) / (1 - tr);
+  const yS = yCone + 0.12 * (yT - yCone);
+  const S: V3[] = Array.from({ length: kl }, (_, i) => at((i + 0.5) / kl, sr, yS));
+  const gts = G.map((q) => q.t);
+  const gIdx = Array.from({ length: kl }, (_, i) => nearestIndex(gts, i / kl));
+  const n = G.length;
+  for (let i = 0; i < kl; i++) {
+    const t0 = T[i].p;
+    const t1 = T[(i + 1) % kl].p;
+    const s = S[i];
+    const sPrev = S[(i - 1 + kl) % kl];
+    mesh.tri(t0, t1, s); // star
+    const bot = G[gIdx[i]].p;
+    if (sideXZ(sPrev, s, t0) * sideXZ(sPrev, s, bot) < 0) {
+      mesh.tri(sPrev, s, t0);
+      mesh.tri(sPrev, bot, s);
+    } else {
+      mesh.tri(t0, sPrev, bot);
+      mesh.tri(t0, bot, s);
+    }
+    // upper girdle: star i over the girdle points from main i to main i+1
+    const a = gIdx[i];
+    const b = gIdx[(i + 1) % kl];
+    const steps = (b - a + n) % n || n;
+    for (let j = 0; j < steps; j++) mesh.tri(s, G[(a + j) % n].p, G[(a + j + 1) % n].p);
+  }
 }
 
 /** Which side of the line a->b (projected on XZ) point p lies on. */

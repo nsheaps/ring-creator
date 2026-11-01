@@ -380,3 +380,27 @@ describe('buildStoneByCut cache', () => {
     ).toThrow();
   });
 });
+
+describe('small fancy side stones', () => {
+  // a 2 mm-wide marquise (2:1) and pear (1.6:1) at 60% depth, the proportions a cluster-flank fan asks for
+  for (const [id, aspect] of [
+    ['marquise', 2],
+    ['pear', 1.6],
+    ['oval', 1.4],
+  ] as const) {
+    it(`${id} at low detail keeps a domed brilliant crown (stars between table and girdle)`, () => {
+      const c = cut(id);
+      const dims = { length: 2 * aspect, width: 2, depth: 1.2 };
+      const s = buildStoneUncached(c, dims, { detail: 'low' });
+      check(c, s, dims, 'low');
+      // crown height about 15% of the width, not a flat plate
+      expect(s.crownHeight / dims.width).toBeGreaterThan(0.12);
+      expect(s.crownHeight / dims.width).toBeLessThan(0.2);
+      const p = s.geometry.getAttribute('position');
+      const heights = new Set<string>();
+      for (let i = 0; i < p.count; i++) heights.add(p.getY(i).toFixed(4));
+      const crownLevels = [...heights].map(Number).filter((y) => y > 1e-4 && y < s.crownHeight - 1e-4);
+      expect(crownLevels.length, `${id} star level`).toBeGreaterThan(0);
+    });
+  }
+});

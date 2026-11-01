@@ -6,15 +6,26 @@ import { heads } from '@/models/data/heads';
 import type { Params } from '@/models/types';
 import './index';
 import { cleanOutline, support } from './common';
+import { ellipsesOverlap } from './flankHeads';
 import { stubCtx } from './testStub';
+import type { StoneBuildOptions } from '../types';
+import type { StoneDims } from '@/models/stoneMath';
 
 function fan(bandAxis: [number, number], params: Params = {}, cut = 'oval') {
   const model = heads.find((h) => h.id === 'cluster-flank');
   if (!model) throw new Error('cluster-flank');
   const fn = headBuilders.get(model.builder);
   if (!fn) throw new Error(model.builder);
-  const ctx = stubCtx({ cut, params: { ...model.params, arrangement: 'fan', ...params }, bandAxis });
-  return { ctx, parts: fn(ctx) };
+  const base = stubCtx({ cut, params: { ...model.params, arrangement: 'fan', ...params }, bandAxis });
+  const calls: { id: string; dims: StoneDims; opts?: StoneBuildOptions }[] = [];
+  const ctx = {
+    ...base,
+    stone: (id: string, dims: StoneDims, opts?: StoneBuildOptions) => {
+      calls.push({ id, dims, opts });
+      return base.stone(id, dims, opts);
+    },
+  };
+  return { ctx, parts: fn(ctx), calls };
 }
 
 /** Accent vertices in (u along the band, v across it, y). */
@@ -76,4 +87,114 @@ describe('cluster-flank fan', () => {
         }
       }
   });
+
+  it('builds side stones with real proportions: full facets, depth 60% of width, marquise 2:1, pear 1.6:1', () => {
+    for (const [fanCut, id, aspect] of [
+      ['marquise', 'marquise', 2],
+      ['pear', 'pear', 1.6],
+      ['oval', 'oval', 1.4],
+    ] as const) {
+      const { calls } = fan([0, 1], { flankCount: 3, fanCut });
+      const shaped = calls.filter((c) => c.id === id);
+      expect(shaped.length, fanCut).toBe(6);
+      for (const c of shaped) {
+        expect(c.dims.length / c.dims.width, fanCut).toBeCloseTo(aspect, 2);
+        expect(c.dims.depth / c.dims.width, fanCut).toBeCloseTo(0.6, 2);
+      }
+      for (const c of calls) expect(c.opts?.detail, `${fanCut} ${c.id}`).toBe('full');
+    }
+  });
+
+  it('round fan with one stone per side is a trio of equal rounds', () => {
+    const { calls } = fan([0, 1], { flankCount: 1, fanCut: 'round', flankRatio: 0.17 }, 'emerald-cut');
+    expect(calls.length).toBe(6);
+    for (const c of calls) {
+      expect(c.id).toBe('round-brilliant');
+      expect(c.dims.width).toBeCloseTo(calls[0].dims.width, 6);
+    }
+  });
+
+  it('no two flank stones overlap, for every count and fan cut', () => {
+    for (const n of [1, 2, 3, 4, 5])
+      for (const fanCut of ['marquise', 'pear', 'oval', 'round'])
+        for (const cut of ['oval', 'emerald-cut', 'round-brilliant']) {
+          const { parts } = fan([0, 1], { flankCount: n, fanCut }, cut);
+          const hulls = stoneHulls(parts, [0, 1]);
+          for (let i = 0; i < hulls.length; i++)
+            for (let j = i + 1; j < hulls.length; j++)
+              expect(convexOverlap(hulls[i], hulls[j]), `${cut} ${fanCut} n=${n} stones ${i},${j}`).toBe(
+                false,
+              );
+        }
+  });
+
+  it('ellipsesOverlap detects touching and separated girdles', () => {
+    const e = (u: number, v: number) => ({ u, v, du: 1, dv: 0, a: 1, b: 0.5 });
+    expect(ellipsesOverlap(e(0, 0), e(1.9, 0), 0)).toBe(true);
+    expect(ellipsesOverlap(e(0, 0), e(2.1, 0), 0)).toBe(false);
+    expect(ellipsesOverlap(e(0, 0), e(2.1, 0), 0.1)).toBe(true);
+    expect(ellipsesOverlap(e(0, 0), e(0, 1.1), 0)).toBe(false);
+  });
 });
+
+type P2 = [number, number];
+
+/** Split the accent geometry into stones (connected by shared vertices) and return each one's (u, v) convex hull. */
+function stoneHulls(parts: Part[], axis: [number, number]): P2[][] {
+  const pts: P2[] = accentUV(parts, axis).map(([u, v]) => [u, v]);
+  const keys = accentUV(parts, axis).map((q) => q.map((x) => x.toFixed(5)).join(','));
+  const parent = pts.map((_, i) => i);
+  const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])));
+  const first = new Map<string, number>();
+  keys.forEach((k, i) => {
+    const f = first.get(k);
+    if (f === undefined) first.set(k, i);
+    else parent[find(i)] = find(f);
+  });
+  for (let t = 0; t + 2 < pts.length; t += 3) {
+    parent[find(t + 1)] = find(t);
+    parent[find(t + 2)] = find(t);
+  }
+  const groups = new Map<number, P2[]>();
+  pts.forEach((p, i) => {
+    const r = find(i);
+    const g = groups.get(r) ?? [];
+    g.push(p);
+    groups.set(r, g);
+  });
+  return [...groups.values()].map(hull);
+}
+
+function hull(points: P2[]): P2[] {
+  const p = [...points].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o: P2, a: P2, b: P2) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lower: P2[] = [];
+  for (const q of p) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], q) <= 0) lower.pop();
+    lower.push(q);
+  }
+  const upper: P2[] = [];
+  for (const q of [...p].reverse()) {
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], q) <= 0) upper.pop();
+    upper.push(q);
+  }
+  return [...lower.slice(0, -1), ...upper.slice(0, -1)];
+}
+
+/** Separating-axis test for two convex polygons (touching within 1 micron counts as apart). */
+function convexOverlap(a: P2[], b: P2[]): boolean {
+  for (const poly of [a, b])
+    for (let i = 0; i < poly.length; i++) {
+      const p = poly[i];
+      const q = poly[(i + 1) % poly.length];
+      const nx = q[1] - p[1];
+      const ny = p[0] - q[0];
+      const proj = (s: P2[]) => s.map((r) => r[0] * nx + r[1] * ny);
+      const pa = proj(a);
+      const pb = proj(b);
+      const len = Math.hypot(nx, ny) || 1;
+      if (Math.max(...pa) < Math.min(...pb) + 1e-3 * len || Math.max(...pb) < Math.min(...pa) + 1e-3 * len)
+        return false;
+    }
+  return true;
+}
