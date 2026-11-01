@@ -384,3 +384,45 @@ function twig(ctx: ShankCtx): ShankResult {
   return { parts: [metal([g, ...nubs], 'twig shank')], seatY: R + tp.tTop, topWidth: tp.wTop };
 }
 registerShankBuilder('twig', twig);
+
+// ---------------------------------------------------------------------------------------------
+// Beaded: a ball chain of touching round beads all the way round, on a slim core wire.
+// ---------------------------------------------------------------------------------------------
+function beaded(ctx: ShankCtx): ShankResult {
+  const p = ctx.params;
+  const R = ctx.innerRadius;
+  const b = num(p, 'beadMm', 1.8, 1.0, 3.2) / 2;
+  const rows = Math.round(num(p, 'rows', 1, 1, 3));
+  const rc = R + b;
+  // a whole number of beads so the chain closes without a gap or an overlap
+  const count = Math.max(12, Math.floor((TAU * rc) / (b * 2 * 0.94)));
+  const rowZ = b * 2 * 0.9;
+  const ms: THREE.Matrix4[] = [];
+  for (let row = 0; row < rows; row++) {
+    const z = (row - (rows - 1) / 2) * rowZ;
+    const phase = row % 2 === 0 ? 0 : 0.5;
+    for (let i = 0; i < count; i++) {
+      const th = ((i + phase) / count) * TAU;
+      ms.push(new THREE.Matrix4().makeTranslation(rc * Math.cos(th), rc * Math.sin(th), z));
+    }
+  }
+  const core = sweep({
+    segments: 120,
+    profile: () =>
+      bandSection({
+        w: (rows - 1) * rowZ + b * 1.1,
+        t: b * 1.1,
+        R: R + b * 0.45,
+        outerExp: 2.2,
+        innerExp: 2.2,
+        split: 0.5,
+        n: 12,
+      }),
+  });
+  return {
+    parts: [metal([core, instances(beadGeometry(b, 10, 8), ms)], 'beaded shank')],
+    seatY: R + 2 * b - 0.12,
+    topWidth: (rows - 1) * rowZ + 2 * b,
+  };
+}
+registerShankBuilder('beaded', beaded);

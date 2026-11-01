@@ -210,7 +210,7 @@ function channel(ctx: ShankCtx): ShankResult {
       return channelSection(R, widthAt(tp, th), t, gw, Math.max(0, depthFull(t) * grooveAt(th)));
     },
   });
-  const pitch = dims.length + 0.04;
+  const pitch = dims.length + num(p, 'stoneGapMm', 0.04, 0, 0.6);
   const angles = stoneAngles(hA + 0.02, zoneEnd - fade, rOut, pitch);
   const ms = angles.map((th) => ringFrame(th, R + thickAt(tp, th) - built.crownHeight - 0.04, 0));
   const parts: Part[] = [metal([band], 'channel shank')];

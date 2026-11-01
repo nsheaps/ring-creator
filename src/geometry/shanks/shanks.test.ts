@@ -31,6 +31,7 @@ const VOCAB = [
   'leaf-vine',
   'twig',
   'comfort-fit',
+  'beaded',
 ];
 
 // ---------- stubs (no dependency on the stone builders) ----------
@@ -458,5 +459,140 @@ describe('model-specific invariants', () => {
     const plain = stats(build('plain-flat').parts).tris;
     expect(stats(build('milgrain').parts).tris).toBeGreaterThan(plain * 2);
     expect(stats(build('vintage-filigree').parts).tris).toBeGreaterThan(plain * 2);
+  });
+});
+
+describe('accent stones follow the shank and respond to their controls', () => {
+  const perStone = stubStone({ length: 1, width: 1, depth: 0.6 }).geometry.getAttribute('position').count;
+  const on: Record<string, Record<string, boolean>> = {
+    pave: {},
+    channel: {},
+    split: { pave: true },
+    bypass: { pave: true },
+    crossover: { pave: true },
+    twisted: { pave: true },
+    cathedral: { shoulderStones: true },
+  };
+  const build = (
+    id: string,
+    extra: Record<string, number | boolean>,
+    o: Parameters<typeof stubCtx>[1] = {},
+  ) => {
+    const fn = shankBuilders.get(id);
+    if (!fn) throw new Error(id);
+    return fn(stubCtx({ ...(byId.get(id)?.params ?? {}), ...on[id], ...extra }, o));
+  };
+  const stoneCount = (parts: Part[]) =>
+    parts
+      .filter((q) => q.slot === 'accent-stone')
+      .reduce((n, q) => n + q.geometry.getAttribute('position').count / perStone, 0);
+  const verts = (g: THREE.BufferGeometry) => {
+    const a = g.getAttribute('position').array as ArrayLike<number>;
+    const out: [number, number, number][] = [];
+    for (let i = 0; i < a.length; i += 3) out.push([a[i], a[i + 1], a[i + 2]]);
+    return out;
+  };
+
+  for (const id of Object.keys(on)) {
+    describe(id, () => {
+      it('is off by default for the optional-stone shanks and on for pave/channel', () => {
+        const defaults = stoneCount(
+          build(id, id === 'pave' || id === 'channel' ? {} : { pave: false, shoulderStones: false }).parts,
+        );
+        if (id === 'pave' || id === 'channel') expect(defaults).toBeGreaterThan(4);
+        else expect(defaults).toBe(0);
+      });
+      it('sets whole stones that sit on the metal and stay fused', () => {
+        for (const R of [7.5, 10]) {
+          const res = build(id, {}, { R });
+          const n = stoneCount(res.parts);
+          expect(n, `R=${R} stones`).toBeGreaterThan(5);
+          expect(Number.isInteger(Math.round(n * 1000) / 1000) || Math.abs(n - Math.round(n)) < 1e-6).toBe(
+            true,
+          );
+          const cell = 0.5;
+          const grid = new Map<string, [number, number, number][]>();
+          const key = (x: number, y: number, z: number) =>
+            `${Math.floor(x / cell)},${Math.floor(y / cell)},${Math.floor(z / cell)}`;
+          for (const q of res.parts.filter((p) => p.slot === 'shank-metal'))
+            for (const m of verts(q.geometry)) {
+              const k = key(m[0], m[1], m[2]);
+              const list = grid.get(k);
+              if (list) list.push(m);
+              else grid.set(k, [m]);
+            }
+          const stone = res.parts.find((q) => q.slot === 'accent-stone');
+          if (!stone) throw new Error('no stones');
+          const sv = verts(stone.geometry);
+          let worst = 0;
+          for (let s = 0; s < sv.length; s += perStone) {
+            // the stone's nearest approach to the metal (its girdle is sunk into the surface)
+            let best = Infinity;
+            for (let k = s; k < s + perStone; k++) {
+              const [x, y, z] = sv[k];
+              for (let dx = -1; dx <= 1; dx++)
+                for (let dy = -1; dy <= 1; dy++)
+                  for (let dz = -1; dz <= 1; dz++)
+                    for (const m of grid.get(key(x + dx * cell, y + dy * cell, z + dz * cell)) ?? [])
+                      best = Math.min(best, Math.hypot(x - m[0], y - m[1], z - m[2]));
+            }
+            worst = Math.max(worst, best);
+          }
+          expect(worst, `R=${R}: a stone floats ${worst.toFixed(2)} mm from the metal`).toBeLessThan(0.35);
+          expect(
+            detachedIslands(res.parts.filter((q) => q.slot === 'shank-metal').map((q) => q.geometry)),
+          ).toEqual([]);
+        }
+      });
+      it('bigger stones mean fewer of them', () => {
+        const small = stoneCount(build(id, { stoneSizeMm: 1.0 }).parts);
+        const big = stoneCount(build(id, { stoneSizeMm: 1.6 }).parts);
+        expect(small).toBeGreaterThan(big);
+        expect(big).toBeGreaterThan(0);
+      });
+      it('more spacing means fewer stones', () => {
+        const tight = stoneCount(build(id, { stoneGapMm: 0 }).parts);
+        const loose = stoneCount(build(id, { stoneGapMm: 0.6 }).parts);
+        expect(tight).toBeGreaterThan(loose);
+      });
+      it('coverage sets how far the stones run', () => {
+        const short = stoneCount(build(id, { coverage: 0.2 }).parts);
+        const long = stoneCount(build(id, { coverage: id === 'crossover' ? 0.32 : 0.45 }).parts);
+        expect(long).toBeGreaterThan(short);
+      });
+      it('takes the design accent size when no override is set', () => {
+        const small = stoneCount(build(id, { stoneSizeMm: 0 }, { accentSize: 1.0 }).parts);
+        const big = stoneCount(build(id, { stoneSizeMm: 0 }, { accentSize: 1.6 }).parts);
+        expect(small).toBeGreaterThan(big);
+      });
+    });
+  }
+
+  it('twisted pave: stones ride the wires, so they spread across the rope width', () => {
+    const res = build('twisted', {});
+    const stone = res.parts.find((q) => q.slot === 'accent-stone');
+    if (!stone) throw new Error('no stones');
+    const zs = verts(stone.geometry).map((v) => v[2]);
+    expect(Math.max(...zs) - Math.min(...zs)).toBeGreaterThan(1.2);
+  });
+  it('cathedral shoulder stones sit above the band, up the arches', () => {
+    const res = build('cathedral', {});
+    const stone = res.parts.find((q) => q.slot === 'accent-stone');
+    if (!stone) throw new Error('no stones');
+    const ys = verts(stone.geometry).map((v) => v[1]);
+    const top = Math.max(...ys);
+    expect(top).toBeGreaterThan(res.seatY + 0.5);
+  });
+});
+
+describe('beaded shank', () => {
+  it('is a chain of round beads that closes evenly and sets the band thickness', () => {
+    const fn = shankBuilders.get('beaded');
+    if (!fn) throw new Error('beaded');
+    const one = fn(stubCtx({ beadMm: 2, rows: 1 }));
+    const three = fn(stubCtx({ beadMm: 2, rows: 3 }));
+    expect(one.seatY).toBeCloseTo(8.5 + 2 - 0.12, 2);
+    expect(three.topWidth).toBeGreaterThan(one.topWidth * 2);
+    expect(stats(three.parts).tris).toBeGreaterThan(stats(one.parts).tris * 2);
   });
 });
