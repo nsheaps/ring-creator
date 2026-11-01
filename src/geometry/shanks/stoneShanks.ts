@@ -105,10 +105,28 @@ function outerArc(hw: number, hTop: number, e: number, n = 120): { u: number; v:
   return pts;
 }
 
+/** A section of the dome at one angle round the ring, with its rows of stones packed across it. */
+interface DomeSection {
+  arc: { u: number; v: number; s: number }[];
+  total: number;
+  /** radius of the section's mid line (where the upper half starts) */
+  rMid: number;
+  /** angular pitch of the stones along every row (radians) */
+  dth: number;
+  /** each row's offset across the dome from its crown (mm of arc), its surface radius and its stone diameter */
+  s: number[];
+  r: number[];
+  d: number[];
+}
+
 /**
- * Micro-pave: the whole upper surface of a rounded band is covered with `rows` staggered rows of tiny stones spread over the
- * whole dome, over the top and down both faces, nearly touching, all the way round (coverage 1) or from the head
- * to `coverage` of each half. There is no trough; the metal is a smooth dome the stones are sunk into.
+ * Micro-pave: the whole upper surface of a rounded band is covered with `rows` staggered rows of tiny stones packed
+ * edge to edge (hexagonal packing), over the top and down both faces of the dome, all the way round (coverage 1) or
+ * from the head to `coverage` of each half. The stone size comes from the rows and the band: at every point the rows
+ * share the dome's arc evenly, and the stones are as large as that spacing allows, so neighbours nearly touch (the
+ * gap is `stoneGapMm`, at most 4 % of the pitch). Stones are graduated very slightly where the band tapers or the
+ * rows sit at a smaller radius. Tiny beads fill the three-stone interstices. There is no trough; the metal is a
+ * smooth dome the stones are sunk into, and the pave climbs the shoulders up under the head's gallery.
  */
 function microPave(ctx: ShankCtx, rows: number): ShankResult {
   const p = ctx.params;
@@ -120,28 +138,117 @@ function microPave(ctx: ShankCtx, rows: number): ShankResult {
   tp.tTop = Math.max(tp.tTop, tp.tBottom);
   const outerExp = outerExpFromRoundness(num(p, 'roundness', 0.85, 0, 1));
   const coverage = num(p, 'coverage', 1, 0.1, 1);
-  const size = accentSize(ctx, p, 0.8, 1.6);
-  const dims = accentDims(ctx, size);
-  const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
-  const gap = num(p, 'stoneGapMm', 0.03, 0, 0.4);
-  const ch = built.crownHeight;
+  const gapMm = num(p, 'stoneGapMm', 0.03, 0, 0.4);
   const split = 0.76;
-  const across = dims.width * 0.9 + gap;
-  const need = (rows - 1) * across + dims.width + 0.5;
-  // widen the band until the dome's upper arc is long enough for every row
-  const arcLen = (w: number, t: number) => {
-    const a = outerArc(w / 2, t * split, outerExp, 60);
-    return a[a.length - 1].s;
+  /** a polished lip outside the two outer rows (mm of arc) */
+  const lip = 0.1;
+  /** stone diameter for a centre to centre pitch D: the gap is stoneGapMm, but never more than 4 % of the pitch */
+  const fit = (D: number) => Math.min(D, Math.max(D * 0.96, D - gapMm));
+  /** point on a dome arc `sArc` mm from its crown: section coordinates and the outward normal */
+  const onArc = (arc: DomeSection['arc'], sArc: number) => {
+    const total = arc[arc.length - 1].s;
+    const target = clamp(total / 2 + sArc, 0, total);
+    let j = 1;
+    while (j < arc.length - 1 && arc[j].s < target) j++;
+    const A = arc[j - 1];
+    const B = arc[j];
+    const k = (target - A.s) / Math.max(1e-6, B.s - A.s);
+    const len = Math.hypot(B.u - A.u, B.v - A.v) || 1;
+    // the polyline runs left to right over the top, so the outward side is to its left: (-dv, du)
+    return {
+      u: A.u + (B.u - A.u) * k,
+      v: A.v + (B.v - A.v) * k,
+      nu: -(B.v - A.v) / len,
+      nv: (B.u - A.u) / len,
+    };
   };
-  for (let k = 0; k < 8 && arcLen(tp.wTop, tp.tTop) < need; k++) {
+  /**
+   * Pack the rows across the section at angle th. Every row has the same angular pitch dth (so the rows stay
+   * staggered all the way round), a row at radius r has stones of fit(r * dth), and neighbouring rows sit just far
+   * enough apart that the diagonal neighbours (half a pitch along, one row across) nearly touch. dth is the largest
+   * pitch for which all rows plus a lip either side fit on the arc.
+   */
+  const sectionAt = (th: number): DomeSection => {
+    const w = widthAt(tp, th);
+    const t = thickAt(tp, th);
+    const arc = outerArc(w / 2, t * split, outerExp);
+    const total = arc[arc.length - 1].s;
+    const rMid = R + t - t * split;
+    let r: number[] = Array.from({ length: rows }, () => rMid + t * split);
+    /** straight-line distance between two points of the arc */
+    const chord = (s0: number, s1: number) => {
+      const a = onArc(arc, s0);
+      const b = onArc(arc, s1);
+      return Math.hypot(b.u - a.u, b.v - a.v);
+    };
+    /** arc position `want` mm (straight line) from s0 in direction dir */
+    const stepOut = (s0: number, want: number, dir: number) => {
+      let ds = want;
+      for (let k = 0; k < 3; k++) ds *= want / (chord(s0, s0 + dir * ds) || want);
+      return s0 + dir * ds;
+    };
+    const layout = (dth: number) => {
+      const d = r.map((ri) => fit(ri * dth));
+      /** centre distance across from row i - 1 to row i: diagonal neighbours (half a pitch along) sit their mean
+       * pitch (a stone plus the gap) apart */
+      const across = (i: number) => {
+        const c = ((r[i - 1] + r[i]) * dth) / 2;
+        const half = (Math.min(r[i - 1], r[i]) * dth) / 2;
+        return Math.sqrt(Math.max(0, c * c - half * half));
+      };
+      // lay the rows out symmetrically from the crown, measuring straight across (the dome curves away between them)
+      const s = new Array<number>(rows).fill(0);
+      const hi = Math.ceil((rows - 1) / 2);
+      if (rows % 2 === 0) {
+        const want = across(hi);
+        let x = want / 2;
+        for (let k = 0; k < 3; k++) x *= want / (chord(-x, x) || want);
+        s[hi] = x;
+        s[hi - 1] = -x;
+      }
+      for (let i = hi + 1; i < rows; i++) {
+        s[i] = stepOut(s[i - 1], across(i), 1);
+        s[rows - 1 - i] = -s[i];
+      }
+      const width = 2 * s[rows - 1] + d[0] / 2 + d[rows - 1] / 2 + 2 * lip;
+      return { d, s, width };
+    };
+    let dth = 0.1;
+    for (let pass = 0; pass < 3; pass++) {
+      let lo = 1e-3;
+      let hi = 1;
+      for (let it = 0; it < 40; it++) {
+        const m = (lo + hi) / 2;
+        if (layout(m).width > total) hi = m;
+        else lo = m;
+      }
+      dth = lo;
+      const s0 = layout(dth).s;
+      r = s0.map((x) => rMid + onArc(arc, x).v);
+    }
+    const { d, s: sRows } = layout(dth);
+    return { arc, total, rMid, dth, s: sRows, r, d };
+  };
+  // The rows set the stone size. A band too narrow for that many rows of the asked-for stoneSizeMm (or, with none
+  // set, of 0.6 mm stones) widens until they fit, give or take a tenth.
+  const asked = num(p, 'stoneSizeMm', 0, 0, 5);
+  const minD = asked > 0 ? clamp(asked, 0.6, 2.6) * 0.9 : 0.6;
+  const meanD = () => {
+    const d = sectionAt(TOP + Math.PI).d;
+    return d.reduce((n, x) => n + x, 0) / d.length;
+  };
+  for (let k = 0; k < 10 && meanD() < minD; k++) {
     tp.wTop *= 1.06;
     tp.wBottom *= 1.06;
     tp.tTop *= 1.02;
     tp.tBottom *= 1.02;
   }
   const rOut = R + tp.tBottom;
-  const a0 = headHalfAngle(ctx, rOut) + 0.02;
-  const a1 = Math.max(a0 + 0.05, coverage * Math.PI);
+  // a head narrows to its base where it meets the band, so the pave climbs the shoulders right up under the
+  // gallery (a little over half of the head's half length along the band)
+  const a0 = headHalfAngle(ctx, rOut) * 0.55 + 0.02;
+  const full = coverage >= 0.999;
+  const a1 = full ? Math.PI : Math.max(a0 + 0.05, coverage * Math.PI);
   const band = sweep({
     segments: 200,
     smoothProfile: true,
@@ -156,81 +263,109 @@ function microPave(ctx: ShankCtx, rows: number): ShankResult {
         n: 32,
       }),
   });
-  const pitch = dims.length + gap;
-  const nAlong = Math.max(0, Math.floor(((a1 - a0) * rOut) / pitch));
   /**
-   * Frame on the dome at angle th, at `frac` (-1 .. 1) of the usable arc across the section, sunk `sink` below the
-   * surface along its outward normal (dsMm moves it further across, in mm of arc): X along the band, Y out of the metal (a stone's table), Z across.
+   * Frame on the dome at angle th, `sArc` mm across from the crown, sunk `sink` below the surface along its normal
+   * and scaled by `scale`: X along the band, Y out of the metal (a stone's table), Z across.
    */
-  const onDome = (th: number, frac: number, sink: number, dsMm = 0): THREE.Matrix4 => {
-    const w = widthAt(tp, th);
-    const t = thickAt(tp, th);
-    const arc = outerArc(w / 2, t * split, outerExp);
-    const total = arc[arc.length - 1].s;
-    const lim = Math.max(0, total / 2 - dims.width * 0.5 - 0.12);
-    const target = clamp(total / 2 + frac * lim + dsMm, 0, total);
-    let j = 1;
-    while (j < arc.length - 1 && arc[j].s < target) j++;
-    const A = arc[j - 1];
-    const B = arc[j];
-    const k = (target - A.s) / Math.max(1e-6, B.s - A.s);
-    const u = A.u + (B.u - A.u) * k;
-    const v = A.v + (B.v - A.v) * k;
-    const len = Math.hypot(B.u - A.u, B.v - A.v) || 1;
-    // outward normal of the section (u right, v up); the polyline runs left to right over the top, so the
-    // outward side is to its left: (-dv, du)
-    const nu = -(B.v - A.v) / len;
-    const nv = (B.u - A.u) / len;
-    const rMid = R + t - t * split;
-    const rr = rMid + v - nv * sink;
-    const uu = u - nu * sink;
+  const onDome = (th: number, sec: DomeSection, sArc: number, sink: number, scale = 1): THREE.Matrix4 => {
+    const a = onArc(sec.arc, sArc);
+    const rr = sec.rMid + a.v - a.nv * sink;
+    const uu = a.u - a.nu * sink;
     const c = Math.cos(th);
     const sn = Math.sin(th);
     const X = new THREE.Vector3(-sn, c, 0);
-    const Y = new THREE.Vector3(c * nv, sn * nv, nu).normalize();
+    const Y = new THREE.Vector3(c * a.nv, sn * a.nv, a.nu).normalize();
     const Z = new THREE.Vector3().crossVectors(X, Y).normalize();
-    const m = new THREE.Matrix4().makeBasis(X, Y, Z);
+    const m = new THREE.Matrix4().makeBasis(
+      X.multiplyScalar(scale),
+      Y.multiplyScalar(scale),
+      Z.multiplyScalar(scale),
+    );
     m.setPosition(rr * c, rr * sn, uu);
     return m;
   };
-  const rowFrac = (row: number) => (rows > 1 ? (row - (rows - 1) / 2) / ((rows - 1) / 2) : 0);
-  const rowShift = (row: number) => (row % 2 ? 0.5 : 0);
-  const angleAt = (side: number, along: number) => TOP + side * (a0 + (along * pitch) / rOut);
+  /** angular pitch at th */
+  const step = (th: number) => sectionAt(TOP + th).dth;
+  // half-step grid from the head (g[0] = a0) towards a1: even rows sit on odd grid points, odd rows on even ones
+  const g: number[] = [a0];
+  while (g.length < 4000) {
+    const x = g[g.length - 1];
+    const h = step(x) / 2;
+    const nx = x + step(x + h / 2) / 2;
+    if (nx > a1 + 1e-9) {
+      // all the way round: stretch or squeeze the grid (by under half a step) so it lands exactly on the bottom,
+      // where both halves meet with the same pitch
+      if (full && nx - a1 < a1 - x) g.push(nx);
+      break;
+    }
+    g.push(nx);
+  }
+  let K = g.length - 1;
+  if (full && K > 0) {
+    const f = (Math.PI - a0) / (g[K] - a0);
+    for (let k = 1; k <= K; k++) g[k] = a0 + (g[k] - a0) * f;
+  }
+  /** does `row` take grid point k (even rows the odd points, odd rows the even ones)? */
+  const onRow = (row: number, k: number) => (k % 2 === 1) === (row % 2 === 0);
+  /** is there a stone of `row` at grid point k on this side? (the bottom one belongs to side +1 only) */
+  const hasStone = (row: number, k: number, side: number) => {
+    if (k < 1 || !onRow(row, k)) return false;
+    if (full) return k < K || (k === K && side > 0);
+    return k <= K - 1;
+  };
+  if (K < 2) K = 0;
+  const secs = g.map((a) => sectionAt(TOP + a));
+  const ref = sectionAt(TOP + Math.PI);
+
+  const dims = accentDims(ctx, Math.max(...ref.d));
+  const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
+  const ch = built.crownHeight;
   // stones sit flush in their bored seats: the girdle just below the metal surface, the shallow crown above it
-  const stoneSink = ch * 0.25;
+  const stoneSink = ch * 0.12;
   const stoneMs: THREE.Matrix4[] = [];
-  for (let row = 0; row < rows; row++)
-    for (const side of [-1, 1])
-      for (let i = 0; i < nAlong; i++)
-        stoneMs.push(onDome(angleAt(side, i + 0.5 + rowShift(row)), rowFrac(row), stoneSink));
-  // Holding beads: one in every three-stone interstice of the staggered grid (between rows r and r+1 the triangles
-  // alternate, their centroids a third and two thirds of the way across, half a pitch apart along the band), plus a
-  // bead between neighbours on the two outer rows' outer edges. They are raised from the metal and overlap the girdles.
-  const beadR = clamp(dims.width * 0.15, 0.1, 0.24);
-  const beadSink = beadR * 0.45;
+  for (const side of [-1, 1])
+    for (let k = 1; k <= K; k++) {
+      const sec = secs[k];
+      const th = TOP + side * g[k];
+      const dth = k < K ? g[k + 1] - g[k - 1] : 2 * (g[K] - g[K - 1]);
+      for (let row = 0; row < rows; row++) {
+        if (!hasStone(row, k, side)) continue;
+        // the section's packing, adjusted for the grid's local pitch (stretched or squeezed a little at the bottom)
+        const scale = (sec.d[row] * Math.min(1, dth / sec.dth)) / dims.width;
+        stoneMs.push(onDome(th, sec, sec.s[row], stoneSink * scale, scale));
+      }
+    }
+  // Holding beads: one in every three-stone interstice of the staggered grid (between rows r and r+1, at each grid
+  // point: a third of the way across where row r has the two stones, two thirds where row r+1 has them), plus one
+  // between neighbours on the outer edges of the two outer rows. They overlap the girdles a little.
+  const beadR = clamp(dims.width * 0.12, 0.07, 0.18);
+  const beadSink = beadR * 0.35;
   const beadMs: THREE.Matrix4[] = [];
-  if (nAlong > 0) {
-    for (const side of [-1, 1]) {
+  for (const side of [-1, 1])
+    for (let k = 1; k <= K; k++) {
+      const sec = secs[k];
+      const th = TOP + side * g[k];
       for (let row = 0; row < rows - 1; row++) {
-        const f0 = rowFrac(row);
-        const f1 = rowFrac(row + 1);
-        for (let i = 0; i < nAlong - 1; i++) {
-          const sA = i + 1 + rowShift(row); // between stones i and i+1 of row r, under a stone of row r+1
-          const sB = i + 1 + rowShift(row + 1); // between stones of row r+1, over a stone of row r
-          beadMs.push(onDome(angleAt(side, sA), f0 + (f1 - f0) / 3, beadSink));
-          beadMs.push(onDome(angleAt(side, sB), f0 + ((f1 - f0) * 2) / 3, beadSink));
-        }
+        const lowPair =
+          hasStone(row, k - 1, side) && hasStone(row, k + 1, side) && hasStone(row + 1, k, side);
+        const highPair =
+          hasStone(row + 1, k - 1, side) && hasStone(row + 1, k + 1, side) && hasStone(row, k, side);
+        // at the bottom of a full ring the far neighbours are on the other half; that half skips the shared point
+        const seam = full && k === K;
+        if (seam && side < 0) continue;
+        if (!(lowPair || highPair || seam)) continue;
+        const across = (sec.s[row + 1] - sec.s[row]) * (onRow(row, k) ? 2 : 1);
+        beadMs.push(onDome(th, sec, sec.s[row] + across / 3, beadSink));
       }
       for (const [row, dir] of [
         [0, -1],
         [rows - 1, 1],
-      ] as const)
-        for (let i = 0; i <= nAlong; i++)
-          beadMs.push(
-            onDome(angleAt(side, i + rowShift(row)), rowFrac(row), beadSink, dir * dims.width * 0.42),
-          );
+      ] as const) {
+        if (onRow(row, k) || (full && k === K && side < 0)) continue;
+        if (!hasStone(row, k - 1, side) && !hasStone(row, k + 1, side)) continue;
+        beadMs.push(onDome(th, sec, sec.s[row] + dir * sec.d[row] * 0.47, beadSink));
+      }
     }
-  }
   const geos = [band];
   // a low dome is enough: the lower half of every bead is inside the metal (and hundreds of them must fit the budget)
   const dome = toFlat(new THREE.SphereGeometry(beadR, 6, 2, 0, Math.PI * 2, 0, Math.PI / 2));
@@ -292,8 +427,8 @@ function pave(ctx: ShankCtx): ShankResult {
   });
   const stoneMs: THREE.Matrix4[] = [];
   const beadMs: THREE.Matrix4[] = [];
-  const beadR = clamp(dims.width * 0.2, 0.15, 0.32);
-  const beadU = (dims.width / 2) * 0.78;
+  const beadR = clamp(dims.width * 0.14, 0.1, 0.22);
+  const beadU = (dims.width / 2) * 0.8;
   for (const th of angles) {
     const t = thickAt(tp, th);
     const rg = R + t - ch * 0.7;

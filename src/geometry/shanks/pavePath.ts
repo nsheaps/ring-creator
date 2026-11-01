@@ -130,7 +130,8 @@ export function paveSpec(
     d,
     need,
     pitch: dims.length + gap,
-    beadR: clamp(dims.width * 0.2, 0.15, 0.32),
+    // small beads: they only need to catch the girdles, not frame each stone
+    beadR: clamp(dims.width * 0.14, 0.1, 0.22),
     beadU: (dims.width / 2) * 0.78,
     beadSink: ch * 0.35,
     ch,
