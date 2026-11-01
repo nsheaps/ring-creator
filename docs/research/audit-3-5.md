@@ -49,6 +49,8 @@ Checked against a photo and left as is: r3-007 r3-011 r3-012, r4-003 r4-004 r4-0
 
 Data-only changes: r1-013 gets a large domed plaque and a narrow shank; r3-002 an elongated hexagon with baguette flanks; r3-003 rose gold, salt-and-pepper colour and triangle flanks; r3-009 the chevron stacker as a band; r3-010 a marquise fan cluster; r3-023 a thin full bezel; r5-020 and r5-022 point-up hexagon frames with thinner rims; r5-004 and r5-005 a one-carat round and tuned blades. r4-036 could not be re-checked (Brilliant Earth returned 403).
 
+r4-036 retry: the listing page and its guessed image-CDN URLs still return 403 (bot challenge) from the sandbox, the web archive and a search engine were unreachable (connection reset), and no search or fetch tool was available to find the same ring on another retailer. No reference photo was obtained, so r4-036 is left unchanged rather than tuned blind; it needs a photo supplied from outside the sandbox.
+
 Remaining gaps that need new builders:
 
 - r3-002 r3-003: triangle outer stones beyond the baguettes (five-stone has one cut for all side stones); side baguette long axis should run along the finger; graded pave on r3-003.
