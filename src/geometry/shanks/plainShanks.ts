@@ -235,7 +235,7 @@ function plain(
 
 registerShankBuilder(
   'plain-round',
-  // classic "D": a full half-round dome over a flat inside with crisp inner edges
+  // classic "D": a half-round dome over a gently rounded inside (no hard inner corner that would read as a groove)
   plain('plain round shank', {
     w: 2.0,
     wTop: 2.2,
@@ -243,8 +243,8 @@ registerShankBuilder(
     tTop: 1.9,
     taperDeg: 70,
     roundness: 1,
-    innerExp: 9,
-    split: 0.8,
+    innerExp: 5.5,
+    split: 0.72,
   }),
 );
 registerShankBuilder(
