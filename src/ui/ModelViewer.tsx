@@ -77,7 +77,14 @@ function StoneView({ model, autoRotate }: { model: Model; autoRotate: boolean })
       const dims = dimsFromCarat(cut, diamond, { carat: 1 });
       const built = buildStone(cut, dims);
       const color = diamond.colors.find((c) => c.id === diamond.defaultColor) ?? diamond.colors[0];
-      const [outer, inner] = gemMaterials(diamond, color.hex, clarity, grade?.tint, grade?.tintStrength ?? 0, cut.builder === 'step');
+      const [outer, inner] = gemMaterials(
+        diamond,
+        color.hex,
+        clarity,
+        grade?.tint,
+        grade?.tintStrength ?? 0,
+        cut.builder === 'step',
+      );
       const geo = built.geometry.clone();
       const g = new THREE.Group();
       const a = new THREE.Mesh(geo, inner);

@@ -270,7 +270,9 @@ export function gemMaterials(
       gemBody: { value: body },
       gemScatter: { value: 0.75 + 0.55 * ri + (translucent ? 0.5 : 0) },
       // coloured stones: their body colour masks fire, and split channels would tint facets off-hue
-      gemDispersion: { value: Math.min(0.07, gem.dispersion * 0.6) * (colourless ? 1 : 0.3) * (stepCut ? 0.25 : 1) },
+      gemDispersion: {
+        value: Math.min(0.07, gem.dispersion * 0.6) * (colourless ? 1 : 0.3) * (stepCut ? 0 : 1),
+      },
       gemBrightness: { value: colourless ? 1.5 + 0.4 * ri : 1.8 },
       gemHaze: { value: Math.min(1, haze + (translucent ? 0.55 : 0)) },
       gemContrast: { value: colourless ? 0.9 : 0.55 },
