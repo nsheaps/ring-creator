@@ -4,6 +4,14 @@ type Rarity = NonNullable<GemColor['rarity']>;
 const c = (id: string, name: string, hex: string, rarity?: Rarity): GemColor =>
   rarity ? { id, name, hex, rarity } : { id, name, hex };
 
+/**
+ * Secondary colour shown by some facets of parti / bi-colour stones, keyed `<gem id>/<colour id>`. Australian teal
+ * sapphire faces up green with blue-teal flashes as the stone moves.
+ */
+export const gemColorFlashes: Readonly<Record<string, string>> = {
+  'sapphire/teal': '#1f5a55',
+};
+
 const diamondColors: GemColor[] = [
   c('colorless', 'Colorless', '#f4f7fb', 'common'),
   c('near-colorless', 'Near-colorless', '#f3f2e8', 'common'),
@@ -112,7 +120,7 @@ export const gems: GemModel[] = [
     name: 'Sapphire',
     summary: 'A durable corundum gem best known in blue but found in nearly every color.',
     description:
-      "Sapphire is corundum, the same mineral as ruby. It scores 9 on Mohs, making it one of the best colored stones for daily wear. Blue is classic, but pink, yellow, teal, white and the orange-pink padparadscha are all sapphire.\n\nColor and clarity drive value: vivid, evenly saturated royal blue and cornflower blue are most prized. Many sapphires are heat-treated to improve color, which is accepted in the trade; untreated stones command a premium.\n\nIt is September's birthstone and a popular alternative to a diamond.",
+      "Sapphire is corundum, the same mineral as ruby. It scores 9 on Mohs, making it one of the best colored stones for daily wear. Blue is classic, but pink, yellow, teal, white and the orange-pink padparadscha are all sapphire. Teal sapphire, much of it Australian, faces up olive to forest green with blue-teal flashes.\n\nColor and clarity drive value: vivid, evenly saturated royal blue and cornflower blue are most prized. Many sapphires are heat-treated to improve color, which is accepted in the trade; untreated stones command a premium.\n\nIt is September's birthstone and a popular alternative to a diamond.",
     tags: ['corundum', 'durable', 'colorful', 'september'],
     pros: ['Very hard and durable', 'Wide range of colors', 'Historic engagement stone'],
     cons: ['Fine untreated stones are costly', 'Color can appear dark in dim light'],
@@ -130,7 +138,7 @@ export const gems: GemModel[] = [
       c('pink', 'Pink', '#ee7fae', 'uncommon'),
       c('padparadscha', 'Padparadscha', '#f59a7a', 'rare'),
       c('yellow', 'Yellow', '#f2cf3d', 'common'),
-      c('teal', 'Teal', '#0e4a58', 'uncommon'),
+      c('teal', 'Teal', '#4a6424', 'uncommon'),
       c('white', 'White', '#eef2f6', 'common'),
       c('purple', 'Purple', '#7a4bb0', 'uncommon'),
       c('green', 'Green', '#3f9a5a', 'uncommon'),

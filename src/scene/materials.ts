@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import type { ClarityModel, FinishModel, GemModel, MetalModel } from '@/models/types';
+import { gemColorFlashes } from '@/models/data/gems';
 
 const cache = new Map<string, THREE.Material>();
 
@@ -40,6 +41,11 @@ uniform float gemGlow;
 uniform float gemMosaic;
 uniform float gemStep;
 uniform float gemLift;
+uniform vec3 gemBody2;
+uniform float gemFlashMix;
+uniform float gemDarkFloor;
+uniform float gemSpeckleAmt;
+uniform float gemSelf;
 vec3 gemHash3(vec3 p) {
   p = fract(p * vec3(0.1031, 0.1030, 0.0973));
   p += dot(p, p.yxz + 33.33);
@@ -51,21 +57,34 @@ float gemFlatness( vec3 n ) {
 }
 `;
 
-const PAVILION_MAIN = /* glsl */ `
+/**
+ * Light return of one pavilion facet (outward world normal `nW`) for the view ray `IW` (camera to fragment), see
+ * the pavilion pass. Declared just before main(), after three's environment-map helpers. `wp` is the world position
+ * (inclusion speckles, opal patches).
+ */
+const GEM_FUNCS = /* glsl */ `
+// deterministic inclusion speckle (salt-and-pepper diamonds): in each cell of a 3D lattice, a dark disc of hashed
+// size; only some cells hold one. Returns 0 (clear) .. 1 (inside an inclusion).
+float gemSpeck( vec3 p ) {
+  vec3 c = floor( p );
+  vec3 h = gemHash3( c + vec3( 3.0, 71.0, 19.0 ) );
+  vec3 at = c + 0.3 + 0.4 * h;
+  float r = mix( 0.08, 0.3, gemHash3( c + vec3( 41.0, 7.0, 53.0 ) ).x );
+  float on = step( 0.45, h.z );
+  return on * ( 1.0 - smoothstep( r * 0.55, r, length( p - at ) ) );
+}
+float gemSpeckle( vec3 wp ) {
+  // two scales: a few larger dark clouds and finer pepper
+  return clamp( gemSpeck( wp * 0.7 ) * 0.7 + gemSpeck( wp * 2.6 + 17.0 ) * 0.8 + gemSpeck( wp * 6.0 + 5.0 ) * 0.5, 0.0, 1.0 );
+}
 #if defined( USE_ENVMAP ) && defined( ENVMAP_TYPE_CUBE_UV )
-{
-  // BackSide (FLIP_SIDED): vNormal points into the stone; nOut is the facet's outward normal, view space.
-  vec3 nOut = -normalize( vNormal );
-  vec3 I = normalize( -vViewPosition );
-  vec3 nW = inverseTransformDirection( nOut, viewMatrix );
-  vec3 IW = inverseTransformDirection( I, viewMatrix );
+vec3 gemPavilionReturn( vec3 nW, vec3 IW, float facetFlat, vec3 wp ) {
   vec3 r1 = reflect( IW, nW );
   // second internal bounce off the opposite pavilion facet (this facet mirrored about the stone's vertical axis, taken
   // as world up: settings hold the centre stone table-up): in a well cut stone light that hits one pavilion side
   // crosses to the other and leaves back up through the crown, so pavilion facets mirror the overhead lights.
   // Without it, big flat step-cut facets mirror the grey horizon as one dull slab.
   vec3 r2 = reflect( r1, vec3( -nW.x, nW.y, -nW.z ) );
-  float facetFlat = gemFlatness( vNormal );
   // per-facet scatter: stable while the camera moves (the facet keeps its identity), so turning the ring scintillates
   vec3 h = gemHash3( floor( nW * 97.0 + 0.5 ) + vec3( 17.0, 3.0, 41.0 ) ) - 0.5;
   // most facets return light by the double bounce, a few by the single one (dark accents and contrast)
@@ -93,8 +112,6 @@ const PAVILION_MAIN = /* glsl */ `
   // hall of mirrors: a big flat facet mirrors one patch of the studio, which is mostly the even grey sweep. Push each
   // facet towards a bright flash or a dark reflection (biased by what it actually sees), so step cuts show crisp
   // alternating bands instead of a uniform grey slab.
-  // the cells of the reflected direction cut each facet into the mirrored images of the other steps (they move as the
-  // ring turns); the axis-aligned cells give straight bands parallel to the girdle on a table-up stone
   // smooth (not cell-hashed) variation: hard cells of the reflected direction read as a blocky black maze
   float tone = gemHash3( floor( nW * 53.0 + 0.5 ) + vec3( 23.0, 5.0, 9.0 ) ).y;
   tone = 0.7 * tone + 0.3 * ( 0.5 + 0.5 * sin( 7.0 * dot( d, vec3( 1.0, 1.7, 1.3 ) ) + 6.0 * tone ) );
@@ -103,22 +120,39 @@ const PAVILION_MAIN = /* glsl */ `
   float rowKey = floor( abs( nW.y ) * 14.0 + 0.5 );
   float rowBand = mod( rowKey, 2.0 );
   flash = mix( flash, rowBand, gemStep * facetFlat );
-  vec3 darkTone = env * mix( 0.2, 0.16, gemStep );
+  vec3 darkTone = env * mix( 0.2, 0.16, gemStep ) * gemDarkFloor;
   vec3 flashTone = max( env * 1.6, vec3( mix( 0.8, 1.0, gemStep ) * gemBrightness ) );
   env = mix( env, mix( darkTone, flashTone, flash ), gemMosaic * facetFlat );
-  vec3 body = pow( max( gemBody, vec3( 1e-3 ) ), vec3( gemPath ) );
+  // parti / bi-colour stones: some facets return the secondary colour (teal flashes in a green sapphire)
+  float alt = gemFlashMix * smoothstep( 0.72, 0.9, gemHash3( floor( nW * 43.0 + 0.5 ) + vec3( 11.0, 37.0, 5.0 ) ).x );
+  vec3 bodyHex = mix( gemBody, gemBody2, alt );
+  vec3 body = pow( max( bodyHex, vec3( 1e-3 ) ), vec3( gemPath ) );
   vec3 col = env * body;
   // a little body colour glow even in dark facets so coloured stones never go grey (and dark stones never go black)
   col += body * gemLift;
   col = mix( col, vec3( dot( col, vec3( 0.333 ) ) ) * 0.75 + 0.1, gemHaze * 0.6 );
+  // salt-and-pepper: dark mineral inclusions scattered through a translucent grey body
+  col *= 1.0 - 0.75 * gemSpeckleAmt * gemSpeckle( wp );
   // translucent stones (opal): a milky glowing body with soft spectral patches (play of colour)
   if ( gemGlow > 0.0 ) {
-    vec3 wp = ( vec4( -vViewPosition, 0.0 ) * viewMatrix ).xyz + cameraPosition;
     vec3 q = gemHash3( floor( wp * 0.9 + nW * 0.8 ) );
     vec3 poc = 0.5 + 0.5 * cos( 6.2832 * ( q.x + vec3( 0.0, 0.33, 0.67 ) ) );
     col = mix( col, body * 0.8 + poc * 0.6 * smoothstep( 0.3, 1.0, q.y ), gemGlow );
   }
-  outgoingLight = col;
+  return col;
+}
+#endif
+`;
+
+const PAVILION_MAIN = /* glsl */ `
+#if defined( USE_ENVMAP ) && defined( ENVMAP_TYPE_CUBE_UV )
+{
+  // BackSide (FLIP_SIDED): vNormal points into the stone; nOut is the facet's outward normal, view space.
+  vec3 nOut = -normalize( vNormal );
+  vec3 nW = inverseTransformDirection( nOut, viewMatrix );
+  vec3 IW = inverseTransformDirection( normalize( -vViewPosition ), viewMatrix );
+  vec3 wp = ( vec4( -vViewPosition, 0.0 ) * viewMatrix ).xyz + cameraPosition;
+  outgoingLight = gemPavilionReturn( nW, IW, gemFlatness( vNormal ), wp );
 }
 #endif
 #include <opaque_fragment>
@@ -148,7 +182,24 @@ const CROWN_MAIN = /* glsl */ `
   // curved (cabochon) surfaces: softer window reflections
   float lum = dot( outgoingLight, vec3( 0.2126, 0.7152, 0.0722 ) );
   vec3 refl = outgoingLight * mix( 0.55, smoothstep( 0.2, 0.8, lum ), facetFlat );
-  gl_FragColor = vec4( refl, mask );
+  vec3 wp = ( vec4( -vViewPosition, 0.0 ) * viewMatrix ).xyz + cameraPosition;
+  // salt-and-pepper: a second layer of inclusions just under the crown (depth against the speckles at the back)
+  mask *= 1.0 - 0.7 * gemSpeckleAmt * gemSpeckle( wp );
+  vec3 self = vec3( 0.0 );
+#if defined( USE_ENVMAP ) && defined( ENVMAP_TYPE_CUBE_UV )
+  if ( gemSelf > 0.0 ) {
+    // self-lit crown (accent and pave stones): their pavilions sit inside the seat metal, so the pavilion pass loses
+    // the depth test there and this pass would tint the metal behind. Instead the crown traces its own virtual
+    // pavilion facet: the crown facet mirrored through the girdle and tilted to a hashed azimuth (per facet, so each
+    // crown facet flashes on its own), then the same light return.
+    vec3 hc = gemHash3( floor( nW * 97.0 + 0.5 ) + vec3( 31.0, 2.0, 17.0 ) );
+    float az = 6.2832 * hc.x;
+    vec3 nP = normalize( vec3( nW.x, -abs( nW.y ) - 0.4, nW.z ) + ( 0.7 + 0.4 * hc.y ) * vec3( cos( az ), 0.0, sin( az ) ) );
+    vec3 IW = inverseTransformDirection( normalize( -vViewPosition ), viewMatrix );
+    self = gemSelf * mask * gemPavilionReturn( nP, IW, facetFlat, wp );
+  }
+#endif
+  gl_FragColor = vec4( refl + self, mask * ( 1.0 - gemSelf ) );
 }
 `;
 
@@ -165,6 +216,11 @@ interface GemUniforms {
   gemMosaic: { value: number };
   gemStep: { value: number };
   gemLift: { value: number };
+  gemBody2: { value: THREE.Color };
+  gemFlashMix: { value: number };
+  gemDarkFloor: { value: number };
+  gemSpeckleAmt: { value: number };
+  gemSelf: { value: number };
 }
 
 /** Plain shading parameters of a faceted (non-opaque) gem; `gemMaterials` turns them into shader uniforms. */
@@ -186,10 +242,25 @@ export interface GemShade {
   lift: number;
   /** environment strength of the crown's surface reflection (specular glints) */
   crownEnv: number;
+  /** secondary body colour some facets show (parti / bi-colour stones); equals `body` for one-colour stones */
+  body2: THREE.Color;
+  /** 0..1: how strongly the facets that draw the secondary colour show it */
+  flashMix: number;
+  /** multiplier on the dark tone of the facet mosaic (1 normal; translucent grey stones keep their dark facets lighter) */
+  darkFloor: number;
+  /** 0..1: dark mineral inclusions (salt-and-pepper diamond) */
+  speckle: number;
+  /** 0..1: the crown traces its own pavilion instead of showing what was drawn behind it (accent and pave stones) */
+  self: number;
 }
+
+/** Gem colour ids that render with inclusion speckles. */
+export const SPECKLED_COLORS = new Set(['salt-and-pepper']);
 
 /** sRGB lightness the body colour of a fully dark stone is raised to: dark stones read as smoky grey glass, never a void. */
 export const DARK_GEM_MIN_LIGHTNESS = 0.42;
+/** sRGB lightness of a speckled (salt-and-pepper) body: translucent mid-grey, the dark comes from the inclusions. */
+export const SPECKLED_MIN_LIGHTNESS = 0.6;
 
 /**
  * Shading parameters for a transparent or translucent gem. Pure (no WebGL), so it is unit tested.
@@ -205,7 +276,11 @@ export function gemShade(
   tintHex?: string,
   tintStrength = 0,
   stepCut = false,
+  selfLit = false,
 ): GemShade {
+  const colourId = gem.colors.find((x) => x.hex.toLowerCase() === colorHex.toLowerCase())?.id;
+  const speckled = colourId !== undefined && SPECKLED_COLORS.has(colourId);
+  const flashHex = colourId ? gemColorFlashes[`${gem.id}/${colourId}`] : undefined;
   const base = new THREE.Color(colorHex);
   if (tintHex && tintStrength > 0) base.lerp(new THREE.Color(tintHex), tintStrength);
   const haze = clarity?.haze ?? 0;
@@ -233,8 +308,20 @@ export function gemShade(
     // near-black bodies are mostly grey: lifting them must not turn a faint cast into a pastel tint
     body.setHSL(hsl.h, hsl.s * (1 - 0.5 * darkness), lift, THREE.SRGBColorSpace);
   }
-  const basePath = colourless ? 1.4 : pastel ? 1.1 : 1.6;
-  const baseCrownLo = colourless ? 0.45 : 0.6;
+  if (speckled) {
+    // salt-and-pepper: a translucent mid-grey body (the darkness is in the inclusions, not the body)
+    body.getHSL(hsl, THREE.SRGBColorSpace);
+    body.setHSL(hsl.h, hsl.s, Math.max(hsl.l, SPECKLED_MIN_LIGHTNESS), THREE.SRGBColorSpace);
+  }
+  const body2 = body.clone();
+  if (flashHex) {
+    // the secondary colour gets the same deepening as the main body
+    body2.set(flashHex);
+    body2.getHSL(hsl);
+    body2.setHSL(hsl.h, Math.min(0.78, hsl.s * 1.1 + 0.02), hsl.l);
+  }
+  const basePath = speckled ? 1.0 : colourless ? 1.4 : pastel ? 1.1 : 1.6;
+  const baseCrownLo = speckled ? 0.75 : colourless ? 0.45 : 0.6;
   return {
     body,
     darkness,
@@ -245,17 +332,22 @@ export function gemShade(
       (colourless ? 1 : 0.3) *
       (stepCut ? 0 : 1) *
       (1 - 0.7 * darkness),
-    brightness: colourless ? 1.5 + 0.4 * ri : 1.8,
-    haze: Math.min(1, haze + (translucent ? 0.55 : 0)),
-    contrast: colourless ? 0.9 : 0.55,
+    brightness: speckled ? 1.1 : colourless ? 1.5 + 0.4 * ri : 1.8,
+    haze: Math.min(1, haze + (translucent ? 0.55 : 0) + (speckled ? 0.12 : 0)),
+    contrast: speckled ? 0.5 : colourless ? 0.9 : 0.55,
     // light travels the body twice: deeper colour for saturated gems, a gentle deepening for pastels and tints
     path: basePath + (1.0 - basePath) * darkness,
     crownLo: baseCrownLo + (0.7 - baseCrownLo) * darkness,
     glow: translucent ? 0.75 : 0,
     mosaic: translucent ? 0 : stepCut ? 1 : colourless ? 0.9 : 0.6,
     step: stepCut ? 1 : 0,
-    lift: 0.12 + 0.18 * darkness,
+    lift: speckled ? 0.3 : 0.12 + 0.18 * darkness,
     crownEnv: 0.6 + 0.3 * darkness,
+    body2,
+    flashMix: flashHex ? 1 : 0,
+    darkFloor: speckled ? 2.2 : 1,
+    speckle: speckled ? 1 : 0,
+    self: selfLit ? 1 : 0,
   };
 }
 
@@ -270,9 +362,10 @@ function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
     Object.assign(shader.uniforms, u);
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
+      .replace('void main() {', `${GEM_FUNCS}\nvoid main() {`)
       .replace('#include <opaque_fragment>', PAVILION_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-pavilion-v6';
+  mat.customProgramCacheKey = () => 'gem-pavilion-v7';
   return mat;
 }
 
@@ -305,9 +398,10 @@ function crownMaterial(
     Object.assign(shader.uniforms, u);
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
+      .replace('void main() {', `${GEM_FUNCS}\nvoid main() {`)
       .replace('#include <opaque_fragment>', CROWN_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-crown-v6';
+  mat.customProgramCacheKey = () => 'gem-crown-v7';
   return mat;
 }
 
@@ -317,6 +411,10 @@ function crownMaterial(
  *  - outer (FrontSide, additive): the crown's surface reflection and specular glints, Fresnel-weighted by the gem's IOR,
  *    added on top so it never greys the stone out.
  * Opaque gems (pearl, onyx) get a solid glossy body instead.
+ *
+ * `selfLit` (default: no clarity given, which is how accent, side and pave stones are built; only the centre stone is
+ * graded): the crown traces its own pavilion. Small stones sit with their pavilions inside the seat metal, so the
+ * pavilion pass fails the depth test there and the crown would show the metal through itself (gold-tinted melee).
  */
 export function gemMaterials(
   gem: GemModel,
@@ -325,8 +423,9 @@ export function gemMaterials(
   tintHex?: string,
   tintStrength = 0,
   stepCut = false,
+  selfLit = clarity === undefined,
 ): [THREE.MeshPhysicalMaterial, THREE.MeshStandardMaterial] {
-  const key = `g:${gem.id}:${colorHex}:${clarity?.id ?? ''}:${tintHex ?? ''}:${tintStrength}:${stepCut ? 's' : ''}`;
+  const key = `g:${gem.id}:${colorHex}:${clarity?.id ?? ''}:${tintHex ?? ''}:${tintStrength}:${stepCut ? 's' : ''}:${selfLit ? 'o' : ''}`;
   const hit = cache.get(key) as THREE.MeshPhysicalMaterial | undefined;
   const hit2 = cache.get(key + ':in') as THREE.MeshStandardMaterial | undefined;
   if (hit && hit2) return [hit, hit2];
@@ -351,7 +450,7 @@ export function gemMaterials(
     });
     inner = new THREE.MeshStandardMaterial({ color: base, roughness: 0.4, side: THREE.BackSide });
   } else {
-    const g = gemShade(gem, colorHex, clarity, tintHex, tintStrength, stepCut);
+    const g = gemShade(gem, colorHex, clarity, tintHex, tintStrength, stepCut, selfLit);
     const uniforms: GemUniforms = {
       gemBody: { value: g.body },
       gemScatter: { value: g.scatter },
@@ -365,6 +464,11 @@ export function gemMaterials(
       gemMosaic: { value: g.mosaic },
       gemStep: { value: g.step },
       gemLift: { value: g.lift },
+      gemBody2: { value: g.body2 },
+      gemFlashMix: { value: g.flashMix },
+      gemDarkFloor: { value: g.darkFloor },
+      gemSpeckleAmt: { value: g.speckle },
+      gemSelf: { value: g.self },
     };
     inner = pavilionMaterial(uniforms);
     outer = crownMaterial(gem, haze, g.crownEnv, uniforms);

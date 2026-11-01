@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
 import { gems } from '@/models/data/gems';
-import { DARK_GEM_MIN_LIGHTNESS, gemShade } from './materials';
+import { DARK_GEM_MIN_LIGHTNESS, SPECKLED_MIN_LIGHTNESS, gemShade } from './materials';
+import { gemColorFlashes } from '@/models/data/gems';
 
 const gem = (id: string) => {
   const g = gems.find((x) => x.id === id);
@@ -62,7 +63,6 @@ describe('gemShade', () => {
 
   it.each([
     ['diamond', 'colorless'],
-    ['diamond', 'salt-and-pepper'],
     ['ruby', 'red'],
     ['emerald', 'green'],
     ['sapphire', 'blue'],
@@ -82,5 +82,81 @@ describe('gemShade', () => {
     const hsl = { h: 0, s: 0, l: 0 };
     s.body.getHSL(hsl);
     expect(hsl.s).toBeGreaterThan(0.5);
+  });
+});
+
+describe('salt-and-pepper diamond', () => {
+  it('is a translucent mid-grey with inclusion speckles, not a dark stone', () => {
+    for (const g of ['diamond', 'lab-diamond']) {
+      const s = gemShade(gem(g), hex(g, 'salt-and-pepper'), undefined, undefined, 0, true);
+      expect(s.darkness).toBe(0);
+      expect(s.speckle).toBe(1);
+      expect(srgbL(s.body)).toBeGreaterThanOrEqual(SPECKLED_MIN_LIGHTNESS - 0.01);
+      expect(srgbL(s.body)).toBeLessThan(0.8);
+      // light passes the grey body: far brighter than the old near-black (body^1.4 of #8d8f93 is ~0.16)
+      expect(bodyAfterPath(s)).toBeGreaterThan(0.25);
+      expect(s.darkFloor).toBeGreaterThan(1);
+      // still grey, not a tinted stone
+      const hsl = { h: 0, s: 0, l: 0 };
+      s.body.getHSL(hsl, THREE.SRGBColorSpace);
+      expect(hsl.s).toBeLessThan(0.1);
+    }
+  });
+
+  it.each([
+    ['diamond', 'colorless'],
+    ['diamond', 'black'],
+    ['moissanite', 'gray'],
+    ['sapphire', 'blue'],
+  ])('%s %s has no speckles', (g, c) => {
+    const s = gemShade(gem(g), hex(g, c));
+    expect(s.speckle).toBe(0);
+    expect(s.darkFloor).toBe(1);
+  });
+});
+
+describe('colour flashes (parti stones)', () => {
+  it('every flash entry names a real gem colour', () => {
+    for (const k of Object.keys(gemColorFlashes)) {
+      const [g, c] = k.split('/');
+      expect(() => hex(g ?? '', c ?? '')).not.toThrow();
+    }
+  });
+
+  it('teal sapphire faces up green (green channel leads blue) with blue-green flashes', () => {
+    const s = gemShade(gem('sapphire'), hex('sapphire', 'teal'));
+    expect(s.body.g).toBeGreaterThan(s.body.b * 2);
+    expect(s.body.g).toBeGreaterThan(s.body.r);
+    expect(s.flashMix).toBe(1);
+    expect(s.body2.b).toBeGreaterThan(s.body.b);
+    expect(s.body2.equals(s.body)).toBe(false);
+  });
+
+  it('one-colour stones have no flash', () => {
+    const s = gemShade(gem('sapphire'), hex('sapphire', 'blue'));
+    expect(s.flashMix).toBe(0);
+    expect(s.body2.equals(s.body)).toBe(true);
+  });
+
+  it('green sapphire reads green, not cyan', () => {
+    const s = gemShade(gem('sapphire'), hex('sapphire', 'green'));
+    const hsl = { h: 0, s: 0, l: 0 };
+    s.body.getHSL(hsl);
+    expect(hsl.h * 360).toBeGreaterThan(90);
+    expect(hsl.h * 360).toBeLessThan(160);
+  });
+});
+
+describe('self-lit crowns (accent and pave stones)', () => {
+  it('is off unless asked for', () => {
+    expect(gemShade(gem('diamond'), hex('diamond', 'colorless')).self).toBe(0);
+  });
+  it('turns on for accent stones', () => {
+    const s = gemShade(gem('diamond'), hex('diamond', 'colorless'), undefined, undefined, 0, false, true);
+    expect(s.self).toBe(1);
+    // the rest of the shading is unchanged: colourless stays white
+    const plain = gemShade(gem('diamond'), hex('diamond', 'colorless'));
+    expect(s.body.equals(plain.body)).toBe(true);
+    expect(s.brightness).toBe(plain.brightness);
   });
 });
