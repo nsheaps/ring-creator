@@ -42,6 +42,9 @@
     },
     "accent": {
      "sizeMm": 2.4
+    },
+    "placement": {
+     "raise": 0.4
     }
    }
   },
@@ -81,7 +84,7 @@
     "shank": {
      "widthMm": 1.6,
      "topWidthMm": 1.6,
-     "thicknessMm": 1.5,
+     "thicknessMm": 1.7,
      "topThicknessMm": 1.5
     },
     "placement": {
@@ -166,7 +169,7 @@
     "material": "diamond",
     "cut": "emerald-cut",
     "carat": 2.25,
-    "colorName": "black salt and pepper",
+    "colorName": "salt and pepper",
     "clarity": null
    },
    "head": "cluster-flank",
@@ -194,9 +197,10 @@
      "raise": 0.3
     },
     "head": {
-     "flankCount": 3,
-     "flankRatio": 0.24,
-     "arrangement": "column"
+     "flankCount": 1,
+     "flankRatio": 0.17,
+     "arrangement": "fan",
+     "fanCut": "round"
     },
     "accent": {
      "sizeMm": 1.8
@@ -385,7 +389,7 @@
     "colorName": "blue violet",
     "clarity": null
    },
-   "head": "cluster-flank",
+   "head": "three-stone",
    "shank": "pave",
    "metals": [
     "rose-gold-14k"
@@ -402,12 +406,15 @@
      "stoneSizeMm": 1.4
     },
     "head": {
-     "flankCount": 3,
-     "flankRatio": 0.24,
-     "arrangement": "chevron"
+     "sideRatio": 0.42,
+     "sideGap": 0.25,
+     "sideProngs": 4
     },
     "accent": {
      "sizeMm": 2.6
+    },
+    "placement": {
+     "raise": 0.6
     }
    }
   },

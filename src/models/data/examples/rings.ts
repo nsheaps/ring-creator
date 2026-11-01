@@ -229,7 +229,7 @@ export const rings: ExampleDesign[] = [
         params: {
           widthMm: 2.4,
           topWidthMm: 3.3,
-          thicknessMm: 2.0,
+          thicknessMm: 2,
           topThicknessMm: 2.7,
           taperDeg: 100,
         },
@@ -4198,7 +4198,7 @@ export const rings: ExampleDesign[] = [
     engagement: {
       center: {
         material: 'diamond',
-        color: 'black',
+        color: 'salt-and-pepper',
         cut: 'emerald-cut',
         carat: 2.25,
         clarity: 'vs1',
