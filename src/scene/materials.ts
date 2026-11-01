@@ -8,11 +8,11 @@ export function metalMaterial(metal: MetalModel, finish?: FinishModel): THREE.Me
   const key = `m:${metal.id}:${finish?.id ?? 'p'}`;
   const hit = cache.get(key);
   if (hit) return hit as THREE.MeshPhysicalMaterial;
-  const rough = Math.min(1, metal.roughness * 0.6 + (finish?.roughnessAdd ?? 0));
+  const rough = Math.min(1, metal.roughness * 0.9 + (finish?.roughnessAdd ?? 0));
   const mat = new THREE.MeshPhysicalMaterial({
     color: new THREE.Color(metal.color),
     metalness: metal.metalness,
-    roughness: Math.max(0.06, rough),
+    roughness: Math.max(0.1, rough),
     envMapIntensity: 1.5,
   });
   cache.set(key, mat);

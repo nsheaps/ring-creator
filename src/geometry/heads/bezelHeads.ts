@@ -32,7 +32,7 @@ interface CollarDims {
 
 function collarDims(ctx: HeadCtx, frac = 0.5, footprint = 1): CollarDims {
   const o = cleanOutline(ctx.center.built.outline);
-  const bs = num(ctx.params, 'baseScale', 0, 0, 0.95) || baseScaleFor(o, ctx, frac);
+  const bs = num(ctx.params, 'baseScale', 0, 0, 0.95) || baseScaleFor(o, ctx, frac * 0.7);
   const [ax, az] = ctx.bandAxis;
   // a flat-bottomed collar: sink its seat so the outer edge along the band still meets the curved shank
   const reach = Math.max(support(o, ax, az), support(o, -ax, -az)) * Math.max(bs, footprint) + 0.6;
@@ -94,36 +94,36 @@ function hugScale(ctx: HeadCtx, d: CollarDims, y: number): number {
  * shank, so the setting reads as a slim frame on a tapered cone rather than a deep cup.
  */
 function bezelSection(ctx: HeadCtx, d: CollarDims): SectionPt[] {
-  const t = num(ctx.params, 'bezelThickness', 0.7, 0.4, 1.5);
+  const t = num(ctx.params, 'bezelThickness', 0.5, 0.35, 1.5);
   const crown = ctx.center.built.crownHeight;
-  const lip = num(ctx.params, 'bezelHeight', Math.min(0.4, crown * 0.4), 0.15, 1.5);
+  const lip = num(ctx.params, 'bezelHeight', Math.min(0.2, crown * 0.2), 0.1, 1.5);
   const g2 = d.gt * 0.5;
-  const yTop = g2 + Math.min(lip, Math.max(0.12, crown * 0.55));
-  const inset = crownInset(ctx.center.built, yTop);
-  // collar: from the lip down to just under the girdle
-  const yColl = -g2 - Math.min(0.55, d.pd * 0.22, Math.max(0.15, d.bd * 0.3));
-  const skin = Math.max(0.35, t * 0.55); // skirt wall thickness
-  const yUnder = yColl - Math.min(0.15, d.bd * 0.1);
-  const span = d.bd + yUnder; // from the undercut down to the seat
+  const yTop = g2 + Math.min(lip, Math.max(0.1, crown * 0.4));
+  const inset = Math.min(crownInset(ctx.center.built, yTop), 0.4); // the lip overlaps the crown only slightly
+  // collar: a thin wall from the lip to just under the girdle
+  const yColl = -g2 - Math.min(0.4, d.pd * 0.18, Math.max(0.12, d.bd * 0.25));
+  const skin = Math.max(0.3, t * 0.7); // tulip wall thickness
+  const span = d.bd + yColl; // from the collar down to the seat
   const skirt: SectionPt[] = [];
-  const k0 = hugScale(ctx, d, yUnder);
-  for (const f of [0, 0.15, 0.35, 0.55, 0.75, 0.9]) {
-    const y = yUnder - span * f;
-    // a slightly concave cone from the collar to the seat, never inside the pavilion
-    const k = Math.max(hugScale(ctx, d, y), d.bs + (k0 - d.bs) * (1 - f) ** 1.4);
-    skirt.push([skin * (1 - 0.25 * f), y, k]);
+  const k0 = hugScale(ctx, d, yColl);
+  for (const f of [0.1, 0.22, 0.36, 0.5, 0.64, 0.78, 0.9]) {
+    const y = yColl - span * f;
+    // tulip: an S-curve from the collar wall into a slim stem
+    const bow = 1 - f * f * (3 - 2 * f);
+    const k = Math.max(hugScale(ctx, d, y), d.bs + (k0 - d.bs) * bow);
+    skirt.push([skin * (1 - 0.3 * f), y, k]);
   }
   const yCup = -Math.min(d.pd * 0.55, d.bd * 0.7);
   return [
     [-inset, yTop, 1],
-    [-inset * 0.5 + 0.03, yTop + 0.05, 1],
-    [t * 0.25, yTop + 0.06, 1],
-    [t * 0.62, yTop - 0.02, 1],
-    [t * 0.8, yTop - 0.14, 1],
-    [t, yColl + 0.08, 1],
-    [t * 0.96, yColl, 1],
+    [-inset * 0.5 + 0.02, yTop + 0.04, 1],
+    [t * 0.3, yTop + 0.045, 1],
+    [t * 0.75, yTop - 0.03, 1],
+    [t, yTop - 0.16, 1],
+    [t, yColl + 0.1, 1],
+    [t * 0.9, yColl + 0.02, 1],
     ...skirt,
-    [skin * 0.7, -d.bd, d.bs],
+    [skin * 0.6, -d.bd, d.bs],
     [-t * 0.25, -d.bd, d.bs],
     [0.05, yCup, hugScale(ctx, d, yCup)],
     [-0.3, -g2 - 0.08, 1],

@@ -16,9 +16,9 @@ export function buildStudioScene(): THREE.Scene {
   const sweepGeo = new THREE.SphereGeometry(60, 48, 24);
   const pos = sweepGeo.getAttribute('position');
   const colors: number[] = [];
-  const floor = new THREE.Color(0.16, 0.16, 0.17);
-  const horizon = new THREE.Color(0.38, 0.38, 0.39);
-  const ceiling = new THREE.Color(0.75, 0.75, 0.76);
+  const floor = new THREE.Color(0.5, 0.5, 0.51);
+  const horizon = new THREE.Color(0.9, 0.9, 0.91);
+  const ceiling = new THREE.Color(1.3, 1.3, 1.31);
   const c = new THREE.Color();
   for (let i = 0; i < pos.count; i++) {
     const y = pos.getY(i) / 60; // -1..1
@@ -69,11 +69,11 @@ export function buildStudioScene(): THREE.Scene {
   panel(2, 3, 12, [22, 26, 18]);
   panel(2, 3, 12, [-24, 28, 10]);
   // black flags between the lights (deep shadows in facets and metal)
-  panel(10, 40, 0, [-28, 2, -10]);
-  panel(10, 40, 0, [28, 2, -14]);
-  panel(14, 30, 0, [0, 4, -32]);
-  panel(9, 26, 0, [-22, 6, 24]);
-  panel(9, 26, 0, [24, 6, 22]);
+  panel(5, 40, 0.15, [-28, 2, -10]);
+  panel(5, 40, 0.15, [28, 2, -14]);
+  panel(8, 30, 0.15, [0, 4, -32]);
+  panel(5, 26, 0.15, [-22, 6, 24]);
+  panel(5, 26, 0.15, [24, 6, 22]);
   return scene;
 }
 

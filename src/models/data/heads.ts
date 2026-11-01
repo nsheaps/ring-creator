@@ -340,7 +340,7 @@ export const heads: HeadModel[] = [
     cons: ['Less light from the sides', 'Harder to reset or swap stones'],
     bestFor: ['Active lifestyles', 'Soft or fragile gems like opal and emerald'],
     related: ['bezel-half', 'flush-gypsy', 'tension'],
-    params: { bezelThickness: 0.6, bezelHeight: 0.4, baseScale: 0 },
+    params: { bezelThickness: 0.5, bezelHeight: 0.2, baseScale: 0 },
     controls: [
       {
         type: 'number',
