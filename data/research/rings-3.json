@@ -966,8 +966,8 @@
     "colorName": "fancy vivid pink",
     "clarity": null
    },
-   "head": "bezel-full",
-   "shank": "plain-round",
+   "head": "basket",
+   "shank": "tapered",
    "metals": [
     "yellow-gold-14k"
    ],
@@ -977,11 +977,16 @@
    "tune": {
         "center": { "color": "peach" },
     "head": {
-     "bezelThickness": 0.4,
-     "bezelHeight": 0.35
+     "prongCount": 4,
+     "prongStyle": "claw",
+     "prongWidth": 0.7,
+     "galleryRails": 1
+    },
+    "placement": {
+     "raise": 0
     },
     "shank": {
-     "widthMm": 1.8,
+     "widthMm": 2.4,
      "topWidthMm": 1.8,
      "thicknessMm": 1.6,
      "topThicknessMm": 1.6

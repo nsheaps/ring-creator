@@ -5355,18 +5355,20 @@ export const rings: ExampleDesign[] = [
         sizeMm: 1.6,
       },
       head: {
-        id: 'bezel-full',
+        id: 'basket',
         metal: 'yellow-gold-14k',
         params: {
-          bezelThickness: 0.4,
-          bezelHeight: 0.35,
+          prongCount: 4,
+          prongStyle: 'claw',
+          prongWidth: 0.7,
+          galleryRails: 1,
         },
       },
       shank: {
-        id: 'plain-round',
+        id: 'tapered',
         metal: 'yellow-gold-14k',
         params: {
-          widthMm: 1.8,
+          widthMm: 2.4,
           topWidthMm: 1.8,
           thicknessMm: 1.6,
           topThicknessMm: 1.6,
@@ -5374,7 +5376,7 @@ export const rings: ExampleDesign[] = [
       },
       placement: {
         orientation: 'north-south',
-        raise: 0.2,
+        raise: 0,
         tilt: 0,
         rotate: 0,
         offset: 0,
@@ -5391,7 +5393,7 @@ export const rings: ExampleDesign[] = [
     blurb:
       '7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south. Compared with the photo: thin open bezel rim on a plain band; the photo stone reads peach-pink, so the example uses the warm fancy peach colour.',
     priceUsd: 7800,
-    designFamily: 'bezel-full / plain-round / oval',
+    designFamily: 'basket / tapered / oval',
     view: 'ring',
   },
   {
