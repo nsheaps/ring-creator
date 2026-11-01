@@ -2496,14 +2496,14 @@ export const rings: ExampleDesign[] = [
       accentStone: {
         material: 'diamond',
         color: 'colorless',
-        cut: 'emerald-cut',
+        cut: 'trapezoid',
         sizeMm: 4,
       },
       head: {
         id: 'three-stone',
         metal: 'platinum',
         params: {
-          sideRatio: 0.6,
+          sideRatio: 0.5,
           sideGap: 0,
           sideCut: 'accent',
         },
@@ -2557,14 +2557,14 @@ export const rings: ExampleDesign[] = [
       accentStone: {
         material: 'diamond',
         color: 'colorless',
-        cut: 'baguette',
+        cut: 'tapered-baguette',
         sizeMm: 4.5,
       },
       head: {
         id: 'three-stone',
         metal: 'platinum',
         params: {
-          sideRatio: 0.7,
+          sideRatio: 0.52,
           sideGap: 0,
           sideCut: 'accent',
         },
@@ -2761,6 +2761,11 @@ export const rings: ExampleDesign[] = [
       params: {
         coverage: 'half',
         stoneSize: 3.2,
+        stoneCount: 5,
+        sizeProfile: 'graduated',
+        endScale: 0.78,
+        raise: 0.6,
+        gapMm: 0.08,
       },
       widthMm: 2,
       thicknessMm: 1.8,
@@ -2779,7 +2784,7 @@ export const rings: ExampleDesign[] = [
     tags: ['five-stone', 'band'],
     category: 'five-stone',
     blurb:
-      'Five round brilliants (min 0.46 ct tw) in shared prongs, sold as anniversary or wedding band; page says no longer available so no price.',
+      'Five round brilliants (min 0.46 ct tw) in shared prongs, sold as anniversary or wedding band; page says no longer available so no price. Photo audit: five prong-set stones wider than the 2 mm band, graduating; built with a raised graduated shared-prong row.',
     priceUsd: null,
     designFamily: 'band: shared-prong',
     view: 'band',
@@ -3077,14 +3082,14 @@ export const rings: ExampleDesign[] = [
       accentStone: {
         material: 'diamond',
         color: 'colorless',
-        cut: 'emerald-cut',
+        cut: 'trapezoid',
         sizeMm: 3.8,
       },
       head: {
         id: 'three-stone',
         metal: 'platinum',
         params: {
-          sideRatio: 0.55,
+          sideRatio: 0.45,
           sideGap: 0,
           sideCut: 'accent',
         },
@@ -3620,13 +3625,18 @@ export const rings: ExampleDesign[] = [
       finish: 'polished',
     },
     band: {
-      style: 'shared-prong',
+      style: 'contour-curved',
       metal: 'platinum',
       metal2: 'rose-gold-14k',
       finish: 'polished',
       params: {
-        coverage: 'half',
-        stoneSize: 3,
+        stones: true,
+        stoneSize: 2.8,
+        endScale: 0.62,
+        stoneSpread: 1.1,
+        raise: 0.5,
+        curveRetreat: 2.2,
+        curveHalfAngle: 0.55,
       },
       widthMm: 1.5,
       thicknessMm: 1.8,
@@ -3634,9 +3644,9 @@ export const rings: ExampleDesign[] = [
         material: 'diamond',
         color: 'colorless',
         cut: 'round-brilliant',
-        sizeMm: 1.5,
+        sizeMm: 2.6,
       },
-      fit: 'contour',
+      fit: 'auto',
     },
     source: {
       name: 'Brilliant Earth',
@@ -3647,7 +3657,7 @@ export const rings: ExampleDesign[] = [
     blurb:
       'Curved band with six round diamonds and a centre pear in shared prongs; no price as the page says it is no longer available. Curved profile approximated by shared-prong band with contour fit.',
     priceUsd: null,
-    designFamily: 'band: shared-prong',
+    designFamily: 'band: contour-curved',
     view: 'band',
   },
   {
@@ -3692,23 +3702,28 @@ export const rings: ExampleDesign[] = [
       finish: 'polished',
     },
     band: {
-      style: 'shared-prong',
+      style: 'contour-curved',
       metal: 'platinum',
       metal2: 'rose-gold-14k',
       finish: 'polished',
       params: {
-        coverage: 'half',
-        stoneSize: 3,
+        stones: true,
+        stoneSize: 2.6,
+        endScale: 0.7,
+        stoneSpread: 1.1,
+        raise: 0.4,
+        curveRetreat: 2,
+        curveHalfAngle: 0.55,
       },
       widthMm: 1.5,
       thicknessMm: 1.8,
       accentStone: {
         material: 'diamond',
         color: 'colorless',
-        cut: 'round-brilliant',
-        sizeMm: 1.5,
+        cut: 'marquise',
+        sizeMm: 2.2,
       },
-      fit: 'contour',
+      fit: 'auto',
     },
     source: {
       name: 'Brilliant Earth',
@@ -3719,7 +3734,7 @@ export const rings: ExampleDesign[] = [
     blurb:
       'Four marquise and three round diamonds, prong set, in a curved profile; the marquise points echo a marquise or pear engagement ring. Price from the UK-path page, shown in USD. Curved profile approximated by shared-prong band with contour fit.',
     priceUsd: 1590,
-    designFamily: 'band: shared-prong',
+    designFamily: 'band: contour-curved',
     view: 'band',
   },
   {
@@ -3764,13 +3779,18 @@ export const rings: ExampleDesign[] = [
       finish: 'polished',
     },
     band: {
-      style: 'shared-prong',
+      style: 'contour-curved',
       metal: 'yellow-gold-18k',
       metal2: 'rose-gold-14k',
       finish: 'polished',
       params: {
-        coverage: 'half',
+        stones: true,
         stoneSize: 2.6,
+        endScale: 0.8,
+        stoneSpread: 1.2,
+        raise: 0.4,
+        curveRetreat: 1.8,
+        curveHalfAngle: 0.55,
       },
       widthMm: 1.7,
       thicknessMm: 1.8,
@@ -3778,9 +3798,9 @@ export const rings: ExampleDesign[] = [
         material: 'diamond',
         color: 'colorless',
         cut: 'round-brilliant',
-        sizeMm: 1.5,
+        sizeMm: 2.4,
       },
-      fit: 'contour',
+      fit: 'auto',
     },
     source: {
       name: 'Brilliant Earth',
@@ -3791,7 +3811,7 @@ export const rings: ExampleDesign[] = [
     blurb:
       'Shared-prong round diamonds (min 0.11 ct tw) on a band cut to sit flush with the Chamise engagement ring; shared-prong is also a fit. Unavailable, so no price. Curved profile approximated by shared-prong band with contour fit.',
     priceUsd: null,
-    designFamily: 'band: shared-prong',
+    designFamily: 'band: contour-curved',
     view: 'band',
   },
   {
@@ -3915,6 +3935,9 @@ export const rings: ExampleDesign[] = [
       params: {
         coverage: 'half',
         stoneSize: 2.8,
+        stoneCount: 11,
+        raise: 0.5,
+        gapMm: 0.08,
       },
       widthMm: 2,
       thicknessMm: 1.8,
@@ -4433,7 +4456,7 @@ export const rings: ExampleDesign[] = [
     engagement: {
       center: {
         material: 'alexandrite',
-        color: 'green-to-red',
+        color: 'blue-violet',
         cut: 'oval',
         carat: 2,
         clarity: 'vs1',
@@ -6295,7 +6318,9 @@ export const rings: ExampleDesign[] = [
       metal: 'white-gold-14k',
       metal2: 'rose-gold-14k',
       finish: 'polished',
-      params: {},
+      params: {
+        alternate: 'sapphire',
+      },
       widthMm: 2.1,
       thicknessMm: 1.8,
       accentStone: {
@@ -6784,14 +6809,19 @@ export const rings: ExampleDesign[] = [
         vDepth: 3.2,
         vHalfAngle: 0.75,
         apexRound: 0.08,
+        stones: true,
+        stoneSize: 2.2,
+        endScale: 0.7,
+        stoneSpread: 1,
+        raise: 0.3,
       },
       widthMm: 1.5,
       thicknessMm: 1.8,
       accentStone: {
         material: 'diamond',
         color: 'colorless',
-        cut: 'round-brilliant',
-        sizeMm: 1.2,
+        cut: 'marquise',
+        sizeMm: 2,
       },
       fit: 'auto',
     },
@@ -6802,7 +6832,7 @@ export const rings: ExampleDesign[] = [
     tags: ['band', 'band'],
     category: 'band',
     blurb:
-      "V-shaped diamond band labelled Chevron by the retailer's curved collection. Photo audit: shallow wide V; stones in the V (marquise cluster) not buildable.",
+      "V-shaped diamond band labelled Chevron by the retailer's curved collection. Photo audit: shallow wide V; stones in the V (marquise cluster) not buildable. Stones follow the V: marquise diamonds graduating from the point.",
     priceUsd: 1490,
     designFamily: 'band: chevron',
     view: 'band',
