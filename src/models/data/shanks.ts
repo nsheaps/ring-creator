@@ -445,7 +445,7 @@ export const shanks: ShankModel[] = [
     builder: 'bypass',
     summary: 'The band ends slide past each other at the top, one on each side of the stone.',
     description:
-      'In a bypass shank the two ends of the band do not meet; they sweep past one another, offset along the finger, with the centre stone held between them. The result is a flowing, asymmetric line full of movement.\n\nIt suits toi-et-moi and bypass heads, and looks striking with a single oval or pear. Pavé can line both ends.',
+      'In a bypass shank the two ends of the band do not meet; they sweep past one another, offset along the finger, with the centre stone held between them. The result is a flowing, asymmetric line full of movement. The swirl can turn either way.\n\nIt suits toi-et-moi and bypass heads, and looks striking with a single oval or pear. Pavé can line both ends.',
     tags: ['bypass', 'asymmetric', 'flowing', 'modern'],
     pros: ['Graceful sense of movement', 'Distinctive silhouette', 'Hugs the stone from two sides'],
     cons: ['Needs a contoured wedding band', 'Wider top'],
@@ -457,6 +457,7 @@ export const shanks: ShankModel[] = [
       overlapDeg: 28,
       gapMm: 0.5,
       tipTaper: 0.35,
+      hand: 'right',
       ...paveParams,
     },
     controls: [
@@ -465,6 +466,16 @@ export const shanks: ShankModel[] = [
       n('overlapDeg', 'Overlap', 5, 60, 1, '°', 'How far each end runs past the top.'),
       n('gapMm', 'Gap between ends', 0, 3, 0.05, 'mm'),
       n('tipTaper', 'Tip taper', 0, 0.7, 0.05, undefined, 'How much the ends slim down at their tips.'),
+      {
+        type: 'select',
+        key: 'hand',
+        label: 'Swirl direction',
+        options: [
+          { value: 'right', label: 'Right hand' },
+          { value: 'left', label: 'Left hand (mirrored)' },
+        ],
+        help: 'Which way the ends sweep past each other. Set a tension-bypass head to the same direction.',
+      },
       ...paveControls,
     ],
     hasStones: false,

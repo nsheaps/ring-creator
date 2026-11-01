@@ -6,9 +6,22 @@
  */
 import * as THREE from 'three';
 import { registerHeadBuilder } from '../builders';
-import type { HeadCtx, Part } from '../types';
-import { loftRows, toFlat } from '../helpers';
-import { cleanOutline, metalPart, num, ringDrop, shankTopRadius, signedVolume, v3 } from './common';
+import type { BuiltStone, HeadCtx, Part } from '../types';
+import { instanceGeometry, loftRows, toFlat } from '../helpers';
+import { stoneMatrix, strandFrom } from '../shanks/pavePath';
+import {
+  accentDims,
+  accentPart,
+  bool,
+  cleanOutline,
+  metalPart,
+  num,
+  ringDrop,
+  shankTopRadius,
+  signedVolume,
+  str,
+  v3,
+} from './common';
 import { radialPoint } from './frameOutline';
 
 /** Smooth 0..1 ramp. */
@@ -38,18 +51,26 @@ function sectionShape(m: number, n: number): [number, number][] {
   });
 }
 
-/** Closed smooth-shaded solid from blade samples (indexed loft, outward winding, smooth normals). */
-function ribbon(
+/** Section frame of one blade sample: centre, sideways and upward unit vectors, half depth and half width. */
+interface BladeFrame {
+  c: THREE.Vector3;
+  lat: THREE.Vector3;
+  up: THREE.Vector3;
+  tan: THREE.Vector3;
+  hh: number;
+  hw: number;
+}
+
+/** Frames along the centre line; each section is square to the 3D tangent so a steep swoop keeps its full depth. */
+function bladeFrames(
   samples: BladeSample[],
   toStone: (u: number, v: number) => [number, number],
-): THREE.BufferGeometry {
-  const shape = sectionShape(22, 2.8);
-  const rows: THREE.Vector3[][] = samples.map((p, i) => {
+): BladeFrame[] {
+  return samples.map((p, i) => {
     const a = samples[Math.max(0, i - 1)];
     const b = samples[Math.min(samples.length - 1, i + 1)];
     const [ax, az] = toStone(a.u, a.v);
     const [bx, bz] = toStone(b.u, b.v);
-    // 3D tangent of the centre line; the section is built square to it so a steep swoop keeps its full depth
     const t = v3(bx - ax, (b.top + b.bottom - a.top - a.bottom) / 2, bz - az);
     if (t.lengthSq() < 1e-12) t.set(1, 0, 0);
     t.normalize();
@@ -59,17 +80,30 @@ function ribbon(
     const up = lat.clone().cross(t).normalize();
     if (up.y < 0) up.negate();
     const [cx, cz] = toStone(p.u, p.v);
-    const c = v3(cx, (p.top + p.bottom) / 2, cz);
-    const hh = Math.max(0.02, (p.top - p.bottom) / 2);
-    return shape.map(([sx, sy]) => {
-      // a slightly domed top: the upper half is fuller than the lower one
-      const k = sy * hh * (sy > 0 ? 1 : 0.92);
-      return c
-        .clone()
-        .addScaledVector(lat, sx * p.hw)
-        .addScaledVector(up, k);
-    });
+    return {
+      c: v3(cx, (p.top + p.bottom) / 2, cz),
+      lat,
+      up,
+      tan: t,
+      hh: Math.max(0.02, (p.top - p.bottom) / 2),
+      hw: p.hw,
+    };
   });
+}
+
+/** Closed smooth-shaded solid from blade frames (indexed loft, outward winding, smooth normals). */
+function ribbon(frames: BladeFrame[]): THREE.BufferGeometry {
+  const shape = sectionShape(22, 2.8);
+  const rows: THREE.Vector3[][] = frames.map((f) =>
+    shape.map(([sx, sy]) => {
+      // a slightly domed top: the upper half is fuller than the lower one
+      const k = sy * f.hh * (sy > 0 ? 1 : 0.92);
+      return f.c
+        .clone()
+        .addScaledVector(f.lat, sx * f.hw)
+        .addScaledVector(f.up, k);
+    }),
+  );
   const g = loftRows(rows);
   if (signedVolume(g) < 0) {
     const idx = g.getIndex();
@@ -91,7 +125,9 @@ function ribbon(
  * Tension-bypass: two swept ribbon blades. Params: `bladeWidth` (ribbon width where it holds the stone),
  * `jawThickness` (ribbon depth at the stone; it thins towards the tip), `sweepOffset` (how far off the centre line
  * each blade meets the shank, to line up with a bypass shank's ends), `sweepRun` (length of the swoop from the stone
- * down to the shank), `wrap` (degrees each blade wraps round the stone past its middle) and `bite` (groove depth).
+ * down to the shank), `wrap` (degrees each blade wraps round the stone past its middle), `bite` (groove depth),
+ * `hand` ('right': the +band blade wraps the +across side; 'left' mirrors the swirl, to match a left-hand bypass shank)
+ * and `bladePave` / `paveSizeMm` (a single row of small accent stones along the top of each blade).
  */
 function sweptBlades(ctx: HeadCtx): Part[] {
   const p = ctx.params;
@@ -104,6 +140,7 @@ function sweptBlades(ctx: HeadCtx): Part[] {
   const run = num(p, 'sweepRun', 4.5, 2, 9);
   const wrap = (num(p, 'wrap', 45, 0, 80) * Math.PI) / 180;
   const bite = num(p, 'bite', 0.25, 0.05, 0.6);
+  const hand = str(p, 'hand', ['right', 'left'] as const, 'right') === 'left' ? -1 : 1;
   const [ax, az] = ctx.bandAxis;
   const px = -az;
   const pz = ax;
@@ -202,11 +239,87 @@ function sweptBlades(ctx: HeadCtx): Part[] {
   }
 
   const geos: THREE.BufferGeometry[] = [];
+  const stones: THREE.Matrix4[] = [];
+  const beads: THREE.Matrix4[] = [];
+  const pave = bool(p, 'bladePave', false) ? bladePaveSpec(ctx, num(p, 'paveSizeMm', 1.1, 0.7, 1.8)) : null;
   for (const s of [1, -1]) {
-    const pts = samples.map((q) => ({ ...q, u: s * q.u, v: s * q.v }));
-    geos.push(ribbon(pts, toStone));
+    const pts = samples.map((q) => ({ ...q, u: s * q.u, v: s * hand * q.v }));
+    const frames = bladeFrames(pts, toStone);
+    geos.push(ribbon(frames));
+    // the stones start where the blade leaves the shank (after the buried lead-in)
+    if (pave) layBladePave(frames.slice(4), pave, stones, beads);
   }
-  return [metalPart(geos, 'tension-bypass blades')];
+  if (!pave) return [metalPart(geos, 'tension-bypass blades')];
+  if (beads.length) geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(pave.beadR, 1)), beads));
+  const parts = [metalPart(geos, 'tension-bypass blades')];
+  if (stones.length)
+    parts.push(accentPart([instanceGeometry(toFlat(pave.built.geometry), stones)], 'blade pave stones'));
+  return parts;
+}
+
+interface BladePave {
+  built: BuiltStone;
+  width: number;
+  pitch: number;
+  beadR: number;
+}
+
+function bladePaveSpec(ctx: HeadCtx, size: number): BladePave {
+  const dims = accentDims(ctx, size);
+  const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
+  return {
+    built,
+    width: dims.width,
+    pitch: dims.length + 0.1,
+    beadR: Math.min(0.2, Math.max(0.1, dims.width * 0.14)),
+  };
+}
+
+/**
+ * A row of stones along the top of one blade at a fixed pitch, tables square to the ribbon's top, where the ribbon is
+ * wide enough to keep a little polished rim either side; clear of the rounded tip. Shared beads sit between stones.
+ */
+function layBladePave(
+  frames: BladeFrame[],
+  spec: BladePave,
+  stones: THREE.Matrix4[],
+  beads: THREE.Matrix4[],
+): void {
+  const pts = frames.map((f) => f.c.clone().addScaledVector(f.up, f.hh));
+  const strand = strandFrom(pts, (i) => frames[i].up);
+  const cum = strand.cum;
+  const hwAt = (sArc: number): number => {
+    let i = 0;
+    while (i < cum.length - 1 && cum[i + 1] < sArc) i++;
+    const j = Math.min(cum.length - 1, i + 1);
+    const k = cum[j] > cum[i] ? (sArc - cum[i]) / (cum[j] - cum[i]) : 0;
+    return frames[i].hw + (frames[j].hw - frames[i].hw) * Math.min(1, Math.max(0, k));
+  };
+  const need = spec.width / 2 + 0.12;
+  const fits = (sArc: number) =>
+    hwAt(sArc - spec.pitch / 2) >= need && hwAt(sArc) >= need && hwAt(sArc + spec.pitch / 2) >= need;
+  // the usable stretch: from the first place the ribbon is wide enough to the last one
+  let s0 = -1;
+  let s1 = -1;
+  for (let sArc = spec.pitch / 2; sArc <= strand.length - spec.pitch / 2; sArc += 0.05)
+    if (fits(sArc)) {
+      if (s0 < 0) s0 = sArc - spec.pitch / 2;
+      s1 = sArc + spec.pitch / 2;
+    }
+  if (s0 < 0) return;
+  const count = Math.floor((s1 - s0) / spec.pitch);
+  const start = s0 + (s1 - s0 - count * spec.pitch) / 2;
+  const sink = spec.built.girdleThickness * 0.5 + 0.04;
+  const beadU = (spec.width / 2) * 0.8;
+  for (let i = 0; i < count; i++) {
+    const sc = start + (i + 0.5) * spec.pitch;
+    if (!fits(sc)) continue;
+    stones.push(stoneMatrix(strand.at(sc), sink));
+    if (i > 0) {
+      const fb = strand.at(start + i * spec.pitch);
+      for (const side of [-1, 1]) beads.push(stoneMatrix(fb, -spec.beadR * 0.25, side * beadU));
+    }
+  }
 }
 
 registerHeadBuilder('swept-blades', sweptBlades);

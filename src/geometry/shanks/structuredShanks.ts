@@ -28,6 +28,7 @@ import {
   planarFrames,
   readTaper,
   smooth,
+  str,
   sweep,
   taperedBand,
   thickAt,
@@ -298,7 +299,9 @@ function bypass(ctx: ShankCtx): ShankResult {
   const noseMm = Math.min(1.2, tp.wTop * 0.6);
   const [a0, a1] = pv ? paveZone(ctx, pv, R + tp.tTop) : [0, 0];
   const zone = pv ? zoneWeight(a0, a1) : () => 0;
-  const zOf = (th: number) => -off * Math.cos((Math.PI * (th - t0)) / span);
+  // right hand (default): the end rising from the +X shoulder sits on the +Z side at the top; left hand mirrors it
+  const hand = str(p, 'hand', ['right', 'left'] as const, 'right') === 'left' ? -1 : 1;
+  const zOf = (th: number) => -hand * off * Math.cos((Math.PI * (th - t0)) / span);
   /** width and thickness of the band at angle th, including the slimming and rounded nose of the ends */
   const sec = (th: number) => {
     const endD = Math.min(th - t0, t1 - th);

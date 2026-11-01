@@ -115,4 +115,46 @@ describe('tension-bypass swept blades', () => {
       );
     expect(tip(10) - tip(70)).toBeGreaterThan(2.5);
   });
+
+  it('hand: left mirrors the swirl (the +X blade wraps the -Z side)', () => {
+    const mz = (hand: string) => {
+      const s = verts(build({ hand })).filter((p) => p.x > 5 && p.y > -4);
+      return s.reduce((a, p) => a + p.z, 0) / s.length;
+    };
+    expect(mz('right')).toBeGreaterThan(0.3);
+    expect(mz('left')).toBeLessThan(-0.3);
+    expect(mz('left')).toBeCloseTo(-mz('right'), 5);
+  });
+
+  it('blade pave: off by default; on lays stones along both blades, deterministic and in budget', () => {
+    expect(build().some((p) => p.slot === 'accent-stone')).toBe(false);
+    const parts = build({ bladePave: true });
+    const stones = parts.find((p) => p.slot === 'accent-stone');
+    expect(stones).toBeTruthy();
+    if (!stones) return;
+    const pos = stones.geometry.getAttribute('position');
+    const arr = pos.array as ArrayLike<number>;
+    for (let i = 0; i < arr.length; i++) expect(Number.isFinite(arr[i])).toBe(true);
+    const total = parts.reduce((s, p) => s + p.geometry.getAttribute('position').count / 3, 0);
+    expect(total).toBeLessThan(40000);
+    // stones on both blades (both ends of the band), above the shank seat, clear of the table
+    let plus = 0;
+    let minus = 0;
+    for (let i = 0; i < arr.length; i += 3) {
+      if (arr[i] > 2) plus++;
+      if (arr[i] < -2) minus++;
+      if (arr[i + 1] > 0.6) expect(Math.hypot(arr[i], arr[i + 2])).toBeGreaterThan(3);
+    }
+    expect(plus).toBeGreaterThan(0);
+    expect(minus).toBeGreaterThan(0);
+    // same params, same stones
+    const again = build({ bladePave: true }).find((p) => p.slot === 'accent-stone');
+    expect(Array.from(again?.geometry.getAttribute('position').array ?? [])).toEqual(Array.from(arr));
+    // bigger stones: fewer of them
+    const count = (size: number) =>
+      build({ bladePave: true, paveSizeMm: size })
+        .find((p) => p.slot === 'accent-stone')
+        ?.geometry.getAttribute('position').count ?? 0;
+    expect(count(0.8)).toBeGreaterThan(count(1.5));
+  });
 });

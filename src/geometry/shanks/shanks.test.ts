@@ -395,6 +395,28 @@ describe('model-specific invariants', () => {
     expect(pos).toBeGreaterThan(0);
     expect(neg).toBeGreaterThan(0);
   });
+  it('bypass hand: the +X shoulder rises on +Z (right) or -Z (left), a mirror image', () => {
+    const shoulderZ = (hand: string) => {
+      const fn = shankBuilders.get('bypass');
+      if (!fn) throw new Error('bypass');
+      const res = fn(stubCtx({ ...(byId.get('bypass')?.params ?? {}), hand }));
+      const a = res.parts[0].geometry.getAttribute('position').array as ArrayLike<number>;
+      let s = 0;
+      let n = 0;
+      for (let i = 0; i < a.length; i += 3)
+        if (a[i] > 6 && a[i + 1] > 4) {
+          s += a[i + 2];
+          n++;
+        }
+      return s / n;
+    };
+    const right = shoulderZ('right');
+    const left = shoulderZ('left');
+    expect(right).toBeGreaterThan(0.3);
+    expect(left).toBeLessThan(-0.3);
+    expect(left).toBeCloseTo(-right, 5);
+    expect(shoulderZ('nonsense')).toBeCloseTo(right, 5);
+  });
   for (const id of ['pave', 'channel']) {
     it(`${id} carries accent stones on the shoulders, more with more coverage`, () => {
       const few = build(id, { coverage: 0.3 }).parts.find((p) => p.slot === 'accent-stone');
