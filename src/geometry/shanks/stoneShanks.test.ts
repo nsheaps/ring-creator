@@ -8,6 +8,7 @@ import { exampleDesigns } from '@/models/data/examples';
 import type { Design } from '@/models/types';
 import type { Part } from '../types';
 import { MICRO_PAVE_MIN_T } from './stoneShanks';
+import { computeSpec } from '@/export/spec';
 
 const TRI_BUDGET = 60000;
 
@@ -177,5 +178,84 @@ describe('micro-pave shank (r5-026)', () => {
     const dense = engagementParts(microPaveDesign({ rows: 8, stoneSizeMm: 0.8, coverage: 1 })).parts;
     const t = measure(dense, 'shank-metal').tris + measure(dense, 'accent-stone').tris;
     expect(t).toBeLessThan(TRI_BUDGET);
+  });
+});
+
+describe('graded single-row pave (r3-003)', () => {
+  const design = (params: Record<string, number | string>): Design => {
+    const base = exampleDesigns.find((d) => d.id === 'r3-003');
+    if (!base?.engagement) throw new Error('r3-003 missing');
+    const d = JSON.parse(JSON.stringify(base)) as Design;
+    d.engagement.shank.params = { ...d.engagement.shank.params, ...params };
+    return d;
+  };
+  const shankStones = (parts: Part[]) => parts.filter((p) => /pave stones/.test(p.label ?? ''));
+  const lightness = (hex: string) =>
+    [1, 3, 5].reduce((a, i) => a + parseInt(hex.slice(i, i + 2), 16), 0) / (3 * 255);
+
+  it('is off by default: one plain group of equal stones', () => {
+    const parts = shankStones(engagementParts(design({ grade: 'none' })).parts);
+    expect(parts).toHaveLength(1);
+    expect(parts[0].geometry.userData.gemHex).toBeUndefined();
+  });
+
+  it('shades the stones step by step from the accent colour at the head to the grade colour outermost', () => {
+    const parts = shankStones(engagementParts(design({ grade: 'color', gradeColor: 'black' })).parts);
+    const hexes = parts.map((p) => p.geometry.userData.gemHex as string | undefined);
+    expect(hexes[0]).toBeUndefined(); // the stones next to the head keep the accent colour
+    const graded = hexes.slice(1) as string[];
+    expect(graded.length).toBeGreaterThan(4);
+    expect(graded[graded.length - 1]).toBe('#1b1b1f');
+    for (let i = 1; i < graded.length; i++)
+      expect(lightness(graded[i])).toBeLessThan(lightness(graded[i - 1]));
+    // one stone per side in every colour step
+    const per = parts[0].geometry.getAttribute('position').count;
+    for (const p of parts) expect(p.geometry.getAttribute('position').count).toBe(per);
+  });
+
+  it('tapers the stones in size from the head outward and narrows the row', () => {
+    const plain = measure(engagementParts(design({ grade: 'none' })).parts, 'accent-stone');
+    const parts = engagementParts(design({ grade: 'size', gradeTo: 0.6 })).parts;
+    const stones = shankStones(parts);
+    expect(stones).toHaveLength(1);
+    const pos = stones[0].geometry.getAttribute('position');
+    const n = buildStone(
+      getModel('cut', 'round-brilliant'),
+      { length: 1, width: 1, depth: 0.6 },
+      { detail: 'low' },
+    ).geometry;
+    const v = (n.index ? n.toNonIndexed() : n).getAttribute('position').count;
+    // stones on one side, in order from the head: their span across the band (z) shrinks
+    const widths: { a: number; w: number }[] = [];
+    for (let s = 0; s + v <= pos.count; s += v) {
+      let lo = Infinity;
+      let hi = -Infinity;
+      let x = 0;
+      let y = 0;
+      for (let i = s; i < s + v; i++) {
+        lo = Math.min(lo, pos.getZ(i));
+        hi = Math.max(hi, pos.getZ(i));
+        x += pos.getX(i);
+        y += pos.getY(i);
+      }
+      if (x > 0) widths.push({ a: Math.atan2(x, y), w: hi - lo });
+    }
+    widths.sort((p, q) => p.a - q.a);
+    expect(widths[widths.length - 1].w / widths[0].w).toBeCloseTo(0.6, 1);
+    for (let i = 1; i < widths.length; i++) expect(widths[i].w).toBeLessThan(widths[i - 1].w + 1e-6);
+    const m = measure(parts, 'accent-stone');
+    expect(m.tris).toBeLessThan(TRI_BUDGET);
+    expect(m.maxZ).toBeLessThanOrEqual(plain.maxZ + 1e-6);
+  });
+
+  it('stays inside the triangle budget and reports graded stones by colour in the spec', () => {
+    const d = design({ grade: 'both', gradeTo: 0.8, gradeColor: 'black' });
+    const parts = engagementParts(d).parts;
+    expect(measure(parts, 'shank-metal').tris + measure(parts, 'accent-stone').tris).toBeLessThan(TRI_BUDGET);
+    const spec = computeSpec(d, 'engagement');
+    const names = spec.stones.filter((s) => s.role === 'accent').map((s) => s.colorName);
+    expect(names).toContain('Colorless');
+    expect(names).toContain('Black');
+    expect(names.some((x) => /^Graded \(#[0-9a-f]{6}\)$/.test(x))).toBe(true);
   });
 });

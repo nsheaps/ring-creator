@@ -4177,7 +4177,10 @@ export const rings: ExampleDesign[] = [
           widthMm: 1.7,
           topWidthMm: 1.7,
           stoneSizeMm: 1.2,
-          coverage: 0.6,
+          coverage: 0.5,
+          grade: 'both',
+          gradeTo: 0.8,
+          gradeColor: 'black',
         },
       },
       placement: {
@@ -4197,7 +4200,7 @@ export const rings: ExampleDesign[] = [
     tags: ['colored-stone', 'engagement'],
     category: 'colored-stone',
     blurb:
-      'Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded shoulders approximated by plain round pave (no size or colour gradient control yet).',
+      'Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded single-row pave on the shoulders: white at the head through grey to black, tapering slightly (grade both, gradeTo 0.8, gradeColor black, coverage 0.5 so the run ends at the sides as in the photo).',
     priceUsd: 6477,
     designFamily: 'three-stone / pave / hexagon',
     view: 'ring',
@@ -4614,7 +4617,7 @@ export const rings: ExampleDesign[] = [
       },
       placement: {
         orientation: 'north-south',
-        raise: 0.5,
+        raise: 0,
         tilt: 0,
         rotate: 0,
         offset: 0,

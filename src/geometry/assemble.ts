@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { bandBuilders, headBuilders, shankBuilders, stoneBuilders } from './builders';
 import { mergeFlat } from './helpers';
+import { GEM_HEX } from './shanks/pavePath';
 import type {
   BandCtx,
   BuiltStone,
@@ -292,19 +293,23 @@ export function assembleDesign(design: Design, view: RingView = 'set'): Assemble
   const group = new THREE.Group();
   let tris = 0;
   const add = (parts: Part[], dz: number) => {
-    const bySlot = new Map<PartSlot, THREE.BufferGeometry[]>();
+    // one mesh per slot, and per own body colour for stones that carry one (graded pave)
+    const bySlot = new Map<string, { slot: PartSlot; hex: string; geos: THREE.BufferGeometry[] }>();
     for (const p of parts) {
+      const hex =
+        typeof p.geometry.userData[GEM_HEX] === 'string' ? String(p.geometry.userData[GEM_HEX]) : '';
       const g = p.geometry.clone();
       g.translate(0, 0, dz);
-      const list = bySlot.get(p.slot) ?? [];
-      list.push(g);
-      bySlot.set(p.slot, list);
+      const key = `${p.slot}|${hex}`;
+      const entry = bySlot.get(key) ?? { slot: p.slot, hex, geos: [] };
+      entry.geos.push(g);
+      bySlot.set(key, entry);
     }
-    for (const [slot, geos] of bySlot) {
+    for (const { slot, hex, geos } of bySlot.values()) {
       const merged = mergeFlat(geos);
       geos.forEach((g) => g.dispose());
       tris += merged.attributes.position ? merged.attributes.position.count / 3 : 0;
-      group.add(...meshesFor(design, slot, merged, center));
+      group.add(...meshesFor(design, slot, merged, center, hex || undefined));
     }
   };
   add(engParts, pivotShift);
@@ -327,6 +332,7 @@ function meshesFor(
   slot: PartSlot,
   geo: THREE.BufferGeometry,
   center: ResolvedStone,
+  ownHex?: string,
 ): THREE.Object3D[] {
   const out: THREE.Object3D[] = [];
   if (slot === 'center-stone' || slot === 'accent-stone' || slot === 'band-stone' || slot === 'band-stone2') {
@@ -343,9 +349,11 @@ function meshesFor(
     const colorHex =
       slot === 'center-stone'
         ? center.colorHex
-        : altGem
-          ? (altGem.colors.find((c) => c.id === altGem.defaultColor) ?? altGem.colors[0]).hex
-          : (gem.colors.find((c) => c.id === spec!.color) ?? gem.colors[0]).hex;
+        : ownHex
+          ? ownHex
+          : altGem
+            ? (altGem.colors.find((c) => c.id === altGem.defaultColor) ?? altGem.colors[0]).hex
+            : (gem.colors.find((c) => c.id === spec!.color) ?? gem.colors[0]).hex;
     const clarity =
       slot === 'center-stone' ? getModel('clarity', design.engagement.center.clarity) : undefined;
     const grade =
@@ -363,6 +371,7 @@ function meshesFor(
     );
     const innerMesh = new THREE.Mesh(geo, inner);
     const outerMesh = new THREE.Mesh(geo, outer);
+    if (ownHex) outerMesh.userData[GEM_HEX] = innerMesh.userData[GEM_HEX] = ownHex;
     outerMesh.renderOrder = 2;
     innerMesh.renderOrder = 1;
     out.push(innerMesh, outerMesh);

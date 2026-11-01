@@ -3,6 +3,7 @@ import { assembleDesign, disposeGroup, resolveCenter, type RingView } from '@/ge
 import { findModel, getModel } from '@/models/registry';
 import type { Design, Id, MetalModel } from '@/models/types';
 import { metalMaterial } from '@/scene/materials';
+import { GEM_HEX } from '@/geometry/shanks/pavePath';
 
 /** What to export: the engagement ring, the wedding band, or both as worn. */
 export type ExportScope = 'engagement' | 'band' | 'set';
@@ -23,6 +24,8 @@ export interface ExportPart {
   /** Display name of the material, e.g. "14k yellow gold" / "Diamond". */
   materialName: string;
   colorHex: string;
+  /** A stone group's own body colour when it differs from its slot's (graded pave), #rrggbb. */
+  ownColorHex?: string;
   roughness: number;
   metalness: number;
   opacity: number;
@@ -197,7 +200,8 @@ function toPart(design: Design, piece: Piece, c: Classified, index: number): Exp
     c.kind === 'metal'
       ? (findModel('metal', c.materialId)?.name ?? c.materialId)
       : (findModel('gem', c.materialId)?.name ?? c.materialId);
-  const color = mat.color ? `#${mat.color.getHexString()}` : '#cccccc';
+  const own = typeof c.mesh.userData[GEM_HEX] === 'string' ? String(c.mesh.userData[GEM_HEX]) : undefined;
+  const color = own ?? (mat.color ? `#${mat.color.getHexString()}` : '#cccccc');
   void design;
   return {
     id: `${piece}-${c.role}${index > 0 ? `-${index + 1}` : ''}`,
@@ -208,6 +212,7 @@ function toPart(design: Design, piece: Piece, c: Classified, index: number): Exp
     materialId: c.materialId,
     materialName: name,
     colorHex: color,
+    ...(own ? { ownColorHex: own } : {}),
     roughness: mat.roughness ?? 0.2,
     metalness: mat.metalness ?? (c.kind === 'metal' ? 1 : 0),
     opacity: mat.transparent ? (mat.opacity ?? 1) : 1,

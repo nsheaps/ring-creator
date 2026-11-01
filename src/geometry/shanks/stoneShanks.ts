@@ -24,6 +24,7 @@ import {
   thickAt,
   widthAt,
 } from './common';
+import { GEM_HEX, gradedScales, mixHex, paveGrade } from './pavePath';
 
 /** Stone angles on both shoulders: from the edge of the head down to `coverage` of the half circumference. */
 function stoneAngles(a0: number, a1: number, r: number, pitch: number): number[] {
@@ -388,7 +389,10 @@ function pave(ctx: ShankCtx): ShankResult {
   const tp = readTaper(p, { w: 2.2, wTop: 2.4, t: 1.8, tTop: 1.9, taperDeg: 60 });
   const outerExp = outerExpFromRoundness(num(p, 'roundness', 0.3, 0, 1));
   const coverage = num(p, 'coverage', 0.5, 0.1, 1);
-  const size = accentSize(ctx, p, 0.8, 2.6);
+  const grade = paveGrade(ctx);
+  // graded in size: the stone (and trough) is built for the largest stone and every stone is scaled down from it
+  const big = Math.max(1, grade.to);
+  const size = accentSize(ctx, p, 0.8, 2.6) * big;
   const dims = accentDims(ctx, size);
   const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
   const gapMm = num(p, 'stoneGapMm', 0.08, 0, 0.6);
@@ -405,47 +409,86 @@ function pave(ctx: ShankCtx): ShankResult {
   const a0 = headHalfAngle(ctx, rOut) + 0.02;
   const a1 = Math.max(a0, coverage * Math.PI);
   const pitch = dims.length + gapMm;
-  const count = Math.max(0, Math.floor(((a1 - a0) * rOut) / pitch));
-  const one = Array.from({ length: count }, (_, i) => a0 + ((i + 0.5) * pitch) / rOut);
-  const angles = [...one.map((a) => TOP - a), ...one.map((a) => TOP + a)];
-  const zoneEnd = count > 0 ? one[count - 1] + (pitch * 0.5 + 0.1) / rOut : a0;
+  const graded = grade.to !== 1;
+  // per stone: size factor, and the arc length (mm from a0) of its start; bounds[count] closes the row
+  const scales = graded
+    ? gradedScales((a1 - a0) * rOut, dims.length, gapMm, grade.to)
+    : Array.from({ length: Math.max(0, Math.floor(((a1 - a0) * rOut) / pitch)) }, () => 1);
+  const count = scales.length;
+  const bounds: number[] = [0];
+  for (let i = 0; i < count; i++)
+    bounds.push(graded ? bounds[i] + dims.length * scales[i] + gapMm : (i + 1) * pitch);
+  const centres = scales.map((k, i) =>
+    graded ? bounds[i] + (dims.length * k + gapMm) / 2 : (i + 0.5) * pitch,
+  );
+  const one = centres.map((s) => a0 + s / rOut);
+  const zoneEnd = count > 0 ? a0 + (bounds[count] + 0.1) / rOut : a0;
   const fade = 0.06;
   const troughAt = (th: number) => {
     if (count === 0) return 0;
     const dd = fromTop(th);
     return smooth((dd - (a0 - 0.08)) / fade) * smooth((zoneEnd - dd) / fade);
   };
+  /** size factor of the stone under angle th (linear between stone centres), so a graded trough narrows with them */
+  const scaleAt = (th: number) => {
+    if (!graded || count === 0) return 1;
+    const s = (fromTop(th) - a0) * rOut;
+    if (s <= centres[0]) return scales[0];
+    for (let i = 1; i < count; i++)
+      if (s <= centres[i])
+        return (
+          scales[i - 1] + ((scales[i] - scales[i - 1]) * (s - centres[i - 1])) / (centres[i] - centres[i - 1])
+        );
+    return scales[count - 1];
+  };
   const band = sweep({
     segments: 240,
     smoothProfile: true,
-    profile: (th) =>
-      troughSection(R, widthAt(tp, th), thickAt(tp, th), outerExp, 3, {
-        g,
-        b: bevel,
-        d: d * troughAt(th),
-      }),
+    profile: (th) => {
+      const k = scaleAt(th);
+      return troughSection(R, widthAt(tp, th), thickAt(tp, th), outerExp, 3, {
+        g: graded ? (dims.width * k) / 2 + 0.03 : g,
+        b: graded ? clamp(dims.width * k * 0.22, 0.18, 0.35) : bevel,
+        d: (graded ? ch * k * 0.65 + 0.06 : d) * troughAt(th),
+      });
+    },
   });
-  const stoneMs: THREE.Matrix4[] = [];
+  // colour grade: stone i of n mixes from the accent colour (next to the head) to the grade colour (outermost)
+  const hexOf = (i: number) =>
+    grade.colorHex && i > 0 ? mixHex(ctx.accent.colorHex, grade.colorHex, i / Math.max(1, count - 1)) : '';
+  const stoneMs = new Map<string, THREE.Matrix4[]>();
   const beadMs: THREE.Matrix4[] = [];
   const beadR = clamp(dims.width * 0.14, 0.1, 0.22);
   const beadU = (dims.width / 2) * 0.8;
-  for (const th of angles) {
-    const t = thickAt(tp, th);
-    const rg = R + t - ch * 0.7;
-    stoneMs.push(ringFrame(th, rg, 0));
-  }
+  for (const side of [-1, 1])
+    one.forEach((a, i) => {
+      const th = TOP + side * a;
+      const k = scales[i];
+      const m = ringFrame(th, R + thickAt(tp, th) - ch * 0.7 * k, 0);
+      if (graded) m.multiply(new THREE.Matrix4().makeScale(k, k, k));
+      const key = hexOf(i);
+      const list = stoneMs.get(key) ?? [];
+      list.push(m);
+      stoneMs.set(key, list);
+    });
   // beads are shared: one pair in every gap between neighbouring stones, plus one pair closing each end of the row
   for (const side of [-1, 1])
     for (let i = 0; i <= count; i++) {
-      const a = TOP + side * (a0 + (i * pitch) / rOut);
+      const a = TOP + side * (a0 + bounds[i] / rOut);
       const t = thickAt(tp, a);
-      for (const u of [-beadU, beadU]) beadMs.push(ringFrame(a, R + t - ch * 0.7 + ch * 0.35, u));
+      const k = graded ? (scales[Math.max(0, i - 1)] + scales[Math.min(count - 1, i)]) / 2 : 1;
+      for (const u of [-beadU * k, beadU * k])
+        beadMs.push(ringFrame(a, R + t - ch * 0.7 * k + ch * 0.35 * k, u));
     }
   const geos = [band];
   if (count > 0) geos.push(instances(beadGeometry(beadR, 8, 6), beadMs));
   const parts: Part[] = [metal(geos, 'pave shank')];
-  if (stoneMs.length)
-    parts.push({ slot: 'accent-stone', geometry: instances(built.geometry, stoneMs), label: 'pave stones' });
+  for (const [hex, ms] of stoneMs) {
+    const geometry = instances(built.geometry, ms);
+    // a graded stone's own body colour, read by the assembler (see GEM_HEX)
+    if (hex) geometry.userData[GEM_HEX] = hex;
+    parts.push({ slot: 'accent-stone', geometry, label: hex ? 'graded pave stones' : 'pave stones' });
+  }
   return { parts, seatY: R + tp.tTop, topWidth: tp.wTop };
 }
 registerShankBuilder('pave', pave);

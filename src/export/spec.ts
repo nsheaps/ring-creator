@@ -163,6 +163,12 @@ function colorName(gemId: Id, colorId: Id): string {
   return gem?.colors.find((c) => c.id === colorId)?.name ?? colorId;
 }
 
+/** A graded stone's colour: the gem's named colour of that exact shade, else "Graded" and the shade. */
+function gradedColorName(gemId: Id, hex: string): string {
+  const named = findModel('gem', gemId)?.colors.find((c) => c.hex.toLowerCase() === hex.toLowerCase());
+  return named ? named.name : `Graded (${hex})`;
+}
+
 function measurePiece(design: Design, piece: Piece, parts: ExportPart[]): PieceSpec {
   const r = ringSize(design.ringSizeUS).diameterMm / 2;
   const metal = parts.filter((p) => p.kind === 'metal');
@@ -317,7 +323,9 @@ function stoneGroups(design: Design, parts: ExportPart[]): StoneGroupSpec[] {
         role: p.role === 'band-stone' ? 'band-stone' : 'accent',
         gemId: gem.id,
         gemName: gem.name,
-        colorName: colorName(gem.id, gem.id === spec.material ? spec.color : gem.defaultColor),
+        colorName: p.ownColorHex
+          ? gradedColorName(gem.id, p.ownColorHex)
+          : colorName(gem.id, gem.id === spec.material ? spec.color : gem.defaultColor),
         cutId: cut.id,
         cutName: cut.name,
         count: g.count,

@@ -6,7 +6,7 @@
  */
 import * as THREE from 'three';
 import type { BuiltStone, ShankCtx } from '../types';
-import { accentDims, accentSize, bool, clamp, fromTop, headHalfAngle, num, smooth } from './common';
+import { accentDims, accentSize, bool, clamp, fromTop, headHalfAngle, num, smooth, str } from './common';
 
 export interface PathFrame {
   /** point on the strand's outer surface, on its centre line */
@@ -180,6 +180,67 @@ export function paveAlong(
     }
   }
   return { stones, beads, count: kept };
+}
+
+/**
+ * `geometry.userData` key of a stone part's own body colour (#rrggbb). The assembler gives such a part its own gem
+ * material (the slot's gem in that colour) instead of the slot's colour; graded pave uses it for each colour step.
+ */
+export const GEM_HEX = 'gemHex';
+
+/** Graded pave: stones change size and/or colour step by step from the head outward. */
+export interface PaveGrade {
+  /** size of the outermost stone relative to the one next to the head (1 = no size grade) */
+  to: number;
+  /** body colour of the outermost stone (undefined = no colour grade) */
+  colorHex?: string;
+}
+
+/**
+ * Read the grading controls: `grade` (none | size | color | both), `gradeTo` (outer stone size ratio) and
+ * `gradeColor` (a colour id of the accent gem, e.g. black or salt-and-pepper). Off by default.
+ */
+export function paveGrade(ctx: ShankCtx): PaveGrade {
+  const p = ctx.params;
+  const g = str(p, 'grade', ['none', 'size', 'color', 'both'] as const, 'none');
+  const size = g === 'size' || g === 'both';
+  const color = g === 'color' || g === 'both';
+  const target = color
+    ? ctx.accent.gem.colors.find((c) => c.id === String(p.gradeColor ?? 'black'))
+    : undefined;
+  return {
+    to: size ? num(p, 'gradeTo', 0.8, 0.4, 1.6) : 1,
+    colorHex:
+      target && target.hex.toLowerCase() !== ctx.accent.colorHex.toLowerCase() ? target.hex : undefined,
+  };
+}
+
+/** Mix two #rrggbb colours in sRGB (so the middle of white to black reads as a mid grey), k in 0..1. */
+export function mixHex(a: string, b: string, k: number): string {
+  const ch = (h: string, i: number) => parseInt(h.slice(1 + 2 * i, 3 + 2 * i), 16);
+  let out = '#';
+  for (let i = 0; i < 3; i++)
+    out += Math.round(ch(a, i) + (ch(b, i) - ch(a, i)) * clamp(k, 0, 1))
+      .toString(16)
+      .padStart(2, '0');
+  return out;
+}
+
+/**
+ * Size factors (relative to the largest stone) of the most stones of length `len` plus `gap` that fit in `span` when
+ * they grade linearly in size from 1 at the head to `to` at the far end.
+ */
+export function gradedScales(span: number, len: number, gap: number, to: number): number[] {
+  const big = Math.max(1, to);
+  const scales = (n: number) =>
+    Array.from({ length: n }, (_, i) => (1 + (to - 1) * (n > 1 ? i / (n - 1) : 0)) / big);
+  let best: number[] = [];
+  for (let n = 1; n < 400; n++) {
+    const s = scales(n);
+    if (s.reduce((acc, k) => acc + len * k + gap, 0) > span + 1e-9) break;
+    best = s;
+  }
+  return best;
 }
 
 /** Smooth 0..1 weight that is 1 between angles a0 and a1 from the top and fades over `fade` radians outside. */
