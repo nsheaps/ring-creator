@@ -1020,7 +1020,8 @@
    "tune": {
     "head": {
      "underGallery": true,
-     "underGalleryCups": true
+     "underGalleryCups": true,
+     "underGalleryCount": 5
     },
     "shank": {
      "widthMm": 3.8,

@@ -132,4 +132,45 @@ describe('under-gallery', () => {
     }
     expect(inside).toBe(0);
   });
+
+  it('underGalleryCount fills the long side with more, smaller stones, still clear of the pavilion; 0 = auto', () => {
+    for (const h of PRONG_HEADS) expect(h.params.underGalleryCount).toBe(0);
+    const auto = build('solitaire-4-prong', { underGallery: true, underGalleryCups: true });
+    const zero = build('solitaire-4-prong', {
+      underGallery: true,
+      underGalleryCups: true,
+      underGalleryCount: 0,
+    });
+    expect(tris(zero.parts)).toBe(tris(auto.parts));
+    const count = (ps: Part[], c: typeof auto.ctx) => {
+      const stones = ps.find((p) => p.label === 'under-gallery stones');
+      if (!stones) throw new Error('no stones');
+      const single = c.stone('round-brilliant', { length: 1, width: 1, depth: 0.6 });
+      return {
+        n:
+          stones.geometry.getAttribute('position').count /
+          single.geometry.toNonIndexed().getAttribute('position').count,
+        stones,
+      };
+    };
+    const { parts, ctx } = build('solitaire-4-prong', {
+      underGallery: true,
+      underGalleryCups: true,
+      underGalleryCount: 6,
+    });
+    const before = count(auto.parts, auto.ctx).n;
+    const { n, stones } = count(parts, ctx);
+    expect(n).toBeGreaterThan(before);
+    expect(n).toBeGreaterThanOrEqual(12);
+    const pos = stones.geometry.getAttribute('position');
+    const cb = ctx.center.built;
+    let inside = 0;
+    for (let i = 0; i < pos.count; i++) {
+      const y = pos.getY(i);
+      if (y > 0) continue;
+      const sy = stoneSurfaceY(cb, pos.getX(i), pos.getZ(i), 'bottom');
+      if (sy !== null && sy < y - 0.02) inside++;
+    }
+    expect(inside).toBe(0);
+  });
 });

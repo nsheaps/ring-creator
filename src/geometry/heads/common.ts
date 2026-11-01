@@ -959,7 +959,8 @@ export interface UnderGalleryResult {
  * centre stone. Uses the same frame and prong geometry as prongSet(stone, opts); `frac` is how far down from the girdle
  * (0) to the seat (1) the rail runs. With the `underGalleryCups` param each stone sits in its own little U-shaped
  * basket instead of between shared beads: a wire round the lower half of its girdle whose arms rise up both sides to
- * grip the crown, so in profile the row reads as a string of U cups. Returns null when the head is too
+ * grip the crown, so in profile the row reads as a string of U cups. `underGalleryCount` (0 = auto) sets how many
+ * stones fill the longest side between prongs: they shrink and close up to fit. Returns null when the head is too
  * shallow for a rail.
  */
 export function underGallery(
@@ -1022,19 +1023,7 @@ export function underGallery(
       7,
     ),
   ];
-  // tiny stones: ~1 mm, smaller on small heads
-  const size = Math.min(1.3, Math.max(0.7, L / 21));
-  const dims = accentDims(ctx, size);
-  const w = dims.width;
-  const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
-  const tilt = (50 * Math.PI) / 180;
-  const cosT = Math.cos(tilt);
-  const sinT = Math.sin(tilt);
   const cups = bool(ctx.params, 'underGalleryCups', false);
-  // cup wire: thin, and the stones spread a little so both arms fit between neighbours
-  const cupR = Math.min(0.14, Math.max(0.07, w * 0.09));
-  const gap = cups ? Math.max(0.08, cupR * 1.6) : 0.08;
-  const pitch = size + gap;
   // stone spans between the prongs (prong sites in rail length; the prong wire plus clearance is kept free)
   const sites = (
     opts.sites ?? prongSites(o, { count: opts.count, phase: opts.phase, useCorners: opts.useCorners })
@@ -1045,14 +1034,42 @@ export function underGallery(
       return cum[i] + (cum[i + 1] - cum[i]) * (x - i);
     })
     .sort((a, b) => a - b);
-  const clear = r * (opts.double || opts.split ? 2.4 : 1.05) + size * 0.42;
-  const spans: [number, number][] = [];
-  if (sites.length === 0) spans.push([0, L]);
-  else
-    sites.forEach((a, i) => {
-      const b = i + 1 < sites.length ? sites[i + 1] : sites[0] + L;
-      if (b - a > 2 * clear) spans.push([a + clear, b - clear]);
-    });
+  const clearFor = (sz: number) => r * (opts.double || opts.split ? 2.4 : 1.05) + sz * 0.42;
+  const spansFor = (clear: number): [number, number][] => {
+    const out: [number, number][] = [];
+    if (sites.length === 0) out.push([0, L]);
+    else
+      sites.forEach((a, i) => {
+        const b = i + 1 < sites.length ? sites[i + 1] : sites[0] + L;
+        if (b - a > 2 * clear) out.push([a + clear, b - clear]);
+      });
+    return out;
+  };
+  const tilt = (50 * Math.PI) / 180;
+  const cosT = Math.cos(tilt);
+  const sinT = Math.sin(tilt);
+  const aspect = Math.max(1, ctx.accent.cut.defaultAspect || 1);
+  const cupRFor = (sz: number) => Math.min(0.14, Math.max(0.07, (sz / aspect) * 0.09));
+  // tiny stones: ~1 mm, smaller on small heads; or, with `underGalleryCount`, sized so that many fill the longest
+  // side between prongs, close set
+  let size = Math.min(1.3, Math.max(0.7, L / 21));
+  // cup wire: thin, and the stones spread a little so both arms fit between neighbours
+  let gap = cups ? Math.max(0.08, cupRFor(size) * 1.6) : 0.08;
+  const want = Math.round(num(ctx.params, 'underGalleryCount', 0, 0, 12));
+  if (want > 0) {
+    const longest = (sz: number) => Math.max(0, ...spansFor(clearFor(sz)).map(([a, b]) => b - a));
+    const fill = cups ? 0.8 : 0.9;
+    for (let it = 0; it < 4; it++) size = Math.min(1.6, Math.max(0.35, (longest(size) / want) * fill));
+    const span = longest(size);
+    if (span > 0) gap = Math.max(0.04, span / want - size);
+  }
+  const dims = accentDims(ctx, size);
+  const w = dims.width;
+  const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
+  const cupR = cupRFor(size);
+  const pitch = size + gap;
+  const spans = spansFor(clearFor(size));
+  const fitEps = want > 0 ? 1e-6 : 0;
   const mats: THREE.Matrix4[] = [];
   const beadMats: THREE.Matrix4[] = [];
   const beadR = Math.max(0.09, size * 0.15);
@@ -1063,7 +1080,7 @@ export function underGallery(
     return sy !== null && sy < yy + 0.06;
   };
   for (const [a, b] of spans) {
-    const n = Math.max(1, Math.floor((b - a + gap) / pitch));
+    const n = Math.max(1, Math.floor((b - a + gap) / pitch + fitEps));
     const used = n * pitch - gap;
     const start = a + (b - a - used) / 2 + size / 2;
     const centres: { x: number; y: number; z: number; nx: number; nz: number }[] = [];

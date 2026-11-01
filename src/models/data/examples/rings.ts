@@ -10364,6 +10364,7 @@ export const rings: ExampleDesign[] = [
         params: {
           underGallery: true,
           underGalleryCups: true,
+          underGalleryCount: 5,
         },
       },
       shank: {

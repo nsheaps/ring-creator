@@ -63,6 +63,15 @@ const underGalleryCups: Control = {
   label: 'Under-gallery cups',
   help: 'With under-gallery stones on: each tiny stone sits in its own U-shaped metal cup, a wire round its lower half whose arms rise up both sides to grip it, instead of between shared beads. From the side the row reads as a string of little baskets.',
 };
+const underGalleryCount: Control = {
+  type: 'number',
+  key: 'underGalleryCount',
+  label: 'Under-gallery stones per side',
+  min: 0,
+  max: 12,
+  step: 1,
+  help: 'With under-gallery stones on: how many tiny stones fill the longest side between prongs; they shrink and close up to fit. 0 = automatic (about 1 mm stones).',
+};
 const prongControls = (min: number, max: number): Control[] => [
   prongCount(min, max),
   prongStyle,
@@ -71,6 +80,7 @@ const prongControls = (min: number, max: number): Control[] => [
   baseScale,
   underGallery,
   underGalleryCups,
+  underGalleryCount,
 ];
 const prongDefaults = (count: number, style: string, rails: number): Params => ({
   prongCount: count,
@@ -80,6 +90,7 @@ const prongDefaults = (count: number, style: string, rails: number): Params => (
   baseScale: 0,
   underGallery: false,
   underGalleryCups: false,
+  underGalleryCount: 0,
 });
 
 const haloShape: Control = {
