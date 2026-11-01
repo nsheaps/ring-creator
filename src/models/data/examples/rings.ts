@@ -35,13 +35,14 @@ export const rings: ExampleDesign[] = [
         },
       },
       shank: {
-        id: 'plain-round',
+        id: 'knife-edge',
         metal: 'platinum',
         params: {
           widthMm: 1.9,
-          topWidthMm: 1.9,
-          thicknessMm: 1.7,
-          topThicknessMm: 1.7,
+          thicknessMm: 1.5,
+          topWidthMm: 2.6,
+          topThicknessMm: 1.8,
+          taperDeg: 100,
         },
       },
       placement: {
@@ -62,7 +63,7 @@ export const rings: ExampleDesign[] = [
     category: 'solitaire',
     blurb: 'Setting-only price. Six-prong head, 1.9mm slender polished band; shank profile not stated.',
     priceUsd: 1355,
-    designFamily: 'solitaire-6-prong / plain-round / round-brilliant',
+    designFamily: 'solitaire-6-prong / knife-edge / round-brilliant',
     view: 'ring',
   },
   {

@@ -18,7 +18,7 @@
         "clarity": null
       },
       "head": "solitaire-6-prong",
-      "shank": "plain-round",
+      "shank": "knife-edge",
       "metals": [
         "platinum"
       ],
@@ -31,12 +31,7 @@
           "prongWidth": 0.8,
           "galleryRails": 0
         },
-        "shank": {
-          "widthMm": 1.9,
-          "topWidthMm": 1.9,
-          "thicknessMm": 1.7,
-          "topThicknessMm": 1.7
-        },
+        "shank": {"widthMm": 1.9, "thicknessMm": 1.5, "topWidthMm": 2.6, "topThicknessMm": 1.8, "taperDeg": 100},
         "placement": {
           "raise": 1.0
         }
