@@ -71,7 +71,7 @@ All units are **millimetres**.
 
 ### Parts and slots
 
-A builder returns `Part` objects, each with a `slot` (`center-stone`, `accent-stone`, `head-metal`, `shank-metal`, `band-metal`, `band-metal2` or `band-stone`), a three.js `geometry` and an optional `label`. The assembler gives each slot its own material, which is why each part can have its own metal. Parts that share a slot are merged with `mergeFlat`, which flattens indexed geometry (such as the output of `sweepRing`) first, so either kind is fine. Stone builders must return non-indexed, flat-shaded geometry.
+A builder returns `Part` objects, each with a `slot` (`center-stone`, `accent-stone`, `head-metal`, `head-recess`, `shank-metal`, `band-metal`, `band-metal2`, `band-stone` or `band-stone2`), a three.js `geometry` and an optional `label`. The assembler gives each slot its own material, which is why each part can have its own metal. `head-recess` is an optional thin lining on a head's recessed metal (the oxidised recess): the head's metal, rendered darker and exported as its own part with an "Oxidised recess" finish. Parts that share a slot are merged with `mergeFlat`, which flattens indexed geometry (such as the output of `sweepRing`) first, so either kind is fine. Stone builders must return non-indexed, flat-shaded geometry.
 
 ### The context (`ctx`)
 

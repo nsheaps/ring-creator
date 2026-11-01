@@ -9,6 +9,7 @@ import './index';
 import { cleanOutline, circlePoints, pointAt, support, type CleanOutline } from './common';
 import { cushionFrame, polygonFrame } from './frameOutline';
 import { stubCtx } from './testStub';
+import { signedVolume, surfaceArea } from '@/export/meshMath';
 
 const NEW_IDS = [
   'bezel-polygon',
@@ -476,6 +477,44 @@ describe('deco plaque extras: sunburst, cartouche stones, stretch, rib milgrain,
     const r = (v: THREE.Vector3) => Math.hypot(v.x, v.z);
     const low = (ps: Part[]) => metal(ps).filter((v) => r(v) > 4 && r(v) < 5.5 && v.y < -1).length;
     expect(low(deep)).toBeGreaterThan(low(plain));
+  });
+
+  it('recessFinish: off by default; oxidised adds one thin head-recess lining on the plate, metal unchanged', () => {
+    const plain = build('deco-plaque', 'old-european', DECO, [1, 0]);
+    expect(plain.some((p) => p.slot === 'head-recess')).toBe(false);
+    expect(
+      positions(build('deco-plaque', 'old-european', { ...DECO, recessFinish: 'none' }, [1, 0])),
+    ).toEqual(positions(plain));
+    for (const well of [0, 2]) {
+      const base = { ...DECO, pierceDepth: well };
+      const bright = build('deco-plaque', 'old-european', base, [1, 0]);
+      const ox = build('deco-plaque', 'old-european', { ...base, recessFinish: 'oxidised' }, [1, 0]);
+      // same metal and stones; one extra part in its own slot
+      expect(ox.filter((p) => p.slot !== 'head-recess').map((p) => p.slot)).toEqual(
+        bright.map((p) => p.slot),
+      );
+      expect(positions(ox.filter((p) => p.slot !== 'head-recess'))).toEqual(positions(bright));
+      const recess = ox.filter((p) => p.slot === 'head-recess');
+      expect(recess).toHaveLength(1);
+      const pos = recess[0].geometry.getAttribute('position').array as Float32Array;
+      expect(pos.length).toBeGreaterThan(0);
+      expect(pos.length / 9).toBeLessThan(20_000);
+      for (const x of pos) expect(Number.isFinite(x)).toBe(true);
+      // a closed, outward-wound, thin skin: volume / half its area is its mean thickness (0.035 mm)
+      const vol = signedVolume(pos);
+      expect(vol).toBeGreaterThan(0);
+      expect((2 * vol) / surfaceArea(pos)).toBeLessThan(0.05);
+      // inside the plaque, under its top
+      const m = box(bright, 'head-metal');
+      const r = box(ox, 'head-recess');
+      expect(r.max.y).toBeLessThan(m.max.y);
+      expect(r.min.y).toBeGreaterThan(m.min.y);
+      expect(Math.max(-r.min.x, r.max.x)).toBeLessThan(Math.max(-m.min.x, m.max.x));
+      expect(Math.max(-r.min.z, r.max.z)).toBeLessThan(Math.max(-m.min.z, m.max.z));
+      expect(
+        positions(build('deco-plaque', 'old-european', { ...base, recessFinish: 'oxidised' }, [1, 0])),
+      ).toEqual(positions(ox));
+    }
   });
 
   it('rib milgrain and the polygon collar add metal', () => {

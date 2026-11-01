@@ -600,7 +600,8 @@
           "cartoucheSize": 1.6,
           "rimStoneCount": 6,
           "endPanel": "scroll",
-          "pierceDepth": 2
+          "pierceDepth": 2,
+          "recessFinish": "oxidised"
         },
         "shank": {
           "widthMm": 1.8,

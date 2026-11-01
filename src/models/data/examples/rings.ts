@@ -787,6 +787,7 @@ export const rings: ExampleDesign[] = [
           rimStoneCount: 6,
           endPanel: 'scroll',
           pierceDepth: 2,
+          recessFinish: 'oxidised',
         },
       },
       shank: {

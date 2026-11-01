@@ -5,6 +5,7 @@ import type { Design, Id, Params } from '@/models/types';
 import {
   collectParts,
   effectiveScope,
+  isOxidised,
   type ExportPart,
   type ExportScope,
   type Piece,
@@ -172,7 +173,7 @@ function gradedColorName(gemId: Id, hex: string): string {
 function measurePiece(design: Design, piece: Piece, parts: ExportPart[]): PieceSpec {
   const r = ringSize(design.ringSizeUS).diameterMm / 2;
   const metal = parts.filter((p) => p.kind === 'metal');
-  const shankLike = metal.filter((p) => p.role !== 'head');
+  const shankLike = metal.filter((p) => p.role !== 'head' && p.role !== 'recess');
   let minY = Infinity;
   let palmZmin = Infinity,
     palmZmax = -Infinity,
@@ -246,6 +247,9 @@ function measurePiece(design: Design, piece: Piece, parts: ExportPart[]): PieceS
   };
 }
 
+/** Finish listed for an oxidised recess part: blackened by patina, on the head's own metal. */
+export const OXIDISED_FINISH = 'Oxidised recess';
+
 function metalPartSpecs(design: Design, parts: ExportPart[]): MetalPartSpec[] {
   return parts
     .filter((p) => p.kind === 'metal')
@@ -264,7 +268,7 @@ function metalPartSpecs(design: Design, parts: ExportPart[]): MetalPartSpec[] {
         metalName: m.name,
         purity: m.purity,
         density: m.density,
-        finish: findModel('finish', finishId)?.name ?? finishId,
+        finish: isOxidised(p) ? OXIDISED_FINISH : (findModel('finish', finishId)?.name ?? finishId),
         volumeMm3: vol,
         grams,
         dwt: gramsToDwt(grams),

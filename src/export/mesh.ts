@@ -3,6 +3,9 @@ import { triangleCount } from './meshMath';
 
 const STL_HEADER = 80;
 
+/** The oxidised recess lining gets its own (dark) material, apart from the bright metal of the same id. */
+const isOxidised = (p: ExportPart): boolean => p.role === 'recess';
+
 /**
  * Binary STL (little-endian) of the given parts, millimetres, with per-triangle normals.
  * Intended for metal parts (casting / printing); stones are never included by the callers.
@@ -51,7 +54,8 @@ export function stlTriangleCount(stl: Uint8Array): number {
   return new DataView(stl.buffer, stl.byteOffset, stl.byteLength).getUint32(STL_HEADER, true);
 }
 
-const mtlName = (p: ExportPart): string => `${p.kind}_${p.materialId}`.replace(/[^A-Za-z0-9_-]/g, '_');
+const mtlName = (p: ExportPart): string =>
+  `${p.kind}_${p.materialId}${isOxidised(p) ? '_oxidised' : ''}`.replace(/[^A-Za-z0-9_-]/g, '_');
 
 function rgb(hex: string): string {
   const v = parseInt(hex.replace('#', ''), 16);
@@ -83,7 +87,7 @@ export function toObj(parts: ExportPart[], mtlFile = 'ring.mtl'): { obj: string;
     mtl.push(
       '',
       `newmtl ${name}`,
-      `# ${p.materialName}`,
+      `# ${p.materialName}${isOxidised(p) ? ' (oxidised)' : ''}`,
       `Kd ${rgb(p.colorHex)}`,
       `Ks ${p.kind === 'metal' ? rgb(p.colorHex) : '1.0000 1.0000 1.0000'}`,
       `Ns ${Math.round((1 - Math.min(1, p.roughness)) * 900 + 50)}`,
@@ -96,7 +100,7 @@ export function toObj(parts: ExportPart[], mtlFile = 'ring.mtl'): { obj: string;
 
 /** glTF material name for a part, e.g. "metal: 14k Yellow Gold" or "gem: Diamond". */
 export const gltfMaterialName = (p: ExportPart): string =>
-  `${p.kind === 'metal' ? 'metal' : 'gem'}: ${p.materialName}`;
+  `${p.kind === 'metal' ? 'metal' : 'gem'}: ${p.materialName}${isOxidised(p) ? ' (oxidised)' : ''}`;
 
 /**
  * GLB (binary glTF 2.0) via three's GLTFExporter, lazily imported. Materials are named by metal / gem,

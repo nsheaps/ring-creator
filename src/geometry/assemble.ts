@@ -17,7 +17,10 @@ import type {
 import { findModel, getModel } from '@/models/registry';
 import { dimsFromCarat, innerDiameterMm, type StoneDims } from '@/models/stoneMath';
 import type { AccentStoneSpec, BandSpec, CutModel, Design, Id, Params, StoneSpec } from '@/models/types';
-import { gemMaterials, metalMaterial } from '@/scene/materials';
+import { gemMaterials, metalMaterial, recessMaterial } from '@/scene/materials';
+
+/** `mesh.userData` key naming the part slot of a mesh whose material alone does not identify it (`head-recess`). */
+export const PART_SLOT = 'partSlot';
 
 export type RingView = 'ring' | 'band' | 'set';
 
@@ -207,7 +210,13 @@ function buildEngagement(design: Design, center: ResolvedStone): Engagement {
   const M = roll.multiply(tilt.multiply(place));
   const placed = transformParts([centerPart, ...headParts], M);
   const headBox = bboxOf(
-    placed.filter((p) => p.slot === 'head-metal' || p.slot === 'accent-stone' || p.slot === 'center-stone'),
+    placed.filter(
+      (p) =>
+        p.slot === 'head-metal' ||
+        p.slot === 'head-recess' ||
+        p.slot === 'accent-stone' ||
+        p.slot === 'center-stone',
+    ),
   );
   return {
     parts: [...shank.parts, ...placed],
@@ -247,6 +256,7 @@ function buildBand(design: Design, band: BandSpec, contour: ContourSpec | undefi
 const slotMetal = (design: Design, slot: PartSlot): Id | null => {
   switch (slot) {
     case 'head-metal':
+    case 'head-recess':
       return design.engagement.head.metal;
     case 'shank-metal':
       return design.engagement.shank.metal;
@@ -383,7 +393,11 @@ function meshesFor(
     const finishId =
       slot === 'band-metal' || slot === 'band-metal2' ? design.band?.finish : design.engagement.finish;
     const finish = finishId ? getModel('finish', finishId) : undefined;
-    out.push(new THREE.Mesh(geo, metalMaterial(metal, finish)));
+    if (slot === 'head-recess') {
+      const mesh = new THREE.Mesh(geo, recessMaterial(metal, finish));
+      mesh.userData[PART_SLOT] = slot;
+      out.push(mesh);
+    } else out.push(new THREE.Mesh(geo, metalMaterial(metal, finish)));
   }
   return out;
 }

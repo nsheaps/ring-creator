@@ -21,6 +21,24 @@ export function metalMaterial(metal: MetalModel, finish?: FinishModel): THREE.Me
 }
 
 /**
+ * Oxidised (blackened) recess: the same metal darkened by a patina, the way antique platinum and white gold plaques
+ * have their piercing and engraving blackened so the openwork reads dark. Still a metal (keeps a dim, rough sheen).
+ */
+export function recessMaterial(metal: MetalModel, finish?: FinishModel): THREE.MeshPhysicalMaterial {
+  const key = `r:${metal.id}:${finish?.id ?? 'p'}`;
+  const hit = cache.get(key);
+  if (hit) return hit as THREE.MeshPhysicalMaterial;
+  const mat = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color(metal.color).multiplyScalar(0.05),
+    metalness: Math.min(metal.metalness, 0.5),
+    roughness: 0.55,
+    envMapIntensity: 0.35,
+  });
+  cache.set(key, mat);
+  return mat;
+}
+
+/**
  * Pavilion pass shader (injected into a MeshStandardMaterial so it keeps three's environment plumbing).
  * Each back face of the convex stone stands for a pavilion facet seen through the crown: the view ray is reflected
  * off it (total internal reflection), scattered by a fixed per-facet offset (standing in for the extra bounces and

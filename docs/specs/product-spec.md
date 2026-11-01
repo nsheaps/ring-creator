@@ -73,7 +73,7 @@ Source of truth: `src/models/types.ts`.
   - `engagement`: `center` (StoneSpec: material, color, cut, carat, clarity, colorGrade, aspect, depthPct), `accentStone`, `head {id, metal, params}`, `shank {id, metal, params}`, `placement` (orientation, raise, tilt, rotate, offset), `finish`.
   - `band` (BandSpec): `style`, `metal`, `metal2`, `finish`, `params`, `widthMm`, `thicknessMm`, `accentStone`, `fit`.
 - All ids come from [vocabulary.md](vocabulary.md); ids are never renamed silently.
-- Geometry: builders in `src/geometry` return `Part[]` assigned to a `PartSlot` (center-stone, accent-stone, head-metal, shank-metal, band-metal, band-metal2, band-stone), so each slot maps to one material and metals can mix per part. Coordinate frames are documented in `src/geometry/types.ts` (millimetres; finger axis +Z, top of ring +Y).
+- Geometry: builders in `src/geometry` return `Part[]` assigned to a `PartSlot` (center-stone, accent-stone, head-metal, head-recess, shank-metal, band-metal, band-metal2, band-stone, band-stone2), so each slot maps to one material and metals can mix per part. Coordinate frames are documented in `src/geometry/types.ts` (millimetres; finger axis +Z, top of ring +Y).
 
 ## 7. Key rules
 

@@ -234,6 +234,35 @@ const PLAQUE_PATTERNS = ['web', 'sunburst'] as const;
 const END_PANELS = ['plain', 'scroll'] as const;
 /** V grooves in the floor of a deep-pierced plaque (see `pierceDepth`). */
 const PIERCE_GROOVES = 8;
+/** Metal left between a pierced plaque's groove bottoms and its underside, mm. */
+const PIERCE_WALL = 0.3;
+const RECESS_FINISHES = ['none', 'oxidised'] as const;
+/** Thickness of the oxidised lining laid on the plate under the openwork (`recessFinish`), mm. */
+const RECESS_SKIN = 0.04;
+
+/**
+ * A thin closed skin lying on a section polyline `floor` of a `mixLoft` (u, y points, u increasing outward): its
+ * underside `lo` mm and its top `hi` mm above the floor, offset along the section's upward normal. `uMm` converts u to
+ * millimetres (a mean collar-to-frame run) so the offset is square to steep walls too.
+ */
+function skinSection(floor: [number, number][], uMm: number, lo: number, hi: number): MixPt[] {
+  const n = floor.length;
+  const normals = floor.map((_, i) => {
+    const [ua, ya] = floor[Math.max(0, i - 1)];
+    const [ub, yb] = floor[Math.min(n - 1, i + 1)];
+    const tx = (ub - ua) * uMm;
+    const ty = yb - ya;
+    const len = Math.hypot(tx, ty) || 1;
+    return [-ty / len, tx / len] as const;
+  });
+  const at = (i: number, off: number): MixPt => [
+    floor[i][0] + (normals[i][0] * off) / uMm,
+    floor[i][1] + normals[i][1] * off,
+  ];
+  const top = floor.map((_, i) => at(i, hi));
+  const bottom = floor.map((_, i) => at(i, lo)).reverse();
+  return [...top, ...bottom];
+}
 
 /** Classic heart curve, t in [0, 2PI): cusp at (0, 5) between the lobes, point at (0, -17), widest +-16 at y = 4. */
 function heartPt(t: number): [number, number] {
@@ -387,7 +416,8 @@ function domePatch(
  * polygon collar with a bead at each corner; `rimStoneCount` fixes the number of rim diamonds; `endPanel: 'scroll'`
  * (sunburst only) turns each cartouche into a raised heart of two lobes outlined in milgrain wire, over open piercing
  * with a scroll curl each side of its point, the cartouche stones one in each lobe; `pierceDepth` sinks the plate under
- * the openwork into a deep well of steep V grooves so the piercing reads dark.
+ * the openwork into a deep well of steep V grooves so the piercing reads dark; `recessFinish: 'oxidised'` lines the plate
+ * under the openwork with a thin blackened skin (slot `head-recess`, the head's metal darkened), as antique plaques are.
  */
 function decoPlaque(ctx: HeadCtx): Part[] {
   const p = ctx.params;
@@ -417,28 +447,47 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   const yCup = -Math.min(d.pd * 0.55, d.bd * 0.7);
   const RIB_END = 0.7; // inside this the dome is pierced; outside it a solid jewelled band
   const plate: MixPt[] = [[0, yTop - 0.1, kIn]];
+  // the plate's outer wall drops from the rim to yWall, then tapers in to the base (-d.bd) where it meets the shank
+  const yWall = Math.min(yRim - rr * 1.6, -g2 - 0.4);
+  const span = d.bd + yWall;
+  const underside: MixPt[] = [[1, yWall]];
+  for (const f of [0.15, 0.3, 0.5, 0.7, 0.88])
+    underside.push([1 - f * 0.1, yWall - span * f, Math.max(d.bs, d.bs + (1 - d.bs) * (1 - f) ** 2.4)]);
+  underside.push([0.88, -d.bd, d.bs]);
   // `pierceDepth` sinks the plate under the openwork into a deep well whose floor is a ring of steep V grooves: their
-  // walls mirror the darker lower studio instead of the bright ceiling, so the slots between the ribs read as piercing
+  // walls mirror the darker lower studio instead of the bright ceiling, so the slots between the ribs read as piercing.
+  // The grooves stop a wall's thickness inside the tapering underside, so they never poke out below the plaque.
   const well = num(p, 'pierceDepth', 0, 0, 3);
   if (well > 0) {
+    const ro = meanRadius(frame);
+    const radius = (u: number, k = 1) => k * ((1 - u) * R + u * ro);
+    /** height of the plate's underside below a floor point at dome position u (mean outlines) */
+    const below = (u: number): number => {
+      const r = radius(u);
+      for (let i = 0; i + 1 < underside.length; i++) {
+        const [ua, ya, ka] = underside[i];
+        const [ub, yb, kb] = underside[i + 1];
+        const [ra, rb] = [radius(ua, ka), radius(ub, kb)];
+        if (r <= ra && r >= rb) return ya + ((yb - ya) * (ra - r)) / Math.max(1e-6, ra - rb);
+      }
+      return r > radius(1) ? yWall : -d.bd;
+    };
     const [u0, u1] = [0.1, RIB_END - 0.04];
     const steps = 2 * PIERCE_GROOVES;
     plate.push([u0, domeY(u0) - pierce]);
     for (let i = 1; i < steps; i++) {
       const u = u0 + ((u1 - u0) * i) / steps;
-      plate.push([u, domeY(u) - pierce - (i % 2 ? well : well * 0.2)]);
+      const top = domeY(u) - pierce;
+      const floorY = Math.max(below(u) + PIERCE_WALL, top - (i % 2 ? well : well * 0.2));
+      plate.push([u, Math.min(top, floorY)]);
     }
     plate.push([u1, domeY(u1) - pierce]);
   } else for (const u of [0.15, 0.35, 0.55, RIB_END - 0.02]) plate.push([u, domeY(u) - pierce]);
+  // the floor under the openwork (well or shallow plate), for the oxidised lining
+  const floor = plate.slice(1).map(([u, y]) => [u, y] as [number, number]);
   for (const u of [RIB_END, 0.8, 0.9, 0.97]) plate.push([u, domeY(u) - 0.04]);
-  const yWall = Math.min(yRim - rr * 1.6, -g2 - 0.4);
-  plate.push([1, yRim - rr * 0.6], [1, yWall]);
-  const span = d.bd + yWall;
-  for (const f of [0.15, 0.3, 0.5, 0.7, 0.88]) {
-    const y = yWall - span * f;
-    plate.push([1 - f * 0.1, y, Math.max(d.bs, d.bs + (1 - d.bs) * (1 - f) ** 2.4)]);
-  }
-  plate.push([0.88, -d.bd, d.bs], [0, -d.bd, d.bs], [0, yCup, Math.max(d.bs, 0.6)]);
+  plate.push([1, yRim - rr * 0.6], ...underside);
+  plate.push([0, -d.bd, d.bs], [0, yCup, Math.max(d.bs, 0.6)]);
   plate.push([0, -g2 - 0.08, 0.95], [0, -g2 - 0.02, k03], [0, g2, k03]);
   geos.push(mixLoft(d.o, frame, plate, 120));
   // a point on the dome: angle a round the stone, u from the collar (0) to the rim (1), `lift` above the surface
@@ -705,6 +754,14 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   // corner studs: a larger bead at each polygon corner
   for (const a of corners) if (!inCartouche(a, -0.2)) geos.push(ball(at(a, 1, rr * 1.6), rr * 1.5, 1));
   const out: Part[] = [metalPart(geos, 'Art Deco plaque')];
+  if (str(p, 'recessFinish', RECESS_FINISHES, 'none') === 'oxidised') {
+    const uMm = Math.max(0.5, meanRadius(frame) - R);
+    out.push({
+      slot: 'head-recess',
+      geometry: mixLoft(d.o, frame, skinSection(floor, uMm, 0.005, RECESS_SKIN), 120),
+      label: 'oxidised recess',
+    });
+  }
   if (stones.length) out.push(accentPart(stones, 'plaque diamonds'));
   return out;
 }

@@ -140,6 +140,8 @@ A **finish** is the surface texture applied over any metal. Choose one for the e
 
 The 3D preview shows engraving and milgrain as surface texture only. It does not carve text. Finishes change roughness in the preview, but real finishes depend on the jeweller's skill. A contrast of finishes, such as a polished head on a satin shank, is a quiet way to mix.
 
+Some heads also offer an **oxidised (blackened) recess**, separate from the finish: the Art Deco plaque's **Recess finish** blackens the plate under its openwork, as on antique platinum plaques, so the piercing reads dark. It is the same metal; the spec and bill of materials list it as its own part with an "Oxidised recess" finish.
+
 ## Choosing quickly
 
 - **Easiest all-round:** 14k gold or platinum.

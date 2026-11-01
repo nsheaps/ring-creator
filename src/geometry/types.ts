@@ -17,6 +17,10 @@ export type PartSlot =
   | 'center-stone'
   | 'accent-stone' // halo melee, side stones, shank pave stones
   | 'head-metal'
+  // Blackened (oxidised) lining of a head's recesses, e.g. the well under a pierced plaque. Same metal as the head
+  // (`engagement.head.metal`), rendered with a darker variant of its material and exported as its own metal part with
+  // an "Oxidised recess" finish. A thin solid lying on the recessed metal surface; heads emit it only when asked.
+  | 'head-recess'
   | 'shank-metal'
   | 'band-metal'
   | 'band-metal2'

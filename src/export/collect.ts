@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { assembleDesign, disposeGroup, resolveCenter, type RingView } from '@/geometry/assemble';
+import { assembleDesign, disposeGroup, PART_SLOT, resolveCenter, type RingView } from '@/geometry/assemble';
 import { findModel, getModel } from '@/models/registry';
 import type { Design, Id, MetalModel } from '@/models/types';
 import { metalMaterial } from '@/scene/materials';
@@ -8,7 +8,11 @@ import { GEM_HEX } from '@/geometry/shanks/pavePath';
 /** What to export: the engagement ring, the wedding band, or both as worn. */
 export type ExportScope = 'engagement' | 'band' | 'set';
 
-export type PartRole = 'shank' | 'head' | 'band' | 'band2' | 'center' | 'accent' | 'band-stone';
+/** `recess`: the head's oxidised (blackened) recess lining, same metal as the head (slot `head-recess`). */
+export type PartRole = 'shank' | 'head' | 'recess' | 'band' | 'band2' | 'center' | 'accent' | 'band-stone';
+
+/** True for metal parts with a blackened (oxidised) surface rather than the piece's chosen finish. */
+export const isOxidised = (p: Pick<ExportPart, 'role'>): boolean => p.role === 'recess';
 export type Piece = 'engagement' | 'band';
 
 /** One exportable mesh: flat triangle soup in the ring frame, millimetres. */
@@ -121,6 +125,11 @@ function classifyEngagement(design: Design, meshes: THREE.Mesh[]): Classified[] 
       } else out.push({ role: 'accent', kind: 'stone', materialId: e.accentStone.material, mesh });
       continue;
     }
+    // the oxidised recess lining is tagged by the assembler (its darkened material matches no metal's own)
+    if (mesh.userData[PART_SLOT] === 'head-recess') {
+      out.push({ role: 'recess', kind: 'metal', materialId: e.head.metal, mesh });
+      continue;
+    }
     const cands = [
       { id: e.shank.metal, finish: e.finish },
       { id: e.head.metal, finish: e.finish },
@@ -187,6 +196,7 @@ function classifyBand(design: Design, meshes: THREE.Mesh[]): Classified[] {
 const ROLE_LABEL: Record<PartRole, string> = {
   shank: 'Shank',
   head: 'Head / setting',
+  recess: 'Oxidised recess',
   band: 'Band',
   band2: 'Band second metal',
   center: 'Center stone',
