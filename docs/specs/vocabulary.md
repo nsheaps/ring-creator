@@ -18,7 +18,7 @@ baguette, trapezoid, tapered-baguette, rose-cut, old-european, old-mine, hexagon
 solitaire-4-prong, solitaire-6-prong, 3-prong, double-claw, basket, cathedral-head, v-prong, bezel-full,
 bezel-half, halo-round, halo-cushion, halo-oval, hidden-halo, double-halo, three-stone, five-stone, cluster,
 trellis, tension, flush-gypsy, split-prong, compass, vintage-filigree, toi-et-moi, bypass-head, bezel-polygon,
-bezel-cushion, halo-hexagon, deco-plaque, cluster-flank, tension-bypass
+bezel-cushion, halo-hexagon, deco-plaque, cluster-flank, tension-bypass, leaf-vine-bypass
 
 ## Shanks (`shank`)
 

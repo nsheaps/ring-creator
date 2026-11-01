@@ -469,8 +469,8 @@
     "colorName": null,
     "clarity": null
    },
-   "head": "cluster-flank",
-   "shank": "leaf-vine",
+   "head": "leaf-vine-bypass",
+   "shank": "plain-round",
    "metals": [
     "yellow-gold-14k"
    ],
@@ -481,15 +481,21 @@
    "orientation": "north-south",
    "tune": {
     "head": {
-     "flankCount": 3,
-     "flankRatio": 0.3,
-     "arrangement": "fan",
-     "prongStyle": "claw"
+     "leafStyle": "stone",
+     "leafCount": 3,
+     "leafSize": 2.6,
+     "budStones": 2,
+     "branchThickness": 1.1,
+     "wrap": 5,
+     "hand": "left"
+    },
+    "placement": {
+     "raise": 0.5
     }
    }
   },
   "band": null,
-  "notes": "Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents. Compared with the photo: a fan of marquise and round leaves each side of the oval; the free bypass vine is approximated by a vine shank."
+  "notes": "Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents. Compared with the photo: two twig branches rise from a plain band and sweep past opposite sides of the oval like a bypass, with marquise leaves and small round buds on short stalks."
  },
  {
   "id": "r3-011",

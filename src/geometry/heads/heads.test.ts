@@ -65,6 +65,7 @@ const VOCAB = [
   'deco-plaque',
   'cluster-flank',
   'tension-bypass',
+  'leaf-vine-bypass',
 ];
 
 describe('head models', () => {

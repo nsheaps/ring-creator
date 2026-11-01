@@ -6,5 +6,6 @@ import './multiStoneHeads';
 import './frameHeads';
 import './flankHeads';
 import './bladeHeads';
+import './leafHeads';
 
 export { prongSites, cleanOutline } from './common';
