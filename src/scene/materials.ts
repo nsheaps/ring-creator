@@ -93,9 +93,11 @@ const PAVILION_MAIN = /* glsl */ `
   // alternating bands instead of a uniform grey slab.
   // the cells of the reflected direction cut each facet into the mirrored images of the other steps (they move as the
   // ring turns); the axis-aligned cells give straight bands parallel to the girdle on a table-up stone
-  float tone = gemHash3( floor( nW * 53.0 + 0.5 ) + floor( d * 9.0 ) * 3.0 + vec3( 23.0, 5.0, 9.0 ) ).y;
-  float flash = smoothstep( 0.45, 0.55, tone * 0.8 + min( lum, 1.0 ) * 0.2 );
-  vec3 darkTone = min( env * 0.1, vec3( 0.04 ) );
+  // smooth (not cell-hashed) variation: hard cells of the reflected direction read as a blocky black maze
+  float tone = gemHash3( floor( nW * 53.0 + 0.5 ) + vec3( 23.0, 5.0, 9.0 ) ).y;
+  tone = 0.7 * tone + 0.3 * ( 0.5 + 0.5 * sin( 7.0 * dot( d, vec3( 1.0, 1.7, 1.3 ) ) + 6.0 * tone ) );
+  float flash = smoothstep( 0.3, 0.7, tone * 0.8 + min( lum, 1.0 ) * 0.2 );
+  vec3 darkTone = env * 0.2;
   vec3 flashTone = max( env * 1.6, vec3( 0.8 * gemBrightness ) );
   env = mix( env, mix( darkTone, flashTone, flash ), gemMosaic * facetFlat );
   vec3 body = pow( max( gemBody, vec3( 1e-3 ) ), vec3( gemPath ) );
@@ -167,7 +169,7 @@ function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
       .replace('#include <opaque_fragment>', PAVILION_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-pavilion-v3';
+  mat.customProgramCacheKey = () => 'gem-pavilion-v4';
   return mat;
 }
 
@@ -197,7 +199,7 @@ function crownMaterial(gem: GemModel, haze: number, u: GemUniforms): THREE.MeshP
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
       .replace('#include <opaque_fragment>', CROWN_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-crown-v3';
+  mat.customProgramCacheKey = () => 'gem-crown-v4';
   return mat;
 }
 
@@ -264,7 +266,7 @@ export function gemMaterials(
       gemContrast: { value: colourless ? 0.9 : 0.55 },
       // light travels the body twice: deeper colour for saturated gems, a gentle deepening for pastels and tints
       gemPath: { value: colourless ? 1.4 : pastel ? 1.1 : 1.6 },
-      gemCrownLo: { value: colourless ? 0.3 : 0.5 },
+      gemCrownLo: { value: colourless ? 0.45 : 0.6 },
       gemGlow: { value: translucent ? 0.75 : 0 },
       gemMosaic: { value: translucent ? 0 : colourless ? 0.9 : 0.6 },
     };
