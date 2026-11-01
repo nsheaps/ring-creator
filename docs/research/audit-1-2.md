@@ -32,3 +32,10 @@ Verified against a photo and corrected: r1-001..011, r1-013..016, r1-018..024, r
 - Blue Nile pages show settings with a 1 ct round, Brilliant Earth pages with a 2 ct oval; the examples now use the shown stone shape and carat.
 - The listing photos show stones sitting low, so `placement.raise` was lowered across the solitaires and halos.
 - Page-text-only claims that the photos contradicted: r1-005, r1-006, r1-007 (centre is oval, not round), r1-020 (three accents each shoulder), r2-002 (oval centre with pear sides).
+
+## Resolved by the band, stone and gem work
+
+- Cuts `trapezoid` and `tapered-baguette` exist; r2-010, r2-011 and r2-020 use them as side stones (the narrow end faces the centre stone).
+- Band stones can graduate in size, be wider than the band with a raised setting, and be limited to a stone count (`sizeProfile`, `endScale`, `raise`, `stoneCount`): r2-014 and r2-033 use them.
+- `contour-curved` and `chevron` bands carry stones that follow the bend (`stones`): r2-029, r2-030, r2-031 and r4-015 use them. A centre pear (r2-029) is still a round stone.
+- Still open: r2-003 needs a bamboo engagement shank (the new `bamboo-band` is a wedding band); r2-021 needs a bezel trilogy and r2-024 baguette orientation (heads).

@@ -446,12 +446,12 @@
       "orientation": "north-south",
       "tune": {
         "head": {
-          "sideRatio": 0.6,
+          "sideRatio": 0.5,
           "sideGap": 0,
           "sideCut": "accent"
         },
         "accent": {
-          "cut": "emerald-cut",
+          "cut": "trapezoid",
           "sizeMm": 4.0
         },
         "shank": {
@@ -496,12 +496,12 @@
       "orientation": "north-south",
       "tune": {
         "head": {
-          "sideRatio": 0.7,
+          "sideRatio": 0.52,
           "sideGap": 0,
           "sideCut": "accent"
         },
         "accent": {
-          "cut": "baguette",
+          "cut": "tapered-baguette",
           "sizeMm": 4.5
         },
         "shank": {
@@ -621,11 +621,16 @@
       "tune": {
         "params": {
           "coverage": "half",
-          "stoneSize": 3.2
+          "stoneSize": 3.2,
+          "stoneCount": 5,
+          "sizeProfile": "graduated",
+          "endScale": 0.78,
+          "raise": 0.6,
+          "gapMm": 0.08
         }
       }
     },
-    "notes": "Five round brilliants (min 0.46 ct tw) in shared prongs, sold as anniversary or wedding band; page says no longer available so no price."
+    "notes": "Five round brilliants (min 0.46 ct tw) in shared prongs, sold as anniversary or wedding band; page says no longer available so no price. Photo audit: five prong-set stones wider than the 2 mm band, graduating; built with a raised graduated shared-prong row."
   },
   {
     "id": "r2-015",
@@ -834,12 +839,12 @@
       "orientation": "north-south",
       "tune": {
         "head": {
-          "sideRatio": 0.55,
+          "sideRatio": 0.45,
           "sideGap": 0,
           "sideCut": "accent"
         },
         "accent": {
-          "cut": "emerald-cut",
+          "cut": "trapezoid",
           "sizeMm": 3.8
         },
         "shank": {
@@ -1210,17 +1215,24 @@
     "kind": "band",
     "engagement": null,
     "band": {
-      "style": "shared-prong",
+      "style": "contour-curved",
       "metals": [
         "platinum"
       ],
       "stones": "melee",
       "widthMm": 1.5,
       "tune": {
-        "fit": "contour",
+        "accent": {
+          "sizeMm": 2.6
+        },
         "params": {
-          "coverage": "half",
-          "stoneSize": 3.0
+          "stones": true,
+          "stoneSize": 2.8,
+          "endScale": 0.62,
+          "stoneSpread": 1.1,
+          "raise": 0.5,
+          "curveRetreat": 2.2,
+          "curveHalfAngle": 0.55
         }
       }
     },
@@ -1238,17 +1250,25 @@
     "kind": "band",
     "engagement": null,
     "band": {
-      "style": "shared-prong",
+      "style": "contour-curved",
       "metals": [
         "platinum"
       ],
       "stones": "melee",
       "widthMm": 1.5,
       "tune": {
-        "fit": "contour",
+        "accent": {
+          "cut": "marquise",
+          "sizeMm": 2.2
+        },
         "params": {
-          "coverage": "half",
-          "stoneSize": 3.0
+          "stones": true,
+          "stoneSize": 2.6,
+          "endScale": 0.7,
+          "stoneSpread": 1.1,
+          "raise": 0.4,
+          "curveRetreat": 2.0,
+          "curveHalfAngle": 0.55
         }
       }
     },
@@ -1266,17 +1286,24 @@
     "kind": "band",
     "engagement": null,
     "band": {
-      "style": "shared-prong",
+      "style": "contour-curved",
       "metals": [
         "yellow-gold-18k"
       ],
       "stones": "melee",
       "widthMm": 1.7,
       "tune": {
-        "fit": "contour",
+        "accent": {
+          "sizeMm": 2.4
+        },
         "params": {
-          "coverage": "half",
-          "stoneSize": 2.6
+          "stones": true,
+          "stoneSize": 2.6,
+          "endScale": 0.8,
+          "stoneSpread": 1.2,
+          "raise": 0.4,
+          "curveRetreat": 1.8,
+          "curveHalfAngle": 0.55
         }
       }
     },
@@ -1331,7 +1358,10 @@
       "tune": {
         "params": {
           "coverage": "half",
-          "stoneSize": 2.8
+          "stoneSize": 2.8,
+          "stoneCount": 11,
+          "raise": 0.5,
+          "gapMm": 0.08
         }
       }
     },

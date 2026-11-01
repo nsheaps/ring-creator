@@ -37,3 +37,10 @@ Checked against a photo and left as is: r3-007 r3-011 r3-012, r4-003 r4-004 r4-0
 | r5-020 r5-022 | hexagon frame | hexagonal bezel/frame | head `bezel-hex` |
 | r5-023 r5-027 | two-tone parts (prongs vs bezel, ribbons) | per-part metal | per-part metal |
 | r5-034 | four thin rings and 3 rough rose-cut stones | cluster on a stack | head `trio-cluster` |
+
+## Resolved by the band, stone and gem work
+
+- Sapphire blue, royal blue and teal are darker and less saturated, and the gem shader no longer over-saturates dark blues; r3-001, r3-017, r3-018 and r4-015/016 read as the inky teal and deep blue in the listing photos.
+- Alexandrite has a `blue-violet` colour (r3-009 uses it).
+- Band `alternate` makes every other stone another gem (r4-008 alternates sapphire and diamond; stones go in the `band-stone2` slot).
+- `contour-curved` and `chevron` can carry stones (r4-015). Still open: marquise clusters in the V, the nested crown and the segmented, infinity-weave and inlay styles.

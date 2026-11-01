@@ -178,6 +178,9 @@
    "tune": {
     "accent": {
      "sizeMm": 1.4
+    },
+    "params": {
+     "alternate": "sapphire"
     }
    }
   },
@@ -362,17 +365,23 @@
    "widthMm": 1.5,
    "tune": {
     "accent": {
-     "sizeMm": 1.2
+     "cut": "marquise",
+     "sizeMm": 2.0
     },
     "params": {
      "profile": "comfort-dome",
      "vDepth": 3.2,
      "vHalfAngle": 0.75,
-     "apexRound": 0.08
+     "apexRound": 0.08,
+     "stones": true,
+     "stoneSize": 2.2,
+     "endScale": 0.7,
+     "stoneSpread": 1,
+     "raise": 0.3
     }
    }
   },
-  "notes": "V-shaped diamond band labelled Chevron by the retailer's curved collection. Photo audit: shallow wide V; stones in the V (marquise cluster) not buildable."
+  "notes": "V-shaped diamond band labelled Chevron by the retailer's curved collection. Photo audit: shallow wide V; stones in the V (marquise cluster) not buildable. Stones follow the V: marquise diamonds graduating from the point."
  },
  {
   "id": "r4-016",
