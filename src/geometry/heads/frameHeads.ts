@@ -12,6 +12,7 @@ import {
   accentPart,
   ball,
   bool,
+  loft,
   cleanOutline,
   crownInset,
   loop,
@@ -21,7 +22,9 @@ import {
   offsetOutline,
   placeMatrix,
   pointAt,
+  resample,
   ringDrop,
+  shankTopRadius,
   str,
   support,
   templateOutline,
@@ -143,7 +146,75 @@ function bezelFrame(ctx: HeadCtx, defShape: FrameShape): Part[] {
     }
     geos.push(loop(ring, r * 0.95, 48, 8));
   }
-  return [metalPart(geos, 'framed bezel')];
+  // corner beads: a small bead at each corner of the frame, on the rim and just over the crown's edge
+  if (bool(p, 'cornerBeads', false)) {
+    const rb = num(p, 'beadSize', 0.7, 0.3, 1.4) / 2;
+    for (const a of corners) {
+      const dx = Math.cos(a);
+      const dz = Math.sin(a);
+      const rg = Math.hypot(...radialPoint(d.o, dx, dz));
+      const rf = Math.hypot(...radialPoint(frame, dx, dz));
+      const at = Math.min(rg + rb * 0.4, (rg + rf) / 2);
+      geos.push(ball(v3(dx * at, yRim + rb * 0.55, dz * at), rb, 2));
+    }
+  }
+  const out: Part[] = [metalPart(geos, 'framed bezel')];
+  const sides = sideBezels(ctx, frame);
+  if (sides) out.push(metalPart(sides.metal, 'side stone bezels'), accentPart(sides.stones, 'side stones'));
+  return out;
+}
+
+/**
+ * Side stones on the shoulders, each in its own small box bezel: `sideStones` per side in a row along the band,
+ * starting just past the frame, following the curve of the shank (accent cut; baguettes lie along the band).
+ */
+function sideBezels(
+  ctx: HeadCtx,
+  frame: CleanOutline,
+): { metal: THREE.BufferGeometry[]; stones: THREE.BufferGeometry[] } | null {
+  const p = ctx.params;
+  const n = Math.round(num(p, 'sideStones', 0, 0, 5));
+  if (n === 0) return null;
+  const size = num(p, 'sideStoneSize', 0, 0, 5) || ctx.accent.sizeMm || 2;
+  const dims = accentDims(ctx, Math.max(0.8, size));
+  const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
+  const o = cleanOutline(built.outline);
+  const path = resample(o, 64, 0);
+  const wall = Math.min(0.4, Math.max(0.22, dims.width * 0.18));
+  const lift = Math.min(0.35, built.crownHeight * 0.6 + 0.1); // girdle above the shank's top surface
+  const lip = built.girdleThickness * 0.5 + Math.min(0.2, built.crownHeight * 0.35);
+  const sink = lift + 0.45;
+  const box = loft(
+    path,
+    [
+      [0.02, lip, 1],
+      [wall * 0.5, lip + 0.04, 1],
+      [wall, lip - 0.03, 1],
+      [wall, -sink, 1],
+      [0, -sink, 1],
+      [0, -built.girdleThickness * 0.5, 1],
+    ],
+    true,
+  );
+  const gap = num(p, 'sideStoneGap', 0.25, 0, 1.5);
+  const pitch = dims.length + 2 * wall + gap;
+  const Rs = shankTopRadius(ctx);
+  const [ax, az] = ctx.bandAxis;
+  const metal: THREE.BufferGeometry[] = [];
+  const stones: THREE.BufferGeometry[] = [];
+  for (const sign of [1, -1]) {
+    const s0 = support(frame, sign * ax, sign * az) + gap + wall + dims.length / 2;
+    for (let i = 0; i < n; i++) {
+      const th = Math.min(1.2, (s0 + i * pitch) / Rs);
+      const r = Rs + lift;
+      const u = sign * r * Math.sin(th);
+      const y = -ctx.baseDrop - Rs + r * Math.cos(th);
+      const m = placeMatrix(u * ax, y, u * az, ax, az, th, sign * ax, sign * az);
+      metal.push(box.clone().applyMatrix4(m));
+      stones.push(toFlat(built.geometry).clone().applyMatrix4(m));
+    }
+  }
+  return { metal, stones };
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -256,7 +256,52 @@ const frameShared: Control[] = [
     ],
     help: 'Open: slim posts rise from the frame corners. Solid: a tapered skirt.',
   },
+  {
+    type: 'toggle',
+    key: 'cornerBeads',
+    label: 'Corner beads',
+    help: 'A small bead at each corner of the frame, holding the stone like a prong.',
+  },
+  { type: 'number', key: 'beadSize', label: 'Bead size', min: 0.3, max: 1.4, step: 0.05, unit: 'mm' },
+  {
+    type: 'number',
+    key: 'sideStones',
+    label: 'Side stones',
+    min: 0,
+    max: 5,
+    step: 1,
+    help: 'Accent stones on each shoulder, each in its own small bezel (baguettes lie along the band).',
+  },
+  {
+    type: 'number',
+    key: 'sideStoneSize',
+    label: 'Side stone length',
+    min: 0,
+    max: 5,
+    step: 0.1,
+    unit: 'mm',
+    help: '0 uses the accent stone size.',
+  },
+  {
+    type: 'number',
+    key: 'sideStoneGap',
+    label: 'Side stone gap',
+    min: 0,
+    max: 1.5,
+    step: 0.05,
+    unit: 'mm',
+    help: 'Space between the side bezels, and between the first one and the frame.',
+  },
 ];
+
+/** Defaults of the optional frame extras (corner beads, side stones in their own bezels): off. */
+const frameExtras = {
+  cornerBeads: false,
+  beadSize: 0.7,
+  sideStones: 0,
+  sideStoneSize: 0,
+  sideStoneGap: 0.25,
+};
 
 const ALL = 'all' as const;
 
@@ -1038,7 +1083,7 @@ export const heads: HeadModel[] = [
     builder: 'bezel-polygon',
     summary: 'A bezel whose outer frame is a hexagon or octagon round any stone, in stepped tiers.',
     description:
-      'A polygon bezel keeps the slim burnished rim against the girdle, but its outer edge is a faceted frame: a hexagon by default, an octagon or any shape with three to twelve sides. The frame can stretch to the stone, so an oval gets an elongated hexagon.\n\nA second stepped tier and an open gallery of posts at the corners give the Art Deco and geometric look seen on 1920s rings and modern hexagon settings, with the same protection as a plain bezel.\n\nChange the number of sides, rotate the frame, round the corners or switch to a solid skirt.',
+      'A polygon bezel keeps the slim burnished rim against the girdle, but its outer edge is a faceted frame: a hexagon by default, an octagon or any shape with three to twelve sides. It can stretch to the stone, so an oval gets an elongated hexagon.\n\nA stepped second tier, an open gallery of corner posts and optional beads at each corner give the Art Deco and modern geometric look. Side stones can sit on the shoulders, each in its own small bezel.\n\nChange the sides, rotation and corner rounding, or switch to a solid skirt.',
     tags: ['bezel', 'hexagon', 'octagon', 'geometric', 'art-deco'],
     pros: ['Geometric, architectural outline', 'Protects the girdle', 'Stepped tiers catch the light'],
     cons: ['Less light from the sides', 'Corners can catch on clothing'],
@@ -1054,6 +1099,7 @@ export const heads: HeadModel[] = [
       bezelHeight: 0.25,
       tiers: 2,
       gallery: 'open',
+      ...frameExtras,
     },
     controls: [
       {
@@ -1115,6 +1161,7 @@ export const heads: HeadModel[] = [
       bezelHeight: 0.3,
       tiers: 2,
       gallery: 'open',
+      ...frameExtras,
     },
     controls: [
       {

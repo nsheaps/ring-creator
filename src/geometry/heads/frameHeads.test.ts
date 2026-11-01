@@ -191,3 +191,93 @@ describe('new framed and flank heads', () => {
     expect(zPlus * zMinus).toBeLessThan(0);
   });
 });
+
+describe('polygon frame extras: corner beads and side stones in their own bezels', () => {
+  const metalVerts = (parts: Part[]) => {
+    const out: THREE.Vector3[] = [];
+    for (const p of parts.filter((q) => q.slot === 'head-metal')) {
+      const a = p.geometry.getAttribute('position');
+      for (let i = 0; i < a.count; i++) out.push(new THREE.Vector3().fromBufferAttribute(a, i));
+    }
+    return out;
+  };
+  const sanity = (parts: Part[]) => {
+    let tris = 0;
+    for (const p of parts) {
+      const a = p.geometry.getAttribute('position');
+      const arr = a.array as ArrayLike<number>;
+      for (let i = 0; i < arr.length; i++) expect(Number.isFinite(arr[i])).toBe(true);
+      tris += a.count / 3;
+    }
+    expect(tris).toBeLessThan(60000);
+    const b = new THREE.Box3();
+    for (const p of parts) {
+      p.geometry.computeBoundingBox();
+      if (p.geometry.boundingBox) b.union(p.geometry.boundingBox);
+    }
+    expect(b.max.y).toBeLessThan(3);
+    // side stones may follow the shank down the shoulders, never past the equator of the ring
+    expect(b.min.y).toBeGreaterThan(-4.2 - (8.6 + 1.8) * 0.9);
+    expect(Math.max(b.max.x, -b.min.x, b.max.z, -b.min.z)).toBeLessThan(16);
+  };
+
+  it('are off by default (existing designs unchanged)', () => {
+    const a = build('bezel-polygon', 'round-brilliant', { tiers: 1 });
+    const b = build('bezel-polygon', 'round-brilliant', { tiers: 1, cornerBeads: false, sideStones: 0 });
+    expect(a.length).toBe(1);
+    expect(a[0].geometry.getAttribute('position').count).toBe(b[0].geometry.getAttribute('position').count);
+  });
+
+  for (const rotation of [0, 30])
+    it(`corner beads sit on the rim at each of the six corners (rotation ${rotation})`, () => {
+      const params = { sides: 6, tiers: 1, frameGap: 0.5, rotation, cornerBeads: true, beadSize: 0.8 };
+      const parts = build('bezel-polygon', 'round-brilliant', params);
+      sanity(parts);
+      const plain = metalVerts(build('bezel-polygon', 'round-brilliant', { ...params, cornerBeads: false }));
+      const rimTop = Math.max(...plain.map((v) => v.y));
+      // bead tops stand above the rim, near the girdle, in six clusters at the corner angles
+      const high = metalVerts(parts).filter((v) => v.y > rimTop + 0.2);
+      expect(high.length).toBeGreaterThan(6);
+      const bins = new Set<number>();
+      for (const v of high) {
+        const r = Math.hypot(v.x, v.z);
+        expect(r).toBeGreaterThan(3.2 - 0.3);
+        expect(r).toBeLessThan(3.2 + 1.2);
+        const a = (Math.atan2(v.z, v.x) * 180) / Math.PI - rotation;
+        const k = Math.round(a / 60);
+        expect(Math.abs(a - k * 60), 'bead at a corner').toBeLessThan(12);
+        bins.add(((k % 6) + 6) % 6);
+      }
+      expect(bins.size).toBe(6);
+    });
+
+  it('side stones sit on both shoulders, each in its own bezel, following the curve', () => {
+    const one = build('bezel-polygon', 'round-brilliant', { tiers: 1, sideStones: 1, sideStoneSize: 3 });
+    const three = build('bezel-polygon', 'round-brilliant', { tiers: 1, sideStones: 3, sideStoneSize: 3 });
+    sanity(three);
+    const count = (ps: Part[], slot: Part['slot']) =>
+      ps.filter((p) => p.slot === slot).reduce((s, p) => s + p.geometry.getAttribute('position').count, 0);
+    // three times the stones and three times the side bezels of a single pair
+    expect(count(three, 'accent-stone')).toBe(3 * count(one, 'accent-stone'));
+    const bezels = (ps: Part[]) =>
+      ps.find((p) => p.label === 'side stone bezels')?.geometry.getAttribute('position').count ?? 0;
+    expect(bezels(three)).toBe(3 * bezels(one));
+    const acc = box(three, 'accent-stone');
+    // both shoulders, beyond the frame, below the centre girdle and dropping with the shank
+    expect(acc.max.x).toBeGreaterThan(8);
+    expect(acc.min.x).toBeLessThan(-8);
+    expect(acc.max.y).toBeLessThan(0);
+    const frame = box(build('bezel-polygon', 'round-brilliant', { tiers: 1 }), 'head-metal');
+    const stones = three.find((p) => p.slot === 'accent-stone');
+    const pos = stones?.geometry.getAttribute('position');
+    let inner = -Infinity;
+    let outer = Infinity;
+    for (let i = 0; pos && i < pos.count; i++) {
+      const x = Math.abs(pos.getX(i));
+      expect(x, 'stones start outside the frame').toBeGreaterThan(frame.max.x - 0.05);
+      if (x < frame.max.x + 2) inner = Math.max(inner, pos.getY(i));
+      if (x > acc.max.x - 1) outer = Math.min(outer, -pos.getY(i));
+    }
+    expect(inner).toBeGreaterThan(-outer);
+  });
+});
