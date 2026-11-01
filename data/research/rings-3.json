@@ -91,12 +91,13 @@
      "raise": 0.3
     },
     "head": {
-     "sideRatio": 0.5,
+     "sideRatio": 0.42,
      "sideGap": 0.12,
      "sideCut": "baguette",
      "outerCut": "trillion",
      "outerRatio": 1,
-     "sideProngs": 4
+     "sideProngs": 4,
+     "sideAspect": 3
     },
     "center": {
      "aspect": 1.6
@@ -108,7 +109,7 @@
    }
   },
   "band": null,
-  "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side. Compared with the photo: elongated hexagon, a baguette standing along the finger then a trillion pointing away from the centre on each side (three-stone with an outer stone cut)."
+  "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side. Compared with the photo: elongated hexagon, a baguette standing along the finger then a trillion pointing away from the centre on each side (three-stone with an outer stone cut); slim 3:1 baguettes (side stone proportions 3)."
  },
  {
   "id": "r3-003",
@@ -154,19 +155,20 @@
     "head": {
      "sideRatio": 0.4,
      "sideGap": 0.1,
+     "sideCut": "trillion",
      "sideProngs": 3
     },
     "center": {
      "aspect": 1.1
     },
     "accent": {
-     "cut": "trillion",
-     "sizeMm": 3
+     "cut": "round-brilliant",
+     "sizeMm": 1.2
     }
    }
   },
   "band": null,
-  "notes": "Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded shoulders approximated by plain pave."
+  "notes": "Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded shoulders approximated by plain round pave (no size or colour gradient control yet)."
  },
  {
   "id": "r3-004",

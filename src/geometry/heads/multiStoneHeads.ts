@@ -229,6 +229,8 @@ function railBridge(ctx: HeadCtx, a: THREE.Vector3, b: THREE.Vector3, r: number)
  * so the flat side (the stone's length) runs across the band. Elongated step cuts (baguettes, emerald cuts): long axis
  * across the band, i.e. along the finger, parallel to the side of the centre stone. Other elongated cuts (pear,
  * marquise, oval, tapered baguettes): long axis along the band, the pear's point facing away from the centre.
+ * `aspect` (length:width, 0 = automatic) sets the proportions of elongated cuts; automatic uses the cut's default,
+ * capped at 2.2:1 for step cuts so a long baguette does not turn into a sliver.
  */
 export function sideStone(
   ctx: HeadCtx,
@@ -236,11 +238,13 @@ export function sideStone(
   size: number,
   sign: 1 | -1,
   detail: 'full' | 'low',
+  aspectOverride = 0,
 ): SideStone {
   const [ax, az] = ctx.bandAxis;
   const px = -az;
   const pz = ax;
   const aspect = Math.max(1, cut.defaultAspect || 1);
+  const custom = aspectOverride >= 1 ? aspectOverride : 0;
   const depthPct = cut.defaultDepthPct || 0.6;
   let dims: StoneDims;
   let localX: [number, number];
@@ -253,12 +257,12 @@ export function sideStone(
     localX = [sign * ax, sign * az];
   } else if (cut.builder === 'step') {
     const length = size * 1.1;
-    const width = length / Math.min(aspect, 2.2);
+    const width = length / (custom || Math.min(aspect, 2.2));
     dims = { length, width, depth: width * depthPct };
     localX = [px, pz];
   } else {
     const width = size * 0.85;
-    dims = { length: width * aspect, width, depth: width * depthPct };
+    dims = { length: width * (custom || aspect), width, depth: width * depthPct };
     localX = [sign * ax, sign * az];
   }
   return { built: ctx.stone(cut.id, dims, { detail }), localX };
@@ -346,6 +350,8 @@ function multiStone(ctx: HeadCtx, five: boolean): Part[] {
   const across = centreAcross(ctx);
   const ratio = num(p, 'sideRatio', five ? 0.55 : 0.62, 0.25, 1);
   const ratio2 = num(p, 'outerRatio', 0.78, 0.4, 1);
+  /** length:width of elongated side stones (baguettes, emerald cuts, pears); 0 = automatic */
+  const sideAspect = num(p, 'sideAspect', 0, 0, 5);
   const gap = num(p, 'sideGap', 0.3, 0, 2);
   const sideKey = typeof p.sideCut === 'string' ? p.sideCut : 'accent';
   const outerRaw = typeof p.outerCut === 'string' && p.outerCut ? p.outerCut : five ? 'same' : 'none';
@@ -368,7 +374,9 @@ function multiStone(ctx: HeadCtx, five: boolean): Part[] {
       const detail = five && k === 1 ? 'low' : 'full';
       const cut = cuts[k];
       const s =
-        cut === 'match' ? matchStone(ctx, size, false, detail) : sideStone(ctx, cut, size, sign, detail);
+        cut === 'match'
+          ? matchStone(ctx, size, false, detail)
+          : sideStone(ctx, cut, size, sign, detail, sideAspect);
       const q = seatBeside(ctx, s, sign, edge, 0, clear, 1);
       stones.push(s.built.geometry.clone().applyMatrix4(q.m));
       const wireMm = num(p, 'prongWidth', 0, 0, 1.6) * 0.8 || autoWireMm(s.built);

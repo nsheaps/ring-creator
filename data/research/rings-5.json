@@ -832,12 +832,13 @@
      "beadSize": 0.8,
      "sideStones": 3,
      "sideStoneSize": 3.2,
+     "sideStoneAspect": 2.4,
      "sideStoneGap": 0.3
     }
    }
   },
   "band": null,
-  "notes": "Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested. Photo audit: photo: round centre in a hexagonal frame with baguettes each side on the shank. Compared with the photo: point-up hexagon frame with corner beads, three baguettes each side along the band, each in its own small bezel."
+  "notes": "Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested. Photo audit: photo: round centre in a hexagonal frame with baguettes each side on the shank. Compared with the photo: point-up hexagon frame with corner beads, three baguettes each side along the band, each in its own small bezel, about 2.4:1."
  },
  {
   "id": "r5-023",

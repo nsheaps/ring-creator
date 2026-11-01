@@ -175,8 +175,17 @@ function sideBezels(
   const p = ctx.params;
   const n = Math.round(num(p, 'sideStones', 0, 0, 5));
   if (n === 0) return null;
-  const size = num(p, 'sideStoneSize', 0, 0, 5) || ctx.accent.sizeMm || 2;
-  const dims = accentDims(ctx, Math.max(0.8, size));
+  const size = Math.max(0.8, num(p, 'sideStoneSize', 0, 0, 5) || ctx.accent.sizeMm || 2);
+  // length:width of each side stone; 0 = the accent cut's own proportions
+  const aspect = num(p, 'sideStoneAspect', 0, 0, 5);
+  const dims =
+    aspect >= 1
+      ? {
+          length: size,
+          width: size / aspect,
+          depth: (size / aspect) * (ctx.accent.cut.defaultDepthPct || 0.6),
+        }
+      : accentDims(ctx, size);
   const built = ctx.stone(ctx.accent.cut.id, dims, { detail: 'low' });
   const o = cleanOutline(built.outline);
   const path = resample(o, 64, 0);

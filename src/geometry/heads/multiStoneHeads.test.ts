@@ -25,15 +25,17 @@ function build(
   if (!fn) throw new Error(model.builder);
   const base = stubCtx({ cut: 'round-brilliant', params: { ...model.params, ...params }, bandAxis });
   const calls: string[] = [];
+  const dims: StoneDims[] = [];
   const ctx = {
     ...base,
     accent: { ...base.accent, cut: getModel('cut', accentCut) },
-    stone: (cutId: string, dims: StoneDims, opts?: StoneBuildOptions): BuiltStone => {
+    stone: (cutId: string, d: StoneDims, opts?: StoneBuildOptions): BuiltStone => {
       calls.push(cutId);
-      return buildStoneByCut(getModel('cut', cutId), dims, opts);
+      dims.push(d);
+      return buildStoneByCut(getModel('cut', cutId), d, opts);
     },
   };
-  return { parts: fn(ctx), calls };
+  return { parts: fn(ctx), calls, dims };
 }
 
 /** Accent vertices as (u along the band, v across it, y). */
@@ -114,4 +116,54 @@ describe('multi-stone heads: side stone orientation', () => {
       }
     });
   }
+});
+
+describe('multi-stone heads: side stone proportions', () => {
+  const ratio = (d: StoneDims) => d.length / d.width;
+
+  it('automatic (sideAspect 0) keeps step-cut side stones at most 2.2:1', () => {
+    const { dims } = build('three-stone', { sideCut: 'baguette', sideAspect: 0 });
+    expect(dims).toHaveLength(2);
+    for (const d of dims) expect(ratio(d)).toBeCloseTo(2.2, 5);
+  });
+
+  it('sideAspect sets the baguette length:width at the same length across the band', () => {
+    const auto = build('three-stone', { sideCut: 'baguette' }).dims[0];
+    for (const a of [1.6, 3, 4]) {
+      const d = build('three-stone', { sideCut: 'baguette', sideAspect: a }).dims[0];
+      expect(ratio(d)).toBeCloseTo(a, 5);
+      expect(d.length).toBeCloseTo(auto.length, 5);
+    }
+  });
+
+  it('a slimmer baguette is narrower along the band and still stands along the finger', () => {
+    const axis: Axis = [1, 0];
+    const extent = (p: Params) => {
+      const right = accentUV(build('three-stone', { sideCut: 'baguette', ...p }, axis).parts, axis).filter(
+        (q) => q[0] > 0,
+      );
+      return { along: range(right.map((q) => q[0])), across: range(right.map((q) => q[1])) };
+    };
+    const auto = extent({});
+    const slim = extent({ sideAspect: 3.2 });
+    expect(slim.along).toBeLessThan(auto.along * 0.8);
+    expect(slim.across).toBeCloseTo(auto.across, 1);
+  });
+
+  it('sideAspect also stretches pears but leaves trillions and round stones alone', () => {
+    const pear = build('three-stone', { sideCut: 'pear', sideAspect: 2 }).dims[0];
+    expect(ratio(pear)).toBeCloseTo(2, 5);
+    const tri = build('three-stone', { sideCut: 'trillion' }, [1, 0], 'trillion').dims[0];
+    const tri2 = build('three-stone', { sideCut: 'trillion', sideAspect: 3 }, [1, 0], 'trillion').dims[0];
+    expect(tri2).toEqual(tri);
+    const rnd = build('three-stone', { sideCut: 'round-brilliant' }).dims[0];
+    const rnd2 = build('three-stone', { sideCut: 'round-brilliant', sideAspect: 3 }).dims[0];
+    expect(rnd2).toEqual(rnd);
+  });
+
+  it('the outer stones of a five-stone take the same proportions', () => {
+    const { dims } = build('five-stone', { sideAspect: 3 });
+    expect(dims).toHaveLength(4);
+    for (const d of dims) expect(ratio(d)).toBeCloseTo(3, 5);
+  });
 });

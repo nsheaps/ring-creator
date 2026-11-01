@@ -156,6 +156,15 @@ const sideControls = (five: boolean): Control[] => [
   },
   { type: 'number', key: 'sideGap', label: 'Gap between stones', min: 0, max: 2, step: 0.05, unit: 'mm' },
   {
+    type: 'number',
+    key: 'sideAspect',
+    label: 'Side stone proportions',
+    min: 0,
+    max: 5,
+    step: 0.1,
+    help: "Length to width of elongated side stones (baguettes, emerald cuts, pears): 3 is a slim baguette, 2 a stocky one. 0 = automatic (the cut's own shape, step cuts at most 2.2 to 1).",
+  },
+  {
     type: 'select',
     key: 'sideCut',
     label: 'Side stone cut',
@@ -284,6 +293,15 @@ const frameShared: Control[] = [
   },
   {
     type: 'number',
+    key: 'sideStoneAspect',
+    label: 'Side stone proportions',
+    min: 0,
+    max: 5,
+    step: 0.1,
+    help: "Length to width of each side stone: 3 is a slim baguette, 2 a stocky one. 0 = the accent cut's own shape.",
+  },
+  {
+    type: 'number',
     key: 'sideStoneGap',
     label: 'Side stone gap',
     min: 0,
@@ -300,6 +318,7 @@ const frameExtras = {
   beadSize: 0.7,
   sideStones: 0,
   sideStoneSize: 0,
+  sideStoneAspect: 0,
   sideStoneGap: 0.25,
 };
 
@@ -713,6 +732,7 @@ export const heads: HeadModel[] = [
       sideRatio: 0.62,
       outerRatio: 0.85,
       sideGap: 0.3,
+      sideAspect: 0,
       sideCut: 'accent',
       outerCut: 'none',
       sideProngs: 4,
@@ -743,6 +763,7 @@ export const heads: HeadModel[] = [
       sideRatio: 0.55,
       outerRatio: 0.78,
       sideGap: 0.3,
+      sideAspect: 0,
       sideCut: 'accent',
       outerCut: 'same',
       sideProngs: 4,

@@ -362,7 +362,7 @@ export const cuts: CutModel[] = [
     name: 'Baguette',
     summary: 'A slim rectangular step cut, the classic accent and channel stone.',
     description:
-      'The baguette (French for "little loaf") is a long, narrow rectangle with a few step facets. Popular since the Art Deco period, it gives crisp lines and flashes rather than sparkle.\n\nBaguettes flank a centre stone, line channel bands, or form graphic eternity rings. Tapered versions narrow toward one end.\n\nThe square corners are exposed, so they are best set in channels or bezels.',
+      'The baguette (French for "little loaf") is a long, narrow rectangle with a few step facets. Popular since the Art Deco period, it gives crisp lines and flashes rather than sparkle.\n\nBaguettes flank a centre stone, line channel bands, or form graphic eternity rings. Tapered versions narrow toward one end.\n\nMost baguettes are two to four times as long as they are wide; about 3 to 1 is the classic slim look, 2 to 1 a stockier stone. Side-stone heads have a proportions control to match a ring.\n\nThe square corners are exposed, so they are best set in channels or bezels.',
     tags: ['step', 'accent', 'art-deco', 'rectangular'],
     pros: ['Clean, architectural lines', 'Sets flush in channels'],
     cons: ['Little sparkle', 'Shows inclusions'],

@@ -4094,12 +4094,13 @@ export const rings: ExampleDesign[] = [
         id: 'three-stone',
         metal: 'white-gold-14k',
         params: {
-          sideRatio: 0.5,
+          sideRatio: 0.42,
           sideGap: 0.12,
           sideCut: 'baguette',
           outerCut: 'trillion',
           outerRatio: 1,
           sideProngs: 4,
+          sideAspect: 3,
         },
       },
       shank: {
@@ -4129,7 +4130,7 @@ export const rings: ExampleDesign[] = [
     tags: ['nature', 'engagement'],
     category: 'nature',
     blurb:
-      'Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side. Compared with the photo: elongated hexagon, a baguette standing along the finger then a trillion pointing away from the centre on each side (three-stone with an outer stone cut).',
+      'Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side. Compared with the photo: elongated hexagon, a baguette standing along the finger then a trillion pointing away from the centre on each side (three-stone with an outer stone cut); slim 3:1 baguettes (side stone proportions 3).',
     priceUsd: 5605,
     designFamily: 'three-stone / dainty / hexagon',
     view: 'ring',
@@ -4154,8 +4155,8 @@ export const rings: ExampleDesign[] = [
       accentStone: {
         material: 'diamond',
         color: 'colorless',
-        cut: 'trillion',
-        sizeMm: 3,
+        cut: 'round-brilliant',
+        sizeMm: 1.2,
       },
       head: {
         id: 'three-stone',
@@ -4163,6 +4164,7 @@ export const rings: ExampleDesign[] = [
         params: {
           sideRatio: 0.4,
           sideGap: 0.1,
+          sideCut: 'trillion',
           sideProngs: 3,
         },
       },
@@ -4195,7 +4197,7 @@ export const rings: ExampleDesign[] = [
     tags: ['colored-stone', 'engagement'],
     category: 'colored-stone',
     blurb:
-      'Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded shoulders approximated by plain pave.',
+      'Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded shoulders approximated by plain round pave (no size or colour gradient control yet).',
     priceUsd: 6477,
     designFamily: 'three-stone / pave / hexagon',
     view: 'ring',
@@ -10076,6 +10078,7 @@ export const rings: ExampleDesign[] = [
           beadSize: 0.8,
           sideStones: 3,
           sideStoneSize: 3.2,
+          sideStoneAspect: 2.4,
           sideStoneGap: 0.3,
         },
       },
@@ -10104,7 +10107,7 @@ export const rings: ExampleDesign[] = [
     tags: ['hexagon', 'engagement'],
     category: 'hexagon',
     blurb:
-      'Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested. Photo audit: photo: round centre in a hexagonal frame with baguettes each side on the shank. Compared with the photo: point-up hexagon frame with corner beads, three baguettes each side along the band, each in its own small bezel.',
+      'Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested. Photo audit: photo: round centre in a hexagonal frame with baguettes each side on the shank. Compared with the photo: point-up hexagon frame with corner beads, three baguettes each side along the band, each in its own small bezel, about 2.4:1.',
     priceUsd: 1455,
     designFamily: 'bezel-polygon / plain-round / round-brilliant',
     view: 'ring',

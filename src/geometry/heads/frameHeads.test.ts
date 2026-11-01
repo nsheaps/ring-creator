@@ -251,6 +251,27 @@ describe('polygon frame extras: corner beads and side stones in their own bezels
       expect(bins.size).toBe(6);
     });
 
+  it("sideStoneAspect sets the side stone length:width; 0 keeps the accent cut's shape", () => {
+    // along the band (x for the default band axis) is the stone's length, across it (z) its width
+    const stoneBox = (p: Params) => {
+      const parts = build('bezel-polygon', 'round-brilliant', {
+        tiers: 1,
+        sideStones: 1,
+        sideStoneSize: 3,
+        ...p,
+      });
+      const pos = parts.find((q) => q.slot === 'accent-stone')?.geometry.getAttribute('position');
+      if (!pos) throw new Error('no side stones');
+      let zMax = 0;
+      for (let i = 0; i < pos.count; i++) zMax = Math.max(zMax, Math.abs(pos.getZ(i)));
+      return 2 * zMax;
+    };
+    // the stub accent is round: automatic keeps it 3 mm across, an aspect of 2.5 narrows it to 1.2 mm
+    expect(stoneBox({})).toBeCloseTo(3, 1);
+    expect(stoneBox({ sideStoneAspect: 2.5 })).toBeCloseTo(1.2, 1);
+    expect(stoneBox({ sideStoneAspect: 2.5 })).toBeLessThan(stoneBox({ sideStoneAspect: 1.5 }));
+  });
+
   it('side stones sit on both shoulders, each in its own bezel, following the curve', () => {
     const one = build('bezel-polygon', 'round-brilliant', { tiers: 1, sideStones: 1, sideStoneSize: 3 });
     const three = build('bezel-polygon', 'round-brilliant', { tiers: 1, sideStones: 3, sideStoneSize: 3 });
