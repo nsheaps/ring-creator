@@ -1251,7 +1251,7 @@ export const heads: HeadModel[] = [
     builder: 'deco-plaque',
     summary: 'A domed octagonal plaque of pierced openwork, milgrain and small diamonds round the stone.',
     description:
-      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger on a sculpted plaque.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: stretch the plaque along the band, fan the ribs into a sunburst with a cartouche at each end holding stones in milgrain cups (or pierced scroll hearts), bead the ribs and frame the stone in an octagonal collar. The openwork collects dust.',
+      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: stretch the plaque along the band, fan the ribs into a sunburst with stone-set cartouches (or pierced scroll hearts) at the ends, bead the ribs, add an octagonal collar and sink the plate so the piercing reads dark. The openwork collects dust.',
     tags: ['art-deco', 'vintage', 'plaque', 'openwork', 'milgrain'],
     pros: ['Big vintage presence from a small stone', 'Rich detail from every angle', 'Protects the girdle'],
     cons: ['Openwork traps dirt', 'Tall, wide face', 'Delicate details wear over decades'],
@@ -1277,6 +1277,7 @@ export const heads: HeadModel[] = [
       cartoucheStones: 0,
       cartoucheSize: 0,
       endPanel: 'plain',
+      pierceDepth: 0,
     },
     controls: [
       {
@@ -1400,6 +1401,16 @@ export const heads: HeadModel[] = [
           { value: 'scroll', label: 'Scroll heart' },
         ],
         help: 'Sunburst only. Scroll heart: each cartouche becomes a raised heart of two lobes outlined in milgrain, over open piercing with a scroll curl each side; the cartouche stones sit one in each lobe.',
+      },
+      {
+        type: 'number',
+        key: 'pierceDepth',
+        label: 'Piercing depth',
+        min: 0,
+        max: 3,
+        step: 0.1,
+        unit: 'mm',
+        help: 'Sinks the plate under the openwork into a deep, grooved well so the slots between the ribs read dark, like true piercing. 0 = a shallow plate just under the ribs.',
       },
     ],
     fitsCuts: ALL,

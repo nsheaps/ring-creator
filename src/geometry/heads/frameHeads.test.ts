@@ -454,6 +454,30 @@ describe('deco plaque extras: sunburst, cartouche stones, stretch, rib milgrain,
       expect(top(only)).toBeGreaterThan(top({ ...DECO, rimStones: false }) + 0.05);
     });
 
+  it('pierceDepth: off by default; sinks the plate under the openwork only, deterministic and bounded', () => {
+    const plain = build('deco-plaque', 'old-european', DECO, [1, 0]);
+    expect(positions(build('deco-plaque', 'old-european', { ...DECO, pierceDepth: 0 }, [1, 0]))).toEqual(
+      positions(plain),
+    );
+    const deep = build('deco-plaque', 'old-european', { ...DECO, pierceDepth: 2 }, [1, 0]);
+    expect(positions(build('deco-plaque', 'old-european', { ...DECO, pierceDepth: 2 }, [1, 0]))).toEqual(
+      positions(deep),
+    );
+    const metal = (ps: Part[]) => verts(ps, 'head-metal');
+    for (const v of metal(deep)) expect(Number.isFinite(v.x + v.y + v.z)).toBe(true);
+    // the footprint and the top are unchanged; only the plate under the ribs drops
+    const a = box(plain, 'head-metal');
+    const b = box(deep, 'head-metal');
+    expect(b.max.y).toBeCloseTo(a.max.y, 5);
+    expect(b.min.y).toBeCloseTo(a.min.y, 5);
+    expect(b.max.x).toBeCloseTo(a.max.x, 5);
+    expect(b.max.z).toBeCloseTo(a.max.z, 5);
+    // more of the plate lies well below the dome in the pierced zone (between the collar and the jewelled band)
+    const r = (v: THREE.Vector3) => Math.hypot(v.x, v.z);
+    const low = (ps: Part[]) => metal(ps).filter((v) => r(v) > 4 && r(v) < 5.5 && v.y < -1).length;
+    expect(low(deep)).toBeGreaterThan(low(plain));
+  });
+
   it('rib milgrain and the polygon collar add metal', () => {
     const n = (p: Params) => verts(build('deco-plaque', 'round-brilliant', p), 'head-metal').length;
     expect(n({ ribMilgrain: true })).toBeGreaterThan(n({}));

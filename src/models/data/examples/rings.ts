@@ -786,6 +786,7 @@ export const rings: ExampleDesign[] = [
           cartoucheSize: 1.6,
           rimStoneCount: 6,
           endPanel: 'scroll',
+          pierceDepth: 2,
         },
       },
       shank: {

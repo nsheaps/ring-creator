@@ -599,7 +599,8 @@
           "cartoucheStones": 2,
           "cartoucheSize": 1.6,
           "rimStoneCount": 6,
-          "endPanel": "scroll"
+          "endPanel": "scroll",
+          "pierceDepth": 2
         },
         "shank": {
           "widthMm": 1.8,

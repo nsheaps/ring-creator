@@ -232,6 +232,8 @@ function sideBezels(
 
 const PLAQUE_PATTERNS = ['web', 'sunburst'] as const;
 const END_PANELS = ['plain', 'scroll'] as const;
+/** V grooves in the floor of a deep-pierced plaque (see `pierceDepth`). */
+const PIERCE_GROOVES = 8;
 
 /** Classic heart curve, t in [0, 2PI): cusp at (0, 5) between the lobes, point at (0, -17), widest +-16 at y = 4. */
 function heartPt(t: number): [number, number] {
@@ -384,7 +386,8 @@ function domePatch(
  * `cartoucheStones` small stones in milgrain cups; `ribMilgrain` beads every rib; `collarSides` frames the stone in a
  * polygon collar with a bead at each corner; `rimStoneCount` fixes the number of rim diamonds; `endPanel: 'scroll'`
  * (sunburst only) turns each cartouche into a raised heart of two lobes outlined in milgrain wire, over open piercing
- * with a scroll curl each side of its point, the cartouche stones one in each lobe.
+ * with a scroll curl each side of its point, the cartouche stones one in each lobe; `pierceDepth` sinks the plate under
+ * the openwork into a deep well of steep V grooves so the piercing reads dark.
  */
 function decoPlaque(ctx: HeadCtx): Part[] {
   const p = ctx.params;
@@ -414,7 +417,19 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   const yCup = -Math.min(d.pd * 0.55, d.bd * 0.7);
   const RIB_END = 0.7; // inside this the dome is pierced; outside it a solid jewelled band
   const plate: MixPt[] = [[0, yTop - 0.1, kIn]];
-  for (const u of [0.15, 0.35, 0.55, RIB_END - 0.02]) plate.push([u, domeY(u) - pierce]);
+  // `pierceDepth` sinks the plate under the openwork into a deep well whose floor is a ring of steep V grooves: their
+  // walls mirror the darker lower studio instead of the bright ceiling, so the slots between the ribs read as piercing
+  const well = num(p, 'pierceDepth', 0, 0, 3);
+  if (well > 0) {
+    const [u0, u1] = [0.1, RIB_END - 0.04];
+    const steps = 2 * PIERCE_GROOVES;
+    plate.push([u0, domeY(u0) - pierce]);
+    for (let i = 1; i < steps; i++) {
+      const u = u0 + ((u1 - u0) * i) / steps;
+      plate.push([u, domeY(u) - pierce - (i % 2 ? well : well * 0.2)]);
+    }
+    plate.push([u1, domeY(u1) - pierce]);
+  } else for (const u of [0.15, 0.35, 0.55, RIB_END - 0.02]) plate.push([u, domeY(u) - pierce]);
   for (const u of [RIB_END, 0.8, 0.9, 0.97]) plate.push([u, domeY(u) - 0.04]);
   const yWall = Math.min(yRim - rr * 1.6, -g2 - 0.4);
   plate.push([1, yRim - rr * 0.6], [1, yWall]);
