@@ -771,13 +771,22 @@ export const rings: ExampleDesign[] = [
         metal: 'platinum',
         params: {
           sides: 8,
-          domeHeight: 1.5,
+          domeHeight: 2.2,
+          plaqueGap: 3,
+          ribCount: 14,
+          rimStones: true,
+          stoneSize: 1.6,
         },
       },
       shank: {
         id: 'vintage-filigree',
         metal: 'platinum',
-        params: {},
+        params: {
+          widthMm: 1.8,
+          topWidthMm: 2.4,
+          thicknessMm: 1.5,
+          topThicknessMm: 1.8,
+        },
       },
       placement: {
         orientation: 'north-south',
@@ -795,7 +804,8 @@ export const rings: ExampleDesign[] = [
     },
     tags: ['art-deco', 'engagement'],
     category: 'art-deco',
-    blurb: 'Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown.',
+    blurb:
+      'Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown. Photo audit: a wide openwork plaque about three times the stone, ten small diamonds around it, narrow engraved shank; modelled with a large octagonal dome plaque.',
     priceUsd: null,
     designFamily: 'deco-plaque / vintage-filigree / old-european',
     view: 'ring',
@@ -4072,21 +4082,20 @@ export const rings: ExampleDesign[] = [
         carat: 0.93,
         clarity: 'vs1',
         colorGrade: 'd-f',
+        aspect: 1.6,
       },
       accentStone: {
         material: 'diamond',
         color: 'colorless',
-        cut: 'round-brilliant',
-        sizeMm: 1.6,
+        cut: 'baguette',
+        sizeMm: 2.4,
       },
       head: {
-        id: 'five-stone',
+        id: 'three-stone',
         metal: 'white-gold-14k',
         params: {
-          sideRatio: 0.42,
-          outerRatio: 0.4,
+          sideRatio: 0.5,
           sideGap: 0.12,
-          sideCut: 'baguette',
           sideProngs: 3,
         },
       },
@@ -4117,9 +4126,9 @@ export const rings: ExampleDesign[] = [
     tags: ['nature', 'engagement'],
     category: 'nature',
     blurb:
-      'Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side, modelled with baguette sides on both.',
+      'Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side, modelled with baguette sides on both. Compared with the photo: elongated hexagon, baguette flanks (the triangle outer stones cannot be added).',
     priceUsd: 5605,
-    designFamily: 'five-stone / dainty / hexagon',
+    designFamily: 'three-stone / dainty / hexagon',
     view: 'ring',
   },
   {
@@ -4132,31 +4141,31 @@ export const rings: ExampleDesign[] = [
     engagement: {
       center: {
         material: 'diamond',
-        color: 'black',
+        color: 'salt-and-pepper',
         cut: 'hexagon',
         carat: 1.9,
         clarity: 'vs1',
         colorGrade: 'd-f',
+        aspect: 1.1,
       },
       accentStone: {
         material: 'diamond',
         color: 'colorless',
-        cut: 'round-brilliant',
-        sizeMm: 1.6,
+        cut: 'trillion',
+        sizeMm: 3,
       },
       head: {
         id: 'three-stone',
-        metal: 'yellow-gold-14k',
+        metal: 'rose-gold-14k',
         params: {
           sideRatio: 0.4,
           sideGap: 0.1,
-          sideCut: 'trillion',
           sideProngs: 3,
         },
       },
       shank: {
         id: 'pave',
-        metal: 'yellow-gold-14k',
+        metal: 'rose-gold-14k',
         params: {
           thicknessMm: 1.7,
           topThicknessMm: 1.7,
@@ -4183,7 +4192,7 @@ export const rings: ExampleDesign[] = [
     tags: ['colored-stone', 'engagement'],
     category: 'colored-stone',
     blurb:
-      'Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band.',
+      'Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded shoulders approximated by plain pave.',
     priceUsd: 6477,
     designFamily: 'three-stone / pave / hexagon',
     view: 'ring',
@@ -4526,7 +4535,26 @@ export const rings: ExampleDesign[] = [
       },
       finish: 'polished',
     },
-    band: null,
+    band: {
+      style: 'chevron',
+      metal: 'rose-gold-14k',
+      metal2: 'rose-gold-14k',
+      finish: 'polished',
+      params: {
+        stones: true,
+        stoneSize: 1.6,
+        stoneCount: 7,
+      },
+      widthMm: 1.8,
+      thicknessMm: 1.8,
+      accentStone: {
+        material: 'diamond',
+        color: 'colorless',
+        cut: 'round-brilliant',
+        sizeMm: 1.5,
+      },
+      fit: 'auto',
+    },
     source: {
       name: 'Aquamarise',
       url: 'https://aquamarise.com/products/bella-oval-cut-alexandrite-engagement-ring-set-in-14k-solid-rose-gold',
@@ -4534,10 +4562,10 @@ export const rings: ExampleDesign[] = [
     tags: ['colored-stone', 'engagement'],
     category: 'colored-stone',
     blurb:
-      'Oval lab-grown alexandrite on a pave rose-gold band; head and carat not stated on page (search snippet says approx. 2 ct, 7x9 mm). Head style not stated on page; prong head assumed. Photo audit: oval centre with two round side stones over a pave band; the blue-violet colour-change is not in the alexandrite colour list.',
+      'Oval lab-grown alexandrite on a pave rose-gold band; head and carat not stated on page (search snippet says approx. 2 ct, 7x9 mm). Head style not stated on page; prong head assumed. Photo audit: oval centre with two round side stones over a pave band; the blue-violet colour-change is not in the alexandrite colour list. Compared with the photo: the matching chevron stacker is the set band; colour-change shift approximated by blue-violet.',
     priceUsd: 2295,
     designFamily: 'three-stone / pave / oval',
-    view: 'ring',
+    view: 'set',
   },
   {
     version: 1,
@@ -4562,9 +4590,14 @@ export const rings: ExampleDesign[] = [
         sizeMm: 1.6,
       },
       head: {
-        id: 'solitaire-4-prong',
+        id: 'cluster-flank',
         metal: 'yellow-gold-14k',
-        params: {},
+        params: {
+          flankCount: 3,
+          flankRatio: 0.3,
+          arrangement: 'fan',
+          prongStyle: 'claw',
+        },
       },
       shank: {
         id: 'leaf-vine',
@@ -4588,9 +4621,9 @@ export const rings: ExampleDesign[] = [
     tags: ['nature', 'engagement'],
     category: 'nature',
     blurb:
-      'Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents.',
+      'Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents. Compared with the photo: a fan of marquise and round leaves each side of the oval; the free bypass vine is approximated by a vine shank.',
     priceUsd: 2045,
-    designFamily: 'solitaire-4-prong / leaf-vine / oval',
+    designFamily: 'cluster-flank / leaf-vine / oval',
     view: 'ring',
   },
   {
@@ -5290,12 +5323,11 @@ export const rings: ExampleDesign[] = [
         sizeMm: 1.6,
       },
       head: {
-        id: 'bezel-half',
+        id: 'bezel-full',
         metal: 'yellow-gold-14k',
         params: {
           bezelThickness: 0.4,
-          bezelHeight: 0.3,
-          coverAngle: 60,
+          bezelHeight: 0.35,
         },
       },
       shank: {
@@ -5325,9 +5357,9 @@ export const rings: ExampleDesign[] = [
     tags: ['colored-stone', 'engagement'],
     category: 'colored-stone',
     blurb:
-      '7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south.',
+      '7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south. Compared with the photo: thin open bezel rim on a plain band; the photo stone reads peach-pink, our pink is cooler.',
     priceUsd: 7800,
-    designFamily: 'bezel-half / plain-round / oval',
+    designFamily: 'bezel-full / plain-round / oval',
     view: 'ring',
   },
   {
@@ -8349,7 +8381,7 @@ export const rings: ExampleDesign[] = [
     tags: ['set', 'set'],
     category: 'set',
     blurb:
-      'Four-prong basket with 8 shared-prong accent diamonds and a 2.5mm ribbon-like shank; matching 1.7mm contoured band with 11 diamonds. Shown with 3/4 ct round. Photo audit: ribbon shoulders wrap the basket.',
+      'Four-prong basket with 8 shared-prong accent diamonds and a 2.5mm ribbon-like shank; matching 1.7mm contoured band with 11 diamonds. Shown with 3/4 ct round. Photo audit: ribbon shoulders wrap the basket. Photo not reachable (the Brilliant Earth page returned 403), so this entry was not re-checked against a picture.',
     priceUsd: null,
     designFamily: 'basket / crossover / round-brilliant',
     view: 'set',
@@ -8995,7 +9027,12 @@ export const rings: ExampleDesign[] = [
       head: {
         id: 'tension-bypass',
         metal: 'platinum',
-        params: {},
+        params: {
+          bladeWidth: 2,
+          sweepOffset: 1.6,
+          sweepRun: 7,
+          jawThickness: 1.6,
+        },
       },
       shank: {
         id: 'bypass',
@@ -9027,7 +9064,7 @@ export const rings: ExampleDesign[] = [
     tags: ['tension', 'engagement'],
     category: 'tension',
     blurb:
-      'Swirled platinum tension setting, 1.5 mm at top tapering to 2.2 mm; setting only, any center stone shape. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). (Not stated by the source, so the model uses a default carat.)',
+      'Swirled platinum tension setting, 1.5 mm at top tapering to 2.2 mm; setting only, any center stone shape. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). Compared with the photo: top view matches the swept bypass; the blades stand taller and blockier than the smooth swoop.',
     priceUsd: 2138,
     designFamily: 'tension-bypass / bypass / round-brilliant',
     view: 'ring',
@@ -9057,7 +9094,12 @@ export const rings: ExampleDesign[] = [
       head: {
         id: 'tension-bypass',
         metal: 'platinum',
-        params: {},
+        params: {
+          bladeWidth: 2,
+          sweepOffset: 1.6,
+          sweepRun: 7,
+          jawThickness: 1.6,
+        },
       },
       shank: {
         id: 'bypass',
@@ -9089,7 +9131,7 @@ export const rings: ExampleDesign[] = [
     tags: ['tension', 'engagement'],
     category: 'tension',
     blurb:
-      'Twisted swirl tension setting with pave on the band, 2.1 mm wide; center stone sold separately. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). (Not stated by the source, so the model uses a default carat.)',
+      'Twisted swirl tension setting with pave on the band, 2.1 mm wide; center stone sold separately. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). Compared with the photo: pave on the two swept ends is not buildable on the blades.',
     priceUsd: 2989,
     designFamily: 'tension-bypass / bypass / round-brilliant',
     view: 'ring',
@@ -9904,8 +9946,9 @@ export const rings: ExampleDesign[] = [
         params: {
           sides: 6,
           tiers: 1,
-          gallery: 'solid',
-          frameGap: 0.9,
+          frameGap: 0.4,
+          rotation: 30,
+          cornerRadius: 0.3,
         },
       },
       shank: {
@@ -9930,7 +9973,7 @@ export const rings: ExampleDesign[] = [
     tags: ['hexagon', 'engagement'],
     category: 'hexagon',
     blurb:
-      'A round brilliant sits inside a hexagon-shaped bezel, giving a geometric outline; sold, no price.',
+      'A round brilliant sits inside a hexagon-shaped bezel, giving a geometric outline; sold, no price. Compared with the photo: hexagon frame turned point-up with a thin rim; the corner beads are not modelled.',
     priceUsd: null,
     designFamily: 'bezel-polygon / plain-round / round-brilliant',
     view: 'ring',
@@ -10019,7 +10062,9 @@ export const rings: ExampleDesign[] = [
         params: {
           sides: 6,
           tiers: 1,
-          frameGap: 1,
+          frameGap: 0.5,
+          rotation: 30,
+          cornerRadius: 0.3,
         },
       },
       shank: {
@@ -10049,7 +10094,7 @@ export const rings: ExampleDesign[] = [
     tags: ['hexagon', 'engagement'],
     category: 'hexagon',
     blurb:
-      'Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested. Photo audit: photo: round centre in a hexagonal frame with baguettes each side on the shank.',
+      'Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested. Photo audit: photo: round centre in a hexagonal frame with baguettes each side on the shank. Compared with the photo: point-up hexagon frame with baguettes in a channel; the separate baguette bezels are not modelled.',
     priceUsd: 1455,
     designFamily: 'bezel-polygon / channel / round-brilliant',
     view: 'ring',

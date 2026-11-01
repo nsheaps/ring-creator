@@ -69,7 +69,7 @@
     "colorName": "salt and pepper",
     "clarity": null
    },
-   "head": "five-stone",
+   "head": "three-stone",
    "shank": "dainty",
    "metals": [
     "white-gold-14k"
@@ -91,16 +91,21 @@
      "raise": 0.3
     },
     "head": {
-     "sideRatio": 0.42,
-     "outerRatio": 0.4,
+     "sideRatio": 0.5,
      "sideGap": 0.12,
-     "sideCut": "baguette",
      "sideProngs": 3
+    },
+    "center": {
+     "aspect": 1.6
+    },
+    "accent": {
+     "cut": "baguette",
+     "sizeMm": 2.4
     }
    }
   },
   "band": null,
-  "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side, modelled with baguette sides on both."
+  "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side, modelled with baguette sides on both. Compared with the photo: elongated hexagon, baguette flanks (the triangle outer stones cannot be added)."
  },
  {
   "id": "r3-003",
@@ -117,13 +122,13 @@
     "material": "diamond",
     "cut": "hexagon",
     "carat": 1.9,
-    "colorName": "black salt and pepper",
+    "colorName": "salt and pepper",
     "clarity": null
    },
    "head": "three-stone",
    "shank": "pave",
    "metals": [
-    "yellow-gold-14k"
+    "rose-gold-14k"
    ],
    "finish": "polished",
    "accents": [
@@ -146,13 +151,19 @@
     "head": {
      "sideRatio": 0.4,
      "sideGap": 0.1,
-     "sideCut": "trillion",
      "sideProngs": 3
+    },
+    "center": {
+     "aspect": 1.1
+    },
+    "accent": {
+     "cut": "trillion",
+     "sizeMm": 3
     }
    }
   },
   "band": null,
-  "notes": "Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band."
+  "notes": "Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded shoulders approximated by plain pave."
  },
  {
   "id": "r3-004",
@@ -418,8 +429,22 @@
     }
    }
   },
-  "band": null,
-  "notes": "Oval lab-grown alexandrite on a pave rose-gold band; head and carat not stated on page (search snippet says approx. 2 ct, 7x9 mm). Head style not stated on page; prong head assumed. Photo audit: oval centre with two round side stones over a pave band; the blue-violet colour-change is not in the alexandrite colour list."
+  "band": {
+   "style": "chevron",
+   "metals": [
+    "rose-gold-14k"
+   ],
+   "stones": "melee",
+   "widthMm": 1.8,
+   "tune": {
+    "params": {
+     "stones": true,
+     "stoneSize": 1.6,
+     "stoneCount": 7
+    }
+   }
+  },
+  "notes": "Oval lab-grown alexandrite on a pave rose-gold band; head and carat not stated on page (search snippet says approx. 2 ct, 7x9 mm). Head style not stated on page; prong head assumed. Photo audit: oval centre with two round side stones over a pave band; the blue-violet colour-change is not in the alexandrite colour list. Compared with the photo: the matching chevron stacker is the set band; colour-change shift approximated by blue-violet."
  },
  {
   "id": "r3-010",
@@ -439,7 +464,7 @@
     "colorName": null,
     "clarity": null
    },
-   "head": "solitaire-4-prong",
+   "head": "cluster-flank",
    "shank": "leaf-vine",
    "metals": [
     "yellow-gold-14k"
@@ -449,10 +474,17 @@
     "leaf-shaped accents"
    ],
    "orientation": "north-south",
-   "tune": null
+   "tune": {
+    "head": {
+     "flankCount": 3,
+     "flankRatio": 0.3,
+     "arrangement": "fan",
+     "prongStyle": "claw"
+    }
+   }
   },
   "band": null,
-  "notes": "Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents."
+  "notes": "Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents. Compared with the photo: a fan of marquise and round leaves each side of the oval; the free bypass vine is approximated by a vine shank."
  },
  {
   "id": "r3-011",
@@ -912,7 +944,7 @@
     "colorName": "fancy vivid pink",
     "clarity": null
    },
-   "head": "bezel-half",
+   "head": "bezel-full",
    "shank": "plain-round",
    "metals": [
     "yellow-gold-14k"
@@ -923,8 +955,7 @@
    "tune": {
     "head": {
      "bezelThickness": 0.4,
-     "bezelHeight": 0.3,
-     "coverAngle": 60
+     "bezelHeight": 0.35
     },
     "shank": {
      "widthMm": 1.8,
@@ -935,7 +966,7 @@
    }
   },
   "band": null,
-  "notes": "7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south."
+  "notes": "7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south. Compared with the photo: thin open bezel rim on a plain band; the photo stone reads peach-pink, our pink is cooler."
  },
  {
   "id": "r3-024",

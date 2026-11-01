@@ -585,12 +585,22 @@
         },
         "head": {
           "sides": 8,
-          "domeHeight": 1.5
+          "domeHeight": 2.2,
+          "plaqueGap": 3.0,
+          "ribCount": 14,
+          "rimStones": true,
+          "stoneSize": 1.6
+        },
+        "shank": {
+          "widthMm": 1.8,
+          "topWidthMm": 2.4,
+          "thicknessMm": 1.5,
+          "topThicknessMm": 1.8
         }
       }
     },
     "band": null,
-    "notes": "Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown."
+    "notes": "Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown. Photo audit: a wide openwork plaque about three times the stone, ten small diamonds around it, narrow engraved shank; modelled with a large octagonal dome plaque."
   },
   {
     "id": "r1-014",

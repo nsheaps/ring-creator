@@ -131,9 +131,9 @@
   "kind": "engagement",
   "engagement": {
    "stone": {
-    "material": null,
-    "cut": null,
-    "carat": null,
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 1.0,
     "colorName": null,
     "clarity": null
    },
@@ -154,11 +154,17 @@
      "overlapDeg": 40,
      "gapMm": 0.3,
      "tipTaper": 0.2
+    },
+    "head": {
+     "bladeWidth": 2.0,
+     "sweepOffset": 1.6,
+     "sweepRun": 7,
+     "jawThickness": 1.6
     }
    }
   },
   "band": null,
-  "notes": "Swirled platinum tension setting, 1.5 mm at top tapering to 2.2 mm; setting only, any center stone shape. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated)."
+  "notes": "Swirled platinum tension setting, 1.5 mm at top tapering to 2.2 mm; setting only, any center stone shape. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). Compared with the photo: top view matches the swept bypass; the blades stand taller and blockier than the smooth swoop."
  },
  {
   "id": "r5-005",
@@ -172,9 +178,9 @@
   "kind": "engagement",
   "engagement": {
    "stone": {
-    "material": null,
-    "cut": null,
-    "carat": null,
+    "material": "diamond",
+    "cut": "round-brilliant",
+    "carat": 1.0,
     "colorName": null,
     "clarity": null
    },
@@ -197,11 +203,17 @@
      "overlapDeg": 40,
      "gapMm": 0.3,
      "tipTaper": 0.2
+    },
+    "head": {
+     "bladeWidth": 2.0,
+     "sweepOffset": 1.6,
+     "sweepRun": 7,
+     "jawThickness": 1.6
     }
    }
   },
   "band": null,
-  "notes": "Twisted swirl tension setting with pave on the band, 2.1 mm wide; center stone sold separately. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated)."
+  "notes": "Twisted swirl tension setting with pave on the band, 2.1 mm wide; center stone sold separately. Photo audit: stone sits between the two swept ends of a bypass band (tension look approximated). Compared with the photo: pave on the two swept ends is not buildable on the blades."
  },
  {
   "id": "r5-006",
@@ -718,13 +730,14 @@
     "head": {
      "sides": 6,
      "tiers": 1,
-     "gallery": "solid",
-     "frameGap": 0.9
+     "frameGap": 0.4,
+     "rotation": 30,
+     "cornerRadius": 0.3
     }
    }
   },
   "band": null,
-  "notes": "A round brilliant sits inside a hexagon-shaped bezel, giving a geometric outline; sold, no price."
+  "notes": "A round brilliant sits inside a hexagon-shaped bezel, giving a geometric outline; sold, no price. Compared with the photo: hexagon frame turned point-up with a thin rim; the corner beads are not modelled."
  },
  {
   "id": "r5-021",
@@ -804,12 +817,14 @@
     "head": {
      "sides": 6,
      "tiers": 1,
-     "frameGap": 1.0
+     "frameGap": 0.5,
+     "rotation": 30,
+     "cornerRadius": 0.3
     }
    }
   },
   "band": null,
-  "notes": "Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested. Photo audit: photo: round centre in a hexagonal frame with baguettes each side on the shank."
+  "notes": "Hexagonal prong head flanked by baguettes; prong count not stated so head is nearest id. Round, emerald or asscher suggested. Photo audit: photo: round centre in a hexagonal frame with baguettes each side on the shank. Compared with the photo: point-up hexagon frame with baguettes in a channel; the separate baguette bezels are not modelled."
  },
  {
   "id": "r5-023",

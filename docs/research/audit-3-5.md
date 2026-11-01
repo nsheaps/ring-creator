@@ -44,3 +44,16 @@ Checked against a photo and left as is: r3-007 r3-011 r3-012, r4-003 r4-004 r4-0
 - Alexandrite has a `blue-violet` colour (r3-009 uses it).
 - Band `alternate` makes every other stone another gem (r4-008 alternates sapphire and diamond; stones go in the `band-stone2` slot).
 - `contour-curved` and `chevron` can carry stones (r4-015). Still open: marquise clusters in the V, the nested crown and the segmented, infinity-weave and inlay styles.
+
+## Second pass: compared render against photo (r1-013, r3-002, r3-003, r3-009, r3-010, r3-023, r5-004, r5-005, r5-020, r5-022)
+
+Data-only changes: r1-013 gets a large domed plaque and a narrow shank; r3-002 an elongated hexagon with baguette flanks; r3-003 rose gold, salt-and-pepper colour and triangle flanks; r3-009 the chevron stacker as a band; r3-010 a marquise fan cluster; r3-023 a thin full bezel; r5-020 and r5-022 point-up hexagon frames with thinner rims; r5-004 and r5-005 a one-carat round and tuned blades. r4-036 could not be re-checked (Brilliant Earth returned 403).
+
+Remaining gaps that need new builders:
+
+- r3-002 r3-003: triangle outer stones beyond the baguettes (five-stone has one cut for all side stones); side baguette long axis should run along the finger; graded pave on r3-003.
+- r3-010: free-standing marquise leaves on a bypass vine instead of a cluster on a regular shank.
+- r3-023: peach-pink colour of the photo stone is warmer than the pink in the list.
+- r5-004 r5-005: smooth swept blades low on the band; pave on the blades (r5-005).
+- r5-020 r5-022: corner beads on the hexagon frame; baguettes each in its own bezel on the shank (r5-022).
+- r1-013: fully openwork pierced plaque with a star of ribs and old-cut rim stones in cartouches; engraved shank is approximated by the vine pattern.
