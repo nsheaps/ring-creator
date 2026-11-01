@@ -39,6 +39,7 @@ uniform float gemCrownLo;
 uniform float gemGlow;
 uniform float gemMosaic;
 uniform float gemStep;
+uniform float gemLift;
 vec3 gemHash3(vec3 p) {
   p = fract(p * vec3(0.1031, 0.1030, 0.0973));
   p += dot(p, p.yxz + 33.33);
@@ -107,8 +108,8 @@ const PAVILION_MAIN = /* glsl */ `
   env = mix( env, mix( darkTone, flashTone, flash ), gemMosaic * facetFlat );
   vec3 body = pow( max( gemBody, vec3( 1e-3 ) ), vec3( gemPath ) );
   vec3 col = env * body;
-  // a little body colour glow even in dark facets so coloured stones never go grey
-  col += body * 0.12;
+  // a little body colour glow even in dark facets so coloured stones never go grey (and dark stones never go black)
+  col += body * gemLift;
   col = mix( col, vec3( dot( col, vec3( 0.333 ) ) ) * 0.75 + 0.1, gemHaze * 0.6 );
   // translucent stones (opal): a milky glowing body with soft spectral patches (play of colour)
   if ( gemGlow > 0.0 ) {
@@ -163,6 +164,99 @@ interface GemUniforms {
   gemGlow: { value: number };
   gemMosaic: { value: number };
   gemStep: { value: number };
+  gemLift: { value: number };
+}
+
+/** Plain shading parameters of a faceted (non-opaque) gem; `gemMaterials` turns them into shader uniforms. */
+export interface GemShade {
+  /** body colour fed to the shader (before the path-length power) */
+  body: THREE.Color;
+  /** 0 for normal stones, up to 1 for very dark ones (black diamond, black spinel, smoky, inky sapphire) */
+  darkness: number;
+  scatter: number;
+  dispersion: number;
+  brightness: number;
+  haze: number;
+  contrast: number;
+  path: number;
+  crownLo: number;
+  glow: number;
+  mosaic: number;
+  step: number;
+  lift: number;
+  /** environment strength of the crown's surface reflection (specular glints) */
+  crownEnv: number;
+}
+
+/** sRGB lightness the body colour of a fully dark stone is raised to: dark stones read as smoky grey glass, never a void. */
+export const DARK_GEM_MIN_LIGHTNESS = 0.42;
+
+/**
+ * Shading parameters for a transparent or translucent gem. Pure (no WebGL), so it is unit tested.
+ * Dark body colours would otherwise go to black: the shader multiplies the environment by body^path, and
+ * 0.1^1.4 is ~0.04. Real dark stones still show their facets (bright specular flashes on the crown, grey-black
+ * step bands, a smoky body where light passes), so a dark body is lifted to a minimum lightness (hue and
+ * saturation kept), travels a shorter path, gets a stronger body glow and brighter crown reflections.
+ */
+export function gemShade(
+  gem: GemModel,
+  colorHex: string,
+  clarity?: ClarityModel,
+  tintHex?: string,
+  tintStrength = 0,
+  stepCut = false,
+): GemShade {
+  const base = new THREE.Color(colorHex);
+  if (tintHex && tintStrength > 0) base.lerp(new THREE.Color(tintHex), tintStrength);
+  const haze = clarity?.haze ?? 0;
+  const hsl = { h: 0, s: 0, l: 0 };
+  // darkness is judged on the colour as seen (sRGB lightness): 1 at <= 0.12 (black), fading out by 0.3 (deep but
+  // clearly coloured stones such as deep green emerald keep their colour)
+  base.getHSL(hsl, THREE.SRGBColorSpace);
+  const darkness = THREE.MathUtils.clamp((0.3 - hsl.l) / 0.18, 0, 1);
+  base.getHSL(hsl);
+  const colourless = hsl.s < 0.12 || hsl.l > 0.9;
+  const translucent = gem.transparency === 'translucent';
+  // high-index stones (diamond, moissanite, zircon) return more light and break it into finer, harder flashes
+  const ri = THREE.MathUtils.clamp((gem.ior - 1.5) / 0.95, 0, 1);
+  const body = base.clone();
+  const pastel = hsl.l > 0.72;
+  if (pastel) body.lerp(new THREE.Color('#ffffff'), 0.2);
+  else if (!colourless) {
+    // deepen coloured gems: light travels through the body twice (capped so blues stay inky, not electric)
+    body.getHSL(hsl);
+    body.setHSL(hsl.h, Math.min(0.78, hsl.s * 1.1 + 0.02), hsl.l);
+  }
+  if (darkness > 0) {
+    body.getHSL(hsl, THREE.SRGBColorSpace);
+    const lift = hsl.l + (Math.max(hsl.l, DARK_GEM_MIN_LIGHTNESS) - hsl.l) * darkness;
+    // near-black bodies are mostly grey: lifting them must not turn a faint cast into a pastel tint
+    body.setHSL(hsl.h, hsl.s * (1 - 0.5 * darkness), lift, THREE.SRGBColorSpace);
+  }
+  const basePath = colourless ? 1.4 : pastel ? 1.1 : 1.6;
+  const baseCrownLo = colourless ? 0.45 : 0.6;
+  return {
+    body,
+    darkness,
+    scatter: 0.75 + 0.55 * ri + (translucent ? 0.5 : 0),
+    // coloured stones: their body colour masks fire, and split channels would tint facets off-hue; dark bodies too
+    dispersion:
+      Math.min(0.07, gem.dispersion * 0.6) *
+      (colourless ? 1 : 0.3) *
+      (stepCut ? 0 : 1) *
+      (1 - 0.7 * darkness),
+    brightness: colourless ? 1.5 + 0.4 * ri : 1.8,
+    haze: Math.min(1, haze + (translucent ? 0.55 : 0)),
+    contrast: colourless ? 0.9 : 0.55,
+    // light travels the body twice: deeper colour for saturated gems, a gentle deepening for pastels and tints
+    path: basePath + (1.0 - basePath) * darkness,
+    crownLo: baseCrownLo + (0.7 - baseCrownLo) * darkness,
+    glow: translucent ? 0.75 : 0,
+    mosaic: translucent ? 0 : stepCut ? 1 : colourless ? 0.9 : 0.6,
+    step: stepCut ? 1 : 0,
+    lift: 0.12 + 0.18 * darkness,
+    crownEnv: 0.6 + 0.3 * darkness,
+  };
 }
 
 function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
@@ -178,11 +272,16 @@ function pavilionMaterial(u: GemUniforms): THREE.MeshStandardMaterial {
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
       .replace('#include <opaque_fragment>', PAVILION_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-pavilion-v5';
+  mat.customProgramCacheKey = () => 'gem-pavilion-v6';
   return mat;
 }
 
-function crownMaterial(gem: GemModel, haze: number, u: GemUniforms): THREE.MeshPhysicalMaterial {
+function crownMaterial(
+  gem: GemModel,
+  haze: number,
+  envIntensity: number,
+  u: GemUniforms,
+): THREE.MeshPhysicalMaterial {
   const mat = new THREE.MeshPhysicalMaterial({
     color: '#000000',
     metalness: 0,
@@ -190,7 +289,7 @@ function crownMaterial(gem: GemModel, haze: number, u: GemUniforms): THREE.MeshP
     ior: Math.min(2.33, gem.ior),
     specularIntensity: 1,
     specularColor: new THREE.Color('#ffffff'),
-    envMapIntensity: 0.6,
+    envMapIntensity: envIntensity,
     transparent: true,
     blending: THREE.CustomBlending,
     blendEquation: THREE.AddEquation,
@@ -208,7 +307,7 @@ function crownMaterial(gem: GemModel, haze: number, u: GemUniforms): THREE.MeshP
       .replace('#include <common>', `#include <common>\n${GEM_PARS}`)
       .replace('#include <opaque_fragment>', CROWN_MAIN);
   };
-  mat.customProgramCacheKey = () => 'gem-crown-v5';
+  mat.customProgramCacheKey = () => 'gem-crown-v6';
   return mat;
 }
 
@@ -252,39 +351,23 @@ export function gemMaterials(
     });
     inner = new THREE.MeshStandardMaterial({ color: base, roughness: 0.4, side: THREE.BackSide });
   } else {
-    const hsl = { h: 0, s: 0, l: 0 };
-    base.getHSL(hsl);
-    const colourless = hsl.s < 0.12 || hsl.l > 0.9;
-    const translucent = gem.transparency === 'translucent';
-    // high-index stones (diamond, moissanite, zircon) return more light and break it into finer, harder flashes
-    const ri = THREE.MathUtils.clamp((gem.ior - 1.5) / 0.95, 0, 1);
-    const body = base.clone();
-    const pastel = hsl.l > 0.72;
-    if (pastel) body.lerp(new THREE.Color('#ffffff'), 0.2);
-    else if (!colourless) {
-      // deepen coloured gems: light travels through the body twice (capped so blues stay inky, not electric)
-      body.getHSL(hsl);
-      body.setHSL(hsl.h, Math.min(0.78, hsl.s * 1.1 + 0.02), hsl.l);
-    }
+    const g = gemShade(gem, colorHex, clarity, tintHex, tintStrength, stepCut);
     const uniforms: GemUniforms = {
-      gemBody: { value: body },
-      gemScatter: { value: 0.75 + 0.55 * ri + (translucent ? 0.5 : 0) },
-      // coloured stones: their body colour masks fire, and split channels would tint facets off-hue
-      gemDispersion: {
-        value: Math.min(0.07, gem.dispersion * 0.6) * (colourless ? 1 : 0.3) * (stepCut ? 0 : 1),
-      },
-      gemBrightness: { value: colourless ? 1.5 + 0.4 * ri : 1.8 },
-      gemHaze: { value: Math.min(1, haze + (translucent ? 0.55 : 0)) },
-      gemContrast: { value: colourless ? 0.9 : 0.55 },
-      // light travels the body twice: deeper colour for saturated gems, a gentle deepening for pastels and tints
-      gemPath: { value: colourless ? 1.4 : pastel ? 1.1 : 1.6 },
-      gemCrownLo: { value: colourless ? 0.45 : 0.6 },
-      gemGlow: { value: translucent ? 0.75 : 0 },
-      gemMosaic: { value: translucent ? 0 : stepCut ? 1 : colourless ? 0.9 : 0.6 },
-      gemStep: { value: stepCut ? 1 : 0 },
+      gemBody: { value: g.body },
+      gemScatter: { value: g.scatter },
+      gemDispersion: { value: g.dispersion },
+      gemBrightness: { value: g.brightness },
+      gemHaze: { value: g.haze },
+      gemContrast: { value: g.contrast },
+      gemPath: { value: g.path },
+      gemCrownLo: { value: g.crownLo },
+      gemGlow: { value: g.glow },
+      gemMosaic: { value: g.mosaic },
+      gemStep: { value: g.step },
+      gemLift: { value: g.lift },
     };
     inner = pavilionMaterial(uniforms);
-    outer = crownMaterial(gem, haze, uniforms);
+    outer = crownMaterial(gem, haze, g.crownEnv, uniforms);
   }
   cache.set(key, outer);
   cache.set(key + ':in', inner);
