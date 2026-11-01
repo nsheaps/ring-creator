@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { registerShankBuilder } from '../builders';
 import type { Part, ShankCtx, ShankResult } from '../types';
-import type { ProfilePoint } from '../helpers';
+import { toFlat, type ProfilePoint } from '../helpers';
 import {
   TOP,
   accentDims,
@@ -87,6 +87,9 @@ export function troughSection(
   return out;
 }
 
+/** Minimum radial thickness (mm) of a micro-pave band. */
+export const MICRO_PAVE_MIN_T = 2.0;
+
 /** Upper (outer) half of a two-half superellipse section as a dense polyline from the left edge over the top to the right edge. */
 function outerArc(hw: number, hTop: number, e: number, n = 120): { u: number; v: number; s: number }[] {
   const pts: { u: number; v: number; s: number }[] = [];
@@ -111,6 +114,10 @@ function microPave(ctx: ShankCtx, rows: number): ShankResult {
   const p = ctx.params;
   const R = ctx.innerRadius;
   const tp = readTaper(p, { w: 3.2, wTop: 3.4, t: 2.0, tTop: 2.1, taperDeg: 60 });
+  // stones are seated all over the dome, pavilions pointing into the metal: a micro-pave band is never thinner than
+  // about 2 mm radially, or the seats would break through the finger side
+  tp.tBottom = Math.max(tp.tBottom, MICRO_PAVE_MIN_T);
+  tp.tTop = Math.max(tp.tTop, tp.tBottom);
   const outerExp = outerExpFromRoundness(num(p, 'roundness', 0.85, 0, 1));
   const coverage = num(p, 'coverage', 1, 0.1, 1);
   const size = accentSize(ctx, p, 0.8, 1.6);
@@ -150,43 +157,85 @@ function microPave(ctx: ShankCtx, rows: number): ShankResult {
       }),
   });
   const pitch = dims.length + gap;
-  const stoneMs: THREE.Matrix4[] = [];
   const nAlong = Math.max(0, Math.floor(((a1 - a0) * rOut) / pitch));
-  for (let row = 0; row < rows; row++) {
+  /**
+   * Frame on the dome at angle th, at `frac` (-1 .. 1) of the usable arc across the section, sunk `sink` below the
+   * surface along its outward normal (dsMm moves it further across, in mm of arc): X along the band, Y out of the metal (a stone's table), Z across.
+   */
+  const onDome = (th: number, frac: number, sink: number, dsMm = 0): THREE.Matrix4 => {
+    const w = widthAt(tp, th);
+    const t = thickAt(tp, th);
+    const arc = outerArc(w / 2, t * split, outerExp);
+    const total = arc[arc.length - 1].s;
+    const lim = Math.max(0, total / 2 - dims.width * 0.5 - 0.12);
+    const target = clamp(total / 2 + frac * lim + dsMm, 0, total);
+    let j = 1;
+    while (j < arc.length - 1 && arc[j].s < target) j++;
+    const A = arc[j - 1];
+    const B = arc[j];
+    const k = (target - A.s) / Math.max(1e-6, B.s - A.s);
+    const u = A.u + (B.u - A.u) * k;
+    const v = A.v + (B.v - A.v) * k;
+    const len = Math.hypot(B.u - A.u, B.v - A.v) || 1;
+    // outward normal of the section (u right, v up); the polyline runs left to right over the top, so the
+    // outward side is to its left: (-dv, du)
+    const nu = -(B.v - A.v) / len;
+    const nv = (B.u - A.u) / len;
+    const rMid = R + t - t * split;
+    const rr = rMid + v - nv * sink;
+    const uu = u - nu * sink;
+    const c = Math.cos(th);
+    const sn = Math.sin(th);
+    const X = new THREE.Vector3(-sn, c, 0);
+    const Y = new THREE.Vector3(c * nv, sn * nv, nu).normalize();
+    const Z = new THREE.Vector3().crossVectors(X, Y).normalize();
+    const m = new THREE.Matrix4().makeBasis(X, Y, Z);
+    m.setPosition(rr * c, rr * sn, uu);
+    return m;
+  };
+  const rowFrac = (row: number) => (rows > 1 ? (row - (rows - 1) / 2) / ((rows - 1) / 2) : 0);
+  const rowShift = (row: number) => (row % 2 ? 0.5 : 0);
+  const angleAt = (side: number, along: number) => TOP + side * (a0 + (along * pitch) / rOut);
+  // stones sit flush in their bored seats: the girdle just below the metal surface, the shallow crown above it
+  const stoneSink = ch * 0.25;
+  const stoneMs: THREE.Matrix4[] = [];
+  for (let row = 0; row < rows; row++)
     for (const side of [-1, 1])
-      for (let i = 0; i < nAlong; i++) {
-        const th = TOP + side * (a0 + ((i + 0.5 + (row % 2 ? 0.5 : 0)) * pitch) / rOut);
-        const w = widthAt(tp, th);
-        const t = thickAt(tp, th);
-        const arc = outerArc(w / 2, t * split, outerExp);
-        const total = arc[arc.length - 1].s;
-        const lim = Math.max(0, total / 2 - dims.width * 0.5 - 0.12);
-        const target = total / 2 + (rows > 1 ? ((row - (rows - 1) / 2) / ((rows - 1) / 2)) * lim : 0);
-        let j = 1;
-        while (j < arc.length - 1 && arc[j].s < target) j++;
-        const A = arc[j - 1];
-        const B = arc[j];
-        const k = (target - A.s) / Math.max(1e-6, B.s - A.s);
-        const u = A.u + (B.u - A.u) * k;
-        const v = A.v + (B.v - A.v) * k;
-        const len = Math.hypot(B.u - A.u, B.v - A.v) || 1;
-        // outward normal of the section (u right, v up); the polyline runs left to right over the top
-        const nu = (B.v - A.v) / len;
-        const nv = -(B.u - A.u) / len;
-        const rMid = R + t - t * split;
-        const rr = rMid + v - nv * ch * 0.8;
-        const uu = u - nu * ch * 0.8;
-        const c = Math.cos(th);
-        const sn = Math.sin(th);
-        const X = new THREE.Vector3(-sn, c, 0);
-        const Y = new THREE.Vector3(c * nv, sn * nv, nu).normalize();
-        const Z = new THREE.Vector3().crossVectors(X, Y).normalize();
-        const m = new THREE.Matrix4().makeBasis(X, Y, Z);
-        m.setPosition(rr * c, rr * sn, uu);
-        stoneMs.push(m);
+      for (let i = 0; i < nAlong; i++)
+        stoneMs.push(onDome(angleAt(side, i + 0.5 + rowShift(row)), rowFrac(row), stoneSink));
+  // Holding beads: one in every three-stone interstice of the staggered grid (between rows r and r+1 the triangles
+  // alternate, their centroids a third and two thirds of the way across, half a pitch apart along the band), plus a
+  // bead between neighbours on the two outer rows' outer edges. They are raised from the metal and overlap the girdles.
+  const beadR = clamp(dims.width * 0.15, 0.1, 0.24);
+  const beadSink = beadR * 0.45;
+  const beadMs: THREE.Matrix4[] = [];
+  if (nAlong > 0) {
+    for (const side of [-1, 1]) {
+      for (let row = 0; row < rows - 1; row++) {
+        const f0 = rowFrac(row);
+        const f1 = rowFrac(row + 1);
+        for (let i = 0; i < nAlong - 1; i++) {
+          const sA = i + 1 + rowShift(row); // between stones i and i+1 of row r, under a stone of row r+1
+          const sB = i + 1 + rowShift(row + 1); // between stones of row r+1, over a stone of row r
+          beadMs.push(onDome(angleAt(side, sA), f0 + (f1 - f0) / 3, beadSink));
+          beadMs.push(onDome(angleAt(side, sB), f0 + ((f1 - f0) * 2) / 3, beadSink));
+        }
       }
+      for (const [row, dir] of [
+        [0, -1],
+        [rows - 1, 1],
+      ] as const)
+        for (let i = 0; i <= nAlong; i++)
+          beadMs.push(
+            onDome(angleAt(side, i + rowShift(row)), rowFrac(row), beadSink, dir * dims.width * 0.42),
+          );
+    }
   }
-  const parts: Part[] = [metal([band], 'micro-pave shank')];
+  const geos = [band];
+  // a low dome is enough: the lower half of every bead is inside the metal (and hundreds of them must fit the budget)
+  const dome = toFlat(new THREE.SphereGeometry(beadR, 6, 2, 0, Math.PI * 2, 0, Math.PI / 2));
+  if (beadMs.length) geos.push(instances(dome, beadMs));
+  const parts: Part[] = [metal(geos, 'micro-pave shank')];
   if (stoneMs.length)
     parts.push({
       slot: 'accent-stone',

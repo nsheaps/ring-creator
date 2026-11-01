@@ -10254,8 +10254,8 @@ export const rings: ExampleDesign[] = [
         params: {
           widthMm: 3.4,
           topWidthMm: 3.6,
-          thicknessMm: 2.0,
-          topThicknessMm: 2.1,
+          thicknessMm: 2.2,
+          topThicknessMm: 2.3,
           coverage: 1,
           stoneSizeMm: 1.1,
           rows: 6,
