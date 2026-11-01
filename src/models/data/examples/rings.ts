@@ -5310,7 +5310,7 @@ export const rings: ExampleDesign[] = [
     engagement: {
       center: {
         material: 'lab-diamond',
-        color: 'pink',
+        color: 'peach',
         cut: 'oval',
         carat: 7.05,
         clarity: 'vs1',

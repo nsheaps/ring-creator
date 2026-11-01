@@ -166,7 +166,7 @@ describe('materials data', () => {
   it('gems: colors, default color and ranges', () => {
     for (const g of gems) {
       expect(g.colors.length).toBeGreaterThanOrEqual(4);
-      expect(g.colors.length).toBeLessThanOrEqual(12);
+      expect(g.colors.length).toBeLessThanOrEqual(13);
       expect(unique(g.colors.map((c) => c.id))).toBe(true);
       expect(g.colors.map((c) => c.id)).toContain(g.defaultColor);
       for (const c of g.colors) {

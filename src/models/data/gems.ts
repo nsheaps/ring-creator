@@ -19,6 +19,7 @@ const diamondColors: GemColor[] = [
   c('champagne', 'Champagne', '#d8b48a', 'uncommon'),
   c('yellow', 'Fancy yellow', '#f0d23a', 'uncommon'),
   c('pink', 'Fancy pink', '#f4a8c4', 'rare'),
+  c('peach', 'Fancy peach', '#f8c8b4', 'rare'),
   c('blue', 'Fancy blue', '#7fb2e8', 'rare'),
   c('black', 'Black', '#1b1b1f', 'uncommon'),
   c('salt-and-pepper', 'Salt and pepper', '#8d8f93', 'uncommon'),
@@ -40,7 +41,7 @@ export const gems: GemModel[] = [
     name: 'Diamond',
     summary: 'The hardest natural gem, prized for unmatched brilliance and fire.',
     description:
-      'Diamond is pure carbon crystallized under immense pressure. It scores 10 on the Mohs scale and has strong brilliance and fire, which is why it has been the traditional engagement stone since the late 19th century.\n\nValue follows the four Cs: cut, color, clarity and carat. Cut has the largest effect on sparkle. Colorless stones are most expensive; fancy colors such as pink and blue are far rarer.\n\nIt is extremely hard but not unbreakable: a hard knock on an edge can chip it. Clean it with soap and a soft brush.',
+      'Diamond is pure carbon crystallized under immense pressure. It scores 10 on the Mohs scale and has strong brilliance and fire, which is why it has been the traditional engagement stone since the late 19th century.\n\nValue follows the four Cs: cut, color, clarity and carat. Cut has the largest effect on sparkle. Colorless stones are most expensive; fancy colors such as pink, warm peach and blue are far rarer.\n\nIt is extremely hard but not unbreakable: a hard knock on an edge can chip it. Clean it with soap and a soft brush.',
     tags: ['natural', 'hard', 'traditional', 'brilliant'],
     pros: ['Hardest gem', 'Exceptional sparkle', 'Holds resale value'],
     cons: ['Expensive', 'Can chip on a sharp blow', 'Sourcing concerns for some buyers'],
@@ -120,7 +121,7 @@ export const gems: GemModel[] = [
     name: 'Sapphire',
     summary: 'A durable corundum gem best known in blue but found in nearly every color.',
     description:
-      "Sapphire is corundum, the same mineral as ruby. It scores 9 on Mohs, making it one of the best colored stones for daily wear. Blue is classic, but pink, yellow, teal, white and the orange-pink padparadscha are all sapphire. Teal sapphire, much of it Australian, faces up olive to forest green with blue-teal flashes.\n\nColor and clarity drive value: vivid, evenly saturated royal blue and cornflower blue are most prized. Many sapphires are heat-treated to improve color, which is accepted in the trade; untreated stones command a premium.\n\nIt is September's birthstone and a popular alternative to a diamond.",
+      "Sapphire is corundum, the same mineral as ruby. It scores 9 on Mohs, making it one of the best colored stones for daily wear. Blue is classic, but pink, soft peach, yellow, teal, white and the orange-pink padparadscha are all sapphire. Teal sapphire, much of it Australian, faces up olive to forest green with blue-teal flashes.\n\nColor and clarity drive value: vivid, evenly saturated royal blue and cornflower blue are most prized. Many sapphires are heat-treated to improve color, which is accepted in the trade; untreated stones command a premium.\n\nIt is September's birthstone and a popular alternative to a diamond.",
     tags: ['corundum', 'durable', 'colorful', 'september'],
     pros: ['Very hard and durable', 'Wide range of colors', 'Historic engagement stone'],
     cons: ['Fine untreated stones are costly', 'Color can appear dark in dim light'],
@@ -136,6 +137,7 @@ export const gems: GemModel[] = [
       c('royal-blue', 'Royal blue', '#10307a', 'uncommon'),
       c('cornflower', 'Cornflower blue', '#4a73c4', 'rare'),
       c('pink', 'Pink', '#ee7fae', 'uncommon'),
+      c('peach', 'Peach', '#f7ae95', 'uncommon'),
       c('padparadscha', 'Padparadscha', '#f59a7a', 'rare'),
       c('yellow', 'Yellow', '#f2cf3d', 'common'),
       c('teal', 'Teal', '#4a6424', 'uncommon'),
