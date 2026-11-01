@@ -975,6 +975,7 @@
    "accents": [],
    "orientation": "north-south",
    "tune": {
+        "center": { "color": "peach" },
     "head": {
      "bezelThickness": 0.4,
      "bezelHeight": 0.35
