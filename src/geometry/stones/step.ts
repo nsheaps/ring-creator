@@ -134,4 +134,12 @@ function polygonCentroid(v: [number, number][]): [number, number] {
   return Math.abs(a) < 1e-12 ? [0, 0] : [cx / (3 * a), cz / (3 * a)];
 }
 
+/**
+ * Trapezoid and tapered baguette: a step cut whose girdle narrows from one end (+X, wide) to the other (-X, narrow).
+ * Params: taper (narrow end / wide end width), plus the step params. Side stones put the narrow end towards the centre.
+ */
+export const buildTrapezoid: StoneBuilder = (dims, params, opts) =>
+  buildStep(dims, { ...params, mode: 'polygon', shape: 'trapezoid' }, opts);
+
 registerStoneBuilder('step', buildStep);
+registerStoneBuilder('trapezoid', buildTrapezoid);

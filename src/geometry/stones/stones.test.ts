@@ -26,6 +26,8 @@ const VOCAB_CUTS = [
   'heart',
   'trillion',
   'baguette',
+  'trapezoid',
+  'tapered-baguette',
   'rose-cut',
   'old-european',
   'old-mine',
@@ -238,6 +240,8 @@ describe.each(cuts.map((c) => [c.id, c] as const))('stone %s', (_id, c) => {
       heart: 2,
       trillion: 3,
       baguette: 4,
+      trapezoid: 4,
+      'tapered-baguette': 4,
       'old-mine': 4,
       hexagon: 6,
       kite: 4,
@@ -286,6 +290,35 @@ describe('cut-specific invariants', () => {
     expect(pr.s.outline.points[pr.s.outline.corners[0]][0]).toBeCloseTo(pr.dims.length / 2, 3);
     const tr = build('trillion');
     expect(new Set(tr.s.outline.corners).size).toBe(3);
+  });
+
+  it('trapezoid and tapered baguette: wide end at +X, narrow end at -X, taper follows the param', () => {
+    for (const id of ['trapezoid', 'tapered-baguette']) {
+      const { c, dims, s } = build(id);
+      const widthAt = (sign: number) => {
+        const zs = ys(s)
+          .filter((v) => Math.abs(v[1]) < s.girdleThickness && sign * v[0] > sign * dims.length * 0.49 * 1)
+          .map((v) => v[2]);
+        return Math.max(...zs) - Math.min(...zs);
+      };
+      const wide = widthAt(1);
+      const narrow = widthAt(-1);
+      expect(wide, id).toBeCloseTo(dims.width, 2);
+      expect(narrow / wide, id).toBeCloseTo(Number(c.params.taper), 1);
+      expect(s.outline.corners.length).toBe(4);
+    }
+    // a different taper changes the narrow end
+    const c = cut('trapezoid');
+    const dims = dimsFromCarat(c, diamondLike, { carat: 0.5 });
+    const tight = buildStoneUncached({ ...c, params: { ...c.params, taper: 0.3 } }, dims, {});
+    const zsAt = (st: BuiltStone) => {
+      const p = st.geometry.getAttribute('position');
+      const z: number[] = [];
+      for (let i = 0; i < p.count; i++)
+        if (Math.abs(p.getY(i)) < st.girdleThickness && p.getX(i) < -dims.length * 0.49) z.push(p.getZ(i));
+      return Math.max(...z) - Math.min(...z);
+    };
+    expect(zsAt(tight) / dims.width).toBeCloseTo(0.3, 1);
   });
 
   it('heart: cleft is indented, point is at +X', () => {

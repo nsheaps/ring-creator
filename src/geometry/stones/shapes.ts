@@ -149,6 +149,19 @@ export function polygonVertices(
         corners: [0, 1, 2, 3, 4],
       };
     }
+    case 'trapezoid': {
+      // wide end at +X, narrow end at -X (a side stone's narrow end faces the centre stone); taper = narrow / wide
+      const k = Math.min(0.95, Math.max(0.25, pNum(params, 'taper', 0.6)));
+      return {
+        verts: [
+          [1, 1],
+          [1, -1],
+          [-1, -k],
+          [-1, k],
+        ],
+        corners: [0, 1, 2, 3],
+      };
+    }
     case 'octagon': {
       // cut-cornered rectangle; chamfer is a fraction of the width, kept at 45 degrees after aspect scaling
       const ch = pNum(params, 'chamfer', 0.16);

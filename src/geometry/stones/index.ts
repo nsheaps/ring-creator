@@ -8,13 +8,13 @@ import './rose';
 import './cabochon';
 
 export { buildBrilliant } from './brilliant';
-export { buildStep } from './step';
+export { buildStep, buildTrapezoid } from './step';
 export { buildRose } from './rose';
 export { buildCabochon } from './cabochon';
 export { makeShape, shoelaceXZ } from './shapes';
 
 /** Builder keys registered by this area (CutModel.builder must be one of these). */
-export const STONE_BUILDER_KEYS = ['brilliant', 'step', 'rose', 'cabochon'] as const;
+export const STONE_BUILDER_KEYS = ['brilliant', 'step', 'trapezoid', 'rose', 'cabochon'] as const;
 
 /** Evicted / cleared entries are not disposed (a scene may still hold them); GC frees them. */
 

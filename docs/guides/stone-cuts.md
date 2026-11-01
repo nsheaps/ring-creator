@@ -108,6 +108,13 @@ A triangle, often used as side stones flanking a centre in a three-stone ring. A
 
 A narrow rectangle with step facets. Rarely a centre stone, but beautiful as side stones in channel or tapered three-stone settings and in Art Deco eternity bands.
 
+## Trapezoid and tapered baguette
+
+![Trapezoid]({{base}}screenshots/components/cut/trapezoid.png)
+![Tapered baguette]({{base}}screenshots/components/cut/tapered-baguette.png)
+
+Step cuts that narrow towards one end. As side stones in a three-stone ring the narrow ends point at the centre stone, so the pair hugs a round or oval centre. A trapezoid is short and broad; a tapered baguette is long and slim. Choose either as the accent cut on the Accents tab with a three-stone head. The corners are exposed, so protect them with prongs or bezels.
+
 ## Vintage cuts: old European, old mine, rose
 
 ![Old European]({{base}}screenshots/components/cut/old-european.png)
