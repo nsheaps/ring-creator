@@ -154,6 +154,38 @@ describe('leaf-vine-bypass head', () => {
     expect(budTris(4)).toBeCloseTo(budTris(1) * 4, 0);
   });
 
+  it('the twigs root near the band ends, and the two branches are not exact point-symmetric copies', () => {
+    for (const bandAxis of [
+      [1, 0],
+      [0, 1],
+    ] as [number, number][]) {
+      const parts = build({ leafStyle: 'stone', leafCount: 3, budStones: 0 }, 'oval', 3.2, bandAxis);
+      // positions in band coordinates: a along the band, c across it
+      const band = (geos: THREE.BufferGeometry[]) =>
+        verts(geos).map((p) => ({
+          a: p.x * bandAxis[0] + p.z * bandAxis[1],
+          c: p.z * bandAxis[0] - p.x * bandAxis[1],
+          y: p.y,
+        }));
+      const v = band(metalOf(parts));
+      // the lowest metal over each shoulder is the twig's root, emerging from the shank well out along the band
+      for (const s of [1, -1]) {
+        const low = v
+          .filter((p) => s * p.a > 0 && Math.abs(p.c) < 1.5)
+          .sort((p, q) => p.y - q.y)
+          .slice(0, 40);
+        expect(low.reduce((t, p) => t + s * p.a, 0) / low.length).toBeGreaterThan(7.4);
+      }
+      // the second branch roots nearer the stone and takes its leaves in another order, so a half turn does not map
+      // the foliage onto itself
+      const st = band(stonesOf(parts));
+      const ext = (f: (p: { a: number; c: number }) => number) => Math.max(...st.map(f));
+      expect(
+        Math.abs(ext((p) => p.a) - ext((p) => -p.a)) + Math.abs(ext((p) => p.c) - ext((p) => -p.c)),
+      ).toBeGreaterThan(0.3);
+    }
+  });
+
   it('leaf count and leaf size grow the foliage', () => {
     const area = (params: Params) => {
       const b = new THREE.Box3().setFromPoints(verts(metalOf(build({ budStones: 0, ...params }))));

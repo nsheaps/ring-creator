@@ -1,11 +1,12 @@
 /**
  * Leaf-vine bypass head: the centre stone sits in claw prongs while two twig-like branches rise out of the shank from
  * either end of the band, sweep past opposite sides of the stone like a bypass and run on beyond it. Free-standing
- * leaves (flat metal blades with a raised midrib, or marquise stones in a thin leaf seat) sprout off each branch, with
- * optional small round "bud" stones of varied sizes on short stalks. Two short sprigs fork off each branch, one off the
- * climb and one near the root that runs back down the shoulder, each ending in a smaller leaf, so the foliage spreads
- * along the band. The branches are point symmetric: the one rising from the +band end wraps the +across side of the
- * stone, the other the opposite side.
+ * leaves of mixed sizes (flat metal blades with a raised midrib, or marquise stones in a thin leaf seat) sprout off both
+ * sides of each branch, the first tucked into the crook between twig and stone, with optional small round "bud" stones
+ * of varied sizes on short stalks. Two short sprigs fork off each branch, one off the climb and one near the root that
+ * runs back down the shoulder, each ending in a smaller leaf, so the foliage spreads along the band. The branches are
+ * nearly point symmetric: the one rising from the +band end wraps the +across side of the stone, the other the
+ * opposite side, with slightly different roots, spacing and leaf sizes.
  */
 import * as THREE from 'three';
 import { registerHeadBuilder } from '../builders';
@@ -237,10 +238,12 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
     const phiEnd = Math.PI / 2 + wrap;
     const [u3, w3] = arcPt(phiIn);
     const t3: [number, number] = [-Math.sin(phiIn), Math.cos(phiIn)];
-    // the branch meets the shank before the shank has fallen ~2.6 mm below the seat
+    // the branch roots far out along the band, its tapered tip emerging from the shank where the shank has fallen up to
+    // ~3.2 mm below the seat; the second branch roots a little nearer the stone so the two are not exact copies
     const Rs = shankTopRadius(ctx);
-    const uMax = Math.sqrt(Math.max(0, Rs * Rs - (Rs - 2.6) ** 2));
-    const uL = Math.max(u3 + 1.8, Math.min(u3 + 5, uMax - 0.4));
+    const leadLen = 0.5;
+    const uMax = Math.sqrt(Math.max(0, Rs * Rs - (Rs - 3.2) ** 2));
+    const uL = Math.max(u3 + 1.8, Math.min(u3 + 6.5, uMax - leadLen) - (sgn < 0 ? 0.5 : 0));
     const run = uL - u3;
     const v0 = -Math.min(0.6, ctx.shankWidth * 0.25);
     const P0: [number, number] = [uL, v0];
@@ -261,12 +264,12 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
       y: number;
       r: number;
     }
-    const rRoot = r0 * 1.2;
+    // the root: thin where it emerges from the shank, swelling to the twig's base thickness
     const lead: S[] = [];
     for (let k = 0; k < 4; k++) {
       const f = k / 4;
-      const u = uL + 0.6 * (1 - f);
-      lead.push({ u, v: v0, y: shankTop(u) - r0 + r0 * 0.85 * f, r: rRoot });
+      const u = uL + leadLen * (1 - f);
+      lead.push({ u, v: v0, y: shankTop(u) - r0 * (0.45 - 0.3 * f), r: r0 * (0.55 + 0.65 * f) });
     }
     // plan: the lead-in curve with a slight S wobble, then the arc round the stone
     const plan: { u: number; v: number; phi: number }[] = [];
@@ -347,7 +350,7 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
     // with two or more buds, the last one moves onto the side shoot (below), so the total stays `budStones`
     const shootBud = nBuds >= 2;
     const mainBuds = nBuds - (shootBud ? 1 : 0);
-    type Feature = { kind: 'leaf' | 'bud'; s: number; side: 1 | -1; angle: number; scale: number };
+    type Feature = { kind: 'leaf' | 'bud'; s: number; side: number; angle: number; scale: number };
     const kinds: ('leaf' | 'bud')[] = [];
     let li = nLeaves - 1;
     let bi = mainBuds;
@@ -361,21 +364,42 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
         bi--;
       }
     }
-    // buds vary in size (some are tiny), side leaves shrink a little towards the tip like a real shoot
+    // buds and leaves vary in size (some buds are tiny); the second branch takes the sizes in another order and its
+    // features sit a little further along, so the two branches differ slightly like real twigs
+    const alt = sgn < 0 ? 1 : 0;
     const BUD_SCALES = [1, 0.72, 0.88, 0.66];
+    const LEAF_SCALES = [1.05, 0.78, 0.95, 0.7];
+    // +1: the side of the twig away from the stone at arc length s
+    const outSide = (s: number) => {
+      const { s: q, t } = at(s);
+      return -t[1] * q.u + t[0] * q.v > 0 ? 1 : -1;
+    };
     let nb = 0;
     let nl = 0;
-    const feats: Feature[] = kinds.map((kind, i) => ({
-      kind,
-      s: total * (0.1 + (0.72 * (i + 0.5)) / Math.max(1, kinds.length)),
-      side: i % 2 === 0 ? 1 : -1,
-      angle: kind === 'leaf' ? 0.95 : 1.2,
-      scale: kind === 'bud' ? BUD_SCALES[nb++ % BUD_SCALES.length] : 1 - 0.07 * nl++,
-    }));
+    const feats: Feature[] = kinds.map((kind, i) => {
+      const s = total * (0.08 + 0.03 * alt + (0.7 * (i + 0.5)) / Math.max(1, kinds.length));
+      // foliage on both sides: the first leaf tucks into the crook between twig and stone, then leaves alternate
+      // out / in; buds go out / in the other way round
+      const k = kind === 'leaf' ? nl++ : nb++;
+      const out = outSide(s);
+      // (only on the climb: round the stone the inside is the girdle, so everything there grows outward)
+      const inward = s < total * 0.5 && (kind === 'leaf' ? k % 2 === 0 : k % 2 === 1);
+      const side = inward ? -out : out;
+      return {
+        kind,
+        s,
+        side,
+        angle: kind === 'leaf' ? (side === out ? 0.8 : 0.5) + 0.1 * ((k + alt) % 2) : 1.2,
+        scale:
+          kind === 'bud'
+            ? BUD_SCALES[(k + alt) % BUD_SCALES.length]
+            : LEAF_SCALES[(k + alt) % LEAF_SCALES.length],
+      };
+    });
     // the tip leaf carries on from the twig, turned a little away from the stone
     const tipT = at(total - 0.05);
     const tipOut = -tipT.t[1] * tipT.s.u + tipT.t[0] * tipT.s.v > 0 ? 1 : -1;
-    feats.push({ kind: 'leaf', s: total - 0.05, side: tipOut, angle: 0.45, scale: 1 });
+    feats.push({ kind: 'leaf', s: total - 0.05, side: tipOut, angle: 0.45, scale: alt ? 0.95 : 1.1 });
 
     const leafW = leafLen * (stoneLeaves ? 0.48 : 0.42);
     const leafStones = new Map<number, BuiltStone>();
@@ -412,14 +436,18 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
       const nv = t[0] * side;
       return [t[0] * Math.cos(ang) + nx * Math.sin(ang), t[1] * Math.cos(ang) + nv * Math.sin(ang)];
     };
-    const clearOf = (s: S, d: [number, number], reach: number) => {
+    const clearOf = (s: S, d: [number, number], reach: number, margin = 0.25) => {
       for (const k of [0.35, 0.65, 1])
-        if (overStone(s.u + d[0] * reach * k, s.v + d[1] * reach * k, 0.25)) return false;
+        if (overStone(s.u + d[0] * reach * k, s.v + d[1] * reach * k, margin)) return false;
       return true;
     };
     const pickDir = (s: S, t: [number, number], side: number, angle: number, reach: number): Placed => {
+      // keep the asked side if it (or a flatter angle) stays well clear of the stone, so a leaf can tuck into the crook
+      // between twig and stone without hiding under the girdle; else flip
       let d = tryDirAt(t, side, angle);
-      if (!clearOf(s, d, reach)) d = tryDirAt(t, -side, angle);
+      if (!clearOf(s, d, reach, 0.45)) d = tryDirAt(t, side, angle * 0.55);
+      if (!clearOf(s, d, reach, 0.45)) d = tryDirAt(t, side, angle * 0.3);
+      if (!clearOf(s, d, reach, 0.45)) d = tryDirAt(t, -side, angle);
       if (!clearOf(s, d, reach)) d = tryDirAt(t, side, 0.2);
       if (!clearOf(s, d, reach)) d = tryDirAt(t, -side, 0.2);
       return { base: s, dir: d, reach };
@@ -441,7 +469,8 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
       const ve2 = q.base.v + q.dir[1] * reach;
       const fall = droop(q.base.u, ue2);
       const base = world(q.base.u, q.base.v, q.base.y);
-      const end = world(ue2, ve2, q.base.y + fall + 0.15);
+      // leaves reaching across the finger tip down a little, following the rounded shank like a draped leaf
+      const end = world(ue2, ve2, q.base.y + 0.15 + Math.max(-1.2, fall - 0.5 * Math.abs(q.dir[1]) * reach));
       const dir = end.clone().sub(base).normalize();
       if (stoneLeaves) {
         const ls = leafStoneAt(scale);
@@ -470,8 +499,21 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
     };
     const budReach = (scale: number, r: number) => r + Math.max(0.8, budMm * scale) * 0.5 + 0.15;
     for (const f of feats) {
-      if (f.kind === 'leaf') addLeaf(placeDir(f, leafLen * f.scale + r0), f.scale);
-      else {
+      if (f.kind === 'leaf') {
+        // a leaf asked to tuck in towards the stone shrinks a little to fit the crook before it gives up its side
+        const keeps = (q: Placed) => Math.sign(at(f.s).t[0] * q.dir[1] - at(f.s).t[1] * q.dir[0]) === f.side;
+        let sc = f.scale;
+        let q = placeDir(f, leafLen * sc + r0);
+        for (const k of [0.82, 0.68])
+          if (!keeps(q)) {
+            const q2 = placeDir(f, leafLen * f.scale * k + r0);
+            if (keeps(q2)) {
+              q = q2;
+              sc = f.scale * k;
+            }
+          }
+        addLeaf(q, sc);
+      } else {
         const bud = budAt(f.scale);
         addBud(placeDir(f, budReach(f.scale, r0)), bud);
       }

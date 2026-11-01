@@ -4620,7 +4620,7 @@ export const rings: ExampleDesign[] = [
         params: {
           leafStyle: 'stone',
           leafCount: 4,
-          leafSize: 2.4,
+          leafSize: 2.8,
           budStones: 3,
           branchThickness: 0.9,
           wrap: 8,

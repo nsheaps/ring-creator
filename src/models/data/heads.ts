@@ -1632,7 +1632,7 @@ export const heads: HeadModel[] = [
     summary:
       'Two twig-like branches sweep from the band past opposite sides of the stone, sprouting leaves and buds.',
     description:
-      'A nature-inspired bypass: the centre stone sits in slim claw prongs while two branches rise out of the band from either end, curl past opposite sides of the stone and run on beyond it like a vine. Free-standing leaves sprout from each branch, either flat metal leaves with a raised midrib or marquise stones in a thin leaf seat.\n\nSmall round stones on short stalks can stand in for buds. Tune the number and size of the leaves, the branch thickness, the buds and how far each branch wraps round the stone.',
+      'A nature-inspired bypass: the centre stone sits in slim claw prongs while two branches rise out of the band from either end, curl past opposite sides of the stone and run on beyond it like a vine. Leaves of mixed sizes sprout from both sides of each branch, one tucked in beside the stone, either flat metal leaves with a raised midrib or marquise stones in a thin leaf seat.\n\nSmall round stones on short stalks can stand in for buds. Tune the number and size of the leaves, the branch thickness, the buds and how far each branch wraps round the stone.',
     tags: ['nature', 'leaf', 'vine', 'bypass', 'organic', 'twig'],
     pros: [
       'Romantic, botanical look',
