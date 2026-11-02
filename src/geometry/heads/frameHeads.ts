@@ -5,13 +5,14 @@
 import * as THREE from 'three';
 import { registerHeadBuilder } from '../builders';
 import type { HeadCtx, Part } from '../types';
-import { instanceGeometry, toFlat } from '../helpers';
+import { instanceGeometry, mergeFlat, toFlat } from '../helpers';
 import { collarDims, hugScale, type CollarDims } from './bezelHeads';
 import {
   accentDims,
   accentPart,
   ball,
   bool,
+  ensureOutward,
   loft,
   cleanOutline,
   crownInset,
@@ -239,6 +240,11 @@ const PIERCE_WALL = 0.3;
 const RECESS_FINISHES = ['none', 'oxidised'] as const;
 /** Thickness of the oxidised lining laid on the plate under the openwork (`recessFinish`), mm. */
 const RECESS_SKIN = 0.04;
+/**
+ * Triangles the plaque's metal may use before its rim milgrain falls back to the coarser 20-triangle bead (the beads
+ * are a fifth of a millimetre, so the two look alike); lighter plaques keep the finer bead.
+ */
+const PLAQUE_METAL_BUDGET = 76_000;
 
 /**
  * A thin closed skin lying on a section polyline `floor` of a `mixLoft` (u, y points, u increasing outward): its
@@ -356,6 +362,129 @@ function angleDiff(a: number, b: number): number {
   return Math.abs(d - Math.PI);
 }
 
+/** Pierced shoulder wings for the plaque: metal, rail paths to bead with milgrain, and the leaf floors (`shoulderWings`). */
+interface ShoulderWings {
+  metal: THREE.BufferGeometry[];
+  milgrain: THREE.Vector3[][];
+  leaves: THREE.BufferGeometry[];
+}
+
+/**
+ * Filigree shoulder wings: on each side along the band a raised wedge lying on the shank, flaring from under the
+ * plaque's band end (its top at `yTop`, just under the rim) down to the shank `len` mm past the plaque. Each is edged by
+ * a rail (to be beaded with milgrain), has a vein down the middle and pierced leaves either side of it, each leaf an
+ * outline wire round a floor that the caller darkens when the plaque is oxidised, so it reads as an opening.
+ */
+function shoulderWings(
+  ctx: HeadCtx,
+  frame: CleanOutline,
+  o: { len: number; yTop: number; wr: number },
+): ShoulderWings {
+  const [ax, az] = ctx.bandAxis;
+  const Rs = shankTopRadius(ctx);
+  const out: ShoulderWings = { metal: [], milgrain: [], leaves: [] };
+  const w1 = Math.max(0.5, ctx.shankWidth * 0.5);
+  const w0 = Math.max(w1 + 0.4, Math.min(support(frame, -az, ax), support(frame, az, -ax)) * 0.5);
+  const hEnd = 0.2;
+  const NT = 12;
+  const NV = 4;
+  for (const sign of [1, -1]) {
+    const sOut = support(frame, sign * ax, sign * az);
+    const x0 = sOut * 0.7;
+    const x1 = Math.min(sOut + o.len, Rs * 1.1);
+    const th0 = x0 / Rs;
+    // tall enough at the plaque end to tuck under the rim
+    const hStart = Math.max(hEnd + 0.2, (o.yTop + ctx.baseDrop + Rs) / Math.cos(th0) - Rs);
+    const width = (t: number) => w1 + (w0 - w1) * (1 - t) ** 1.5;
+    const height = (t: number, v: number) => (hEnd + (hStart - hEnd) * (1 - t) ** 2) * (1 - 0.3 * v * v);
+    /** a point on the shank-following wing: t along it (0 under the plaque, 1 at the far tip), v across (-1..1) */
+    const pt = (t: number, v: number, h: number, wMax = Infinity) => {
+      const r = Rs + h;
+      const th = (x0 + (x1 - x0) * t) / Rs;
+      const along = sign * r * Math.sin(th);
+      const across = v * Math.min(width(t), wMax);
+      return v3(along * ax - across * az, -ctx.baseDrop - Rs + r * Math.cos(th), along * az + across * ax);
+    };
+    const onTop = (t: number, v: number, lift = 0) => pt(t, v, height(t, v) + lift);
+    // the wedge: sloped top, bottom sunk into the shank and no wider than it, so each side flares out and up
+    const pos: number[] = [];
+    const quad = (a: THREE.Vector3, b: THREE.Vector3, c: THREE.Vector3, e: THREE.Vector3) =>
+      pos.push(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z, a.x, a.y, a.z, c.x, c.y, c.z, e.x, e.y, e.z);
+    const T = (i: number) => i / NT;
+    const V = (j: number) => -1 + (2 * j) / NV;
+    const lo = (t: number, v: number) => pt(t, v, -0.25, w1);
+    for (let i = 0; i < NT; i++)
+      for (let j = 0; j < NV; j++) {
+        quad(onTop(T(i), V(j)), onTop(T(i), V(j + 1)), onTop(T(i + 1), V(j + 1)), onTop(T(i + 1), V(j)));
+        quad(lo(T(i), V(j)), lo(T(i + 1), V(j)), lo(T(i + 1), V(j + 1)), lo(T(i), V(j + 1)));
+      }
+    for (let i = 0; i < NT; i++) {
+      quad(lo(T(i), -1), onTop(T(i), -1), onTop(T(i + 1), -1), lo(T(i + 1), -1));
+      quad(lo(T(i), 1), lo(T(i + 1), 1), onTop(T(i + 1), 1), onTop(T(i), 1));
+    }
+    for (let j = 0; j < NV; j++) {
+      quad(lo(0, V(j)), lo(0, V(j + 1)), onTop(0, V(j + 1)), onTop(0, V(j)));
+      quad(lo(1, V(j)), onTop(1, V(j)), onTop(1, V(j + 1)), lo(1, V(j + 1)));
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.computeVertexNormals();
+    out.metal.push(ensureOutward(g));
+    // the rail: up one edge, round the tip and back down the other, starting where the wing leaves the plaque
+    const tIn = Math.max(0, Math.min(0.5, (sOut * 0.85 - x0) / (x1 - x0)));
+    const lift = o.wr * 0.5;
+    const edge = (v: number, rev: boolean) => {
+      const ts = Array.from({ length: 9 }, (_, i) => tIn + ((0.97 - tIn) * i) / 8);
+      return (rev ? ts.reverse() : ts).map((t) => onTop(t, v, lift));
+    };
+    const rail = [...edge(0.86, false), onTop(1, 0.4, lift), onTop(1, -0.4, lift), ...edge(-0.86, true)];
+    out.metal.push(...wire(rail, o.wr, 48, 5));
+    out.milgrain.push(rail);
+    out.metal.push(
+      ...wire(
+        Array.from({ length: 6 }, (_, i) => onTop(tIn + ((0.9 - tIn) * i) / 5, 0, lift)),
+        o.wr * 0.8,
+        20,
+        5,
+        false,
+      ),
+    );
+    // pierced leaves either side of the vein, tips swept out along the wing and away from the vein
+    const runMm = (x1 - x0) * (0.92 - tIn);
+    const nLeaf = Math.max(1, Math.round(runMm / 1.5));
+    const pitch = runMm / nLeaf;
+    for (let k = 0; k < nLeaf; k++) {
+      const tc = tIn + ((0.92 - tIn) * (k + 0.5)) / nLeaf;
+      const wc = width(tc);
+      const Ll = Math.min(1.3, pitch * 0.95);
+      const hw = Math.min(Ll * 0.3, wc * 0.22);
+      for (const side of [-1, 1]) {
+        const vc = side * 0.45;
+        const phi = side * 0.6;
+        const N = 16;
+        const shape = Array.from({ length: N }, (_, i): [number, number] => {
+          const s = (i / N) * Math.PI * 2;
+          const lx = (Ll / 2) * Math.cos(s);
+          const ly = hw * Math.sign(Math.sin(s)) * Math.sin(s) ** 2;
+          const a = lx * Math.cos(phi) - ly * Math.sin(phi);
+          const c = lx * Math.sin(phi) + ly * Math.cos(phi);
+          return [tc + a / (x1 - x0), vc + c / wc];
+        });
+        out.metal.push(
+          loop(
+            shape.map(([t, v]) => onTop(t, v, lift * 0.8)),
+            o.wr * 0.7,
+            24,
+            4,
+          ),
+        );
+        out.leaves.push(domeBlob(onTop, [tc, vc], shape, 0.03, 0.02));
+      }
+    }
+  }
+  return out;
+}
+
 /**
  * A solid patch lying on the dome between angles a0..a1 and dome positions u0..u1: the top `top` mm above the dome
  * surface, the bottom `bottom` mm below it, closed by side walls.
@@ -451,7 +580,8 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   const kIn = Math.max(0.5, 1 - inset / R);
   const k03 = 1 - 0.03 / R;
   const yCup = -Math.min(d.pd * 0.55, d.bd * 0.7);
-  const RIB_END = 0.7; // inside this the dome is pierced; outside it a solid jewelled band
+  // inside this the dome is pierced; outside it a solid jewelled band (`ribReach` carries the openwork out to the rim)
+  const RIB_END = num(p, 'ribReach', 0.7, 0.7, 0.92);
   const plate: MixPt[] = [[0, yTop - 0.1, kIn]];
   /** the raised collar's outer face, as a dome position (`collarRise`) */
   const uWall = Math.min(0.08, 0.35 / Math.max(0.5, meanRadius(frame) - R));
@@ -496,7 +626,7 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   } else for (const u of [0.15, 0.35, 0.55, RIB_END - 0.02]) plate.push([u, domeY(u) - pierce]);
   // the floor under the openwork (well or shallow plate), for the oxidised lining
   const floor = plate.slice(floorFrom).map(([u, y]) => [u, y] as [number, number]);
-  for (const u of [RIB_END, 0.8, 0.9, 0.97]) plate.push([u, domeY(u) - 0.04]);
+  for (const u of [RIB_END, 0.8, 0.9, 0.97]) if (u >= RIB_END) plate.push([u, domeY(u) - 0.04]);
   plate.push([1, yRim - rr * 0.6], ...underside);
   plate.push([0, -d.bd, d.bs], [0, yCup, Math.max(d.bs, 0.6)]);
   plate.push([0, -g2 - 0.08, 0.95], [0, -g2 - 0.02, k03], [0, g2, k03]);
@@ -513,14 +643,16 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   const ribBeads: THREE.Matrix4[] = [];
   const ribMilgrain = bool(p, 'ribMilgrain', false);
   const ribEngrave = bool(p, 'ribEngrave', false);
-  const RIB_US = [U_COLLAR, 0.25, 0.45, 0.6, RIB_END];
+  // a longer rib gets one more point so it keeps to the curve of the dome
+  const RIB_US = [U_COLLAR, 0.25, 0.45, 0.6, ...(RIB_END > 0.75 ? [(0.6 + RIB_END) / 2] : []), RIB_END];
   const horiz = (a: number, u: number) => {
     const q = at(a, u);
     return Math.hypot(q.x, q.z);
   };
   const rib = (a: number) => {
     const pts = RIB_US.map((u) => at(a, u, lift));
-    geos.push(...wire(pts, rr, 14, 6));
+    // ribs reaching out to the rim end inside its ring, so they need no end caps
+    geos.push(...wire(pts, rr, 14, 6, RIB_END <= 0.7));
     if (ribEngrave) {
       // fine engraved lines: a hairline down each flank of the rib, like the reeded fans of hand-engraved plaques
       for (const side of [-1, 1]) {
@@ -778,6 +910,16 @@ function decoPlaque(ctx: HeadCtx): Part[] {
       }
     }
   }
+  // shoulder wings: `shoulderWings` mm of raised filigree flaring from under each band end of the plaque down the shank
+  const oxidised = str(p, 'recessFinish', RECESS_FINISHES, 'none') === 'oxidised';
+  const wingSkins: THREE.BufferGeometry[] = [];
+  const wingLen = num(p, 'shoulderWings', 0, 0, 6);
+  if (wingLen > 0) {
+    const w = shoulderWings(ctx, frame, { len: wingLen, yTop: yWall - 0.05, wr: rr * 0.6 });
+    geos.push(...w.metal);
+    for (const path of w.milgrain) beadAlong(path, false);
+    if (oxidised) wingSkins.push(...w.leaves);
+  }
   // milgrain: tiny beads along the rim and the inner collar
   const mats: THREE.Matrix4[] = [];
   const nb = Math.max(24, Math.round(frame.perimeter / (beadR * 2.6)));
@@ -789,7 +931,11 @@ function decoPlaque(ctx: HeadCtx): Part[] {
       new THREE.Matrix4().makeTranslation(b.x + q.nx * rr * 0.9, b.y - rr * 0.3, b.z + q.nz * rr * 0.9),
     );
   }
-  geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR, 1)), mats));
+  const tris = (gs: THREE.BufferGeometry[]) =>
+    gs.reduce((t, g) => t + g.getAttribute('position').count / 3, 0);
+  const used = tris(geos) + (ribBeads.length + panelBeads.length) * 20 + corners.length * 80;
+  const fine = used + mats.length * 80 <= PLAQUE_METAL_BUDGET;
+  geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR, fine ? 1 : 0)), mats));
   if (ribBeads.length)
     geos.push(instanceGeometry(toFlat(new THREE.IcosahedronGeometry(beadR * 0.9, 0)), ribBeads));
   if (panelBeads.length)
@@ -878,13 +1024,15 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   // corner studs: a larger bead at each polygon corner
   for (const a of corners) if (!inCartouche(a, -0.2)) geos.push(ball(at(a, 1, rr * 1.6), rr * 1.5, 1));
   const out: Part[] = [metalPart(geos, 'Art Deco plaque')];
-  if (str(p, 'recessFinish', RECESS_FINISHES, 'none') === 'oxidised') {
+  if (oxidised) {
     const uMm = Math.max(0.5, meanRadius(frame) - R);
     out.push({
       slot: 'head-recess',
       geometry: mixLoft(d.o, frame, skinSection(floor, uMm, 0.005, RECESS_SKIN), 120),
       label: 'oxidised recess',
     });
+    if (wingSkins.length)
+      out.push({ slot: 'head-recess', geometry: mergeFlat(wingSkins), label: 'oxidised wing leaves' });
   }
   if (stones.length) out.push(accentPart(stones, 'plaque diamonds'));
   return out;

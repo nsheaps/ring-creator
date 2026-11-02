@@ -9,6 +9,7 @@ import './index';
 import { cleanOutline, circlePoints, pointAt, support, type CleanOutline } from './common';
 import { cushionFrame, polygonFrame } from './frameOutline';
 import { stubCtx } from './testStub';
+import { rings } from '@/models/data/examples/rings';
 import { signedVolume, surfaceArea } from '@/export/meshMath';
 
 const NEW_IDS = [
@@ -698,6 +699,114 @@ describe('deco plaque extras: sunburst, cartouche stones, stretch, rib milgrain,
       expect(
         positions(build('deco-plaque', 'round-brilliant', { ...DECO, lozengeScroll: true }, [1, 0])),
       ).toEqual(positions(build('deco-plaque', 'round-brilliant', DECO, [1, 0])));
+    });
+  });
+
+  describe('filigree extras: ribReach, shoulderWings', () => {
+    const R013 = {
+      ...DECO,
+      endPanel: 'scroll',
+      pierceDepth: 2,
+      recessFinish: 'oxidised',
+      lozengeRing: 6,
+      lozengeScroll: true,
+      ribEngrave: true,
+      collarRise: 0.7,
+    } as Params;
+    const example = rings.find((r) => r.id === 'r1-013')?.engagement?.head.params;
+    if (!example) throw new Error('r1-013 missing');
+    const r = (v: THREE.Vector3) => Math.hypot(v.x, v.z);
+    const ctx = stubCtx({ cut: 'old-european' });
+    const Rs = ctx.innerRadius + 1.8; // the stub has no seatRadius
+    const yC = -ctx.baseDrop - Rs; // the ring's centre
+
+    it('are off by default: their default values leave every plaque byte-identical', () => {
+      for (const params of [{}, DECO, R013] as Params[]) {
+        const plain = build('deco-plaque', 'old-european', params, [1, 0]);
+        const off = build(
+          'deco-plaque',
+          'old-european',
+          { ...params, ribReach: 0.7, shoulderWings: 0 },
+          [1, 0],
+        );
+        expect(positions(off)).toEqual(positions(plain));
+      }
+    });
+
+    for (const bandAxis of [
+      [1, 0],
+      [0, 1],
+    ] as [number, number][])
+      it(`the r1-013 tune is finite, deterministic and in budget (band axis ${bandAxis.join(',')})`, () => {
+        const parts = build('deco-plaque', 'old-european', example, bandAxis);
+        let tris = 0;
+        let skin = 0;
+        for (const p of parts) {
+          const arr = p.geometry.getAttribute('position').array as ArrayLike<number>;
+          expect(arr.length).toBeGreaterThan(0);
+          for (let i = 0; i < arr.length; i++) expect(Number.isFinite(arr[i])).toBe(true);
+          if (p.slot === 'head-recess') skin += arr.length / 9;
+          else tris += arr.length / 9;
+        }
+        expect(tris).toBeLessThan(80000);
+        expect(skin).toBeLessThan(20000);
+        expect(positions(build('deco-plaque', 'old-european', example, bandAxis))).toEqual(positions(parts));
+      });
+
+    it('ribReach carries the pierced, oxidised floor out towards the rim and keeps the footprint', () => {
+      const reach = (ps: Part[]) => verts(ps, 'head-recess').reduce((m, v) => Math.max(m, r(v)), 0);
+      const near = build('deco-plaque', 'old-european', R013, [1, 0]);
+      const far = build('deco-plaque', 'old-european', { ...R013, ribReach: 0.9 }, [1, 0]);
+      expect(reach(far)).toBeGreaterThan(reach(near) + 0.5);
+      const a = box(near, 'head-metal');
+      const b = box(far, 'head-metal');
+      for (const k of ['x', 'z'] as const) {
+        expect(b.max[k]).toBeCloseTo(a.max[k], 1);
+        expect(b.min[k]).toBeCloseTo(a.min[k], 1);
+      }
+      expect(b.min.y).toBeCloseTo(a.min.y, 5);
+    });
+
+    for (const bandAxis of [
+      [1, 0],
+      [0, 1],
+    ] as [number, number][])
+      it(`shoulderWings lie on the shank both ways along the band, about as far past the plaque as asked (band axis ${bandAxis.join(',')})`, () => {
+        const along = (v: THREE.Vector3) => v.x * bandAxis[0] + v.z * bandAxis[1];
+        const plain = verts(build('deco-plaque', 'old-european', R013, bandAxis), 'head-metal');
+        const winged = verts(
+          build('deco-plaque', 'old-european', { ...R013, shoulderWings: 3 }, bandAxis),
+          'head-metal',
+        );
+        const end = plain.reduce((m, v) => Math.max(m, Math.abs(along(v))), 0);
+        for (const sign of [1, -1]) {
+          const past = winged.filter((v) => sign * along(v) > end + 0.05);
+          expect(past.length).toBeGreaterThan(50);
+          // they reach 3 mm of arc along the shank's top surface past the plaque's frame edge, no further (its rim
+          // milgrain and corner studs stand up to a millimetre beyond that edge, where `end` is measured)
+          const arc = (v: THREE.Vector3) => Rs * Math.atan2(sign * along(v), v.y - yC);
+          const tip = past.reduce((m, v) => Math.max(m, arc(v)), -Infinity);
+          const endArc = Rs * Math.asin(Math.min(1, end / Rs));
+          expect(tip - endArc).toBeGreaterThan(1.8);
+          expect(tip - endArc).toBeLessThan(3.2);
+          // and they hug the shank: from just inside its top surface to under a millimetre and a half above it
+          for (const v of past) {
+            const fromCentre = Math.hypot(along(v), v.y - yC);
+            expect(fromCentre).toBeGreaterThan(Rs - 0.3);
+            expect(fromCentre).toBeLessThan(Rs + 1.5);
+          }
+        }
+      });
+
+    it('shoulderWing leaves are dark only with the oxidised finish; bright plaques get no extra skin', () => {
+      const recess = (p: Params) =>
+        verts(build('deco-plaque', 'old-european', p, [1, 0]), 'head-recess').length;
+      expect(recess({ ...R013, shoulderWings: 3 })).toBeGreaterThan(recess(R013));
+      const bright = { ...R013, recessFinish: 'none', shoulderWings: 3 };
+      expect(recess(bright)).toBe(0);
+      // the wings are still there, in bright metal, past both ends of the plaque along the band
+      const len = (p: Params) => box(build('deco-plaque', 'old-european', p, [1, 0]), 'head-metal').max.x;
+      expect(len(bright)).toBeGreaterThan(len({ ...bright, shoulderWings: 0 }) + 1);
     });
   });
 

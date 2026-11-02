@@ -1270,7 +1270,7 @@ export const heads: HeadModel[] = [
     builder: 'deco-plaque',
     summary: 'A domed octagonal plaque of pierced openwork, milgrain and small diamonds round the stone.',
     description:
-      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: a sunburst with stone-set cartouches or scroll hearts, beaded or engraved ribs, a raised octagonal collar, stone-set milgrain lozenges with scroll borders, and a sunk or blackened plate. The openwork collects dust.',
+      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: a sunburst with stone-set cartouches or scroll hearts, beaded or engraved ribs reaching to the rim, a raised octagonal collar, stone-set milgrain lozenges with scroll borders, a sunk or blackened plate and pierced filigree shoulders. The openwork collects dust.',
     tags: ['art-deco', 'vintage', 'plaque', 'openwork', 'milgrain'],
     pros: ['Big vintage presence from a small stone', 'Rich detail from every angle', 'Protects the girdle'],
     cons: ['Openwork traps dirt', 'Tall, wide face', 'Delicate details wear over decades'],
@@ -1302,6 +1302,8 @@ export const heads: HeadModel[] = [
       lozengeScroll: false,
       ribEngrave: false,
       collarRise: 0,
+      ribReach: 0.7,
+      shoulderWings: 0,
     },
     controls: [
       {
@@ -1476,6 +1478,25 @@ export const heads: HeadModel[] = [
         step: 0.1,
         unit: 'mm',
         help: 'Drops the openwork dome this far below the collar, which stands as a short wall round the girdle, so the centre stone sits proud and shows from the side. 0 = the dome rises to the stone.',
+      },
+      {
+        type: 'number',
+        key: 'ribReach',
+        label: 'Openwork reach',
+        min: 0.7,
+        max: 0.92,
+        step: 0.01,
+        help: 'How far the pierced openwork runs from the collar towards the rim. 0.7 leaves a solid jewelled band inside the rim; 0.9 carries the ribs and piercing almost to the milgrain edge.',
+      },
+      {
+        type: 'number',
+        key: 'shoulderWings',
+        label: 'Filigree shoulders',
+        min: 0,
+        max: 6,
+        step: 0.5,
+        unit: 'mm',
+        help: 'Raised filigree wings flaring from under each end of the plaque down the shank, this far past the plaque: milgrain edges, a centre vein and pierced leaves (dark with the oxidised finish). 0 = none.',
       },
     ],
     fitsCuts: ALL,

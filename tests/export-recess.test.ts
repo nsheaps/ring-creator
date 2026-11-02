@@ -34,9 +34,11 @@ describe('oxidised recess', () => {
 
   it('the pierced well and its lining stay inside the plaque (nothing pokes out below it)', () => {
     const d = r1013!;
-    const minY = (x: Design, slot: string) => {
+    const minY = (x: Design, slot: string, label?: string) => {
       let lo = Infinity;
-      for (const p of engagementParts(x).parts.filter((q) => q.slot === slot)) {
+      for (const p of engagementParts(x).parts.filter(
+        (q) => q.slot === slot && (label === undefined || q.label === label),
+      )) {
         const a = p.geometry.getAttribute('position');
         for (let i = 0; i < a.count; i++) lo = Math.min(lo, a.getY(i));
       }
@@ -45,7 +47,9 @@ describe('oxidised recess', () => {
     const shallow = structuredClone(d);
     shallow.engagement.head.params = { ...shallow.engagement.head.params, pierceDepth: 0 };
     expect(minY(d, 'head-metal')).toBeCloseTo(minY(shallow, 'head-metal'), 4);
-    expect(minY(d, 'head-recess')).toBeGreaterThan(engagementParts(d).seatY);
+    expect(minY(d, 'head-recess', 'oxidised recess')).toBeGreaterThan(engagementParts(d).seatY);
+    // the dark leaves of the filigree shoulder wings run down the shank, but lie on the wings' metal, never under it
+    expect(minY(d, 'head-recess', 'oxidised wing leaves')).toBeGreaterThan(minY(d, 'head-metal'));
   });
 
   it('adds exactly one dark mesh tagged head-recess; the rest of the assembly is unchanged', () => {

@@ -596,7 +596,7 @@ export const rings: ExampleDesign[] = [
           cornerRadius: 2.5,
           domeHeight: 1.6,
           plaqueGap: 3,
-          ribCount: 18,
+          ribCount: 14,
           ribWidth: 0.4,
           rimStones: true,
           stoneSize: 1.6,
@@ -614,6 +614,8 @@ export const rings: ExampleDesign[] = [
           lozengeScroll: true,
           ribEngrave: true,
           collarRise: 0.7,
+          ribReach: 0.9,
+          shoulderWings: 3.5,
         },
       },
       shank: {
@@ -643,7 +645,7 @@ export const rings: ExampleDesign[] = [
     tags: ['art-deco', 'engagement'],
     category: 'art-deco',
     blurb:
-      'Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown. Photo audit: a wide openwork plaque about three times the stone, ten small diamonds around it, narrow engraved shank; modelled as a long sunburst plaque: milgrain ribs fanning out along the band, an octagonal collar, a pair of stones on each cartouche, one in each lobe of a raised, pierced scroll heart outlined in milgrain, and three stones on each side.',
+      'Openwork head with crisp milgrain and a geometric shoulder pattern. Sold; no price shown. Photo audit: a wide openwork plaque about three times the stone, ten small diamonds around it, narrow engraved shank; modelled as a long sunburst plaque: milgrain ribs fanning out along the band, an octagonal collar, a pair of stones on each cartouche, one in each lobe of a raised, pierced scroll heart outlined in milgrain, and three stones on each side. The pierced fans run out to the milgrain rim, and filigree shoulder wings with milgrain edges and pierced leaves flare from each end of the plaque down the shank.',
     priceUsd: null,
     designFamily: 'deco-plaque / vintage-filigree / old-european',
     view: 'ring',
