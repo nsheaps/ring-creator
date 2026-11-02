@@ -2991,7 +2991,7 @@ export const rings: ExampleDesign[] = [
         params: {
           leafStyle: 'stone',
           leafCount: 6,
-          leafSize: 2.2,
+          leafSize: 2.8,
           budStones: 4,
           leafPairs: true,
           branchThickness: 0.9,
@@ -3519,7 +3519,7 @@ export const rings: ExampleDesign[] = [
           bezelThickness: 0.4,
           bezelHeight: 0.15,
           claws: 4,
-          clawSize: 0.8,
+          clawSize: 1,
         },
       },
       shank: {
