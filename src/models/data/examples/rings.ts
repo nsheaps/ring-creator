@@ -2995,6 +2995,9 @@ export const rings: ExampleDesign[] = [
           branchThickness: 0.9,
           wrap: 8,
           hand: 'left',
+          twigProfile: 'flat',
+          twigRatio: 2.6,
+          leafSeat: 'box',
         },
       },
       shank: {

@@ -499,7 +499,10 @@
           "leafPairs": true,
           "branchThickness": 0.9,
           "wrap": 8,
-          "hand": "left"
+          "hand": "left",
+          "twigProfile": "flat",
+          "twigRatio": 2.6,
+          "leafSeat": "box"
         },
         "placement": {
           "raise": 0

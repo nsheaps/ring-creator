@@ -32,6 +32,8 @@ import { radialPoint } from './frameOutline';
 import { prongOpts } from './prongHeads';
 
 const LEAF_STYLES = ['metal', 'stone'] as const;
+const TWIG_PROFILES = ['round', 'flat'] as const;
+const LEAF_SEATS = ['wire', 'box'] as const;
 
 /** 0..1 climb profile: eases in over the first 35 %, rises at a steady slope, levels off over the last 20 %. */
 const climb = (t: number): number => {
@@ -78,8 +80,19 @@ interface TwigPt {
   r: number;
 }
 
-/** Tapered round twig through the samples (closed ends). */
-function twig(pts: TwigPt[], radial = 10): THREE.BufferGeometry {
+/**
+ * Cross-section of a twig: round wire, or a flat ribbon `ratio` times wider than it is thick (a rounded rectangle with
+ * its flat top facing up, of the same area as the round wire of the sample's radius).
+ */
+interface TwigProfile {
+  flat: boolean;
+  ratio: number;
+}
+const ROUND: TwigProfile = { flat: false, ratio: 1 };
+
+/** Tapered twig through the samples (closed ends), round or flat. */
+function twig(pts: TwigPt[], radial = 10, profile: TwigProfile = ROUND): THREE.BufferGeometry {
+  if (profile.flat) return ribbon(pts, radial + 2, profile.ratio);
   const rows = pts.map((q, i) => {
     const a = pts[Math.max(0, i - 1)].p;
     const b = pts[Math.min(pts.length - 1, i + 1)].p;
@@ -93,6 +106,28 @@ function twig(pts: TwigPt[], radial = 10): THREE.BufferGeometry {
         .clone()
         .addScaledVector(lat, Math.cos(a2) * q.r)
         .addScaledVector(up, Math.sin(a2) * q.r);
+    });
+  });
+  return solid(rows);
+}
+
+/** Flat ribbon twig: a superellipse cross-section (straight sides, softly rounded edges) `ratio` wide : 1 thick. */
+function ribbon(pts: TwigPt[], radial: number, ratio: number): THREE.BufferGeometry {
+  const k = Math.sqrt(ratio);
+  const se = (c: number) => Math.sign(c) * Math.abs(c) ** 0.4;
+  const rows = pts.map((q, i) => {
+    const a = pts[Math.max(0, i - 1)].p;
+    const b = pts[Math.min(pts.length - 1, i + 1)].p;
+    const t = b.clone().sub(a);
+    if (t.lengthSq() < 1e-12) t.set(1, 0, 0);
+    t.normalize();
+    const { lat, up } = frame(t);
+    return Array.from({ length: radial }, (_, j) => {
+      const a2 = ((j + 0.5) / radial) * Math.PI * 2;
+      return q.p
+        .clone()
+        .addScaledVector(lat, se(Math.cos(a2)) * q.r * k)
+        .addScaledVector(up, se(Math.sin(a2)) * (q.r / k));
     });
   });
   return solid(rows);
@@ -154,14 +189,16 @@ function basisAt(c: THREE.Vector3, dir: THREE.Vector3): THREE.Matrix4 {
 
 /**
  * A small stone in a thin seat: a wire rim just under the girdle, four bead prongs, and a stalk from `from` to the rim
- * point nearest it. Returns the metal and the placed stone.
+ * point nearest it (or, with `box`, a box seat: see `boxSeat`). Returns the metal and the placed stone.
  */
 function seatedStone(
   stone: BuiltStone,
   m: THREE.Matrix4,
   from: THREE.Vector3,
   wireR: number,
+  box = false,
 ): { metal: THREE.BufferGeometry[]; stone: THREE.BufferGeometry } {
+  if (box) return boxSeat(stone, m, from, wireR);
   const o = cleanOutline(stone.outline);
   const rimY = -Math.min(0.12, stone.pavilionDepth * 0.3);
   const rim = o.pts.map(([x, z]) => {
@@ -188,11 +225,98 @@ function seatedStone(
   return { metal, stone: stone.geometry.clone().applyMatrix4(m) };
 }
 
+/** A light open claw shaft from `a` (buried in the seat) to `b` (capped by a bead), without `rod`'s end balls. */
+function peg(a: THREE.Vector3, b: THREE.Vector3, ra: number, rb: number): THREE.BufferGeometry {
+  const len = Math.max(1e-3, a.distanceTo(b));
+  const g = new THREE.CylinderGeometry(rb, ra, len, 6, 1, true).translate(0, len / 2, 0);
+  const dir = b.clone().sub(a).normalize();
+  g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(v3(0, 1, 0), dir)).translate(a.x, a.y, a.z);
+  return toFlat(g);
+}
+
+/**
+ * A marquise leaf in a box seat: a small raised box with straight sides and a flat top just under the girdle, shorter
+ * than the stone so its tips run out to a claw at each end, with a tiny claw rising from each corner of the box onto
+ * the girdle, and a stalk from `from` to the box's foot.
+ */
+function boxSeat(
+  stone: BuiltStone,
+  m: THREE.Matrix4,
+  from: THREE.Vector3,
+  wireR: number,
+): { metal: THREE.BufferGeometry[]; stone: THREE.BufferGeometry } {
+  const o = cleanOutline(stone.outline);
+  const L = Math.max(...o.pts.map((q) => Math.abs(q[0])));
+  const W = Math.max(...o.pts.map((q) => Math.abs(q[1])));
+  // the stone's half width at a point along it
+  const halfW = (x: number) => {
+    let w = 0;
+    for (const [px, pz] of o.pts) if (Math.abs(Math.abs(px) - x) < L * 0.12) w = Math.max(w, Math.abs(pz));
+    return w;
+  };
+  // shorter than the stone, a little wider than it so the box's straight sides show beside the girdle
+  const a = L * 0.6;
+  const b = W + 0.16;
+  const cr = Math.min(a, b) * 0.22;
+  const yTop = -Math.min(0.12, stone.pavilionDepth * 0.3);
+  const yBot = -stone.pavilionDepth - 0.08;
+  // rounded rectangle, 4 points on each corner arc
+  const rect = (sa: number, sb: number, y: number): THREE.Vector3[] => {
+    const out: THREE.Vector3[] = [];
+    const corners: [number, number, number][] = [
+      [sa - cr, sb - cr, 0],
+      [-(sa - cr), sb - cr, Math.PI / 2],
+      [-(sa - cr), -(sb - cr), Math.PI],
+      [sa - cr, -(sb - cr), (3 * Math.PI) / 2],
+    ];
+    for (const [cx, cz, a0] of corners)
+      for (let k = 0; k < 4; k++) {
+        const t = a0 + (k / 3) * (Math.PI / 2);
+        out.push(v3(cx + Math.cos(t) * cr, y, cz + Math.sin(t) * cr).applyMatrix4(m));
+      }
+    return out;
+  };
+  const bevel = Math.min(0.1, (yTop - yBot) * 0.25);
+  const rows = [
+    rect(a - bevel, b - bevel, yBot),
+    rect(a, b, yBot + bevel),
+    rect(a, b, yTop - bevel),
+    rect(a - bevel, b - bevel, yTop),
+  ];
+  const g = loftRows(rows);
+  if (signedVolume(g) < 0) rows.reverse();
+  // faceted: the box keeps crisp edges
+  const boxGeo = toFlat(loftRows(rows));
+  boxGeo.computeVertexNormals();
+  const metal: THREE.BufferGeometry[] = [boxGeo];
+  const clawR = wireR * 1.3;
+  // tiny claws from the box corners up onto the girdle
+  for (const sx of [1, -1])
+    for (const sz of [1, -1]) {
+      const x = (a - cr * 0.6) * sx;
+      const foot = v3(x, yTop - 0.05, (b - cr * 0.6) * sz).applyMatrix4(m);
+      const tip = v3(x * 0.95, 0.05, (halfW(Math.abs(x)) + clawR * 0.3) * sz).applyMatrix4(m);
+      metal.push(peg(foot, tip, clawR * 1.2, clawR), ball(tip, clawR * 1.15, 0));
+    }
+  // a claw at each tip of the stone, reached by a short arm from the box end
+  for (const sx of [1, -1]) {
+    const foot = v3(a * sx, yTop - 0.05, 0).applyMatrix4(m);
+    const tip = v3(L * 1.01 * sx, 0.02, 0).applyMatrix4(m);
+    metal.push(peg(foot, tip, wireR * 1.4, wireR * 1.2), ball(tip, wireR * 1.45, 1));
+  }
+  // stalk to the nearest point of the box's foot
+  let near = rows[1][0];
+  for (const q of [...rows[0], ...rows[1]]) if (q.distanceTo(from) < near.distanceTo(from)) near = q;
+  metal.push(...rod(from, near, wireR * 1.4, wireR, 8));
+  return { metal, stone: stone.geometry.clone().applyMatrix4(m) };
+}
+
 /**
  * Params: `leafCount` (leaves per branch, the last one at its tip), `leafSize` (leaf length), `branchThickness`,
  * `budStones` (small round stones on stalks per branch; with two or more, one sits on the root sprig), `wrap` (degrees each branch runs round the stone past its
  * middle), `leafStyle` ('metal' blades or 'stone' marquise leaves), `hand` ('right': the +band branch wraps the +across
- * side; 'left' mirrors the swirl), plus the centre prongs (`prongCount`, `prongStyle`).
+ * side; 'left' mirrors the swirl), `twigProfile` ('round' wire or 'flat' ribbon, `twigRatio` wide : 1 thick), `leafSeat`
+ * ('wire' rim or 'box' seat for marquise leaves), plus the centre prongs (`prongCount`, `prongStyle`).
  */
 function leafVineBypass(ctx: HeadCtx): Part[] {
   const p = ctx.params;
@@ -208,6 +332,11 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
   const wrap = (num(p, 'wrap', 15, 0, 70) * Math.PI) / 180;
   const stoneLeaves = str(p, 'leafStyle', LEAF_STYLES, 'metal') === 'stone';
   const hand = str(p, 'hand', ['right', 'left'] as const, 'right') === 'left' ? -1 : 1;
+  const profile: TwigProfile =
+    str(p, 'twigProfile', TWIG_PROFILES, 'round') === 'flat'
+      ? { flat: true, ratio: num(p, 'twigRatio', 2.5, 1.5, 4) }
+      : ROUND;
+  const boxSeats = stoneLeaves && str(p, 'leafSeat', LEAF_SEATS, 'wire') === 'box';
 
   const prongs = prongOpts(ctx, { count: 6, style: 'claw', rails: 1, useCorners: true });
   const metal: THREE.BufferGeometry[] = [...prongSet(built, prongs)];
@@ -575,7 +704,7 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
           .clone()
           .addScaledVector(dir, stalk + len / 2)
           .addScaledVector(v3(0, 1, 0), q.base.r * 0.5 + ls.pavilionDepth * 0.4);
-        const st = seatedStone(ls, basisAt(c, dir), base, wireR);
+        const st = seatedStone(ls, basisAt(c, dir), base, wireR, boxSeats);
         branchMetal.push(...st.metal);
         branchStones.push(st.stone);
       } else branchMetal.push(metalLeaf(base, dir, reach, leafW * scale));
@@ -699,7 +828,7 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
       // with crowded foliage the sprig only grows where it clears the leaves and buds already on the branch
       if (crowd && !(shootPrints.every(roomFor) && roomFor(leafPrint(tipLeaf, leaf)))) return;
       for (const sp of shootS) shoot.push({ p: world(sp.u, sp.v, sp.y), r: sp.r });
-      branchMetal.push(twig(shoot, 8));
+      branchMetal.push(twig(shoot, 8, profile));
       taken.push(...shootPrints);
       addLeaf(tipLeaf, leaf);
       if (bud) {
@@ -724,7 +853,7 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
     }
     for (const f of extras) placeFeature(f);
     const pts: TwigPt[] = [...lead, ...path].map((q) => ({ p: world(q.u, q.v, q.y), r: q.r }));
-    branchMetal.push(twig(pts));
+    branchMetal.push(twig(pts, 10, profile));
     return { metal: branchMetal, stones: branchStones };
   };
   for (const s of [1, -1]) {

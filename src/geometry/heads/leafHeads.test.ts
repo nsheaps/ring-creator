@@ -118,6 +118,26 @@ describe('leaf-vine-bypass head', () => {
       wrap: 70,
     },
     { leafPairs: true, leafCount: 6, leafSize: 1.4, budStones: 1, branchThickness: 0.6, wrap: 0 },
+    {
+      leafStyle: 'stone',
+      leafSeat: 'box',
+      twigProfile: 'flat',
+      twigRatio: 4,
+      leafPairs: true,
+      leafCount: 6,
+      leafSize: 4.5,
+      budStones: 4,
+      branchThickness: 1.8,
+      wrap: 70,
+    },
+    {
+      leafStyle: 'stone',
+      leafSeat: 'box',
+      twigProfile: 'flat',
+      twigRatio: 1.5,
+      branchThickness: 0.6,
+      wrap: 0,
+    },
   ];
   for (const cut of STUB_CUTS)
     for (const [i, params] of extremes.entries())
@@ -311,5 +331,81 @@ describe('leaf-vine-bypass head', () => {
     expect(Math.abs(r1 - l4)).toBeLessThan(r1 * 0.02);
     expect(Math.abs(r4 - l1)).toBeLessThan(r4 * 0.02);
     expect(Math.abs(r1 - r4)).toBeGreaterThan(r1 * 0.04);
+  });
+
+  it('round twigs and wire seats are the defaults: naming them changes nothing', () => {
+    const base = { leafStyle: 'stone', leafPairs: true, leafCount: 6, budStones: 4 };
+    const key = (parts: Part[]) => parts.map((p) => Array.from(p.geometry.getAttribute('position').array));
+    expect(key(build({ ...base, twigProfile: 'round', twigRatio: 3.5, leafSeat: 'wire' }))).toEqual(
+      key(build(base)),
+    );
+    // a box seat only applies to stone leaves
+    expect(key(build({ leafStyle: 'metal', leafSeat: 'box' }))).toEqual(key(build({ leafStyle: 'metal' })));
+  });
+
+  it('flat twigs are ribbons: wider than thick with a flat top, wider with a bigger ratio', () => {
+    const bare = (params: Params) =>
+      metalOf(build({ budStones: 0, leafCount: 2, leafSize: 1.4, branchThickness: 1.2, ...params }))[0];
+    // area of metal facing straight up (the ribbon's flat top) and the metal's plan area seen from above
+    const faces = (g: THREE.BufferGeometry) => {
+      const pos = g.getAttribute('position');
+      const a = new THREE.Vector3();
+      const b = new THREE.Vector3();
+      const c = new THREE.Vector3();
+      let flatTop = 0;
+      let plan = 0;
+      for (let i = 0; i < pos.count; i += 3) {
+        a.fromBufferAttribute(pos, i);
+        b.fromBufferAttribute(pos, i + 1);
+        c.fromBufferAttribute(pos, i + 2);
+        const n = b.clone().sub(a).cross(c.clone().sub(a));
+        const area = n.length() / 2;
+        if (area < 1e-12) continue;
+        if (n.y / (2 * area) > 0.97) flatTop += area;
+        if (n.y > 0) plan += n.y / 2;
+      }
+      return { flatTop, plan };
+    };
+    const round = faces(bare({}));
+    const flat = faces(bare({ twigProfile: 'flat', twigRatio: 2.5 }));
+    const wide = faces(bare({ twigProfile: 'flat', twigRatio: 4 }));
+    expect(flat.flatTop).toBeGreaterThan(round.flatTop + 5);
+    expect(flat.plan).toBeGreaterThan(round.plan + 5);
+    expect(wide.plan).toBeGreaterThan(flat.plan + 3);
+    // the same metal spread wider (the same cross-section area as the round twig), so the ribbon is thinner
+    const ratio = signedVolume(bare({ twigProfile: 'flat' })) / signedVolume(bare({}));
+    expect(ratio).toBeGreaterThan(0.85);
+    expect(ratio).toBeLessThan(1.15);
+  });
+
+  it('box seats hold each marquise leaf in a raised box wider than the stone', () => {
+    for (const bandAxis of [
+      [1, 0],
+      [0, 1],
+    ] as [number, number][]) {
+      const params = { leafStyle: 'stone', leafCount: 6, leafPairs: true, budStones: 3 };
+      const wire = build(params, 'oval', 3.2, bandAxis);
+      const box = build({ ...params, leafSeat: 'box' }, 'oval', 3.2, bandAxis);
+      // the same stones in the same places
+      expect(stonesOf(box).map((g) => Array.from(g.getAttribute('position').array))).toEqual(
+        stonesOf(wire).map((g) => Array.from(g.getAttribute('position').array)),
+      );
+      expect(overlappingStones(splitStones(stonesOf(box)))).toBe(0);
+      // a box adds metal under each leaf: well over a few mm3 across ~20 leaves
+      expect(signedVolume(metalOf(box)[0]) - signedVolume(metalOf(wire)[0])).toBeGreaterThan(3);
+      // seen from above the boxes show beside each leaf: the metal's plan area grows by well over 0.5 mm2 a leaf
+      const plan = (parts: Part[]) => {
+        const pos = metalOf(parts)[0].getAttribute('position');
+        const p = [0, 1, 2].map(() => new THREE.Vector3());
+        let t = 0;
+        for (let i = 0; i < pos.count; i += 3) {
+          p.forEach((q, k) => q.fromBufferAttribute(pos, i + k));
+          const ny = (p[1].z - p[0].z) * (p[2].x - p[0].x) - (p[1].x - p[0].x) * (p[2].z - p[0].z);
+          if (ny > 0) t += ny / 2;
+        }
+        return t;
+      };
+      expect(plan(box) - plan(wire)).toBeGreaterThan(8);
+    }
   });
 });

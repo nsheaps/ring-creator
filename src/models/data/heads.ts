@@ -1730,7 +1730,7 @@ export const heads: HeadModel[] = [
     summary:
       'Two twig-like branches sweep from the band past opposite sides of the stone, sprouting leaves and buds.',
     description:
-      'A nature-inspired bypass: the centre stone sits in slim claw prongs while two branches rise out of the band from either end, curl past opposite sides of the stone and run on beyond it like a vine. Leaves of mixed sizes sprout from both sides of each branch, as flat metal leaves with a raised midrib or marquise stones in thin seats.\n\nSmall round stones on stalks stand in for buds. Leaf pairs set the leaves in opposite pairs angled out off the stem, with tiny buds where a leaf has no room. Tune the leaves, buds, branch thickness and wrap.',
+      'A nature-inspired bypass: the centre stone sits in slim claw prongs while two branches rise out of the band from either end, curl past opposite sides of the stone and run on beyond it like a vine. Leaves of mixed sizes sprout from both sides of each branch, as flat metal leaves with a raised midrib or marquise stones in thin wire seats or small box seats with corner claws.\n\nSmall round stones on stalks stand in for buds. Leaf pairs set the leaves in opposite pairs angled out off the stem. The twigs can be round wire or flat ribbons. Tune the leaves, buds, branch thickness and wrap.',
     tags: ['nature', 'leaf', 'vine', 'bypass', 'organic', 'twig'],
     pros: [
       'Romantic, botanical look',
@@ -1748,6 +1748,9 @@ export const heads: HeadModel[] = [
       wrap: 15,
       leafStyle: 'metal',
       leafPairs: false,
+      leafSeat: 'wire',
+      twigProfile: 'round',
+      twigRatio: 2.5,
       hand: 'right',
       prongCount: 6,
       prongStyle: 'claw',
@@ -1816,6 +1819,35 @@ export const heads: HeadModel[] = [
           { value: 'stone', label: 'Marquise stone leaves' },
         ],
         help: 'Plain metal leaves, or marquise accent stones set as leaves.',
+      },
+      {
+        type: 'select',
+        key: 'leafSeat',
+        label: 'Stone leaf seat',
+        options: [
+          { value: 'wire', label: 'Thin wire seat' },
+          { value: 'box', label: 'Box seat with corner claws' },
+        ],
+        help: 'How marquise stone leaves are held: a thin wire rim with bead prongs, or a small raised box with straight sides, a claw at each tip and tiny claws at its corners.',
+      },
+      {
+        type: 'select',
+        key: 'twigProfile',
+        label: 'Twig profile',
+        options: [
+          { value: 'round', label: 'Round wire' },
+          { value: 'flat', label: 'Flat ribbon' },
+        ],
+        help: 'Round twigs, or flat ribbon-like strips with a flat top lying along the band.',
+      },
+      {
+        type: 'number',
+        key: 'twigRatio',
+        label: 'Ribbon width',
+        min: 1.5,
+        max: 4,
+        step: 0.1,
+        help: 'For flat twigs: how many times wider than thick the ribbon is (same metal as the round twig).',
       },
       {
         type: 'select',
