@@ -5395,7 +5395,7 @@ export const rings: ExampleDesign[] = [
     tags: ['colored-stone', 'engagement'],
     category: 'colored-stone',
     blurb:
-      '7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south. Compared with the photo: thin open bezel rim on a plain band; the photo stone reads peach-pink, so the example uses the warm fancy peach colour.',
+      '7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south. Compared with the photo: low four-claw basket on a slim tapered band; the photo stone reads peach-pink, so the example uses the warm fancy peach colour.',
     priceUsd: 7800,
     designFamily: 'basket / tapered / oval',
     view: 'ring',
