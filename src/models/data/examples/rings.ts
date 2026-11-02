@@ -4626,9 +4626,10 @@ export const rings: ExampleDesign[] = [
         metal: 'yellow-gold-14k',
         params: {
           leafStyle: 'stone',
-          leafCount: 4,
-          leafSize: 2.8,
-          budStones: 3,
+          leafCount: 6,
+          leafSize: 2.2,
+          budStones: 4,
+          leafPairs: true,
           branchThickness: 0.9,
           wrap: 8,
           hand: 'left',
@@ -4656,7 +4657,7 @@ export const rings: ExampleDesign[] = [
     tags: ['nature', 'engagement'],
     category: 'nature',
     blurb:
-      'Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents. Compared with the photo: two twig branches rise from a plain band and sweep past opposite sides of the oval like a bypass, with marquise leaves and small round buds on short stalks.',
+      'Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents. Compared with the photo: two twig branches rise from a plain band and sweep past opposite sides of the oval like a bypass, with small marquise leaves in pairs angled out along both twigs and tiny round bud stones between them.',
     priceUsd: 2045,
     designFamily: 'leaf-vine-bypass / plain-round / oval',
     view: 'ring',

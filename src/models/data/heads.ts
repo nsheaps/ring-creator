@@ -1711,7 +1711,7 @@ export const heads: HeadModel[] = [
     summary:
       'Two twig-like branches sweep from the band past opposite sides of the stone, sprouting leaves and buds.',
     description:
-      'A nature-inspired bypass: the centre stone sits in slim claw prongs while two branches rise out of the band from either end, curl past opposite sides of the stone and run on beyond it like a vine. Leaves of mixed sizes sprout from both sides of each branch, one tucked in beside the stone, either flat metal leaves with a raised midrib or marquise stones in a thin leaf seat.\n\nSmall round stones on short stalks can stand in for buds. Tune the number and size of the leaves, the branch thickness, the buds and how far each branch wraps round the stone.',
+      'A nature-inspired bypass: the centre stone sits in slim claw prongs while two branches rise out of the band from either end, curl past opposite sides of the stone and run on beyond it like a vine. Leaves of mixed sizes sprout from both sides of each branch, as flat metal leaves with a raised midrib or marquise stones in thin seats.\n\nSmall round stones on stalks stand in for buds. Leaf pairs set the leaves in opposite pairs angled out off the stem, with tiny buds where a leaf has no room. Tune the leaves, buds, branch thickness and wrap.',
     tags: ['nature', 'leaf', 'vine', 'bypass', 'organic', 'twig'],
     pros: [
       'Romantic, botanical look',
@@ -1728,6 +1728,7 @@ export const heads: HeadModel[] = [
       budStones: 1,
       wrap: 15,
       leafStyle: 'metal',
+      leafPairs: false,
       hand: 'right',
       prongCount: 6,
       prongStyle: 'claw',
@@ -1738,9 +1739,15 @@ export const heads: HeadModel[] = [
         key: 'leafCount',
         label: 'Leaves per branch',
         min: 2,
-        max: 4,
+        max: 6,
         step: 1,
-        help: 'Leaves on each branch; the last one sits at the branch tip.',
+        help: 'Leaves on each branch; the last one sits at the branch tip. Above four, a leaf with no room shrinks or is left out.',
+      },
+      {
+        type: 'toggle',
+        key: 'leafPairs',
+        label: 'Leaf pairs',
+        help: 'Set the side leaves in opposite pairs along each twig, both angled out off the stem: a full leaf on the outside, a smaller leaf or a bud on the inside, and a tiny bud stone where the inside has no room (beside the stone). Every leaf and bud keeps clear of its neighbours.',
       },
       {
         type: 'number',
@@ -1805,7 +1812,7 @@ export const heads: HeadModel[] = [
       prongStyle,
     ],
     fitsCuts: ALL,
-    extraStones: '0 to 16 (leaf and bud stones)',
+    extraStones: '0 to ~28 (leaf and bud stones)',
     protection: 3,
     brilliance: 4,
     upkeep: 2,

@@ -36,6 +36,60 @@ function verts(geos: THREE.BufferGeometry[]): THREE.Vector3[] {
   return out;
 }
 
+/** Split a merged stone buffer into its stones (closed meshes sharing vertex positions). */
+function splitStones(geos: THREE.BufferGeometry[]): THREE.Vector3[][] {
+  const pts = verts(geos);
+  const parent = pts.map((_, i) => i);
+  const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])));
+  const key = new Map<string, number>();
+  pts.forEach((p, i) => {
+    const k = `${p.x.toFixed(4)},${p.y.toFixed(4)},${p.z.toFixed(4)}`;
+    const j = key.get(k);
+    if (j === undefined) key.set(k, i);
+    else parent[find(i)] = find(j);
+    // the three corners of a triangle belong together
+    if (i % 3) parent[find(i)] = find(i - 1);
+  });
+  const groups = new Map<number, THREE.Vector3[]>();
+  pts.forEach((p, i) => {
+    const r = find(i);
+    const g = groups.get(r) ?? [];
+    g.push(p);
+    groups.set(r, g);
+  });
+  return [...groups.values()];
+}
+
+/**
+ * Seen from above, how many pairs of stones overlap: a stone's plan is the ellipse on its principal axes (half its
+ * length and width), shrunk to 85 %; two overlap when a vertex of one falls inside the other's ellipse.
+ */
+function overlappingStones(stones: THREE.Vector3[][]): number {
+  const plans = stones.map((ps) => {
+    const c = ps.reduce((s, p) => s.add(p), new THREE.Vector3()).divideScalar(ps.length);
+    let sxx = 0;
+    let sxz = 0;
+    let szz = 0;
+    for (const p of ps) {
+      sxx += (p.x - c.x) ** 2;
+      sxz += (p.x - c.x) * (p.z - c.z);
+      szz += (p.z - c.z) ** 2;
+    }
+    const th = 0.5 * Math.atan2(2 * sxz, sxx - szz);
+    const d = [Math.cos(th), Math.sin(th)];
+    const along = (p: THREE.Vector3) => (p.x - c.x) * d[0] + (p.z - c.z) * d[1];
+    const across = (p: THREE.Vector3) => -(p.x - c.x) * d[1] + (p.z - c.z) * d[0];
+    const L = Math.max(...ps.map((p) => Math.abs(along(p)))) * 0.85;
+    const W = Math.max(...ps.map((p) => Math.abs(across(p)))) * 0.85;
+    return { ps, inside: (p: THREE.Vector3) => (along(p) / L) ** 2 + (across(p) / W) ** 2 < 1 };
+  });
+  let n = 0;
+  for (let i = 0; i < plans.length; i++)
+    for (let j = i + 1; j < plans.length; j++)
+      if (plans[i].ps.some(plans[j].inside) || plans[j].ps.some(plans[i].inside)) n++;
+  return n;
+}
+
 const tris = (geos: THREE.BufferGeometry[]) =>
   geos.reduce((s, g) => s + g.getAttribute('position').count / 3, 0);
 
@@ -54,6 +108,16 @@ describe('leaf-vine-bypass head', () => {
     { leafStyle: 'stone', budStones: 4, leafCount: 4, leafSize: 4.5, branchThickness: 1.8, wrap: 70 },
     { leafCount: 2, leafSize: 1.4, branchThickness: 0.6, budStones: 0, wrap: 0 },
     { leafStyle: 'stone', leafCount: 2, budStones: 0, prongCount: 4, prongStyle: 'round' },
+    {
+      leafStyle: 'stone',
+      leafPairs: true,
+      leafCount: 6,
+      leafSize: 4.5,
+      budStones: 4,
+      branchThickness: 1.8,
+      wrap: 70,
+    },
+    { leafPairs: true, leafCount: 6, leafSize: 1.4, budStones: 1, branchThickness: 0.6, wrap: 0 },
   ];
   for (const cut of STUB_CUTS)
     for (const [i, params] of extremes.entries())
@@ -183,6 +247,28 @@ describe('leaf-vine-bypass head', () => {
       expect(
         Math.abs(ext((p) => p.a) - ext((p) => -p.a)) + Math.abs(ext((p) => p.c) - ext((p) => -p.c)),
       ).toBeGreaterThan(0.3);
+    }
+  });
+
+  it('leaf pairs add inner partner leaves and tiny buds without piling stones on stones', () => {
+    for (const bandAxis of [
+      [1, 0],
+      [0, 1],
+    ] as [number, number][]) {
+      const stones = (params: Params) =>
+        splitStones(
+          stonesOf(
+            build({ leafStyle: 'stone', leafCount: 6, budStones: 3, ...params }, 'oval', 3.2, bandAxis),
+          ),
+        );
+      const single = stones({});
+      const paired = stones({ leafPairs: true });
+      // north-south the twigs climb clear of the stone, so the inner partners fit; east-west the long stone fills the
+      // inside of the climb and they give way to tiny buds
+      expect(paired.length).toBeGreaterThan(single.length + (bandAxis[1] ? 3 : -1));
+      // every stone keeps its own spot, paired or with more than four leaves a branch
+      expect(overlappingStones(paired)).toBe(0);
+      expect(overlappingStones(single)).toBe(0);
     }
   });
 

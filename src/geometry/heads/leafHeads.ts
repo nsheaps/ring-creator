@@ -15,6 +15,7 @@ import { loftRows, toFlat } from '../helpers';
 import {
   accentPart,
   ball,
+  bool,
   cleanOutline,
   loop,
   metalPart,
@@ -167,7 +168,8 @@ function seatedStone(
     const l = Math.hypot(x, z) || 1;
     return v3(x + (x / l) * 0.04, rimY, z + (z / l) * 0.04).applyMatrix4(m);
   });
-  const metal: THREE.BufferGeometry[] = [loop(rim, wireR, Math.max(16, rim.length), 6)];
+  // (a 0.13 mm wire round a 1 to 4 mm stone stays smooth with ~24 segments; more only costs triangles)
+  const metal: THREE.BufferGeometry[] = [loop(rim, wireR, Math.min(24, Math.max(16, rim.length)), 6)];
   // bead prongs at the ends and sides of the stone
   const L = Math.max(...o.pts.map((q) => Math.abs(q[0])));
   const W = Math.max(...o.pts.map((q) => Math.abs(q[1])));
@@ -196,7 +198,10 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
   const p = ctx.params;
   const built = ctx.center.built;
   const o = cleanOutline(built.outline);
-  const nLeaves = Math.round(num(p, 'leafCount', 3, 2, 4));
+  const nLeaves = Math.round(num(p, 'leafCount', 3, 2, 6));
+  const pairs = bool(p, 'leafPairs', false);
+  // dense foliage (pairs, or more than four leaves a branch) checks every leaf and bud for room before placing it
+  const crowd = pairs || nLeaves > 4;
   const leafLen = num(p, 'leafSize', 2.6, 1.4, 4.5);
   const r0 = num(p, 'branchThickness', 1.1, 0.6, 1.8) / 2;
   const nBuds = Math.round(num(p, 'budStones', 1, 0, 4));
@@ -350,7 +355,17 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
     // with two or more buds, the last one moves onto the side shoot (below), so the total stays `budStones`
     const shootBud = nBuds >= 2;
     const mainBuds = nBuds - (shootBud ? 1 : 0);
-    type Feature = { kind: 'leaf' | 'bud'; s: number; side: number; angle: number; scale: number };
+    type Feature = {
+      kind: 'leaf' | 'bud';
+      s: number;
+      side: number;
+      angle: number;
+      scale: number;
+      /** an inner partner of a pair: dropped (not flipped) when its side has no room */
+      partner?: boolean;
+      /** tried instead when a partner is dropped */
+      fallback?: Feature;
+    };
     const kinds: ('leaf' | 'bud')[] = [];
     let li = nLeaves - 1;
     let bi = mainBuds;
@@ -396,6 +411,65 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
             : LEAF_SCALES[(k + alt) % LEAF_SCALES.length],
       };
     });
+    // paired foliage: the side leaves stand in opposite pairs at evenly spaced nodes, both angled outward off the stem
+    // towards the tip like a sprig: the outer one full size, the inner one a smaller leaf or (while bud stones last) a
+    // bud, and where the inner side has no room (beside the stone) a tiny bud tries instead. The inner partners go in
+    // last and only where they clear everything already placed, so the clusters never pile stones on stones
+    const extras: Feature[] = [];
+    if (pairs) {
+      feats.length = 0;
+      const nodes = nLeaves - 1;
+      let budsLeft = mainBuds;
+      for (let i = 0; i < nodes; i++) {
+        const s = total * (0.1 + 0.03 * alt + (0.68 * (i + 0.5)) / nodes);
+        const out = outSide(s);
+        const v = (i + alt) % 2;
+        feats.push({ kind: 'leaf', s, side: out, angle: 0.85 + 0.1 * v, scale: LEAF_SCALES[(i + alt) % 4] });
+        // buds take every other node from the root, the rest get a partner leaf
+        const bud = budsLeft > 0 && (i % 2 === 0 || nodes - i <= budsLeft);
+        if (bud) budsLeft--;
+        const tiny: Feature = { kind: 'bud', s: s + 0.15, side: -out, angle: 1.3, scale: 0.5, partner: true };
+        extras.push(
+          bud
+            ? {
+                kind: 'bud',
+                s: s + 0.1,
+                side: -out,
+                angle: 1.15,
+                scale: BUD_SCALES[(i + alt) % 4] * 0.8,
+                partner: true,
+              }
+            : {
+                kind: 'leaf',
+                s: s + 0.1,
+                side: -out,
+                angle: 0.95 - 0.1 * v,
+                scale: LEAF_SCALES[(i + alt + 1) % 4] * 0.75,
+                partner: true,
+                // pointing forward it would run into the stone: turn it back towards the band end instead
+                fallback: {
+                  kind: 'leaf',
+                  s: s + 0.1,
+                  side: -out,
+                  angle: Math.PI - 0.95 + 0.1 * v,
+                  scale: LEAF_SCALES[(i + alt + 1) % 4] * 0.75,
+                  partner: true,
+                  fallback: tiny,
+                },
+              },
+        );
+      }
+      // bud stones left over (more than every other node) sit just past the last pair, on its outer side
+      for (let j = 0; j < budsLeft; j++)
+        extras.push({
+          kind: 'bud',
+          s: total * (0.82 + 0.05 * j),
+          side: outSide(total * (0.82 + 0.05 * j)),
+          angle: 1.2,
+          scale: BUD_SCALES[(j + alt + 1) % 4] * 0.8,
+          partner: true,
+        });
+    }
     // the tip leaf carries on from the twig, turned a little away from the stone
     const tipT = at(total - 0.05);
     const tipOut = -tipT.t[1] * tipT.s.u + tipT.t[0] * tipT.s.v > 0 ? 1 : -1;
@@ -429,6 +503,28 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
     const wireR = 0.13;
 
     type Placed = { base: S; dir: [number, number]; reach: number };
+    // band-plane footprints (capsules) of every leaf and bud placed on this branch, for the paired extras' room check
+    const taken: { a: [number, number]; b: [number, number]; r: number }[] = [];
+    const segDist = (p: [number, number], a: [number, number], b: [number, number]) => {
+      const du = b[0] - a[0];
+      const dv = b[1] - a[1];
+      const l2 = du * du + dv * dv;
+      const t = l2 < 1e-12 ? 0 : Math.min(1, Math.max(0, ((p[0] - a[0]) * du + (p[1] - a[1]) * dv) / l2));
+      return Math.hypot(p[0] - a[0] - du * t, p[1] - a[1] - dv * t);
+    };
+    const footprint = (q: Placed, from: number, to: number, r: number) => ({
+      a: [q.base.u + q.dir[0] * from, q.base.v + q.dir[1] * from] as [number, number],
+      b: [q.base.u + q.dir[0] * to, q.base.v + q.dir[1] * to] as [number, number],
+      r,
+    });
+    const roomFor = (f: { a: [number, number]; b: [number, number]; r: number }) => {
+      for (let k = 0; k <= 6; k++) {
+        const t = k / 6;
+        const p: [number, number] = [f.a[0] + (f.b[0] - f.a[0]) * t, f.a[1] + (f.b[1] - f.a[1]) * t];
+        for (const o of taken) if (segDist(p, o.a, o.b) < f.r + o.r + 0.12) return false;
+      }
+      return true;
+    };
     const branchMetal: THREE.BufferGeometry[] = [];
     const branchStones: THREE.BufferGeometry[] = [];
     const tryDirAt = (t: [number, number], side: number, ang: number): [number, number] => {
@@ -483,7 +579,13 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
         branchMetal.push(...st.metal);
         branchStones.push(st.stone);
       } else branchMetal.push(metalLeaf(base, dir, reach, leafW * scale));
+      taken.push(leafPrint(q, scale));
     };
+    /** a leaf's footprint: from the end of its stalk to its tip, half its width across */
+    function leafPrint(q: Placed, scale: number) {
+      const from = stoneLeaves ? q.base.r + 0.2 : q.base.r;
+      return footprint(q, from, Math.max(from, q.reach), (leafW * scale) / 2);
+    }
     const addBud = (q: Placed, bud: BuiltStone) => {
       const reach = q.reach;
       const base = world(q.base.u, q.base.v, q.base.y);
@@ -496,12 +598,18 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
       const st = seatedStone(bud, basisAt(c, dir.normalize()), base, wireR);
       branchMetal.push(...st.metal);
       branchStones.push(st.stone);
+      taken.push(budPrint(q, bud));
     };
+    function budPrint(q: Placed, bud: BuiltStone) {
+      const rad = Math.max(...cleanOutline(bud.outline).pts.map(([x, z]) => Math.hypot(x, z)));
+      return footprint(q, q.reach, q.reach, rad);
+    }
     const budReach = (scale: number, r: number) => r + Math.max(0.8, budMm * scale) * 0.5 + 0.15;
-    for (const f of feats) {
+    const placeFeature = (f: Feature): void => {
+      // does the placed direction stay on the asked side of the twig?
+      const keeps = (q: Placed) => Math.sign(at(f.s).t[0] * q.dir[1] - at(f.s).t[1] * q.dir[0]) === f.side;
       if (f.kind === 'leaf') {
         // a leaf asked to tuck in towards the stone shrinks a little to fit the crook before it gives up its side
-        const keeps = (q: Placed) => Math.sign(at(f.s).t[0] * q.dir[1] - at(f.s).t[1] * q.dir[0]) === f.side;
         let sc = f.scale;
         let q = placeDir(f, leafLen * sc + r0);
         for (const k of [0.82, 0.68])
@@ -512,12 +620,33 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
               sc = f.scale * k;
             }
           }
+        if (f.partner && !(keeps(q) && clearOf(q.base, q.dir, q.reach, 0.3) && roomFor(leafPrint(q, sc)))) {
+          if (f.fallback) placeFeature(f.fallback);
+          return;
+        }
+        // with paired or more than four leaves, a leaf crowding one already placed shrinks to fit, or is left out
+        for (const k of [0.8, 0.64])
+          if (crowd && !roomFor(leafPrint(q, sc))) {
+            const q2 = placeDir(f, leafLen * f.scale * k + r0);
+            if (roomFor(leafPrint(q2, f.scale * k))) {
+              q = q2;
+              sc = f.scale * k;
+            }
+          }
+        if (crowd && !roomFor(leafPrint(q, sc))) return;
         addLeaf(q, sc);
       } else {
         const bud = budAt(f.scale);
-        addBud(placeDir(f, budReach(f.scale, r0)), bud);
+        const q = placeDir(f, budReach(f.scale, r0));
+        if (f.partner && !(keeps(q) && roomFor(budPrint(q, bud)))) {
+          if (f.fallback) placeFeature(f.fallback);
+          return;
+        }
+        if (crowd && !roomFor(budPrint(q, bud))) return;
+        addBud(q, bud);
       }
-    }
+    };
+    for (const f of feats) placeFeature(f);
     /**
      * A short sprig forking off the branch at arc length `sS` towards `side` at `angle` from the branch direction,
      * ending in a small leaf; `hug` (0..1) pulls it down onto the shoulder it runs over; `bud` adds a tiny bud stone
@@ -554,8 +683,6 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
           r,
         });
       }
-      for (const sp of shootS) shoot.push({ p: world(sp.u, sp.v, sp.y), r: sp.r });
-      branchMetal.push(twig(shoot, 8));
       const tangent = (i: number): [number, number] => {
         const a = shootS[Math.max(0, i - 1)];
         const b = shootS[Math.min(shootS.length - 1, i + 1)];
@@ -563,14 +690,25 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
         return [(b.u - a.u) / l, (b.v - a.v) / l];
       };
       const tipS = { ...shootS[5], r: Math.max(0.2, shootS[5].r) };
-      addLeaf(pickDir(tipS, tangent(5), side, 0.35, leafLen * leaf + 0.2), leaf);
+      const tipLeaf = pickDir(tipS, tangent(5), side, 0.35, leafLen * leaf + 0.2);
+      const shootPrints = shootS.slice(2).map((b, k) => ({
+        a: [shootS[k + 1].u, shootS[k + 1].v] as [number, number],
+        b: [b.u, b.v] as [number, number],
+        r: b.r,
+      }));
+      // with crowded foliage the sprig only grows where it clears the leaves and buds already on the branch
+      if (crowd && !(shootPrints.every(roomFor) && roomFor(leafPrint(tipLeaf, leaf)))) return;
+      for (const sp of shootS) shoot.push({ p: world(sp.u, sp.v, sp.y), r: sp.r });
+      branchMetal.push(twig(shoot, 8));
+      taken.push(...shootPrints);
+      addLeaf(tipLeaf, leaf);
       if (bud) {
         const midS = { ...shootS[3], r: Math.max(0.2, shootS[3].r) };
         addBud(pickDir(midS, tangent(3), -side, 1.3, budReach(0.62, midS.r)), budAt(0.62));
       }
     };
-    // a side shoot off the climb, away from the stone
-    {
+    // a side shoot off the climb, away from the stone (paired foliage fills the climb itself instead)
+    if (!pairs) {
       const sS = total * 0.3;
       const { s, t } = at(sS);
       const out = -t[1] * s.u + t[0] * s.v > 0 ? 1 : -1;
@@ -584,6 +722,7 @@ function leafVineBypass(ctx: HeadCtx): Part[] {
       const out = -t[1] * s.u + t[0] * s.v > 0 ? 1 : -1;
       sprig(sS, out, Math.PI - 1.25, 0.9 + leafLen * 0.25, 1, 0.7, shootBud);
     }
+    for (const f of extras) placeFeature(f);
     const pts: TwigPt[] = [...lead, ...path].map((q) => ({ p: world(q.u, q.v, q.y), r: q.r }));
     branchMetal.push(twig(pts));
     return { metal: branchMetal, stones: branchStones };
