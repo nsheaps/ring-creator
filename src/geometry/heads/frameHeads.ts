@@ -436,12 +436,16 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   const yTop = g2 + Math.min(0.3, Math.max(0.12, crown * 0.3));
   const inset = Math.min(crownInset(ctx.center.built, yTop), 0.4);
   const dome = num(p, 'domeHeight', 1.3, 0.4, 3);
-  const yRim = Math.min(g2 - 0.1, yTop - dome);
   const ribs = Math.round(num(p, 'ribCount', 12, 6, 24));
   const rr = Math.max(0.18, num(p, 'ribWidth', 0.5, 0.25, 1) / 2);
   const sunburst = str(p, 'pattern', PLAQUE_PATTERNS, 'web') === 'sunburst';
+  // `collarRise` drops the whole dome below the collar, which stands as a short wall round the girdle, so the stone sits
+  // proud of the openwork; capped so the plaque keeps a wall's depth above the shank
+  const yRim0 = Math.min(g2 - 0.1, yTop - dome);
+  const rise = Math.min(num(p, 'collarRise', 0, 0, 1.5), Math.max(0, d.bd + yRim0 - rr * 1.6 - 0.6));
+  const yRim = yRim0 - rise;
   const geos: THREE.BufferGeometry[] = [];
-  const domeY = (u: number) => yTop - (yTop - yRim) * u ** 2;
+  const domeY = (u: number) => yTop - rise - (yTop - rise - yRim) * u ** 2;
   // the plate under the lattice, one rib-radius deeper (deeper still under a sunburst, so its slots read dark)
   const pierce = sunburst ? rr * 3 : rr * 1.3;
   const kIn = Math.max(0.5, 1 - inset / R);
@@ -449,6 +453,11 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   const yCup = -Math.min(d.pd * 0.55, d.bd * 0.7);
   const RIB_END = 0.7; // inside this the dome is pierced; outside it a solid jewelled band
   const plate: MixPt[] = [[0, yTop - 0.1, kIn]];
+  /** the raised collar's outer face, as a dome position (`collarRise`) */
+  const uWall = Math.min(0.08, 0.35 / Math.max(0.5, meanRadius(frame) - R));
+  if (rise > 0)
+    plate.push([uWall * 0.5, yTop + 0.02], [uWall, yTop - 0.06], [uWall * 1.1, yTop - rise - 0.1]);
+  const floorFrom = plate.length;
   // the plate's outer wall drops from the rim to yWall, then tapers in to the base (-d.bd) where it meets the shank
   const yWall = Math.min(yRim - rr * 1.6, -g2 - 0.4);
   const span = d.bd + yWall;
@@ -486,7 +495,7 @@ function decoPlaque(ctx: HeadCtx): Part[] {
     plate.push([u1, domeY(u1) - pierce]);
   } else for (const u of [0.15, 0.35, 0.55, RIB_END - 0.02]) plate.push([u, domeY(u) - pierce]);
   // the floor under the openwork (well or shallow plate), for the oxidised lining
-  const floor = plate.slice(1).map(([u, y]) => [u, y] as [number, number]);
+  const floor = plate.slice(floorFrom).map(([u, y]) => [u, y] as [number, number]);
   for (const u of [RIB_END, 0.8, 0.9, 0.97]) plate.push([u, domeY(u) - 0.04]);
   plate.push([1, yRim - rr * 0.6], ...underside);
   plate.push([0, -d.bd, d.bs], [0, yCup, Math.max(d.bs, 0.6)]);
@@ -503,10 +512,24 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   const U_COLLAR = 0.04;
   const ribBeads: THREE.Matrix4[] = [];
   const ribMilgrain = bool(p, 'ribMilgrain', false);
+  const ribEngrave = bool(p, 'ribEngrave', false);
   const RIB_US = [U_COLLAR, 0.25, 0.45, 0.6, RIB_END];
+  const horiz = (a: number, u: number) => {
+    const q = at(a, u);
+    return Math.hypot(q.x, q.z);
+  };
   const rib = (a: number) => {
     const pts = RIB_US.map((u) => at(a, u, lift));
     geos.push(...wire(pts, rr, 14, 6));
+    if (ribEngrave) {
+      // fine engraved lines: a hairline down each flank of the rib, like the reeded fans of hand-engraved plaques
+      for (const side of [-1, 1]) {
+        const line = RIB_US.map((u) =>
+          at(a + (side * rr * 0.62) / Math.max(0.5, horiz(a, u)), u, lift + rr * 0.62),
+        );
+        geos.push(...wire(line, rr * 0.17, 10, 3, false));
+      }
+    }
     if (!ribMilgrain) return;
     const n = pts.length;
     const [u0, u1] = [U_COLLAR, RIB_END];
@@ -527,10 +550,6 @@ function decoPlaque(ctx: HeadCtx): Part[] {
   // scroll end panels: each cartouche becomes a raised heart of two lobes outlined in milgrain wire, over open piercing
   // with a scroll curl each side of its point
   const scroll = sunburst && str(p, 'endPanel', END_PANELS, 'plain') === 'scroll';
-  const horiz = (a: number, u: number) => {
-    const q = at(a, u);
-    return Math.hypot(q.x, q.z);
-  };
   /** local panel coordinates (mm along the arc x, mm outward y, about the point (c, uc)) to dome (angle, u) */
   const panelMap = (c: number) => {
     const L = Math.max(0.5, at(c, 0).setY(0).distanceTo(at(c, 1).setY(0)));
@@ -640,11 +659,13 @@ function decoPlaque(ctx: HeadCtx): Part[] {
     // polygon collar: straight milgrain edges round the stone with a bead at each corner, like an octagonal cup
     const c0 = aBand + Math.PI / collarSides;
     const cr = 1 / Math.cos(Math.PI / collarSides);
+    // on a raised collar the polygon edge caps the wall, low round the crown so the stone shows above it
+    const yC = rise > 0 ? yTop - rr * 0.3 : domeY(U_COLLAR) + lift + rr * 0.3;
     const vtx = Array.from({ length: collarSides }, (_, i) => {
       const a = c0 + (i / collarSides) * Math.PI * 2;
       const [x, z] = radialPoint(d.o, Math.cos(a), Math.sin(a));
       const k = cr + (rr * 0.8) / Math.max(0.5, Math.hypot(x, z));
-      return v3(x * k, domeY(U_COLLAR) + lift + rr * 0.3, z * k);
+      return v3(x * k, yC, z * k);
     });
     const edge: THREE.Vector3[] = [];
     for (let i = 0; i < collarSides; i++) {
@@ -653,8 +674,9 @@ function decoPlaque(ctx: HeadCtx): Part[] {
       for (let k = 0; k < 6; k++) edge.push(a.clone().lerp(b, k / 6));
     }
     geos.push(loop(edge, rr * 1.1, collarSides * 12, 6));
-    for (const v of vtx) geos.push(ball(v3(v.x, v.y + rr * 0.6, v.z), rr * 1.35, 1));
-    collarReach = Math.max(...vtx.map((v) => Math.hypot(v.x, v.z))) + rr * 1.35;
+    const rb = rise > 0 ? rr * 1.15 : rr * 1.35;
+    for (const v of vtx) geos.push(ball(v3(v.x, v.y + (rise > 0 ? rr * 0.3 : rr * 0.6), v.z), rb, 1));
+    collarReach = Math.max(...vtx.map((v) => Math.hypot(v.x, v.z))) + rb;
   } else ringAt(0.08, rr * 1.1);
   if (!sunburst) ringAt(0.4, rr * 0.8);
   ringAt(RIB_END, rr * 1.1);
@@ -682,6 +704,10 @@ function decoPlaque(ctx: HeadCtx): Part[] {
     const base = Math.max(0.8, Math.min(2.2, num(p, 'stoneSize', 0, 0, 3) || ctx.accent.sizeMm || 1.4));
     const hw0 = base / 2 + rr;
     const hl0 = hw0 * 1.5;
+    // `lozengeScroll`: a second milgrain border round each cell, `bord` mm outside it, ending in a scroll curl each side
+    // of the cell's outer point; the cells shrink to leave it room
+    const lozScroll = bool(p, 'lozengeScroll', false);
+    const bord = lozScroll ? rr * 1.5 + wr : 0;
     // fit every cell between the collar and the rim (clear of the corner studs) and inside its angular room
     const fits = cells.map(({ c, room }) => {
       const ri = horiz(c, 0);
@@ -690,7 +716,10 @@ function decoPlaque(ctx: HeadCtx): Part[] {
       const rOut = ro - rr * 2.8 - wr;
       const rc = (rIn + rOut) / 2;
       const hwMax = 0.85 * room * rc - wr;
-      return { c, ri, L: Math.max(0.5, ro - ri), rc, k: Math.min(1, (rOut - rIn) / 2 / hl0, hwMax / hw0) };
+      const k = lozScroll
+        ? Math.min(1, ((rOut - rIn) / 2 - bord) / hl0, (hwMax - bord) / hw0)
+        : Math.min(1, (rOut - rIn) / 2 / hl0, hwMax / hw0);
+      return { c, ri, L: Math.max(0.5, ro - ri), rc, k };
     });
     const k = Math.max(0.2, Math.min(...fits.map((f) => f.k)));
     const hw = hw0 * k;
@@ -724,6 +753,29 @@ function decoPlaque(ctx: HeadCtx): Part[] {
       geos.push(loop(edge, wr, N * 2, 6));
       beadAlong(edge, true);
       lozSites.push(toDome(0, 0));
+      if (!lozScroll) continue;
+      // the outer border: the cell's outline grown by `bord`, a milgrain-lined wire lying just over the dome
+      const wl = rr * 0.9;
+      const outer = shape.map(([x, y]) => {
+        const [a, u] = toDome(x * (1 + bord / hw), y * (1 + bord / hl));
+        return at(a, u, wl);
+      });
+      geos.push(loop(outer, wr * 0.8, N, 4));
+      beadAlong(outer, true);
+      // a scroll curl each side of the outer point, curling back in towards the cell
+      for (const side of [-1, 1]) {
+        const rs = Math.max(rr * 1.2, hw * 0.55);
+        const cx = side * (hw * 0.35 + bord + rs * 0.6);
+        const cy = hl * 0.75 + bord * 0.5;
+        const curl = Array.from({ length: 22 }, (_, i) => {
+          const f = i / 21;
+          const ang = Math.PI * (side > 0 ? 1 : 0) + side * f * Math.PI * 2.4;
+          const r = rs * (1 - 0.7 * f);
+          const [a, u] = toDome(cx + Math.cos(ang) * r, cy + Math.sin(ang) * r);
+          return at(a, u, wl);
+        });
+        geos.push(...wire(curl, wr * 0.75, 24, 4, false));
+      }
     }
   }
   // milgrain: tiny beads along the rim and the inner collar

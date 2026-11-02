@@ -789,6 +789,9 @@ export const rings: ExampleDesign[] = [
           pierceDepth: 2,
           recessFinish: 'oxidised',
           lozengeRing: 6,
+          lozengeScroll: true,
+          ribEngrave: true,
+          collarRise: 0.7,
         },
       },
       shank: {

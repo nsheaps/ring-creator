@@ -1251,7 +1251,7 @@ export const heads: HeadModel[] = [
     builder: 'deco-plaque',
     summary: 'A domed octagonal plaque of pierced openwork, milgrain and small diamonds round the stone.',
     description:
-      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: stretch the plaque, fan the ribs into a sunburst with stone-set cartouches (or scroll hearts) at the ends, bead the ribs, add an octagonal collar, ring it with stone-set milgrain lozenges, and sink or blacken the plate so the piercing reads dark. The openwork collects dust.',
+      'The Art Deco plaque lifts the centre stone on a bombe dome inside an octagonal or hexagonal frame of pierced openwork, ribs over a deep plate, with milgrain on the rim and a row of small diamonds.\n\nThe style follows 1920s platinum rings, where a small old European stone looks far bigger.\n\nSet the ribs, dome height, plaque width and sides. Optional extras: a sunburst with stone-set cartouches or scroll hearts, beaded or engraved ribs, a raised octagonal collar, stone-set milgrain lozenges with scroll borders, and a sunk or blackened plate. The openwork collects dust.',
     tags: ['art-deco', 'vintage', 'plaque', 'openwork', 'milgrain'],
     pros: ['Big vintage presence from a small stone', 'Rich detail from every angle', 'Protects the girdle'],
     cons: ['Openwork traps dirt', 'Tall, wide face', 'Delicate details wear over decades'],
@@ -1280,6 +1280,9 @@ export const heads: HeadModel[] = [
       pierceDepth: 0,
       recessFinish: 'none',
       lozengeRing: 0,
+      lozengeScroll: false,
+      ribEngrave: false,
+      collarRise: 0,
     },
     controls: [
       {
@@ -1432,6 +1435,28 @@ export const heads: HeadModel[] = [
         max: 12,
         step: 1,
         help: 'Raised milgrain lozenge cells round the collar, one small stone in each, in place of the rim diamonds. With the sunburst they share the two fan sides, clear of the cartouches. 0 = none.',
+      },
+      {
+        type: 'toggle',
+        key: 'lozengeScroll',
+        label: 'Scroll borders on the lozenges',
+        help: 'A second milgrain-lined border round each lozenge cell, ending in a scroll curl each side of its outer point. The cells shrink a little to make room.',
+      },
+      {
+        type: 'toggle',
+        key: 'ribEngrave',
+        label: 'Engraved ribs',
+        help: 'Fine engraved lines down both flanks of every rib, like hand-engraved Deco fans.',
+      },
+      {
+        type: 'number',
+        key: 'collarRise',
+        label: 'Collar rise',
+        min: 0,
+        max: 1.5,
+        step: 0.1,
+        unit: 'mm',
+        help: 'Drops the openwork dome this far below the collar, which stands as a short wall round the girdle, so the centre stone sits proud and shows from the side. 0 = the dome rises to the stone.',
       },
     ],
     fitsCuts: ALL,

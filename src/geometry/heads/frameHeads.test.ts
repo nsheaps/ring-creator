@@ -610,6 +610,97 @@ describe('deco plaque extras: sunburst, cartouche stones, stretch, rib milgrain,
         expect(verts(withRing, 'head-metal').length).toBeGreaterThan(verts(others, 'head-metal').length);
       });
 
+  describe('filigree extras: collarRise, ribEngrave, lozengeScroll', () => {
+    const R013 = {
+      ...DECO,
+      endPanel: 'scroll',
+      pierceDepth: 2,
+      recessFinish: 'oxidised',
+      lozengeRing: 6,
+      cartoucheSize: 1.6,
+      stoneSize: 1.6,
+    } as Params;
+    const ALL = { ...R013, collarRise: 0.7, ribEngrave: true, lozengeScroll: true } as Params;
+    const crown = stubCtx({ cut: 'old-european', params: {} }).center.built.crownHeight;
+    const maxY = (vs: THREE.Vector3[]) => vs.reduce((m, v) => Math.max(m, v.y), -Infinity);
+
+    it('are off by default: their zero values leave every plaque byte-identical', () => {
+      for (const params of [{}, DECO, R013] as Params[]) {
+        const plain = build('deco-plaque', 'old-european', params, [1, 0]);
+        expect(
+          positions(
+            build(
+              'deco-plaque',
+              'old-european',
+              { ...params, collarRise: 0, ribEngrave: false, lozengeScroll: false },
+              [1, 0],
+            ),
+          ),
+        ).toEqual(positions(plain));
+      }
+    });
+
+    for (const bandAxis of [
+      [1, 0],
+      [0, 1],
+    ] as [number, number][])
+      it(`all on is finite, bounded, deterministic and in budget (band axis ${bandAxis.join(',')})`, () => {
+        const parts = build('deco-plaque', 'old-european', ALL, bandAxis);
+        // metal and stones inside the plaque's budget; the oxidised skin has its own (see recessFinish)
+        let tris = 0;
+        for (const p of parts) {
+          const arr = p.geometry.getAttribute('position').array as ArrayLike<number>;
+          expect(arr.length).toBeGreaterThan(0);
+          for (let i = 0; i < arr.length; i++) expect(Number.isFinite(arr[i])).toBe(true);
+          if (p.slot === 'head-recess') expect(arr.length / 9).toBeLessThan(20_000);
+          else tris += arr.length / 9;
+        }
+        expect(tris).toBeLessThan(80000);
+        expect(positions(build('deco-plaque', 'old-european', ALL, bandAxis))).toEqual(positions(parts));
+        const b = box(parts, 'head-metal');
+        const a = box(build('deco-plaque', 'old-european', R013, bandAxis), 'head-metal');
+        // same footprint, still joins the shank
+        expect(b.min.y).toBeCloseTo(a.min.y, 5);
+        expect(Math.max(b.max.x, -b.min.x)).toBeLessThan(Math.max(a.max.x, -a.min.x) + 0.3);
+        expect(Math.max(b.max.z, -b.min.z)).toBeLessThan(Math.max(a.max.z, -a.min.z) + 0.3);
+      });
+
+    it('collarRise drops everything outside the collar so the centre stone stands proud', () => {
+      const r = (v: THREE.Vector3) => Math.hypot(v.x, v.z);
+      // the highest metal and accent stone beyond the collar and its corner beads (r > 4 mm): lower by about the rise
+      const outside = (ps: Part[], slot: Part['slot']) => maxY(verts(ps, slot).filter((v) => r(v) > 4));
+      const flat = build('deco-plaque', 'old-european', R013, [1, 0]);
+      const risen = build('deco-plaque', 'old-european', { ...R013, collarRise: 0.7 }, [1, 0]);
+      expect(outside(risen, 'head-metal')).toBeLessThan(outside(flat, 'head-metal') - 0.5);
+      expect(outside(risen, 'accent-stone')).toBeLessThan(outside(flat, 'accent-stone') - 0.5);
+      // the crown clears the collar: all the head metal stays well under the table
+      // (without the rise the corner beads and raised cells reach past the table and bury the stone)
+      const top = box(risen, 'head-metal').max.y;
+      expect(top).toBeLessThan(crown * 0.7);
+      expect(box(flat, 'head-metal').max.y).toBeGreaterThan(top + 0.3);
+      // the collar still holds the girdle: metal right round the stone at girdle height
+      const near = verts(risen, 'head-metal').filter((v) => Math.abs(v.y) < 0.3 && r(v) < 2.8);
+      const sectors = new Set(
+        near.map((v) => Math.floor(((Math.atan2(v.z, v.x) + Math.PI) / (Math.PI * 2)) * 16) % 16),
+      );
+      expect(sectors.size).toBe(16);
+    });
+
+    it('ribEngrave and lozengeScroll add fine metal and keep the stones', () => {
+      const n = (p: Params) => verts(build('deco-plaque', 'round-brilliant', p, [1, 0]), 'head-metal').length;
+      const s = (p: Params) =>
+        verts(build('deco-plaque', 'round-brilliant', p, [1, 0]), 'accent-stone').length;
+      expect(n({ ...R013, ribEngrave: true })).toBeGreaterThan(n(R013));
+      expect(n({ ribEngrave: true })).toBeGreaterThan(n({}));
+      expect(n({ ...R013, lozengeScroll: true })).toBeGreaterThan(n(R013));
+      expect(s({ ...R013, lozengeScroll: true })).toBe(s(R013));
+      // lozengeScroll needs the lozenge ring: without cells it changes nothing
+      expect(
+        positions(build('deco-plaque', 'round-brilliant', { ...DECO, lozengeScroll: true }, [1, 0])),
+      ).toEqual(positions(build('deco-plaque', 'round-brilliant', DECO, [1, 0])));
+    });
+  });
+
   it('rib milgrain and the polygon collar add metal', () => {
     const n = (p: Params) => verts(build('deco-plaque', 'round-brilliant', p), 'head-metal').length;
     expect(n({ ribMilgrain: true })).toBeGreaterThan(n({}));
