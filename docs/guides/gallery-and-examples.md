@@ -12,7 +12,7 @@ The [Gallery](#/gallery) is a collection of more than 100 example rings, each on
 
 ## Browsing
 
-Each card shows a picture and the ring's name. Cards are grouped into a grid, and a line above the grid says how many rings match, for example "24 of 108 rings". Click a card to open its page.
+Each card shows a picture and the ring's name. Cards are grouped into a grid, and a line above the grid says how many rings match, for example "24 of 114 rings". Click a card to open its page.
 
 ### Filters
 

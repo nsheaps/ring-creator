@@ -1,1319 +1,1092 @@
 [
- {
-  "id": "r3-001",
-  "name": "Teal oval sapphire, Monarch setting",
-  "category": "colored-stone",
-  "source": {
-   "name": "Point No Point Studio",
-   "url": "https://pointnopointstudio.com/products/2-09-carat-teal-oval-sapphire-and-diamond-engagement-ring-monarch-setting-14k-yellow-gold-1"
-  },
-  "priceUsd": 9101,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": "oval",
-    "carat": 2.21,
-    "colorName": "teal",
-    "clarity": null
-   },
-   "head": "cluster-flank",
-   "shank": "plain-round",
-   "metals": [
-    "yellow-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "marquise and round accent diamonds 0.32 tcw"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "widthMm": 1.7,
-     "topWidthMm": 1.7,
-     "thicknessMm": 1.7,
-     "topThicknessMm": 1.7
+  {
+    "id": "r3-001",
+    "name": "Teal oval sapphire, Monarch setting",
+    "category": "colored-stone",
+    "source": {
+      "name": "Point No Point Studio",
+      "url": "https://pointnopointstudio.com/products/2-09-carat-teal-oval-sapphire-and-diamond-engagement-ring-monarch-setting-14k-yellow-gold-1"
     },
-    "head": {
-     "flankCount": 3,
-     "flankRatio": 0.36,
-     "flankTaper": 0.7,
-     "flankGap": 0.1,
-     "flankTilt": 0.8,
-     "fanSpread": 84,
-     "arrangement": "fan",
-     "prongStyle": "claw"
+    "priceUsd": 9101,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "sapphire",
+        "cut": "oval",
+        "carat": 2.21,
+        "colorName": "teal",
+        "clarity": null
+      },
+      "head": "cluster-flank",
+      "shank": "plain-round",
+      "metals": [
+        "yellow-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "marquise and round accent diamonds 0.32 tcw"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "widthMm": 1.7,
+          "topWidthMm": 1.7,
+          "thicknessMm": 1.7,
+          "topThicknessMm": 1.7
+        },
+        "head": {
+          "flankCount": 3,
+          "flankRatio": 0.36,
+          "flankTaper": 0.7,
+          "flankGap": 0.1,
+          "flankTilt": 0.8,
+          "fanSpread": 84,
+          "arrangement": "fan",
+          "prongStyle": "claw"
+        },
+        "accent": {
+          "sizeMm": 2.4
+        },
+        "placement": {
+          "raise": 0.4
+        }
+      }
     },
-    "accent": {
-     "sizeMm": 2.4
+    "band": null,
+    "notes": "Raised basket head with marquise and round diamonds arranged like butterfly wings around a heat-treated Australian teal sapphire; 1.7 mm round shank. Photo audit: oval sapphire flanked by a tiered marquise-and-round diamond cluster on each side, each stone in its own prongs, leaning outward and stepping down to the shoulders; modelled as a cluster-flank fan. Compared with the photo: a fuller sunburst tight against the oval, a long middle marquise along the band and shorter ones angled up and down (flankTaper 0.7, fanSpread 84), larger stones (flankRatio 0.36) standing nearly level with the girdle (flankTilt 0.8)."
+  },
+  {
+    "id": "r3-002",
+    "name": "Salt-and-pepper hexagon rose-cut, Beatrice",
+    "category": "nature",
+    "source": {
+      "name": "Point No Point Studio",
+      "url": "https://pointnopointstudio.com/products/1-07-carat-salt-and-pepper-hexagon-diamond-engagement-ring-beatrice-setting"
     },
-    "placement": {
-     "raise": 0.4
-    }
-   }
-  },
-  "band": null,
-  "notes": "Raised basket head with marquise and round diamonds arranged like butterfly wings around a heat-treated Australian teal sapphire; 1.7 mm round shank. Photo audit: oval sapphire flanked by a tiered marquise-and-round diamond cluster on each side, each stone in its own prongs, leaning outward and stepping down to the shoulders; modelled as a cluster-flank fan. Compared with the photo: a fuller sunburst tight against the oval, a long middle marquise along the band and shorter ones angled up and down (flankTaper 0.7, fanSpread 84), larger stones (flankRatio 0.36) standing nearly level with the girdle (flankTilt 0.8)."
- },
- {
-  "id": "r3-002",
-  "name": "Salt-and-pepper hexagon rose-cut, Beatrice",
-  "category": "nature",
-  "source": {
-   "name": "Point No Point Studio",
-   "url": "https://pointnopointstudio.com/products/1-07-carat-salt-and-pepper-hexagon-diamond-engagement-ring-beatrice-setting"
-  },
-  "priceUsd": 5605,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "diamond",
-    "cut": "hexagon",
-    "carat": 0.93,
-    "colorName": "salt and pepper",
-    "clarity": null
-   },
-   "head": "three-stone",
-   "shank": "dainty",
-   "metals": [
-    "white-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "white baguette then triangle accent diamonds 0.14 tcw",
-    "rose-cut hexagon 8.26x5.31 mm"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "widthMm": 1.6,
-     "topWidthMm": 1.6,
-     "thicknessMm": 1.7,
-     "topThicknessMm": 1.5
+    "priceUsd": 5605,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "diamond",
+        "cut": "hexagon",
+        "carat": 0.93,
+        "colorName": "salt and pepper",
+        "clarity": null
+      },
+      "head": "three-stone",
+      "shank": "dainty",
+      "metals": [
+        "white-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "white baguette then triangle accent diamonds 0.14 tcw",
+        "rose-cut hexagon 8.26x5.31 mm"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "widthMm": 1.6,
+          "topWidthMm": 1.6,
+          "thicknessMm": 1.7,
+          "topThicknessMm": 1.5
+        },
+        "placement": {
+          "raise": 0.3
+        },
+        "head": {
+          "sideRatio": 0.42,
+          "sideGap": 0.12,
+          "sideCut": "baguette",
+          "outerCut": "trillion",
+          "outerRatio": 1,
+          "sideProngs": 4,
+          "sideAspect": 3
+        },
+        "center": {
+          "aspect": 1.6
+        },
+        "accent": {
+          "cut": "baguette",
+          "sizeMm": 2.4
+        }
+      }
     },
-    "placement": {
-     "raise": 0.3
+    "band": null,
+    "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side. Compared with the photo: elongated hexagon, a baguette standing along the finger then a trillion pointing away from the centre on each side (three-stone with an outer stone cut); slim 3:1 baguettes (side stone proportions 3)."
+  },
+  {
+    "id": "r3-003",
+    "name": "Black salt-and-pepper hexagon, Ombre Eliza",
+    "category": "colored-stone",
+    "source": {
+      "name": "Point No Point Studio",
+      "url": "https://pointnopointstudio.com/products/1-39-carat-salt-and-pepper-hexagon-diamond-engagement-ring-ombre-eliza-setting-14k-rose-gold"
     },
-    "head": {
-     "sideRatio": 0.42,
-     "sideGap": 0.12,
-     "sideCut": "baguette",
-     "outerCut": "trillion",
-     "outerRatio": 1,
-     "sideProngs": 4,
-     "sideAspect": 3
+    "priceUsd": 6477,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "diamond",
+        "cut": "hexagon",
+        "carat": 1.9,
+        "colorName": "salt and pepper",
+        "clarity": null
+      },
+      "head": "three-stone",
+      "shank": "pave",
+      "metals": [
+        "rose-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "two white triangle diamonds",
+        "white-grey-black ombre diamonds in band 0.14 tcw"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "thicknessMm": 1.7,
+          "topThicknessMm": 1.7,
+          "widthMm": 1.7,
+          "topWidthMm": 1.7,
+          "stoneSizeMm": 1.2,
+          "coverage": 0.5,
+          "grade": "both",
+          "gradeTo": 0.8,
+          "gradeColor": "black"
+        },
+        "placement": {
+          "raise": 0.3
+        },
+        "head": {
+          "sideRatio": 0.4,
+          "sideGap": 0.1,
+          "sideCut": "trillion",
+          "sideProngs": 3
+        },
+        "center": {
+          "aspect": 1.1
+        },
+        "accent": {
+          "cut": "round-brilliant",
+          "sizeMm": 1.2
+        }
+      }
     },
-    "center": {
-     "aspect": 1.6
+    "band": null,
+    "notes": "Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded single-row pave on the shoulders: white at the head through grey to black, tapering slightly (grade both, gradeTo 0.8, gradeColor black, coverage 0.5 so the run ends at the sides as in the photo)."
+  },
+  {
+    "id": "r3-004",
+    "name": "Black salt-and-pepper emerald-shape rose cut, Quincy",
+    "category": "colored-stone",
+    "source": {
+      "name": "Point No Point Studio",
+      "url": "https://pointnopointstudio.com/products/2-41-carat-black-salt-and-pepper-emerald-shaped-diamond-engagement-ring-ombre-quincy-setting"
     },
-    "accent": {
-     "cut": "baguette",
-     "sizeMm": 2.4
-    }
-   }
-  },
-  "band": null,
-  "notes": "Low-profile 4-prong head on a semi-translucent hand-faceted rose-cut hexagon, flanked by baguettes and triangles. Cut id hexagon used; rose-cut facetting noted here. Photo audit: white-gold head and band; baguette then triangle stones either side. Compared with the photo: elongated hexagon, a baguette standing along the finger then a trillion pointing away from the centre on each side (three-stone with an outer stone cut); slim 3:1 baguettes (side stone proportions 3)."
- },
- {
-  "id": "r3-003",
-  "name": "Black salt-and-pepper hexagon, Ombre Eliza",
-  "category": "colored-stone",
-  "source": {
-   "name": "Point No Point Studio",
-   "url": "https://pointnopointstudio.com/products/1-39-carat-salt-and-pepper-hexagon-diamond-engagement-ring-ombre-eliza-setting-14k-rose-gold"
-  },
-  "priceUsd": 6477,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "diamond",
-    "cut": "hexagon",
-    "carat": 1.9,
-    "colorName": "salt and pepper",
-    "clarity": null
-   },
-   "head": "three-stone",
-   "shank": "pave",
-   "metals": [
-    "rose-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "two white triangle diamonds",
-    "white-grey-black ombre diamonds in band 0.14 tcw"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "thicknessMm": 1.7,
-     "topThicknessMm": 1.7,
-     "widthMm": 1.7,
-     "topWidthMm": 1.7,
-     "stoneSizeMm": 1.2,
-     "coverage": 0.5,
-     "grade": "both",
-     "gradeTo": 0.8,
-     "gradeColor": "black"
+    "priceUsd": 7613,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "diamond",
+        "cut": "emerald-cut",
+        "carat": 2.25,
+        "colorName": "salt and pepper",
+        "clarity": null
+      },
+      "head": "cluster-flank",
+      "shank": "pave",
+      "metals": [
+        "yellow-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "white round diamond clusters at sides",
+        "ombre diamonds in band 0.16 tcw",
+        "rose-cut emerald shape 7.97x5.58 mm"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "thicknessMm": 1.7,
+          "topThicknessMm": 1.7,
+          "widthMm": 1.7,
+          "topWidthMm": 1.7,
+          "stoneSizeMm": 1.2,
+          "coverage": 0.65,
+          "grade": "both",
+          "gradeTo": 0.75,
+          "gradeColor": "gray"
+        },
+        "placement": {
+          "raise": 0.3
+        },
+        "head": {
+          "flankCount": 1,
+          "flankRatio": 0.21,
+          "flankGap": 0.08,
+          "arrangement": "fan",
+          "fanCut": "round"
+        },
+        "accent": {
+          "sizeMm": 1.8
+        }
+      }
     },
-    "placement": {
-     "raise": 0.3
+    "band": null,
+    "notes": "Hand-faceted rose-cut emerald-shaped salt-and-pepper diamond with round white clusters and an ombre band. Nearest cut id emerald-cut. Photo audit: emerald shape stands north-south with a small round cluster each side and a half-pave band. Compared with the photo: three larger rounds per side in a triangle snug against the long sides, sitting low on the shoulders (flankRatio 0.21, flankGap 0.08), and graded pave stepping down in size and from white to grey along the shank (grade both, gradeTo 0.75, gradeColor gray)."
+  },
+  {
+    "id": "r3-005",
+    "name": "Kite aquamarine with moonstone, bezel Wren",
+    "category": "colored-stone",
+    "source": {
+      "name": "Point No Point Studio",
+      "url": "https://pointnopointstudio.com/products/3-25-carat-kite-aquamarine-and-diamond-engagement-ring-bezel-wren-setting"
     },
-    "head": {
-     "sideRatio": 0.4,
-     "sideGap": 0.1,
-     "sideCut": "trillion",
-     "sideProngs": 3
+    "priceUsd": 6650,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "aquamarine",
+        "cut": "kite",
+        "carat": 2.93,
+        "colorName": "aquamarine blue",
+        "clarity": null
+      },
+      "head": "bezel-full",
+      "shank": "plain-round",
+      "metals": [
+        "yellow-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "half-halo faceted diamonds 0.17 tcw",
+        "0.15 ct oval moonstone accent"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "widthMm": 1.3,
+          "topWidthMm": 1.3,
+          "thicknessMm": 1.3,
+          "topThicknessMm": 1.3
+        },
+        "placement": {
+          "raise": 0.8
+        }
+      }
     },
-    "center": {
-     "aspect": 1.1
+    "band": null,
+    "notes": "Step-cut kite aquamarine in a raised bezel with cut-away sides, a diamond half-halo and a small moonstone accent. Photo audit: photo: slim band; kite with cut-away bezel, baguette fan and a moonstone drop."
+  },
+  {
+    "id": "r3-006",
+    "name": "Kite moissanite with rubies and black diamonds, Ombre Wren",
+    "category": "colored-stone",
+    "source": {
+      "name": "Point No Point Studio",
+      "url": "https://pointnopointstudio.com/products/kite-moissanite-and-diamond-engagement-ring-ombre-wren-setting"
     },
-    "accent": {
-     "cut": "round-brilliant",
-     "sizeMm": 1.2
-    }
-   }
-  },
-  "band": null,
-  "notes": "Speckled black rose-cut hexagon with a white-to-grey-to-black diamond gradient running down the shoulders. Listing URL names rose gold but the page default fetched was 14k yellow; many metals offered. Photo audit: hexagon centre with two triangle side stones and a graded pave band. Compared with the photo: rose gold, triangle side stones, graded single-row pave on the shoulders: white at the head through grey to black, tapering slightly (grade both, gradeTo 0.8, gradeColor black, coverage 0.5 so the run ends at the sides as in the photo)."
- },
- {
-  "id": "r3-004",
-  "name": "Black salt-and-pepper emerald-shape rose cut, Quincy",
-  "category": "colored-stone",
-  "source": {
-   "name": "Point No Point Studio",
-   "url": "https://pointnopointstudio.com/products/2-41-carat-black-salt-and-pepper-emerald-shaped-diamond-engagement-ring-ombre-quincy-setting"
-  },
-  "priceUsd": 7613,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "diamond",
-    "cut": "emerald-cut",
-    "carat": 2.25,
-    "colorName": "salt and pepper",
-    "clarity": null
-   },
-   "head": "cluster-flank",
-   "shank": "pave",
-   "metals": [
-    "yellow-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "white round diamond clusters at sides",
-    "ombre diamonds in band 0.16 tcw",
-    "rose-cut emerald shape 7.97x5.58 mm"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "thicknessMm": 1.7,
-     "topThicknessMm": 1.7,
-     "widthMm": 1.7,
-     "topWidthMm": 1.7,
-     "stoneSizeMm": 1.2,
-     "coverage": 0.65,
-     "grade": "both",
-     "gradeTo": 0.75,
-     "gradeColor": "gray"
+    "priceUsd": 6018,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "moissanite",
+        "cut": "kite",
+        "carat": null,
+        "colorName": "colorless (E-F)",
+        "clarity": "VVS2"
+      },
+      "head": "basket",
+      "shank": "pave",
+      "metals": [
+        "white-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "natural rubies 0.06 tcw",
+        "black diamonds 0.10 tcw",
+        "white diamonds 0.39 tcw",
+        "tapered baguette focal point"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "widthMm": 1.7,
+          "topWidthMm": 1.7,
+          "stoneSizeMm": 1.3,
+          "coverage": 0.55
+        },
+        "head": {
+          "prongCount": 3
+        }
+      }
     },
-    "placement": {
-     "raise": 0.3
+    "band": null,
+    "notes": "Step-cut kite moissanite (center sizes 12x6 to 14x8 mm) above a half-halo mixing rubies, black and white diamonds. Carat varies by size so null. Photo audit: white metal; the photo shows a baguette fan and ruby/black accents under a kite that we cannot build."
+  },
+  {
+    "id": "r3-007",
+    "name": "Morganite twig ring, rose gold",
+    "category": "nature",
+    "source": {
+      "name": "Camelliarts",
+      "url": "https://www.camelliarts.com/product/14k-rose-gold-morganite-engagement-ring-rose-gold-branch-ring-unique-morganite-twig-ring/"
     },
-    "head": {
-     "flankCount": 1,
-     "flankRatio": 0.21,
-     "flankGap": 0.08,
-     "arrangement": "fan",
-     "fanCut": "round"
+    "priceUsd": 1554,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "morganite",
+        "cut": "round-brilliant",
+        "carat": 1,
+        "colorName": "peach-pink",
+        "clarity": "VS"
+      },
+      "head": "solitaire-4-prong",
+      "shank": "twig",
+      "metals": [
+        "rose-gold-14k"
+      ],
+      "finish": "hammered",
+      "accents": [
+        "twig-tip prongs",
+        "woven shoulder under stone"
+      ],
+      "orientation": "north-south"
     },
-    "accent": {
-     "sizeMm": 1.8
-    }
-   }
+    "band": null,
+    "notes": "Four prongs styled as twig tips hold a round morganite above a bark-textured twisted band. Some sizes carry a $100-200 surcharge."
   },
-  "band": null,
-  "notes": "Hand-faceted rose-cut emerald-shaped salt-and-pepper diamond with round white clusters and an ombre band. Nearest cut id emerald-cut. Photo audit: emerald shape stands north-south with a small round cluster each side and a half-pave band. Compared with the photo: three larger rounds per side in a triangle snug against the long sides, sitting low on the shoulders (flankRatio 0.21, flankGap 0.08), and graded pave stepping down in size and from white to grey along the shank (grade both, gradeTo 0.75, gradeColor gray)."
- },
- {
-  "id": "r3-005",
-  "name": "Kite aquamarine with moonstone, bezel Wren",
-  "category": "colored-stone",
-  "source": {
-   "name": "Point No Point Studio",
-   "url": "https://pointnopointstudio.com/products/3-25-carat-kite-aquamarine-and-diamond-engagement-ring-bezel-wren-setting"
-  },
-  "priceUsd": 6650,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "aquamarine",
-    "cut": "kite",
-    "carat": 2.93,
-    "colorName": "aquamarine blue",
-    "clarity": null
-   },
-   "head": "bezel-full",
-   "shank": "plain-round",
-   "metals": [
-    "yellow-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "half-halo faceted diamonds 0.17 tcw",
-    "0.15 ct oval moonstone accent"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "widthMm": 1.3,
-     "topWidthMm": 1.3,
-     "thicknessMm": 1.3,
-     "topThicknessMm": 1.3
+  {
+    "id": "r3-008",
+    "name": "Leaf-and-twig morganite solitaire",
+    "category": "nature",
+    "source": {
+      "name": "Dawn Vertrees Jewelry (Etsy)",
+      "url": "https://dawnvertreesjewelry.patternbyetsy.com/listing/734490768/rose-gold-leaf-twig-engagement-ring"
     },
-    "placement": {
-     "raise": 0.8
-    }
-   }
-  },
-  "band": null,
-  "notes": "Step-cut kite aquamarine in a raised bezel with cut-away sides, a diamond half-halo and a small moonstone accent. Photo audit: photo: slim band; kite with cut-away bezel, baguette fan and a moonstone drop."
- },
- {
-  "id": "r3-006",
-  "name": "Kite moissanite with rubies and black diamonds, Ombre Wren",
-  "category": "colored-stone",
-  "source": {
-   "name": "Point No Point Studio",
-   "url": "https://pointnopointstudio.com/products/kite-moissanite-and-diamond-engagement-ring-ombre-wren-setting"
-  },
-  "priceUsd": 6018,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "moissanite",
-    "cut": "kite",
-    "carat": null,
-    "colorName": "colorless (E-F)",
-    "clarity": "VVS2"
-   },
-   "head": "basket",
-   "shank": "pave",
-   "metals": [
-    "white-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "natural rubies 0.06 tcw",
-    "black diamonds 0.10 tcw",
-    "white diamonds 0.39 tcw",
-    "tapered baguette focal point"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "widthMm": 1.7,
-     "topWidthMm": 1.7,
-     "stoneSizeMm": 1.3,
-     "coverage": 0.55
+    "priceUsd": 1455,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "morganite",
+        "cut": "round-brilliant",
+        "carat": 0.5,
+        "colorName": "peach",
+        "clarity": null
+      },
+      "head": "solitaire-4-prong",
+      "shank": "leaf-vine",
+      "metals": [
+        "rose-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "two-leaf head",
+        "5 mm round stone"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "placement": {
+          "raise": 0.2
+        }
+      }
     },
-    "head": {
-     "prongCount": 3
-    }
-   }
+    "band": null,
+    "notes": "A two-leaf solitaire head holding a 5 mm round peach morganite on a twig-style band; matching band sold separately. Head id is nearest fit. Photo audit: low, leaf-wrapped setting for a small round stone."
   },
-  "band": null,
-  "notes": "Step-cut kite moissanite (center sizes 12x6 to 14x8 mm) above a half-halo mixing rubies, black and white diamonds. Carat varies by size so null. Photo audit: white metal; the photo shows a baguette fan and ruby/black accents under a kite that we cannot build."
- },
- {
-  "id": "r3-007",
-  "name": "Morganite twig ring, rose gold",
-  "category": "nature",
-  "source": {
-   "name": "Camelliarts",
-   "url": "https://www.camelliarts.com/product/14k-rose-gold-morganite-engagement-ring-rose-gold-branch-ring-unique-morganite-twig-ring/"
-  },
-  "priceUsd": 1554,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "morganite",
-    "cut": "round-brilliant",
-    "carat": 1.0,
-    "colorName": "peach-pink",
-    "clarity": "VS"
-   },
-   "head": "solitaire-4-prong",
-   "shank": "twig",
-   "metals": [
-    "rose-gold-14k"
-   ],
-   "finish": "hammered",
-   "accents": [
-    "twig-tip prongs",
-    "woven shoulder under stone"
-   ],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "Four prongs styled as twig tips hold a round morganite above a bark-textured twisted band. Some sizes carry a $100-200 surcharge."
- },
- {
-  "id": "r3-008",
-  "name": "Leaf-and-twig morganite solitaire",
-  "category": "nature",
-  "source": {
-   "name": "Dawn Vertrees Jewelry (Etsy)",
-   "url": "https://dawnvertreesjewelry.patternbyetsy.com/listing/734490768/rose-gold-leaf-twig-engagement-ring"
-  },
-  "priceUsd": 1455,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "morganite",
-    "cut": "round-brilliant",
-    "carat": 0.5,
-    "colorName": "peach",
-    "clarity": null
-   },
-   "head": "solitaire-4-prong",
-   "shank": "leaf-vine",
-   "metals": [
-    "rose-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "two-leaf head",
-    "5 mm round stone"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "placement": {
-     "raise": 0.2
-    }
-   }
-  },
-  "band": null,
-  "notes": "A two-leaf solitaire head holding a 5 mm round peach morganite on a twig-style band; matching band sold separately. Head id is nearest fit. Photo audit: low, leaf-wrapped setting for a small round stone."
- },
- {
-  "id": "r3-009",
-  "name": "Bella oval alexandrite, rose gold",
-  "category": "colored-stone",
-  "source": {
-   "name": "Aquamarise",
-   "url": "https://aquamarise.com/products/bella-oval-cut-alexandrite-engagement-ring-set-in-14k-solid-rose-gold"
-  },
-  "priceUsd": 2295,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "alexandrite",
-    "cut": "oval",
-    "carat": 2.0,
-    "colorName": "blue violet",
-    "clarity": null
-   },
-   "head": "three-stone",
-   "shank": "pave",
-   "metals": [
-    "rose-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "pave diamond or moissanite band",
-    "intertwined band"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "coverage": 0.7,
-     "stoneSizeMm": 1.4
+  {
+    "id": "r3-009",
+    "name": "Bella oval alexandrite, rose gold",
+    "category": "colored-stone",
+    "source": {
+      "name": "Aquamarise",
+      "url": "https://aquamarise.com/products/bella-oval-cut-alexandrite-engagement-ring-set-in-14k-solid-rose-gold"
     },
-    "head": {
-     "sideRatio": 0.42,
-     "sideGap": 0.25,
-     "sideProngs": 4
+    "priceUsd": 2295,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "alexandrite",
+        "cut": "oval",
+        "carat": 2,
+        "colorName": "blue violet",
+        "clarity": null
+      },
+      "head": "three-stone",
+      "shank": "pave",
+      "metals": [
+        "rose-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "pave diamond or moissanite band",
+        "intertwined band"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "coverage": 0.7,
+          "stoneSizeMm": 1.4
+        },
+        "head": {
+          "sideRatio": 0.42,
+          "sideGap": 0.25,
+          "sideProngs": 4
+        },
+        "accent": {
+          "sizeMm": 2.6
+        },
+        "placement": {
+          "raise": 0.6
+        }
+      }
     },
-    "accent": {
-     "sizeMm": 2.6
+    "band": {
+      "style": "chevron",
+      "metals": [
+        "rose-gold-14k"
+      ],
+      "stones": "melee",
+      "widthMm": 1.8,
+      "tune": {
+        "params": {
+          "stones": true,
+          "stoneSize": 1.6,
+          "stoneCount": 7
+        }
+      }
     },
-    "placement": {
-     "raise": 0.6
-    }
-   }
+    "notes": "Oval lab-grown alexandrite on a pave rose-gold band; head and carat not stated on page (search snippet says approx. 2 ct, 7x9 mm). Head style not stated on page; prong head assumed. Photo audit: oval centre with two round side stones over a pave band; the blue-violet colour-change is not in the alexandrite colour list. Compared with the photo: the matching chevron stacker is the set band; colour-change shift approximated by blue-violet."
   },
-  "band": {
-   "style": "chevron",
-   "metals": [
-    "rose-gold-14k"
-   ],
-   "stones": "melee",
-   "widthMm": 1.8,
-   "tune": {
-    "params": {
-     "stones": true,
-     "stoneSize": 1.6,
-     "stoneCount": 7
-    }
-   }
-  },
-  "notes": "Oval lab-grown alexandrite on a pave rose-gold band; head and carat not stated on page (search snippet says approx. 2 ct, 7x9 mm). Head style not stated on page; prong head assumed. Photo audit: oval centre with two round side stones over a pave band; the blue-violet colour-change is not in the alexandrite colour list. Compared with the photo: the matching chevron stacker is the set band; colour-change shift approximated by blue-violet."
- },
- {
-  "id": "r3-010",
-  "name": "Moissanite leaf engagement ring",
-  "category": "nature",
-  "source": {
-   "name": "Aquamarise",
-   "url": "https://aquamarise.com/products/moissanite-leaf-engagement-ring-set-in-14k-solid-rose-gold"
-  },
-  "priceUsd": 2045,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "moissanite",
-    "cut": "oval",
-    "carat": 1.0,
-    "colorName": null,
-    "clarity": null
-   },
-   "head": "leaf-vine-bypass",
-   "shank": "plain-round",
-   "metals": [
-    "yellow-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "leaf-shaped accents"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "head": {
-     "leafStyle": "stone",
-     "leafCount": 6,
-     "leafSize": 2.2,
-     "budStones": 4,
-     "leafPairs": true,
-     "branchThickness": 0.9,
-     "wrap": 8,
-     "hand": "left"
+  {
+    "id": "r3-010",
+    "name": "Moissanite leaf engagement ring",
+    "category": "nature",
+    "source": {
+      "name": "Aquamarise",
+      "url": "https://aquamarise.com/products/moissanite-leaf-engagement-ring-set-in-14k-solid-rose-gold"
     },
-    "placement": {
-     "raise": 0
-    }
-   }
-  },
-  "band": null,
-  "notes": "Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents. Compared with the photo: two twig branches rise from a plain band and sweep past opposite sides of the oval like a bypass, with small marquise leaves in pairs angled out along both twigs and tiny round bud stones between them."
- },
- {
-  "id": "r3-011",
-  "name": "Platinum 4-prong head on 14k rose shank",
-  "category": "mixed-metal",
-  "source": {
-   "name": "Washington Diamond",
-   "url": "https://washingtondiamond.com/collections/under-1-000/products/4-prong-platinum-engagement-ring-setting-with-14k-rose-shank"
-  },
-  "priceUsd": 629,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": null,
-    "cut": null,
-    "carat": null,
-    "colorName": null,
-    "clarity": null
-   },
-   "head": "solitaire-4-prong",
-   "shank": "tapered",
-   "metals": [
-    "platinum",
-    "rose-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "setting only; no center stone",
-    "pinched shank"
-   ],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "Setting-only two-tone: platinum four-prong head with a pinched 14k rose-gold shank that narrows toward the stone. Shank id tapered is nearest fit."
- },
- {
-  "id": "r3-012",
-  "name": "Oval cabochon opal halo, rose gold",
-  "category": "colored-stone",
-  "source": {
-   "name": "Royal Jewelry via Robinsons Jewelers",
-   "url": "https://robinsonsjewelers.com/products/14k-rose-gold-halo-ring-with-oval-cabochon-opal-and-bead-set-round-diamonds-0-90-carat-opal-and-0-12-carat-total-diamond-weight-royal-jewelry-pc7163f"
-  },
-  "priceUsd": 1845,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "opal",
-    "cut": "cabochon",
-    "carat": 0.9,
-    "colorName": "white opal",
-    "clarity": null
-   },
-   "head": "halo-oval",
-   "shank": "plain-round",
-   "metals": [
-    "rose-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "bead-set round diamond halo 0.12 tcw"
-   ],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "Oval cabochon opal ringed by bead-set diamonds on a polished 14k rose-gold band. Listed sold out."
- },
- {
-  "id": "r3-013",
-  "name": "Pink sapphire, platinum head on 18k yellow",
-  "category": "mixed-metal",
-  "source": {
-   "name": "Eragem",
-   "url": "https://eragem.com/rem21614.html"
-  },
-  "priceUsd": 7450,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": "oval",
-    "carat": null,
-    "colorName": "pink",
-    "clarity": null
-   },
-   "head": "solitaire-4-prong",
-   "shank": "plain-round",
-   "metals": [
-    "platinum",
-    "yellow-gold-18k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "diamond accents"
-   ],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "Natural oval mixed-cut pink sapphire in a platinum head over an 18k yellow-gold build; details from search snippet only."
- },
- {
-  "id": "r3-014",
-  "name": "Blue-green sapphire, yellow gold head on platinum shank",
-  "category": "mixed-metal",
-  "source": {
-   "name": "Eragem",
-   "url": "https://eragem.com/wm14152.html"
-  },
-  "priceUsd": 4250,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": null,
-    "carat": null,
-    "colorName": "blue-green (no heat)",
-    "clarity": null
-   },
-   "head": "solitaire-4-prong",
-   "shank": "plain-round",
-   "metals": [
-    "yellow-gold-18k",
-    "platinum"
-   ],
-   "finish": "polished",
-   "accents": [],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "Unheated blue-green sapphire in a four-prong 18k yellow head on a platinum shank; shank style assumed plain, snippet-only source."
- },
- {
-  "id": "r3-015",
-  "name": "Two-tone oval sapphire solitaire",
-  "category": "mixed-metal",
-  "source": {
-   "name": "Market Square Jewelers",
-   "url": "https://www.marketsquarejewelers.com/products/two-tone-oval-cut-sapphire-solitaire-engagement-ring"
-  },
-  "priceUsd": 4415,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": "oval",
-    "carat": null,
-    "colorName": null,
-    "clarity": null
-   },
-   "head": "solitaire-4-prong",
-   "shank": "plain-round",
-   "metals": [
-    "white-gold-14k",
-    "yellow-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "widthMm": 1.4,
-     "topWidthMm": 1.4,
-     "thicknessMm": 1.3,
-     "topThicknessMm": 1.3
-    }
-   }
-  },
-  "band": null,
-  "notes": "White-gold basket over a yellow-gold shank per search description; gold karats not seen so 14k is a guess at nearest id. Photo audit: four-prong white-gold head on a thin yellow shank."
- },
- {
-  "id": "r3-016",
-  "name": "Sapphire and diamond in platinum and 18ct yellow gold",
-  "category": "mixed-metal",
-  "source": {
-   "name": "Allum & Sidaway",
-   "url": "https://www.allumandsidaway.co.uk/en-us/products/platinium-18ct-yellow-gold-sapphire-0-65ct-diamond-0-19ct-ring"
-  },
-  "priceUsd": 2388,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": null,
-    "carat": 0.65,
-    "colorName": null,
-    "clarity": null
-   },
-   "head": null,
-   "shank": null,
-   "metals": [
-    "platinum",
-    "yellow-gold-18k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "0.19 ct diamonds"
-   ],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "0.65 ct sapphire with 0.19 ct of diamonds in platinum and 18k yellow gold; snippet-only."
- },
- {
-  "id": "r3-017",
-  "name": "Teal sapphire solitaire 1.70",
-  "category": "colored-stone",
-  "source": {
-   "name": "Filigree Jewelers",
-   "url": "https://filigreejewelers.com/products/1-70-teal-solitaire-engagement-ring-in-14k-yellow-gold"
-  },
-  "priceUsd": 3650,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": "oval",
-    "carat": 1.7,
-    "colorName": "teal",
-    "clarity": null
-   },
-   "head": "solitaire-4-prong",
-   "shank": "split",
-   "metals": [
-    "yellow-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [],
-   "orientation": "north-south",
-   "tune": {
-    "head": {
-     "prongCount": 4
+    "priceUsd": 2045,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "moissanite",
+        "cut": "oval",
+        "carat": 1,
+        "colorName": null,
+        "clarity": null
+      },
+      "head": "leaf-vine-bypass",
+      "shank": "plain-round",
+      "metals": [
+        "yellow-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "leaf-shaped accents"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "leafStyle": "stone",
+          "leafCount": 6,
+          "leafSize": 2.2,
+          "budStones": 4,
+          "leafPairs": true,
+          "branchThickness": 0.9,
+          "wrap": 8,
+          "hand": "left"
+        },
+        "placement": {
+          "raise": 0
+        }
+      }
     },
-    "shank": {
-     "splitAngleDeg": 40,
-     "widthMm": 1.6,
-     "topWidthMm": 1.6,
-     "gapMm": 0
-    }
-   }
+    "band": null,
+    "notes": "Leaf-motif moissanite ring. Sources conflict: URL and title say 14k rose gold, page heading said 14k yellow; rose used. Low confidence. Photo audit: photo shows an oval centre and yellow gold with marquise leaf accents. Compared with the photo: two twig branches rise from a plain band and sweep past opposite sides of the oval like a bypass, with small marquise leaves in pairs angled out along both twigs and tiny round bud stones between them."
   },
-  "band": null,
-  "notes": "Teal solitaire in 14k yellow gold; sold out; cut and head not confirmed (head is a guess from the word solitaire). Photo audit: shank splits into two wires near the stone with engraved shoulders."
- },
- {
-  "id": "r3-018",
-  "name": "Art deco oval teal sapphire and diamond",
-  "category": "colored-stone",
-  "source": {
-   "name": "Braverman Oren",
-   "url": "https://bravermanoren.com/products/art-deco-teal-sapphire-engagement-ring-66920"
-  },
-  "priceUsd": 1853.35,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": "oval",
-    "carat": null,
-    "colorName": "teal",
-    "clarity": null
-   },
-   "head": "three-stone",
-   "shank": "plain-round",
-   "metals": [
-    "yellow-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "diamond accents"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "head": {
-     "sideRatio": 0.3,
-     "sideGap": 0.08,
-     "sideCut": "round-brilliant",
-     "sideProngs": 3
+  {
+    "id": "r3-011",
+    "name": "Platinum 4-prong head on 14k rose shank",
+    "category": "mixed-metal",
+    "source": {
+      "name": "Washington Diamond",
+      "url": "https://washingtondiamond.com/collections/under-1-000/products/4-prong-platinum-engagement-ring-setting-with-14k-rose-shank"
     },
-    "shank": {
-     "widthMm": 1.4,
-     "topWidthMm": 1.4,
-     "thicknessMm": 1.3,
-     "topThicknessMm": 1.3
+    "priceUsd": 629,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": null,
+        "cut": null,
+        "carat": null,
+        "colorName": null,
+        "clarity": null
+      },
+      "head": "solitaire-4-prong",
+      "shank": "tapered",
+      "metals": [
+        "platinum",
+        "rose-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "setting only; no center stone",
+        "pinched shank"
+      ],
+      "orientation": "north-south"
     },
-    "accent": {
-     "sizeMm": 2.0
-    }
-   }
+    "band": null,
+    "notes": "Setting-only two-tone: platinum four-prong head with a pinched 14k rose-gold shank that narrows toward the stone. Shank id tapered is nearest fit."
   },
-  "band": null,
-  "notes": "Art deco styled teal oval sapphire with diamonds in 14k yellow gold; vintage ids are nearest fit. Photo audit: photo shows a plain thin band with a small round diamond each side, not filigree."
- },
- {
-  "id": "r3-019",
-  "name": "Vine leaf moissanite, 10k solid rose gold",
-  "category": "nature",
-  "source": {
-   "name": "Walmart marketplace listing",
-   "url": "https://www.walmart.com/ip/Vine-Leaf-Ring-Boho-Hippie-1-50-Carat-Round-Cut-Diamond-Moissanite-Engagement-Ring-Wedding-Ring-10K-Solid-Rose-Gold-Gift-Promise-Ring-Her-Bridal-Set/562801306"
-  },
-  "priceUsd": 569.99,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "moissanite",
-    "cut": "round-brilliant",
-    "carat": 1.0,
-    "colorName": "colorless",
-    "clarity": null
-   },
-   "head": "solitaire-4-prong",
-   "shank": "leaf-vine",
-   "metals": [
-    "rose-gold-10k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "twig/vine band"
-   ],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "Budget vine-and-leaf solid 10k rose gold (no 10k id; 14k used). Search snippet showed 1.00 ct at $569.99 while the URL title says 1.50 ct - low confidence."
- },
- {
-  "id": "r3-020",
-  "name": "Oval opal with blue topaz halo, Bellarri",
-  "category": "colored-stone",
-  "source": {
-   "name": "Borsheims",
-   "url": "https://www.borsheims.com/bellarri-oval-cabochon-opal-blue-topaz-diamond-halo-ring-in-rose-gold"
-  },
-  "priceUsd": 3050,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "opal",
-    "cut": "cabochon",
-    "carat": 2.67,
-    "colorName": "white opal",
-    "clarity": null
-   },
-   "head": "halo-oval",
-   "shank": "plain-round",
-   "metals": [
-    "rose-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "blue topaz and diamond halo"
-   ],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "2.67 ct oval cabochon white opal in a mixed topaz-and-diamond halo in rose gold (karat not seen)."
- },
- {
-  "id": "r3-021",
-  "name": "Opal double halo with pear diamonds",
-  "category": "colored-stone",
-  "source": {
-   "name": "Royal Jewelry via Robinsons Jewelers",
-   "url": "https://robinsonsjewelers.com/products/14k-rose-gold-double-halo-ring-with-oval-cabochon-opal-and-pear-shaped-diamond-accents-1-10-carat-opal-and-0-72-carat-total-diamond-weight-royal-jewelry-pc9107f"
-  },
-  "priceUsd": 4380,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "opal",
-    "cut": "cabochon",
-    "carat": 1.1,
-    "colorName": "opal",
-    "clarity": null
-   },
-   "head": "double-halo",
-   "shank": "pave",
-   "metals": [
-    "rose-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "pear-shaped diamond accents 0.72 tcw"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "widthMm": 3.0,
-     "topWidthMm": 3.4,
-     "coverage": 0.8,
-     "stoneSizeMm": 1.2
-    }
-   }
-  },
-  "band": null,
-  "notes": "1.10 ct cabochon opal in double halo with pear diamonds in 14k rose gold; listed sold out. Photo audit: pear side stones and pave split shoulders (pears not buildable here)."
- },
- {
-  "id": "r3-022",
-  "name": "Fancy intense pink lab diamond, 14k rose",
-  "category": "colored-stone",
-  "source": {
-   "name": "Liori Diamonds",
-   "url": "https://lioridiamonds.com/products/4-18ctw-fancy-intense-pink-lab-grown-diamond-engagement-ring-set-in-14k-rose-gold"
-  },
-  "priceUsd": 3999,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "lab-diamond",
-    "cut": "cushion",
-    "carat": 2.5,
-    "colorName": "fancy intense pink",
-    "clarity": null
-   },
-   "head": "halo-cushion",
-   "shank": "pave",
-   "metals": [
-    "rose-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "4.18 ctw total"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "head": {
-     "haloShape": "cushion",
-     "meleeSize": 1.5
+  {
+    "id": "r3-012",
+    "name": "Oval cabochon opal halo, rose gold",
+    "category": "colored-stone",
+    "source": {
+      "name": "Royal Jewelry via Robinsons Jewelers",
+      "url": "https://robinsonsjewelers.com/products/14k-rose-gold-halo-ring-with-oval-cabochon-opal-and-bead-set-round-diamonds-0-90-carat-opal-and-0-12-carat-total-diamond-weight-royal-jewelry-pc7163f"
     },
-    "shank": {
-     "widthMm": 3.6,
-     "topWidthMm": 4.0,
-     "coverage": 1,
-     "stoneSizeMm": 1.3
-    }
-   }
-  },
-  "band": null,
-  "notes": "Pink lab-grown diamond ring, 4.18 ctw total (center weight not seen); sale price from $4,950. Photo audit: cushion pink centre in a pave cushion halo over a fully pave wide band."
- },
- {
-  "id": "r3-023",
-  "name": "Fancy vivid pink lab oval, yellow gold",
-  "category": "colored-stone",
-  "source": {
-   "name": "Barry's Jewellers",
-   "url": "https://barrysjewellers.com/products/14kt-pink-lab-grown-diamond-ring"
-  },
-  "priceUsd": 7800,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "lab-diamond",
-    "cut": "oval",
-    "carat": 7.05,
-    "colorName": "fancy vivid pink",
-    "clarity": null
-   },
-   "head": "basket",
-   "shank": "tapered",
-   "metals": [
-    "yellow-gold-14k"
-   ],
-   "finish": "polished",
-   "accents": [],
-   "orientation": "north-south",
-   "tune": {
-        "center": { "color": "peach" },
-    "head": {
-     "prongCount": 4,
-     "prongStyle": "claw",
-     "prongWidth": 0.7,
-     "galleryRails": 1
+    "priceUsd": 1845,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "opal",
+        "cut": "cabochon",
+        "carat": 0.9,
+        "colorName": "white opal",
+        "clarity": null
+      },
+      "head": "halo-oval",
+      "shank": "plain-round",
+      "metals": [
+        "rose-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "bead-set round diamond halo 0.12 tcw"
+      ],
+      "orientation": "north-south"
     },
-    "placement": {
-     "raise": 0
+    "band": null,
+    "notes": "Oval cabochon opal ringed by bead-set diamonds on a polished 14k rose-gold band. Listed sold out."
+  },
+  {
+    "id": "r3-015",
+    "name": "Two-tone oval sapphire solitaire",
+    "category": "mixed-metal",
+    "source": {
+      "name": "Market Square Jewelers",
+      "url": "https://www.marketsquarejewelers.com/products/two-tone-oval-cut-sapphire-solitaire-engagement-ring"
     },
-    "shank": {
-     "widthMm": 2.4,
-     "topWidthMm": 1.8,
-     "thicknessMm": 1.6,
-     "topThicknessMm": 1.6
-    }
-   }
-  },
-  "band": null,
-  "notes": "7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south. Compared with the photo: low four-claw basket on a slim tapered band; the photo stone reads peach-pink, so the example uses the warm fancy peach colour."
- },
- {
-  "id": "r3-024",
-  "name": "Monique Lhuillier Bliss pink pear lab diamond",
-  "category": "colored-stone",
-  "source": {
-   "name": "Kay",
-   "url": "https://www.kay.com/monique-lhuillier-bliss-pearshaped-pink-labgrown-diamond-white-labgrown-diamond-engagement-ring-214-ct-tw-18k-rose-gold/p/V-190619902"
-  },
-  "priceUsd": 3964.99,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "lab-diamond",
-    "cut": "pear",
-    "carat": 1.5,
-    "colorName": "pink",
-    "clarity": null
-   },
-   "head": "halo-oval",
-   "shank": "milgrain",
-   "metals": [
-    "rose-gold-18k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "white lab diamonds",
-    "2.14 ctw total"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "head": {
-     "haloShape": "follow"
-    }
-   }
-  },
-  "band": null,
-  "notes": "Pink pear lab diamond with white lab diamonds in 18k rose gold; sale price from $6,099.99. Page: prong-set pear with round-diamond halo; round diamonds along shank, milgrain detail; 1.5 ct pink center."
- },
- {
-  "id": "r3-025",
-  "name": "4.07 ct oval fancy intense yellow diamond",
-  "category": "colored-stone",
-  "source": {
-   "name": "Sotheby's",
-   "url": "https://www.sothebys.com/en/buy/_platinum-gold-407ct-oval-cut-fancy-intense-yellow-diamond-yellow-diamond-and-diamond-engagement-ring-2b17"
-  },
-  "priceUsd": null,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "diamond",
-    "cut": "oval",
-    "carat": 4.07,
-    "colorName": "fancy intense yellow",
-    "clarity": null
-   },
-   "head": null,
-   "shank": null,
-   "metals": [
-    "platinum"
-   ],
-   "finish": "polished",
-   "accents": [
-    "yellow and white diamonds",
-    "gold also used, karat unknown"
-   ],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "Auction-house listing: oval fancy intense yellow diamond ring in platinum and gold; price not seen."
- },
- {
-  "id": "r3-026",
-  "name": "5.82 ct cushion fancy yellow diamond",
-  "category": "colored-stone",
-  "source": {
-   "name": "Sotheby's",
-   "url": "https://www.sothebys.com/en/buy/_gold-582ct-cushion-cut-fancy-yellow-diamond-and-yellow-diamond-engagement-ring-88c4"
-  },
-  "priceUsd": null,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "diamond",
-    "cut": "cushion",
-    "carat": 5.82,
-    "colorName": "fancy yellow",
-    "clarity": null
-   },
-   "head": null,
-   "shank": null,
-   "metals": [
-    "yellow-gold-18k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "yellow diamond accents"
-   ],
-   "orientation": "north-south"
-  },
-  "band": null,
-  "notes": "Cushion fancy yellow diamond in gold (karat not seen); price not seen."
- },
- {
-  "id": "r3-027",
-  "name": "Princess Diana / Kate Middleton sapphire ring",
-  "category": "famous",
-  "source": {
-   "name": "Wedding Dates (royal ring explainer)",
-   "url": "https://weddingdates.ie/blog/kate-middletons-engagement-ring"
-  },
-  "priceUsd": null,
-  "kind": "famous",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": "oval",
-    "carat": 12,
-    "colorName": "blue (Ceylon)",
-    "clarity": null
-   },
-   "head": "halo-oval",
-   "shank": null,
-   "metals": [
-    "white-gold-18k"
-   ],
-   "finish": "polished",
-   "accents": [
-    "14 round brilliant diamonds"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "center": {
-     "carat": 12
+    "priceUsd": 4415,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "sapphire",
+        "cut": "oval",
+        "carat": null,
+        "colorName": null,
+        "clarity": null
+      },
+      "head": "solitaire-4-prong",
+      "shank": "plain-round",
+      "metals": [
+        "white-gold-14k",
+        "yellow-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "widthMm": 1.4,
+          "topWidthMm": 1.4,
+          "thicknessMm": 1.3,
+          "topThicknessMm": 1.3
+        }
+      }
     },
-    "head": {
-     "meleeSize": 2.6,
-     "haloGap": 0.1
-    }
-   }
+    "band": null,
+    "notes": "White-gold basket over a yellow-gold shank per search description; gold karats not seen so 14k is a guess at nearest id. Photo audit: four-prong white-gold head on a thin yellow shank."
   },
-  "band": null,
-  "notes": "Garrard catalogue ring chosen by Diana in 1981; Kate wore it from 16 Nov 2010. Price accounts conflict (GBP 28,500 vs 47,000), so null. Photo audit: Diana ring: a halo of 14 large brilliant diamonds."
- },
- {
-  "id": "r3-028",
-  "name": "Jackie Kennedy emerald and diamond ring",
-  "category": "famous",
-  "source": {
-   "name": "Over The Moon",
-   "url": "https://overthemoon.com/blogs/fashion/hidden-meaning-behind-diamond-alternative-engagement-rings"
+  {
+    "id": "r3-016",
+    "name": "Sapphire and diamond in platinum and 18ct yellow gold",
+    "category": "mixed-metal",
+    "source": {
+      "name": "Allum & Sidaway",
+      "url": "https://www.allumandsidaway.co.uk/en-us/products/platinium-18ct-yellow-gold-sapphire-0-65ct-diamond-0-19ct-ring"
+    },
+    "priceUsd": 2388,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "sapphire",
+        "cut": null,
+        "carat": 0.65,
+        "colorName": null,
+        "clarity": null
+      },
+      "head": null,
+      "shank": null,
+      "metals": [
+        "platinum",
+        "yellow-gold-18k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "0.19 ct diamonds"
+      ],
+      "orientation": "north-south"
+    },
+    "band": null,
+    "notes": "0.65 ct sapphire with 0.19 ct of diamonds in platinum and 18k yellow gold; snippet-only."
   },
-  "priceUsd": null,
-  "kind": "famous",
-  "engagement": {
-   "stone": {
-    "material": "emerald",
-    "cut": "emerald-cut",
-    "carat": 2.84,
-    "colorName": "green",
-    "clarity": null
-   },
-   "head": "toi-et-moi",
-   "shank": null,
-   "metals": [
-    "platinum"
-   ],
-   "finish": "polished",
-   "accents": [
-    "2.88 ct diamond",
-    "diamond garlands"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "accent": {
-     "material": "diamond",
-     "color": "colorless",
-     "cut": "emerald-cut"
-    }
-   }
+  {
+    "id": "r3-017",
+    "name": "Teal sapphire solitaire 1.70",
+    "category": "colored-stone",
+    "source": {
+      "name": "Filigree Jewelers",
+      "url": "https://filigreejewelers.com/products/1-70-teal-solitaire-engagement-ring-in-14k-yellow-gold"
+    },
+    "priceUsd": 3650,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "sapphire",
+        "cut": "oval",
+        "carat": 1.7,
+        "colorName": "teal",
+        "clarity": null
+      },
+      "head": "solitaire-4-prong",
+      "shank": "split",
+      "metals": [
+        "yellow-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [],
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "prongCount": 4
+        },
+        "shank": {
+          "splitAngleDeg": 40,
+          "widthMm": 1.6,
+          "topWidthMm": 1.6,
+          "gapMm": 0
+        }
+      }
+    },
+    "band": null,
+    "notes": "Teal solitaire in 14k yellow gold; sold out; cut and head not confirmed (head is a guess from the word solitaire). Photo audit: shank splits into two wires near the stone with engraved shoulders."
   },
-  "band": null,
-  "notes": "Van Cleef & Arpels, 1953: emerald and diamond side by side, flanked by diamond garlands. Cut not stated in snippet."
- },
- {
-  "id": "r3-029",
-  "name": "Princess Eugenie padparadscha sapphire ring",
-  "category": "famous",
-  "source": {
-   "name": "The Natural Sapphire Company",
-   "url": "https://www.thenaturalsapphirecompany.com/blog/details-princess-eugenies-padparadscha-sapphire-engagement-ring"
+  {
+    "id": "r3-018",
+    "name": "Art deco oval teal sapphire and diamond",
+    "category": "colored-stone",
+    "source": {
+      "name": "Braverman Oren",
+      "url": "https://bravermanoren.com/products/art-deco-teal-sapphire-engagement-ring-66920"
+    },
+    "priceUsd": 1853.35,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "sapphire",
+        "cut": "oval",
+        "carat": null,
+        "colorName": "teal",
+        "clarity": null
+      },
+      "head": "three-stone",
+      "shank": "plain-round",
+      "metals": [
+        "yellow-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "diamond accents"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "sideRatio": 0.3,
+          "sideGap": 0.08,
+          "sideCut": "round-brilliant",
+          "sideProngs": 3
+        },
+        "shank": {
+          "widthMm": 1.4,
+          "topWidthMm": 1.4,
+          "thicknessMm": 1.3,
+          "topThicknessMm": 1.3
+        },
+        "accent": {
+          "sizeMm": 2
+        }
+      }
+    },
+    "band": null,
+    "notes": "Art deco styled teal oval sapphire with diamonds in 14k yellow gold; vintage ids are nearest fit. Photo audit: photo shows a plain thin band with a small round diamond each side, not filigree."
   },
-  "priceUsd": null,
-  "kind": "famous",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": "oval",
-    "carat": null,
-    "colorName": "padparadscha pink-orange",
-    "clarity": null
-   },
-   "head": "halo-oval",
-   "shank": null,
-   "metals": [],
-   "finish": "polished",
-   "accents": [
-    "diamond halo, shape disputed between sources"
-   ],
-   "orientation": "north-south"
+  {
+    "id": "r3-021",
+    "name": "Opal double halo with pear diamonds",
+    "category": "colored-stone",
+    "source": {
+      "name": "Royal Jewelry via Robinsons Jewelers",
+      "url": "https://robinsonsjewelers.com/products/14k-rose-gold-double-halo-ring-with-oval-cabochon-opal-and-pear-shaped-diamond-accents-1-10-carat-opal-and-0-72-carat-total-diamond-weight-royal-jewelry-pc9107f"
+    },
+    "priceUsd": 4380,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "opal",
+        "cut": "cabochon",
+        "carat": 1.1,
+        "colorName": "opal",
+        "clarity": null
+      },
+      "head": "double-halo",
+      "shank": "pave",
+      "metals": [
+        "rose-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "pear-shaped diamond accents 0.72 tcw"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "widthMm": 3,
+          "topWidthMm": 3.4,
+          "coverage": 0.8,
+          "stoneSizeMm": 1.2
+        }
+      }
+    },
+    "band": null,
+    "notes": "1.10 ct cabochon opal in double halo with pear diamonds in 14k rose gold; listed sold out. Photo audit: pear side stones and pave split shoulders (pears not buildable here)."
   },
-  "band": null,
-  "notes": "Carat never published (estimates 3-5 ct); sources disagree on round vs pear halo diamonds; value undisclosed."
- },
- {
-  "id": "r3-030",
-  "name": "Kite ruby, platinum Avaline",
-  "category": "colored-stone",
-  "source": {
-   "name": "Point No Point Studio",
-   "url": "https://pointnopointstudio.com/products/1-39-carat-kite-ruby-and-diamond-engagement-ring-avaline-setting-platinum"
+  {
+    "id": "r3-022",
+    "name": "Fancy intense pink lab diamond, 14k rose",
+    "category": "colored-stone",
+    "source": {
+      "name": "Liori Diamonds",
+      "url": "https://lioridiamonds.com/products/4-18ctw-fancy-intense-pink-lab-grown-diamond-engagement-ring-set-in-14k-rose-gold"
+    },
+    "priceUsd": 3999,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "lab-diamond",
+        "cut": "cushion",
+        "carat": 2.5,
+        "colorName": "fancy intense pink",
+        "clarity": null
+      },
+      "head": "halo-cushion",
+      "shank": "pave",
+      "metals": [
+        "rose-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "4.18 ctw total"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "head": {
+          "haloShape": "cushion",
+          "meleeSize": 1.5
+        },
+        "shank": {
+          "widthMm": 3.6,
+          "topWidthMm": 4,
+          "coverage": 1,
+          "stoneSizeMm": 1.3
+        }
+      }
+    },
+    "band": null,
+    "notes": "Pink lab-grown diamond ring, 4.18 ctw total (center weight not seen); sale price from $4,950. Photo audit: cushion pink centre in a pave cushion halo over a fully pave wide band."
   },
-  "priceUsd": null,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "ruby",
-    "cut": "kite",
-    "carat": 1.25,
-    "colorName": "red",
-    "clarity": null
-   },
-   "head": "solitaire-4-prong",
-   "shank": "pave",
-   "metals": [
-    "platinum"
-   ],
-   "finish": "polished",
-   "accents": [
-    "accent diamonds 0.13 tcw"
-   ],
-   "orientation": "north-south",
-   "tune": {
-    "shank": {
-     "widthMm": 1.6,
-     "topWidthMm": 1.6,
-     "coverage": 0.45,
-     "stoneSizeMm": 1.1
-    }
-   }
+  {
+    "id": "r3-023",
+    "name": "Fancy vivid pink lab oval, yellow gold",
+    "category": "colored-stone",
+    "source": {
+      "name": "Barry's Jewellers",
+      "url": "https://barrysjewellers.com/products/14kt-pink-lab-grown-diamond-ring"
+    },
+    "priceUsd": 7800,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "lab-diamond",
+        "cut": "oval",
+        "carat": 7.05,
+        "colorName": "fancy vivid pink",
+        "clarity": null
+      },
+      "head": "basket",
+      "shank": "tapered",
+      "metals": [
+        "yellow-gold-14k"
+      ],
+      "finish": "polished",
+      "accents": [],
+      "orientation": "north-south",
+      "tune": {
+        "center": {
+          "color": "peach"
+        },
+        "head": {
+          "prongCount": 4,
+          "prongStyle": "claw",
+          "prongWidth": 0.7,
+          "galleryRails": 1
+        },
+        "placement": {
+          "raise": 0
+        },
+        "shank": {
+          "widthMm": 2.4,
+          "topWidthMm": 1.8,
+          "thicknessMm": 1.6,
+          "topThicknessMm": 1.6
+        }
+      }
+    },
+    "band": null,
+    "notes": "7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south. Compared with the photo: low four-claw basket on a slim tapered band; the photo stone reads peach-pink, so the example uses the warm fancy peach colour."
   },
-  "band": null,
-  "notes": "Brilliant-cut kite ruby with diamond accents; carat and accents from search snippet; price not seen. Photo audit: thin band with melee on the shoulders; kite with a small diamond fan below."
- },
- {
-  "id": "r3-031",
-  "name": "Emerald-cut sapphire three-stone, Blue Nile",
-  "category": "colored-stone",
-  "source": {
-   "name": "Blue Nile",
-   "url": "https://www.bluenile.com/engagement-rings/gemstone-preset/classic-three-stone-engagement-ring-with-emerald-cut-sapphire-in-platinum-7x5mm-item-148466"
+  {
+    "id": "r3-025",
+    "name": "4.07 ct oval fancy intense yellow diamond",
+    "category": "colored-stone",
+    "source": {
+      "name": "Sotheby's",
+      "url": "https://www.sothebys.com/en/buy/_platinum-gold-407ct-oval-cut-fancy-intense-yellow-diamond-yellow-diamond-and-diamond-engagement-ring-2b17"
+    },
+    "priceUsd": null,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "diamond",
+        "cut": "oval",
+        "carat": 4.07,
+        "colorName": "fancy intense yellow",
+        "clarity": null
+      },
+      "head": null,
+      "shank": null,
+      "metals": [
+        "platinum"
+      ],
+      "finish": "polished",
+      "accents": [
+        "yellow and white diamonds",
+        "gold also used, karat unknown"
+      ],
+      "orientation": "north-south"
+    },
+    "band": null,
+    "notes": "Auction-house listing: oval fancy intense yellow diamond ring in platinum and gold; price not seen."
   },
-  "priceUsd": null,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": "emerald-cut",
-    "carat": 1.3,
-    "colorName": "blue",
-    "clarity": null
-   },
-   "head": "three-stone",
-   "shank": "plain-round",
-   "metals": [
-    "platinum"
-   ],
-   "finish": "polished",
-   "accents": [
-    "round diamond side stones",
-    "7x5 mm center"
-   ],
-   "orientation": "east-west"
+  {
+    "id": "r3-026",
+    "name": "5.82 ct cushion fancy yellow diamond",
+    "category": "colored-stone",
+    "source": {
+      "name": "Sotheby's",
+      "url": "https://www.sothebys.com/en/buy/_gold-582ct-cushion-cut-fancy-yellow-diamond-and-yellow-diamond-engagement-ring-88c4"
+    },
+    "priceUsd": null,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "diamond",
+        "cut": "cushion",
+        "carat": 5.82,
+        "colorName": "fancy yellow",
+        "clarity": null
+      },
+      "head": null,
+      "shank": null,
+      "metals": [
+        "yellow-gold-18k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "yellow diamond accents"
+      ],
+      "orientation": "north-south"
+    },
+    "band": null,
+    "notes": "Cushion fancy yellow diamond in gold (karat not seen); price not seen."
   },
-  "band": null,
-  "notes": "Classic platinum three-stone with an emerald-cut sapphire and round diamonds; listed sold out, no price seen. Page: platinum three-stone semi-mount, 7x5 mm emerald-cut sapphire, round diamond sides; center weight is an estimate for that size."
- },
- {
-  "id": "r3-032",
-  "name": "Yellow-green sapphire, Zoe setting",
-  "category": "colored-stone",
-  "source": {
-   "name": "Point No Point Studio",
-   "url": "https://pointnopointstudio.com/products/1-72-carat-yellow-green-emerald-sapphire-and-diamond-engagement-ring-zoe-setting-platinum"
+  {
+    "id": "r3-027",
+    "name": "Princess Diana / Kate Middleton sapphire ring",
+    "category": "famous",
+    "source": {
+      "name": "Wedding Dates (royal ring explainer)",
+      "url": "https://weddingdates.ie/blog/kate-middletons-engagement-ring"
+    },
+    "priceUsd": null,
+    "kind": "famous",
+    "engagement": {
+      "stone": {
+        "material": "sapphire",
+        "cut": "oval",
+        "carat": 12,
+        "colorName": "blue (Ceylon)",
+        "clarity": null
+      },
+      "head": "halo-oval",
+      "shank": null,
+      "metals": [
+        "white-gold-18k"
+      ],
+      "finish": "polished",
+      "accents": [
+        "14 round brilliant diamonds"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "center": {
+          "carat": 12
+        },
+        "head": {
+          "meleeSize": 2.6,
+          "haloGap": 0.1
+        }
+      }
+    },
+    "band": null,
+    "notes": "Garrard catalogue ring chosen by Diana in 1981; Kate wore it from 16 Nov 2010. Price accounts conflict (GBP 28,500 vs 47,000), so null. Photo audit: Diana ring: a halo of 14 large brilliant diamonds."
   },
-  "priceUsd": null,
-  "kind": "engagement",
-  "engagement": {
-   "stone": {
-    "material": "sapphire",
-    "cut": "emerald-cut",
-    "carat": 1.72,
-    "colorName": "yellow-green",
-    "clarity": null
-   },
-   "head": "solitaire-4-prong",
-   "shank": "plain-round",
-   "metals": [
-    "platinum"
-   ],
-   "finish": "polished",
-   "accents": [
-    "diamonds"
-   ],
-   "orientation": "north-south"
+  {
+    "id": "r3-028",
+    "name": "Jackie Kennedy emerald and diamond ring",
+    "category": "famous",
+    "source": {
+      "name": "Over The Moon",
+      "url": "https://overthemoon.com/blogs/fashion/hidden-meaning-behind-diamond-alternative-engagement-rings"
+    },
+    "priceUsd": null,
+    "kind": "famous",
+    "engagement": {
+      "stone": {
+        "material": "emerald",
+        "cut": "emerald-cut",
+        "carat": 2.84,
+        "colorName": "green",
+        "clarity": null
+      },
+      "head": "toi-et-moi",
+      "shank": null,
+      "metals": [
+        "platinum"
+      ],
+      "finish": "polished",
+      "accents": [
+        "2.88 ct diamond",
+        "diamond garlands"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "accent": {
+          "material": "diamond",
+          "color": "colorless",
+          "cut": "emerald-cut"
+        }
+      }
+    },
+    "band": null,
+    "notes": "Van Cleef & Arpels, 1953: emerald and diamond side by side, flanked by diamond garlands. Cut not stated in snippet."
   },
-  "band": null,
-  "notes": "1.72 ct yellow-green sapphire (listed as emerald sapphire) in platinum; fetch failed so snippet-only; inquire-for-availability."
- }
+  {
+    "id": "r3-030",
+    "name": "Kite ruby, platinum Avaline",
+    "category": "colored-stone",
+    "source": {
+      "name": "Point No Point Studio",
+      "url": "https://pointnopointstudio.com/products/1-39-carat-kite-ruby-and-diamond-engagement-ring-avaline-setting-platinum"
+    },
+    "priceUsd": null,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "ruby",
+        "cut": "kite",
+        "carat": 1.25,
+        "colorName": "red",
+        "clarity": null
+      },
+      "head": "solitaire-4-prong",
+      "shank": "pave",
+      "metals": [
+        "platinum"
+      ],
+      "finish": "polished",
+      "accents": [
+        "accent diamonds 0.13 tcw"
+      ],
+      "orientation": "north-south",
+      "tune": {
+        "shank": {
+          "widthMm": 1.6,
+          "topWidthMm": 1.6,
+          "coverage": 0.45,
+          "stoneSizeMm": 1.1
+        }
+      }
+    },
+    "band": null,
+    "notes": "Brilliant-cut kite ruby with diamond accents; carat and accents from search snippet; price not seen. Photo audit: thin band with melee on the shoulders; kite with a small diamond fan below."
+  },
+  {
+    "id": "r3-032",
+    "name": "Yellow-green sapphire, Zoe setting",
+    "category": "colored-stone",
+    "source": {
+      "name": "Point No Point Studio",
+      "url": "https://pointnopointstudio.com/products/1-72-carat-yellow-green-emerald-sapphire-and-diamond-engagement-ring-zoe-setting-platinum"
+    },
+    "priceUsd": null,
+    "kind": "engagement",
+    "engagement": {
+      "stone": {
+        "material": "sapphire",
+        "cut": "emerald-cut",
+        "carat": 1.72,
+        "colorName": "yellow-green",
+        "clarity": null
+      },
+      "head": "solitaire-4-prong",
+      "shank": "plain-round",
+      "metals": [
+        "platinum"
+      ],
+      "finish": "polished",
+      "accents": [
+        "diamonds"
+      ],
+      "orientation": "north-south"
+    },
+    "band": null,
+    "notes": "1.72 ct yellow-green sapphire (listed as emerald sapphire) in platinum; fetch failed so snippet-only; inquire-for-availability."
+  }
 ]
