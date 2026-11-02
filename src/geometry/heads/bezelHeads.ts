@@ -5,6 +5,7 @@ import type { HeadCtx, Part } from '../types';
 import {
   baseScaleFor,
   cleanOutline,
+  crownAt,
   crownInset,
   ensureOutward,
   loft,
@@ -17,6 +18,7 @@ import {
   prongSites,
   resample,
   ringDrop,
+  rod,
   stoneSurfaceY,
   support,
   v3,
@@ -193,11 +195,54 @@ function basketWires(ctx: HeadCtx, d: CollarDims): THREE.BufferGeometry[] {
   return out;
 }
 
+/**
+ * Arc-length sites for claws on a bezel rim: evenly spaced round the girdle, starting half a step from the +X (length)
+ * tip, so no claw sits on a tip. On an oval or other elongated stone four claws land two per long side, six three per
+ * side. Deterministic: depends only on the outline and the count.
+ */
+export function rimClawSites(o: CleanOutline, count: number): number[] {
+  return prongSites(o, { count, phase: 0.5, useCorners: false });
+}
+
+/**
+ * Small pointed claws standing on the bezel rim (param `claws`, 0 = none). Each is rooted in the rim wall below the
+ * lip, rises just above the lip on its outer face, then tapers to a point lying on the crown, gripping the stone
+ * inside the rim. `clawSize` is the claw's diameter at its root, mm.
+ */
+function rimClaws(ctx: HeadCtx, d: CollarDims): THREE.BufferGeometry[] {
+  const count = Math.round(num(ctx.params, 'claws', 0, 0, 6));
+  if (count <= 0) return [];
+  const size = num(ctx.params, 'clawSize', 0.6, 0.3, 1.2);
+  const r = size / 2;
+  const t = num(ctx.params, 'bezelThickness', 0.45, 0.3, 1.5);
+  const crown = ctx.center.built.crownHeight;
+  const lip = num(ctx.params, 'bezelHeight', Math.min(0.2, crown * 0.2), 0.1, 1.5);
+  const yTop = d.gt * 0.5 + Math.min(lip, Math.max(0.1, crown * 0.2));
+  const inset = Math.min(crownInset(ctx.center.built, yTop), 0.25);
+  const yColl = collarY(d, true);
+  const reach = inset + r * 1.5; // how far in from the girdle edge the point lies on the crown
+  const out: THREE.BufferGeometry[] = [];
+  for (const s of rimClawSites(d.o, count)) {
+    const p = pointAt(d.o, s);
+    const at = (off: number, y: number) => v3(p.x + p.nx * off, y, p.z + p.nz * off);
+    const root = at(t * 0.55, yColl + 0.12); // buried in the rim wall
+    const knee = at(t * 0.25, Math.max(yTop, crownAt(ctx.center.built, p, 0)) + r * 0.6); // just above the lip
+    const tipY = crownAt(ctx.center.built, p, reach) + r * 0.15;
+    const tip = at(-reach, tipY);
+    out.push(...rod(root, knee, r, r * 0.9, 10), ...rod(knee, tip, r * 0.9, r * 0.12, 10));
+  }
+  return out;
+}
+
 function bezelFull(ctx: HeadCtx): Part[] {
   const d = collarDims(ctx);
   return [
     metalPart(
-      [loft(resample(d.o, 120, 1), bezelSection(ctx, d, true), true), ...basketWires(ctx, d)],
+      [
+        loft(resample(d.o, 120, 1), bezelSection(ctx, d, true), true),
+        ...basketWires(ctx, d),
+        ...rimClaws(ctx, d),
+      ],
       'bezel',
     ),
   ];

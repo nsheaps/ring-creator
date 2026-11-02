@@ -839,7 +839,7 @@
         "colorName": "fancy vivid pink",
         "clarity": null
       },
-      "head": "basket",
+      "head": "bezel-full",
       "shank": "tapered",
       "metals": [
         "yellow-gold-14k"
@@ -852,10 +852,10 @@
           "color": "peach"
         },
         "head": {
-          "prongCount": 4,
-          "prongStyle": "claw",
-          "prongWidth": 0.7,
-          "galleryRails": 1
+          "bezelThickness": 0.4,
+          "bezelHeight": 0.15,
+          "claws": 4,
+          "clawSize": 0.8
         },
         "placement": {
           "raise": 0
@@ -869,7 +869,7 @@
       }
     },
     "band": null,
-    "notes": "7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south. Compared with the photo: low four-claw basket on a slim tapered band; the photo stone reads peach-pink, so the example uses the warm fancy peach colour."
+    "notes": "7.05 ct fancy vivid pink oval lab diamond in 14k yellow gold; sale price from $10,400. Page: combined bezel and tapered-claw setting. Photo audit: open bezel with claws; oval stands north-south. Compared with the photo: a thin, low full bezel rim with four small pointed claws standing on it (two per long side) on a slim tapered band; the photo stone reads peach-pink, so the example uses the warm fancy peach colour."
   },
   {
     "id": "r3-025",
